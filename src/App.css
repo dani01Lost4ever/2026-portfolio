@@ -1059,3 +1059,22 @@
     display: none;
   }
 }
+
+/* ─────────────────────────────────────────
+   Loader
+───────────────────────────────────────── */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #0a0a0a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: transform;
+}
+
+.loader-svg {
+  width: min(72vw, 400px);
+  overflow: visible;
+}

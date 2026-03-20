@@ -1,0 +1,16 @@
+{
+  "availableForWork": true,
+  "name": "Daniel",
+  "location": "[City]",
+  "taglines": ["Building digital", "products with", "purpose."],
+  "subtitle": "I'm Daniel, a software developer based in [City]. I craft meaningful digital experiences — from interfaces to infrastructure.",
+  "cta": [
+    { "label": "View Work", "href": "#work", "variant": "primary" },
+    { "label": "Get in Touch", "href": "#contact", "variant": "outline" }
+  ],
+  "stats": [
+    { "value": "5+", "label": "Years experience" },
+    { "value": "30+", "label": "Projects shipped" },
+    { "value": "15+", "label": "Happy clients" }
+  ]
+}

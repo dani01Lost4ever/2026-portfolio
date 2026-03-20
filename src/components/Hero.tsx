@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion'
+import heroData from '../data/hero.json'
 
 const container = {
   hidden: {},
@@ -23,14 +24,6 @@ const fadeIn = {
   },
 }
 
-const stats = [
-  { value: '5+', label: 'Years experience' },
-  { value: '30+', label: 'Projects shipped' },
-  { value: '15+', label: 'Happy clients' },
-]
-
-const lines = ['Building digital', 'products with', 'purpose.']
-
 export default function Hero() {
   return (
     <section className="hero" id="hero">
@@ -38,15 +31,17 @@ export default function Hero() {
       <div className="hero-glow-2" />
 
       <div className="container hero-inner">
-        <motion.span
-          className="hero-tag"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.05 }}
-        >
-          <span className="hero-tag-dot" />
-          Available for work
-        </motion.span>
+        {heroData.availableForWork && (
+          <motion.span
+            className="hero-tag"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.05 }}
+          >
+            <span className="hero-tag-dot" />
+            Available for work
+          </motion.span>
+        )}
 
         {/* Line-by-line text reveal */}
         <motion.h1
@@ -55,10 +50,10 @@ export default function Hero() {
           initial="hidden"
           animate="show"
         >
-          {lines.map((line, i) => (
+          {heroData.taglines.map((line, i) => (
             <span key={i} className="line-mask">
               <motion.span
-                className={`line-text${i === lines.length - 1 ? ' accent' : ''}`}
+                className={`line-text${i === heroData.taglines.length - 1 ? ' accent' : ''}`}
                 variants={lineReveal}
               >
                 {line}
@@ -74,8 +69,7 @@ export default function Hero() {
           animate="show"
           transition={{ delay: 0.55 }}
         >
-          I'm [Your Name], a full-stack developer and designer based in [City].
-          I craft meaningful digital experiences — from interfaces to infrastructure.
+          {heroData.subtitle}
         </motion.p>
 
         <motion.div
@@ -85,8 +79,11 @@ export default function Hero() {
           animate="show"
           transition={{ delay: 0.65 }}
         >
-          <a href="#work" className="btn btn-primary">View Work</a>
-          <a href="#contact" className="btn btn-outline">Get in Touch</a>
+          {heroData.cta.map(btn => (
+            <a key={btn.label} href={btn.href} className={`btn btn-${btn.variant}`}>
+              {btn.label}
+            </a>
+          ))}
         </motion.div>
 
         {/* Stats row */}
@@ -96,7 +93,7 @@ export default function Hero() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          {stats.map((s, i) => (
+          {heroData.stats.map((s, i) => (
             <div key={s.label} className="hero-stat">
               {i > 0 && <div className="hero-stat-div" />}
               <span className="hero-stat-value">{s.value}</span>

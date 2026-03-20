@@ -1,30 +1,33 @@
+import contactData from '../data/contact.json'
+
 export default function Contact() {
   return (
     <section className="contact section" id="contact">
       <div className="container contact-inner">
-        <p className="section-label reveal">Get in Touch</p>
+        <p className="section-label reveal">{contactData.label}</p>
 
         <h2 className="contact-heading reveal d1">
-          Let's build something<br />
-          <span className="accent">great together.</span>
+          {contactData.heading}<br />
+          <span className="accent">{contactData.headingAccent}</span>
         </h2>
 
         <p className="contact-sub reveal d2">
-          Currently open to freelance projects and full-time opportunities.
+          {contactData.availability}
         </p>
 
-        <a href="mailto:hello@yourname.com" className="contact-email reveal d3">
-          hello@yourname.com
+        <a href={`mailto:${contactData.email}`} className="contact-email reveal d3">
+          {contactData.email}
         </a>
 
         <div className="contact-socials reveal d4">
-          <a href="#" target="_blank" rel="noopener noreferrer">GitHub</a>
-          <a href="#" target="_blank" rel="noopener noreferrer">LinkedIn</a>
-          <a href="#" target="_blank" rel="noopener noreferrer">Twitter</a>
-          <a href="#" target="_blank" rel="noopener noreferrer">Dribbble</a>
+          {contactData.socials.map(social => (
+            <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">
+              {social.label}
+            </a>
+          ))}
         </div>
 
-        <p className="contact-copy">© 2026 Your Name. All rights reserved.</p>
+        <p className="contact-copy">{contactData.copyright}</p>
       </div>
     </section>
   )

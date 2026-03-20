@@ -1,6 +1,7 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 import { AnimatePresence } from 'framer-motion'
+import Lenis from 'lenis'
 import './App.css'
 
 import Navbar from './components/Navbar'
@@ -11,6 +12,7 @@ import Marquee from './components/Marquee'
 import Work from './components/Work'
 import About from './components/About'
 import Contact from './components/Contact'
+import Loader from './components/Loader'
 import ProjectDetail from './pages/ProjectDetail'
 
 function HomePage() {
@@ -40,6 +42,31 @@ function HomePage() {
 
 export default function App() {
   const location = useLocation()
+  const [loaderDone, setLoaderDone] = useState(
+    () => sessionStorage.getItem('loader-done') === '1'
+  )
+
+  // Smooth scroll via Lenis
+  useEffect(() => {
+    const lenis = new Lenis()
+    const raf = (time: number) => {
+      lenis.raf(time)
+      requestAnimationFrame(raf)
+    }
+    requestAnimationFrame(raf)
+    return () => lenis.destroy()
+  }, [])
+
+  // Lock scroll while loader is running
+  useEffect(() => {
+    document.body.style.overflow = loaderDone ? '' : 'hidden'
+    return () => { document.body.style.overflow = '' }
+  }, [loaderDone])
+
+  function handleLoaderComplete() {
+    sessionStorage.setItem('loader-done', '1')
+    setLoaderDone(true)
+  }
 
   // Re-run reveal observer when navigating back to home
   useEffect(() => {
@@ -61,6 +88,8 @@ export default function App() {
 
   return (
     <>
+      {!loaderDone && <Loader onComplete={handleLoaderComplete} />}
+
       <Cursor />
       <ScrollProgress />
       <Navbar />

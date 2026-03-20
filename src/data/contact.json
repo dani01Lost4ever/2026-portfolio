@@ -1,0 +1,14 @@
+{
+  "label": "Get in Touch",
+  "heading": "Let's build something",
+  "headingAccent": "great together.",
+  "availability": "Currently open to freelance projects and full-time opportunities.",
+  "email": "hello@yourname.com",
+  "socials": [
+    { "label": "GitHub", "href": "#" },
+    { "label": "LinkedIn", "href": "#" },
+    { "label": "Twitter", "href": "#" },
+    { "label": "Dribbble", "href": "#" }
+  ],
+  "copyright": "© 2026 Daniel. All rights reserved."
+}

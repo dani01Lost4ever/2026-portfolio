@@ -1,11 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
-
-const navLinks = [
-  { label: 'Work', href: '/#work' },
-  { label: 'About', href: '/#about' },
-  { label: 'Contact', href: '/#contact' },
-]
+import siteData from '../data/site.json'
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
@@ -34,9 +29,9 @@ export default function Navbar() {
   return (
     <nav className={`navbar${scrolled ? ' navbar--scrolled' : ''}`}>
       <div className="navbar-inner container">
-        <Link to="/" className="navbar-logo">YN</Link>
+        <Link to="/" className="navbar-logo">{siteData.logo}</Link>
         <ul className="navbar-nav">
-          {navLinks.map(({ label, href }) => {
+          {siteData.nav.map(({ label, href }) => {
             const sectionId = href.replace('/#', '')
             return (
               <li key={label}>

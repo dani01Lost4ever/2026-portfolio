@@ -1,0 +1,26 @@
+{
+  "label": "About Me",
+  "heading": "Bridging the gap between design and engineering.",
+  "bio": [
+    "I'm Daniel, a software developer with 5+ years of experience building digital products that people love to use. I care deeply about both the technical foundations and the resulting user experience.",
+    "When I'm not writing code, I'm usually experimenting with new design tools, contributing to open source, or exploring the outdoors."
+  ],
+  "skills": [
+    {
+      "category": "Frontend",
+      "items": ["React", "TypeScript", "Vue.js", "CSS / Sass", "Framer Motion"]
+    },
+    {
+      "category": "Backend",
+      "items": ["Node.js", "Express", "PostgreSQL", "REST / GraphQL"]
+    },
+    {
+      "category": "Design",
+      "items": ["Figma", "Design Systems", "Prototyping", "User Research"]
+    },
+    {
+      "category": "Tools",
+      "items": ["Git", "Docker", "CI/CD", "Vite", "Storybook"]
+    }
+  ]
+}

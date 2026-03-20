@@ -1,21 +1,4 @@
-const skills = [
-  {
-    category: 'Frontend',
-    items: ['React', 'TypeScript', 'Vue.js', 'CSS / Sass', 'Framer Motion'],
-  },
-  {
-    category: 'Backend',
-    items: ['Node.js', 'Express', 'PostgreSQL', 'REST / GraphQL'],
-  },
-  {
-    category: 'Design',
-    items: ['Figma', 'Design Systems', 'Prototyping', 'User Research'],
-  },
-  {
-    category: 'Tools',
-    items: ['Git', 'Docker', 'CI/CD', 'Vite', 'Storybook'],
-  },
-]
+import aboutData from '../data/about.json'
 
 export default function About() {
   return (
@@ -23,25 +6,19 @@ export default function About() {
       <div className="container">
         <div className="about-inner">
           <div className="about-bio">
-            <p className="section-label reveal">About Me</p>
+            <p className="section-label reveal">{aboutData.label}</p>
             <h2 className="about-heading reveal d1">
-              Bridging the gap between design and engineering.
+              {aboutData.heading}
             </h2>
             <div className="about-text reveal d2">
-              <p>
-                I'm a full-stack developer and designer with 5+ years of experience building
-                digital products that people love to use. I care deeply about both the technical
-                foundations and the resulting user experience.
-              </p>
-              <p>
-                When I'm not writing code, I'm usually experimenting with new design tools,
-                contributing to open source, or exploring the outdoors.
-              </p>
+              {aboutData.bio.map((paragraph, i) => (
+                <p key={i}>{paragraph}</p>
+              ))}
             </div>
           </div>
 
           <div className="about-skills reveal d2">
-            {skills.map(s => (
+            {aboutData.skills.map(s => (
               <div key={s.category} className="skill-group">
                 <h4 className="skill-category">{s.category}</h4>
                 <ul className="skill-list">
