@@ -1,7 +1,9 @@
 import { Link } from 'react-router-dom'
-import { projects } from '../data/projects'
+import { useProjects } from '../context/ContentContext'
 
 export default function Work() {
+  const projects = useProjects()
+
   return (
     <section className="work section" id="work">
       <div className="container">

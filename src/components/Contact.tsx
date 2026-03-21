@@ -1,33 +1,33 @@
-import contactData from '../data/contact.json'
+import { useContact } from '../context/ContentContext'
 
 export default function Contact() {
+  const contact = useContact()
+
   return (
     <section className="contact section" id="contact">
       <div className="container contact-inner">
-        <p className="section-label reveal">{contactData.label}</p>
+        <p className="section-label reveal">{contact.label}</p>
 
         <h2 className="contact-heading reveal d1">
-          {contactData.heading}<br />
-          <span className="accent">{contactData.headingAccent}</span>
+          {contact.heading}<br />
+          <span className="accent">{contact.headingAccent}</span>
         </h2>
 
-        <p className="contact-sub reveal d2">
-          {contactData.availability}
-        </p>
+        <p className="contact-sub reveal d2">{contact.availability}</p>
 
-        <a href={`mailto:${contactData.email}`} className="contact-email reveal d3">
-          {contactData.email}
+        <a href={`mailto:${contact.email}`} className="contact-email reveal d3">
+          {contact.email}
         </a>
 
         <div className="contact-socials reveal d4">
-          {contactData.socials.map(social => (
+          {contact.socials.map(social => (
             <a key={social.label} href={social.href} target="_blank" rel="noopener noreferrer">
               {social.label}
             </a>
           ))}
         </div>
 
-        <p className="contact-copy">{contactData.copyright}</p>
+        <p className="contact-copy">{contact.copyright}</p>
       </div>
     </section>
   )

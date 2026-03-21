@@ -4,15 +4,16 @@ import { AnimatePresence } from 'framer-motion'
 import Lenis from 'lenis'
 import './App.css'
 
-import Navbar from './components/Navbar'
-import Cursor from './components/Cursor'
+import { ContentProvider } from './context/ContentContext'
+import Navbar        from './components/Navbar'
+import Cursor        from './components/Cursor'
 import ScrollProgress from './components/ScrollProgress'
-import Hero from './components/Hero'
-import Marquee from './components/Marquee'
-import Work from './components/Work'
-import About from './components/About'
-import Contact from './components/Contact'
-import Loader from './components/Loader'
+import Hero          from './components/Hero'
+import Marquee       from './components/Marquee'
+import Work          from './components/Work'
+import About         from './components/About'
+import Contact       from './components/Contact'
+import Loader        from './components/Loader'
 import ProjectDetail from './pages/ProjectDetail'
 
 function HomePage() {
@@ -68,7 +69,7 @@ export default function App() {
     setLoaderDone(true)
   }
 
-  // Re-run reveal observer when navigating back to home
+  // Re-run reveal observer on route change back to home
   useEffect(() => {
     if (location.pathname !== '/') return
     const timer = setTimeout(() => {
@@ -87,7 +88,7 @@ export default function App() {
   }, [location.pathname])
 
   return (
-    <>
+    <ContentProvider>
       {!loaderDone && <Loader onComplete={handleLoaderComplete} />}
 
       <Cursor />
@@ -96,10 +97,10 @@ export default function App() {
 
       <AnimatePresence mode="wait">
         <Routes location={location} key={location.pathname}>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/project/:slug" element={<ProjectDetail />} />
+          <Route path="/"               element={<HomePage />} />
+          <Route path="/project/:slug"  element={<ProjectDetail />} />
         </Routes>
       </AnimatePresence>
-    </>
+    </ContentProvider>
   )
 }

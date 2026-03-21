@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import heroData from '../data/hero.json'
+import { useHero } from '../context/ContentContext'
 
 const container = {
   hidden: {},
@@ -25,13 +25,15 @@ const fadeIn = {
 }
 
 export default function Hero() {
+  const hero = useHero()
+
   return (
     <section className="hero" id="hero">
       <div className="hero-glow" />
       <div className="hero-glow-2" />
 
       <div className="container hero-inner">
-        {heroData.availableForWork && (
+        {hero.availableForWork && (
           <motion.span
             className="hero-tag"
             initial={{ opacity: 0, y: 12 }}
@@ -43,17 +45,16 @@ export default function Hero() {
           </motion.span>
         )}
 
-        {/* Line-by-line text reveal */}
         <motion.h1
           className="hero-heading"
           variants={container}
           initial="hidden"
           animate="show"
         >
-          {heroData.taglines.map((line, i) => (
+          {hero.taglines.map((line, i) => (
             <span key={i} className="line-mask">
               <motion.span
-                className={`line-text${i === heroData.taglines.length - 1 ? ' accent' : ''}`}
+                className={`line-text${i === hero.taglines.length - 1 ? ' accent' : ''}`}
                 variants={lineReveal}
               >
                 {line}
@@ -69,7 +70,7 @@ export default function Hero() {
           animate="show"
           transition={{ delay: 0.55 }}
         >
-          {heroData.subtitle}
+          {hero.subtitle}
         </motion.p>
 
         <motion.div
@@ -79,21 +80,20 @@ export default function Hero() {
           animate="show"
           transition={{ delay: 0.65 }}
         >
-          {heroData.cta.map(btn => (
+          {hero.cta.map(btn => (
             <a key={btn.label} href={btn.href} className={`btn btn-${btn.variant}`}>
               {btn.label}
             </a>
           ))}
         </motion.div>
 
-        {/* Stats row */}
         <motion.div
           className="hero-stats"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.8 }}
         >
-          {heroData.stats.map((s, i) => (
+          {hero.stats.map((s, i) => (
             <div key={s.label} className="hero-stat">
               {i > 0 && <div className="hero-stat-div" />}
               <span className="hero-stat-value">{s.value}</span>

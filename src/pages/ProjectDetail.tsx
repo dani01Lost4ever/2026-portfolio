@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
-import { projects } from '../data/projects'
+import { useProjects } from '../context/ContentContext'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -14,13 +14,13 @@ const fadeUp = {
 
 export default function ProjectDetail() {
   const { slug } = useParams()
-  const project = projects.find(p => p.slug === slug)
-  const currentIndex = projects.findIndex(p => p.slug === slug)
-  const nextProject = projects[(currentIndex + 1) % projects.length]
+  const projects = useProjects()
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [slug])
+  const project      = projects.find(p => p.slug === slug)
+  const currentIndex = projects.findIndex(p => p.slug === slug)
+  const nextProject  = projects[(currentIndex + 1) % projects.length]
+
+  useEffect(() => { window.scrollTo(0, 0) }, [slug])
 
   if (!project) return <Navigate to="/" replace />
 
@@ -66,10 +66,7 @@ export default function ProjectDetail() {
       </div>
 
       {/* Meta row */}
-      <motion.div
-        className="container pd-meta"
-        custom={2} variants={fadeUp} initial="hidden" animate="show"
-      >
+      <motion.div className="container pd-meta" custom={2} variants={fadeUp} initial="hidden" animate="show">
         <div className="pd-meta-item">
           <span className="pd-meta-label">Role</span>
           <span>{project.role}</span>
@@ -95,10 +92,7 @@ export default function ProjectDetail() {
       <div className="pd-divider container" />
 
       {/* Overview */}
-      <motion.div
-        className="container pd-section"
-        custom={3} variants={fadeUp} initial="hidden" animate="show"
-      >
+      <motion.div className="container pd-section" custom={3} variants={fadeUp} initial="hidden" animate="show">
         <p className="pd-section-label">Overview</p>
         <p className="pd-overview">{project.overview}</p>
       </motion.div>
@@ -106,10 +100,7 @@ export default function ProjectDetail() {
       <div className="pd-divider container" />
 
       {/* Challenge + Solution */}
-      <motion.div
-        className="container pd-split"
-        custom={4} variants={fadeUp} initial="hidden" animate="show"
-      >
+      <motion.div className="container pd-split" custom={4} variants={fadeUp} initial="hidden" animate="show">
         <div className="pd-split-col">
           <p className="pd-section-label">The Challenge</p>
           <p>{project.challenge}</p>
@@ -163,10 +154,7 @@ export default function ProjectDetail() {
             <h2 className="pd-next-title">{nextProject.title}</h2>
             <p className="pd-next-sub">{nextProject.subtitle}</p>
           </div>
-          <div
-            className="pd-next-thumb"
-            style={{ background: nextProject.gradient }}
-          />
+          <div className="pd-next-thumb" style={{ background: nextProject.gradient }} />
         </Link>
       </div>
     </motion.div>

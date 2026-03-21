@@ -12,6 +12,16 @@ dist
 dist-ssr
 *.local
 
+# PocketBase — database and generated files (never commit)
+backend/pb_data/
+backend/CHANGELOG.md
+backend/LICENSE.md
+
+# Environment variables
+.env
+.env.local
+.env.production
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
