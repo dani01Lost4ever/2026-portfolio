@@ -2,15 +2,15 @@
   "availableForWork": true,
   "name": "Daniel",
   "location": "[City]",
-  "taglines": ["Building digital", "products with", "purpose."],
-  "subtitle": "I'm Daniel, a software developer based in [City]. I craft meaningful digital experiences — from interfaces to infrastructure.",
+  "taglines": ["From database", "to interface —", "built to scale."],
+  "subtitle": "I'm Daniel, a full-stack software developer with 4 years of experience building web applications end to end — from REST APIs and database architecture to responsive, performant frontends.",
   "cta": [
     { "label": "View Work", "href": "#work", "variant": "primary" },
     { "label": "Get in Touch", "href": "#contact", "variant": "outline" }
   ],
   "stats": [
-    { "value": "5+", "label": "Years experience" },
-    { "value": "30+", "label": "Projects shipped" },
-    { "value": "15+", "label": "Happy clients" }
+    { "value": "4+", "label": "Years experience" },
+    { "value": "20+", "label": "Projects shipped" },
+    { "value": "10+", "label": "Happy clients" }
   ]
 }

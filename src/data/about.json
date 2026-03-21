@@ -1,26 +1,26 @@
 {
   "label": "About Me",
-  "heading": "Bridging the gap between design and engineering.",
+  "heading": "Full-stack developer, end to end.",
   "bio": [
-    "I'm Daniel, a software developer with 5+ years of experience building digital products that people love to use. I care deeply about both the technical foundations and the resulting user experience.",
-    "When I'm not writing code, I'm usually experimenting with new design tools, contributing to open source, or exploring the outdoors."
+    "I'm Daniel, a software developer with 4 years of hands-on experience. I studied full-stack web development and work comfortably across the entire stack — from designing data models and building APIs to crafting responsive, accessible frontends.",
+    "My primary stack is MEAN (MongoDB, Express, Angular, Node.js), and I'm equally fluent in React, Next.js, and .NET / .NET Framework. I care about clean architecture, maintainable code, and shipping things that actually work."
   ],
   "skills": [
     {
       "category": "Frontend",
-      "items": ["React", "TypeScript", "Vue.js", "CSS / Sass", "Framer Motion"]
+      "items": ["Angular", "React", "Next.js", "TypeScript", "CSS / Sass"]
     },
     {
       "category": "Backend",
-      "items": ["Node.js", "Express", "PostgreSQL", "REST / GraphQL"]
+      "items": ["Node.js", "Express", ".NET / .NET Framework", "REST APIs"]
     },
     {
-      "category": "Design",
-      "items": ["Figma", "Design Systems", "Prototyping", "User Research"]
+      "category": "Database",
+      "items": ["MongoDB", "SQL Server", "PostgreSQL"]
     },
     {
       "category": "Tools",
-      "items": ["Git", "Docker", "CI/CD", "Vite", "Storybook"]
+      "items": ["Git", "Docker", "CI/CD", "Postman", "Vite"]
     }
   ]
 }
