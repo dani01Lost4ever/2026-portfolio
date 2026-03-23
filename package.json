@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "pb": "cd backend && .\\pocketbase.exe serve --http=127.0.0.1:8090",
     "pb:admin": "cd backend && .\\pocketbase.exe superuser create",
-    "seed": "node scripts/seed.mjs"
+    "seed": "node scripts/seed.mjs",
+    "fix-rules": "node scripts/fix-rules.mjs",
+    "start": "concurrently --names \"PB,VITE\" --prefix-colors \"cyan,magenta\" \"npm run pb\" \"npm run dev\""
   },
   "dependencies": {
     "framer-motion": "^12.38.0",
@@ -28,6 +30,7 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.1",
+    "concurrently": "^9.2.1",
     "eslint": "^9.39.4",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
