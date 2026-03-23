@@ -137,6 +137,27 @@ const COLLECTIONS = [
       f.text('copyright'),
     ],
   },
+  {
+    name: 'work_experience',
+    fields: [
+      f.text('company'),
+      f.text('company_duration'),
+      f.json('roles'),
+      f.number('order'),
+    ],
+  },
+  {
+    name: 'education',
+    fields: [
+      f.text('school'),
+      f.text('degree'),
+      f.text('field_of_study'),
+      f.text('period'),
+      f.text('grade'),
+      f.json('tags'),
+      f.number('order'),
+    ],
+  },
 ]
 
 // ─── create collections ───────────────────────────────────────────────────────
@@ -197,16 +218,56 @@ async function upsertProject(token, p, order) {
   }
 }
 
+// ─── experience upsert helpers ────────────────────────────────────────────────
+
+async function upsertWorkEntry(token, entry, order) {
+  const list = await req(token, 'GET', `collections/work_experience/records?filter=(company='${encodeURIComponent(entry.company)}')&perPage=1`)
+  const payload = {
+    company:          entry.company,
+    company_duration: entry.companyDuration ?? '',
+    roles:            entry.roles,
+    order,
+  }
+  if (list.items?.length > 0) {
+    await req(token, 'PATCH', `collections/work_experience/records/${list.items[0].id}`, payload)
+    console.log(`   ~ work_experience "${entry.company}" updated`)
+  } else {
+    await req(token, 'POST', 'collections/work_experience/records', payload)
+    console.log(`   + work_experience "${entry.company}" created`)
+  }
+}
+
+async function upsertEducationEntry(token, entry, order) {
+  const list = await req(token, 'GET', `collections/education/records?filter=(school='${encodeURIComponent(entry.school)}')&perPage=1`)
+  const payload = {
+    school:         entry.school,
+    degree:         entry.degree        ?? '',
+    field_of_study: entry.field         ?? '',
+    period:         entry.period        ?? '',
+    grade:          entry.grade         ?? '',
+    tags:           entry.tags          ?? [],
+    order,
+  }
+  if (list.items?.length > 0) {
+    await req(token, 'PATCH', `collections/education/records/${list.items[0].id}`, payload)
+    console.log(`   ~ education "${entry.school}" updated`)
+  } else {
+    await req(token, 'POST', 'collections/education/records', payload)
+    console.log(`   + education "${entry.school}" created`)
+  }
+}
+
 // ─── seed data ────────────────────────────────────────────────────────────────
 
 async function seedData(token) {
   console.log('\n🌱 Seeding data from JSON files…')
 
-  const site     = readJson('src/data/site.json')
-  const hero     = readJson('src/data/hero.json')
-  const projects = readJson('src/data/projects.json')
-  const about    = readJson('src/data/about.json')
-  const contact  = readJson('src/data/contact.json')
+  const site       = readJson('src/data/site.json')
+  const hero       = readJson('src/data/hero.json')
+  const projects   = readJson('src/data/projects.json')
+  const about      = readJson('src/data/about.json')
+  const contact    = readJson('src/data/contact.json')
+  const experience = readJson('src/data/experience.json')
 
   await upsertSingle(token, 'site_settings', {
     logo: site.logo,
@@ -243,6 +304,14 @@ async function seedData(token) {
     socials:        contact.socials,
     copyright:      contact.copyright,
   })
+
+  for (const [i, entry] of experience.work.entries()) {
+    await upsertWorkEntry(token, entry, i)
+  }
+
+  for (const [i, entry] of experience.education.entries()) {
+    await upsertEducationEntry(token, entry, i)
+  }
 }
 
 // ─── main ─────────────────────────────────────────────────────────────────────

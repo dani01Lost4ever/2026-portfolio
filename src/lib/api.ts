@@ -17,14 +17,15 @@
 
 import pb from './pb'
 import type {
-  SiteData, HeroData, Project, AboutData, ContactData, ContentBundle,
+  SiteData, HeroData, Project, AboutData, ContactData, ExperienceData, ContentBundle,
 } from './types'
 
-import siteJson     from '../data/site.json'
-import heroJson     from '../data/hero.json'
-import projectsJson from '../data/projects.json'
-import aboutJson    from '../data/about.json'
-import contactJson  from '../data/contact.json'
+import siteJson       from '../data/site.json'
+import heroJson       from '../data/hero.json'
+import projectsJson   from '../data/projects.json'
+import aboutJson      from '../data/about.json'
+import contactJson    from '../data/contact.json'
+import experienceJson from '../data/experience.json'
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -159,15 +160,78 @@ export async function fetchContact(): Promise<ContactData> {
   }
 }
 
+// ─── project views ────────────────────────────────────────────────────────────
+
+/**
+ * Increments the view count for a project and returns the new total.
+ * Silently returns 0 if PocketBase is unreachable.
+ */
+export async function incrementProjectViews(slug: string): Promise<number> {
+  try {
+    const r = await pb.collection('projects').getFirstListItem(`slug="${slug}"`)
+    const views = ((r['views'] as number | undefined) ?? 0) + 1
+    await pb.collection('projects').update(r.id, { views })
+    return views
+  } catch {
+    return 0
+  }
+}
+
+// ─── contact messages ─────────────────────────────────────────────────────────
+
+export interface MessagePayload {
+  name: string
+  email: string
+  message: string
+}
+
+/**
+ * Saves a contact form submission to the `messages` collection in PocketBase.
+ * Throws if the write fails (caller should handle the error).
+ */
+export async function sendMessage(payload: MessagePayload): Promise<void> {
+  await pb.collection('messages').create(payload)
+}
+
+// ─── experience ───────────────────────────────────────────────────────────────
+
+export async function fetchExperience(): Promise<ExperienceData> {
+  try {
+    const [workRecords, eduRecords] = await Promise.all([
+      pb.collection('work_experience').getFullList({ sort: '+order' }),
+      pb.collection('education').getFullList({ sort: '+order' }),
+    ])
+
+    return {
+      work: workRecords.map(r => ({
+        company:         r['company']          ?? '',
+        companyDuration: r['company_duration'] ?? '',
+        roles:           parseJson(r['roles'], []),
+      })),
+      education: eduRecords.map(r => ({
+        school: r['school']        ?? '',
+        degree: r['degree']        ?? '',
+        field:  r['field_of_study'] ?? '',
+        period: r['period']        ?? '',
+        grade:  r['grade']         || undefined,
+        tags:   parseJson(r['tags'], []),
+      })),
+    }
+  } catch {
+    return experienceJson as ExperienceData
+  }
+}
+
 // ─── full bundle ──────────────────────────────────────────────────────────────
 
 export async function fetchAllContent(): Promise<ContentBundle> {
-  const [site, hero, projects, about, contact] = await Promise.all([
+  const [site, hero, projects, about, contact, experience] = await Promise.all([
     fetchSite(),
     fetchHero(),
     fetchProjects(),
     fetchAbout(),
     fetchContact(),
+    fetchExperience(),
   ])
-  return { site, hero, projects, about, contact }
+  return { site, hero, projects, about, contact, experience }
 }

@@ -57,6 +57,7 @@ export interface Project {
   timeline: string
   link?: string
   order: number
+  views?: number
 }
 
 // ─── About ────────────────────────────────────────────────────────────────────
@@ -90,6 +91,36 @@ export interface ContactData {
   copyright: string
 }
 
+// ─── Experience ───────────────────────────────────────────────────────────────
+
+export interface WorkRole {
+  role: string
+  type: string
+  period: string
+  location?: string
+  tags: string[]
+}
+
+export interface WorkEntry {
+  company: string
+  companyDuration: string
+  roles: WorkRole[]
+}
+
+export interface EducationEntry {
+  school: string
+  degree: string
+  field: string
+  period: string
+  grade?: string
+  tags: string[]
+}
+
+export interface ExperienceData {
+  work: WorkEntry[]
+  education: EducationEntry[]
+}
+
 // ─── Full content bundle (used by ContentContext) ─────────────────────────────
 
 export interface ContentBundle {
@@ -98,4 +129,5 @@ export interface ContentBundle {
   projects: Project[]
   about: AboutData
   contact: ContactData
+  experience: ExperienceData
 }

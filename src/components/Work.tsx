@@ -8,12 +8,13 @@ export default function Work() {
     <section className="work section" id="work">
       <div className="container">
         <p className="section-label reveal">Selected Work</p>
+
         <div className="work-grid">
-          {projects.map((p, i) => (
+          {projects.map(p => (
             <Link
-              key={p.id}
+              key={p.slug}
               to={`/project/${p.slug}`}
-              className={`project-card reveal d${Math.min(i + 1, 4)}`}
+              className="project-card reveal"
             >
               <div className="project-card-cover" style={{ background: p.gradient }}>
                 <span className="project-card-id">{p.id}</span>

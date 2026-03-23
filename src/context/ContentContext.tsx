@@ -24,18 +24,20 @@ import type { ContentBundle } from '../lib/types'
 import { fetchAllContent } from '../lib/api'
 
 // ─── JSON fallbacks (used as the initial state) ───────────────────────────────
-import siteJson     from '../data/site.json'
-import heroJson     from '../data/hero.json'
-import projectsJson from '../data/projects.json'
-import aboutJson    from '../data/about.json'
-import contactJson  from '../data/contact.json'
+import siteJson       from '../data/site.json'
+import heroJson       from '../data/hero.json'
+import projectsJson   from '../data/projects.json'
+import aboutJson      from '../data/about.json'
+import contactJson    from '../data/contact.json'
+import experienceJson from '../data/experience.json'
 
 const defaultContent: ContentBundle = {
-  site:     siteJson    as ContentBundle['site'],
-  hero:     heroJson    as ContentBundle['hero'],
-  projects: (projectsJson as ContentBundle['projects']).map((p, i) => ({ ...p, order: i })),
-  about:    aboutJson   as ContentBundle['about'],
-  contact:  contactJson as ContentBundle['contact'],
+  site:       siteJson       as ContentBundle['site'],
+  hero:       heroJson       as ContentBundle['hero'],
+  projects:   (projectsJson as ContentBundle['projects']).map((p, i) => ({ ...p, order: i })),
+  about:      aboutJson      as ContentBundle['about'],
+  contact:    contactJson    as ContentBundle['contact'],
+  experience: experienceJson as ContentBundle['experience'],
 }
 
 // ─── Context ──────────────────────────────────────────────────────────────────
@@ -70,8 +72,9 @@ export function useContent(): ContentBundle {
 }
 
 // Convenience slice hooks
-export const useSite     = () => useContent().site
-export const useHero     = () => useContent().hero
-export const useProjects = () => useContent().projects
-export const useAbout    = () => useContent().about
-export const useContact  = () => useContent().contact
+export const useSite       = () => useContent().site
+export const useHero       = () => useContent().hero
+export const useProjects   = () => useContent().projects
+export const useAbout      = () => useContent().about
+export const useContact    = () => useContent().contact
+export const useExperience = () => useContent().experience

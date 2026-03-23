@@ -1,7 +1,9 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { Helmet } from 'react-helmet-async'
 import { useProjects } from '../context/ContentContext'
+import { incrementProjectViews } from '../lib/api'
 
 const fadeUp = {
   hidden: { opacity: 0, y: 32 },
@@ -20,7 +22,15 @@ export default function ProjectDetail() {
   const currentIndex = projects.findIndex(p => p.slug === slug)
   const nextProject  = projects[(currentIndex + 1) % projects.length]
 
+  const [views, setViews] = useState<number | null>(null)
+
   useEffect(() => { window.scrollTo(0, 0) }, [slug])
+
+  // Increment and display view counter
+  useEffect(() => {
+    if (!project) return
+    incrementProjectViews(project.slug).then(v => { if (v > 0) setViews(v) })
+  }, [project?.slug])
 
   if (!project) return <Navigate to="/" replace />
 
@@ -32,6 +42,13 @@ export default function ProjectDetail() {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.35 }}
     >
+      <Helmet>
+        <title>{project.title} — Case Study</title>
+        <meta name="description" content={project.description} />
+        <meta property="og:title" content={`${project.title} — Case Study`} />
+        <meta property="og:description" content={project.description} />
+      </Helmet>
+
       {/* Top bar */}
       <div className="pd-topbar container">
         <Link to="/" className="pd-back">
@@ -79,6 +96,12 @@ export default function ProjectDetail() {
           <span className="pd-meta-label">Year</span>
           <span>{project.year}</span>
         </div>
+        {views !== null && (
+          <div className="pd-meta-item">
+            <span className="pd-meta-label">Views</span>
+            <span className="pd-views">{views.toLocaleString()}</span>
+          </div>
+        )}
         {project.link && (
           <div className="pd-meta-item">
             <span className="pd-meta-label">Live</span>

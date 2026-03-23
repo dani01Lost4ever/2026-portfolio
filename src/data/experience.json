@@ -1,0 +1,55 @@
+{
+  "work": [
+    {
+      "company": "Venicecom Group",
+      "companyDuration": "3 years · On-site",
+      "roles": [
+        {
+          "role": "Software Developer",
+          "type": "Full-time",
+          "period": "Jul 2024 — Present",
+          "location": "Marghera",
+          "tags": ["C#", ".NET", "Angular", "Node.js", "MongoDB", "Docker", "CI/CD", "Entity Framework", "Windows Azure", "SQL Server"]
+        },
+        {
+          "role": "Web Developer Junior",
+          "type": "Apprenticeship",
+          "period": "Jul 2023 — Jul 2024",
+          "tags": ["C#", ".NET", "Entity Framework", "Windows Azure"]
+        },
+        {
+          "role": "Web Developer",
+          "type": "Internship",
+          "period": "Apr 2023 — Jun 2023",
+          "location": "Venice, Italy",
+          "tags": ["Next.js", "C#", ".NET", "JavaScript", "SQL", "MongoDB", "REST API", "Git"]
+        }
+      ]
+    }
+  ],
+  "education": [
+    {
+      "school": "ITS DIGITAL ACADEMY \"Mario Volpato\"",
+      "degree": "Higher Technical Diploma · EQF Level 5",
+      "field": "Full Stack Web Development",
+      "period": "Oct 2022 — Jul 2024",
+      "grade": "100/100 cum laude",
+      "tags": ["Node.js", "MongoDB", "React", "Vue.js", "TypeScript", "Express", "SQL", "Docker", "Git", "REST API", "HTML", "CSS"]
+    },
+    {
+      "school": "Università degli Studi di Padova",
+      "degree": "Bachelor's (incomplete)",
+      "field": "Information Engineering",
+      "period": "Oct 2020 — Jun 2022",
+      "tags": ["Python", "C", "Git", "Algorithms", "Mathematics"]
+    },
+    {
+      "school": "Liceo Statale Ettore Majorana",
+      "degree": "High School Diploma",
+      "field": "Scientific",
+      "period": "2015 — 2020",
+      "grade": "84/100",
+      "tags": ["Git"]
+    }
+  ]
+}
