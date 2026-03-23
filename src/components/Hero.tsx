@@ -1,8 +1,5 @@
-import { lazy, Suspense } from 'react'
 import { motion } from 'framer-motion'
 import { useHero } from '../context/ContentContext'
-
-const HeroScene = lazy(() => import('./HeroScene'))
 
 const container = {
   hidden: {},
@@ -36,7 +33,6 @@ export default function Hero() {
       <div className="hero-glow-2" />
 
       <div className="container hero-inner">
-        {/* ── Left: text content ── */}
         <div className="hero-content">
           {hero.availableForWork && (
             <motion.span
@@ -107,18 +103,6 @@ export default function Hero() {
             ))}
           </motion.div>
         </div>
-
-        {/* ── Right: 3D scene ── */}
-        <motion.div
-          className="hero-scene-wrapper"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
-          <Suspense fallback={null}>
-            <HeroScene />
-          </Suspense>
-        </motion.div>
       </div>
 
       <motion.div
