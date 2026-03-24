@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.env
+.env.local
+
+# Windows PocketBase binary — Docker downloads the Linux one at build time
+backend/pocketbase.exe
+backend/pb_data
+
+# Docs & scripts not needed in image
+docs
+scripts
+*.md
