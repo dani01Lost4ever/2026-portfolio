@@ -1,7 +1,6 @@
 services:
 
   pocketbase:
-    image: dani01cs/portfolio-backend:latest
     build:
       context: ./backend
       dockerfile: Dockerfile
@@ -13,20 +12,17 @@ services:
       - pb_data:/pb/pb_data
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://localhost:8099/api/health"]
+      test: ["CMD", "wget", "-qO-", "http://localhost:8090/api/health"]
       interval: 10s
       timeout: 5s
       retries: 5
 
   frontend:
-    image: dani01cs/portfolio-frontend:latest
     build:
       context: .
       dockerfile: Dockerfile
-      args:
-        # Override with your production URL if deploying remotely:
-        # VITE_PB_URL: https://api.yourdomain.com
-        VITE_PB_URL: "https://daniel.api.techdani.cc"
+    environment:
+      PB_URL: "https://daniel.api.techdani.cc"
     ports:
       - "809:80"
     depends_on:
