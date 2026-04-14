@@ -37,13 +37,48 @@ function parseJson<T>(value: unknown, fallback: T): T {
   return value as T
 }
 
+function stripHtml(value: string): string {
+  if (!/[<>]/.test(value)) return value
+  if (typeof document === 'undefined') return value.replace(/<[^>]*>/g, ' ')
+  const el = document.createElement('div')
+  el.innerHTML = value
+  return (el.textContent ?? '').replace(/\s+/g, ' ').trim()
+}
+
+function parseText(value: unknown, fallback = ''): string {
+  if (typeof value !== 'string') return fallback
+  const text = stripHtml(value).trim()
+  return text || fallback
+}
+
+function parseTextArray(value: unknown, fallback: string[]): string[] {
+  if (value == null) return fallback
+
+  const parsed = parseJson<unknown>(value, fallback)
+
+  if (Array.isArray(parsed)) {
+    return parsed.map(v => parseText(v, '')).filter(Boolean)
+  }
+
+  if (typeof parsed === 'string') {
+    const text = parseText(parsed, '')
+    if (!text) return fallback
+    return text
+      .split(/[\n,;|]/)
+      .map(s => s.trim())
+      .filter(Boolean)
+  }
+
+  return fallback
+}
+
 // ─── site_settings ────────────────────────────────────────────────────────────
 
 export async function fetchSite(): Promise<SiteData> {
   try {
     const r = await pb.collection('site_settings').getFirstListItem('')
     return {
-      logo: r['logo'] ?? siteJson.logo,
+      logo: parseText(r['logo'], siteJson.logo),
       nav:  parseJson(r['nav'], siteJson.nav),
     }
   } catch {
@@ -58,10 +93,10 @@ export async function fetchHero(): Promise<HeroData> {
     const r = await pb.collection('hero_content').getFirstListItem('')
     return {
       availableForWork: r['available_for_work'] ?? heroJson.availableForWork,
-      name:             r['name']               ?? heroJson.name,
-      location:         r['location']           ?? heroJson.location,
-      taglines:         parseJson(r['taglines'], heroJson.taglines),
-      subtitle:         r['subtitle']           ?? heroJson.subtitle,
+      name:             parseText(r['name'], heroJson.name),
+      location:         parseText(r['location'], heroJson.location),
+      taglines:         parseTextArray(r['taglines'], heroJson.taglines),
+      subtitle:         parseText(r['subtitle'], heroJson.subtitle),
       cta:              parseJson(r['cta'],      heroJson.cta),
       stats:            parseJson(r['stats'],    heroJson.stats),
     }
@@ -77,20 +112,20 @@ export async function fetchProjects(): Promise<Project[]> {
     const records = await pb.collection('projects').getFullList({ sort: '+order' })
     return records.map((r, i) => ({
       id:          r['display_id']          ?? String(i + 1).padStart(2, '0'),
-      slug:        r['slug'],
-      year:        r['year'],
-      title:       r['title'],
-      subtitle:    r['subtitle']            ?? '',
-      description: r['description']         ?? '',
-      overview:    r['overview']            ?? '',
-      challenge:   r['challenge']           ?? '',
-      solution:    r['solution']            ?? '',
-      tags:        parseJson(r['tags'],     []),
-      gradient:    r['gradient']            ?? '',
+      slug:        parseText(r['slug'], ''),
+      year:        parseText(r['year'], ''),
+      title:       parseText(r['title'], ''),
+      subtitle:    parseText(r['subtitle'], ''),
+      description: parseText(r['description'], ''),
+      overview:    parseText(r['overview'], ''),
+      challenge:   parseText(r['challenge'], ''),
+      solution:    parseText(r['solution'], ''),
+      tags:        parseTextArray(r['tags'], []),
+      gradient:    parseText(r['gradient'], ''),
       results:     parseJson(r['results'],  []),
-      role:        r['role']                ?? '',
-      timeline:    r['timeline']            ?? '',
-      link:        r['link']                || undefined,
+      role:        parseText(r['role'], ''),
+      timeline:    parseText(r['timeline'], ''),
+      link:        parseText(r['link'], '') || undefined,
       order:       r['order']               ?? i,
     }))
   } catch {
@@ -103,20 +138,20 @@ export async function fetchProjectBySlug(slug: string): Promise<Project | null> 
     const r = await pb.collection('projects').getFirstListItem(`slug="${slug}"`)
     return {
       id:          r['display_id']          ?? r.id,
-      slug:        r['slug'],
-      year:        r['year'],
-      title:       r['title'],
-      subtitle:    r['subtitle']            ?? '',
-      description: r['description']         ?? '',
-      overview:    r['overview']            ?? '',
-      challenge:   r['challenge']           ?? '',
-      solution:    r['solution']            ?? '',
-      tags:        parseJson(r['tags'],     []),
-      gradient:    r['gradient']            ?? '',
+      slug:        parseText(r['slug'], ''),
+      year:        parseText(r['year'], ''),
+      title:       parseText(r['title'], ''),
+      subtitle:    parseText(r['subtitle'], ''),
+      description: parseText(r['description'], ''),
+      overview:    parseText(r['overview'], ''),
+      challenge:   parseText(r['challenge'], ''),
+      solution:    parseText(r['solution'], ''),
+      tags:        parseTextArray(r['tags'], []),
+      gradient:    parseText(r['gradient'], ''),
       results:     parseJson(r['results'],  []),
-      role:        r['role']                ?? '',
-      timeline:    r['timeline']            ?? '',
-      link:        r['link']                || undefined,
+      role:        parseText(r['role'], ''),
+      timeline:    parseText(r['timeline'], ''),
+      link:        parseText(r['link'], '') || undefined,
       order:       r['order']               ?? 0,
     }
   } catch {
@@ -131,9 +166,9 @@ export async function fetchAbout(): Promise<AboutData> {
   try {
     const r = await pb.collection('about_content').getFirstListItem('')
     return {
-      label:   r['label']               ?? aboutJson.label,
-      heading: r['heading']             ?? aboutJson.heading,
-      bio:     parseJson(r['bio'],      aboutJson.bio),
+      label:   parseText(r['label'], aboutJson.label),
+      heading: parseText(r['heading'], aboutJson.heading),
+      bio:     parseTextArray(r['bio'], aboutJson.bio),
       skills:  parseJson(r['skills'],   aboutJson.skills),
     }
   } catch {
@@ -147,13 +182,13 @@ export async function fetchContact(): Promise<ContactData> {
   try {
     const r = await pb.collection('contact_content').getFirstListItem('')
     return {
-      label:         r['label']              ?? contactJson.label,
-      heading:       r['heading']            ?? contactJson.heading,
-      headingAccent: r['heading_accent']     ?? contactJson.headingAccent,
-      availability:  r['availability']       ?? contactJson.availability,
-      email:         r['email']              ?? contactJson.email,
+      label:         parseText(r['label'], contactJson.label),
+      heading:       parseText(r['heading'], contactJson.heading),
+      headingAccent: parseText(r['heading_accent'], contactJson.headingAccent),
+      availability:  parseText(r['availability'], contactJson.availability),
+      email:         parseText(r['email'], contactJson.email),
       socials:       parseJson(r['socials'], contactJson.socials),
-      copyright:     r['copyright']          ?? contactJson.copyright,
+      copyright:     parseText(r['copyright'], contactJson.copyright),
     }
   } catch {
     return contactJson as ContactData
@@ -235,3 +270,4 @@ export async function fetchAllContent(): Promise<ContentBundle> {
   ])
   return { site, hero, projects, about, contact, experience }
 }
+
