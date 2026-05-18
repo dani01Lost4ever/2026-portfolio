@@ -21,7 +21,8 @@ export default function Cursor() {
       mouseY.set(e.clientY)
 
       const target = e.target as Element
-      if (target.closest('.project-card')) {
+      // "card" state on the big editorial row links (Work index, Next-project)
+      if (target.closest('.work-row, .pd-next-link')) {
         setState('card')
       } else if (target.closest('a, button')) {
         setState('hover')

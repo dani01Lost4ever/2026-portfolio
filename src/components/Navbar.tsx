@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { useSite } from '../context/ContentContext'
+import { useTheme } from '../lib/theme'
 
 interface Props {
   onOpenPalette: () => void
@@ -8,6 +9,7 @@ interface Props {
 
 export default function Navbar({ onOpenPalette }: Props) {
   const site = useSite()
+  const { theme, toggle } = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const [active, setActive]     = useState('')
   const location = useLocation()
@@ -50,19 +52,36 @@ export default function Navbar({ onOpenPalette }: Props) {
           })}
         </ul>
 
-        <button
-          className="navbar-search"
-          onClick={onOpenPalette}
-          aria-label="Open command palette"
-          title="Search (⌘K)"
-        >
-          <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true">
-            <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.3" />
-            <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
-          </svg>
-          <span className="navbar-search-label">Search…</span>
-          <kbd>⌘K</kbd>
-        </button>
+        <div className="navbar-tools">
+          <button
+            className="theme-toggle"
+            onClick={toggle}
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            aria-pressed={theme === 'light'}
+            title={theme === 'dark' ? 'Light mode' : 'Dark mode'}
+          >
+            <span className="theme-toggle-track" aria-hidden>
+              <span className={`theme-toggle-thumb${theme === 'light' ? ' is-light' : ''}`} />
+            </span>
+            <span className="theme-toggle-label">
+              {theme === 'dark' ? 'Light' : 'Dark'}
+            </span>
+          </button>
+
+          <button
+            className="navbar-search"
+            onClick={onOpenPalette}
+            aria-label="Open command palette"
+            title="Search (⌘K)"
+          >
+            <svg width="14" height="14" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+              <circle cx="6.5" cy="6.5" r="4.5" stroke="currentColor" strokeWidth="1.3" />
+              <path d="M10.5 10.5L13.5 13.5" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" />
+            </svg>
+            <span className="navbar-search-label">Search…</span>
+            <kbd>⌘K</kbd>
+          </button>
+        </div>
       </div>
     </nav>
   )

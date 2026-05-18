@@ -1,0 +1,9 @@
+{
+  "updated": "2026-05",
+  "items": [
+    { "label": "Now building", "value": "Cloudflare DDNS Client — v0.4 dashboard polish" },
+    { "label": "Now reading",  "value": "Designing Data-Intensive Applications, Kleppmann" },
+    { "label": "Now shipping", "value": "agendash3-rework on npm — weekly downloads climbing" },
+    { "label": "Now listening", "value": "Caribou — Honey" }
+  ]
+}

@@ -53,6 +53,7 @@ export default function CommandPalette({ open, onClose }: Props) {
           {/* Panel */}
           <motion.div
             className="cmd-panel"
+            data-lenis-prevent
             initial={{ opacity: 0, scale: 0.96, y: -12 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.96, y: -12 }}

@@ -32,3 +32,9 @@ backend/LICENSE.md
 *.njsproj
 *.sln
 *.sw?
+
+# Claude Code local config
+.claude/
+
+# Backups
+*.bak

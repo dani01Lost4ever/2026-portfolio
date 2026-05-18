@@ -1,75 +1,87 @@
+/**
+ * Experience — editorial timeline.
+ *
+ * Single typographic ledger that lists work and education as parallel
+ * rails sharing the same row grammar: mono period on the left, Boldonse
+ * role/school in the middle, mono location/grade on the right. A subtle
+ * vertical rule between the two tracks. No timeline dots competing with
+ * the type — the rhythm of the rows IS the timeline.
+ */
+
 import { useExperience } from '../context/ContentContext'
 
 export default function Experience() {
   const { work, education } = useExperience()
+
   return (
     <section className="experience section" id="experience">
       <div className="container">
-        <p className="section-label reveal">Experience</p>
+        <header className="exp-head reveal">
+          <span className="exp-eyebrow">
+            <span className="exp-eyebrow-num">04</span>
+            Experience &amp; education
+          </span>
+          <span className="exp-rule" aria-hidden />
+          <span className="exp-meta">2020 — Present</span>
+        </header>
 
-        <div className="exp-layout">
-          {/* ── Work ── */}
-          <div className="exp-col reveal d1">
-            <p className="exp-col-label">Work</p>
-            <div className="exp-work-list">
-              {work.map((entry, ei) => (
-                <div key={ei} className="exp-company-block">
-                  <div className="exp-company-header">
-                    <span className="exp-company-name">{entry.company}</span>
-                    <span className="exp-company-duration">{entry.companyDuration}</span>
-                  </div>
+        {/* ── Work track ── */}
+        <div className="exp-track reveal d1">
+          <h3 className="exp-track-heading">
+            <span className="exp-track-num">a</span>
+            Work
+          </h3>
 
-                  <div className="exp-roles">
-                    {entry.roles.map((r, ri) => (
-                      <div key={ri} className="exp-role">
-                        <div className="exp-role-connector">
-                          <div className="exp-role-dot" />
-                          {ri < entry.roles.length - 1 && <div className="exp-role-line" />}
-                        </div>
-                        <div className="exp-role-body">
-                          <div className="exp-role-header">
-                            <span className="exp-role-title">{r.role}</span>
-                            <span className="exp-role-type">{r.type}</span>
-                          </div>
-                          <span className="exp-role-period">
-                            {r.period}
-                            {r.location && ` · ${r.location}`}
-                          </span>
-                          <div className="exp-tags">
-                            {r.tags.map(t => (
-                              <span key={t} className="tag">{t}</span>
-                            ))}
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+          <ol className="exp-list">
+            {work.flatMap(company =>
+              company.roles.map((role, ri) => (
+                <li key={`${company.company}-${ri}`} className="exp-row">
+                  <span className="exp-row-period">{role.period}</span>
+                  <span className="exp-row-main">
+                    <span className="exp-row-title">{role.role}</span>
+                    <span className="exp-row-org">
+                      {company.company}
+                      {role.type && <span className="exp-row-type"> · {role.type}</span>}
+                    </span>
+                    <span className="exp-row-tags">
+                      {role.tags.slice(0, 6).join(' · ')}
+                      {role.tags.length > 6 && <span className="exp-row-more"> · +{role.tags.length - 6}</span>}
+                    </span>
+                  </span>
+                  <span className="exp-row-side">{role.location || '—'}</span>
+                </li>
+              )),
+            )}
+          </ol>
+        </div>
 
-          {/* ── Education ── */}
-          <div className="exp-col reveal d2">
-            <p className="exp-col-label">Education</p>
-            <div className="exp-edu-list">
-              {education.map((edu, i) => (
-                <div key={i} className="exp-edu-item">
-                  <div className="exp-edu-header">
-                    <span className="exp-edu-school">{edu.school}</span>
-                    {edu.grade && <span className="exp-edu-grade">{edu.grade}</span>}
-                  </div>
-                  <span className="exp-edu-degree">{edu.degree} · {edu.field}</span>
-                  <span className="exp-edu-period">{edu.period}</span>
-                  <div className="exp-tags">
-                    {edu.tags.map(t => (
-                      <span key={t} className="tag">{t}</span>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* ── Education track ── */}
+        <div className="exp-track reveal d2">
+          <h3 className="exp-track-heading">
+            <span className="exp-track-num">b</span>
+            Education
+          </h3>
+
+          <ol className="exp-list">
+            {education.map((edu, i) => (
+              <li key={i} className="exp-row">
+                <span className="exp-row-period">{edu.period}</span>
+                <span className="exp-row-main">
+                  <span className="exp-row-title">{edu.school}</span>
+                  <span className="exp-row-org">
+                    {edu.degree} · {edu.field}
+                  </span>
+                  <span className="exp-row-tags">
+                    {edu.tags.slice(0, 6).join(' · ')}
+                    {edu.tags.length > 6 && <span className="exp-row-more"> · +{edu.tags.length - 6}</span>}
+                  </span>
+                </span>
+                <span className="exp-row-side">
+                  {edu.grade ? <span className="exp-row-grade">{edu.grade}</span> : '—'}
+                </span>
+              </li>
+            ))}
+          </ol>
         </div>
       </div>
     </section>

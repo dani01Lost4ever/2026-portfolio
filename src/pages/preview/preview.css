@@ -1,0 +1,789 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Preview mocks — three side-by-side aesthetic comparisons.
+   Tokens are namespaced by the wrapper class (.preview-a / -b / -c)
+   so they never leak into the live site.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/* ── Shared motion + base ─────────────────────────────────────────────── */
+
+.preview {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  min-height: 100svh;
+  width: 100%;
+  overflow-x: hidden;
+  isolation: isolate;
+}
+
+.preview * {
+  box-sizing: border-box;
+}
+
+/* ── Mock A — Warm-dark drench, amber accent ──────────────────────────── */
+
+.preview-a {
+  --bg:           oklch(0.16 0.012 60);
+  --bg-deep:      oklch(0.12 0.012 60);
+  --surface:      oklch(0.21 0.010 60);
+  --surface-2:   oklch(0.26 0.010 60);
+  --text:         oklch(0.92 0.015 80);
+  --text-muted:   oklch(0.65 0.012 70);
+  --text-dim:     oklch(0.40 0.010 70);
+  --accent:       oklch(0.78 0.18 55);    /* persimmon / amber */
+  --accent-deep:  oklch(0.62 0.20 45);
+  --accent-dim:   oklch(0.42 0.08 50);
+  --rule:         color-mix(in oklch, var(--text) 12%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 24%, transparent);
+
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-body:    'Funnel Sans', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Mock B — Light paper, ink-on-warm-white ──────────────────────────── */
+
+.preview-b {
+  --bg:           oklch(0.94 0.013 75);
+  --bg-deep:      oklch(0.91 0.015 75);
+  --surface:      oklch(0.89 0.018 75);
+  --surface-2:   oklch(0.85 0.020 75);
+  --text:         oklch(0.18 0.010 60);
+  --text-muted:   oklch(0.42 0.012 60);
+  --text-dim:     oklch(0.62 0.010 60);
+  --accent:       oklch(0.56 0.20 30);    /* vermillion */
+  --accent-deep:  oklch(0.42 0.18 28);
+  --accent-dim:   oklch(0.78 0.12 35);
+  --rule:         color-mix(in oklch, var(--text) 14%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 28%, transparent);
+
+  --font-display: 'Boldonse', 'Times New Roman', serif;
+  --font-body:    'Onest', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ── Mock C — Editorial dual-mode ─────────────────────────────────────── */
+
+.preview-c {
+  /* Light defaults */
+  --bg:           oklch(0.94 0.013 75);
+  --bg-deep:      oklch(0.91 0.015 75);
+  --surface:      oklch(0.89 0.018 75);
+  --surface-2:   oklch(0.85 0.020 75);
+  --text:         oklch(0.18 0.010 60);
+  --text-muted:   oklch(0.42 0.012 60);
+  --text-dim:     oklch(0.62 0.010 60);
+  --accent:       oklch(0.56 0.20 30);
+  --accent-deep:  oklch(0.42 0.18 28);
+  --accent-dim:   oklch(0.78 0.12 35);
+  --rule:         color-mix(in oklch, var(--text) 14%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 28%, transparent);
+
+  --font-display: 'Boldonse', 'Times New Roman', serif;
+  --font-body:    'Onest', system-ui, sans-serif;
+  --font-mono:    'JetBrains Mono', ui-monospace, monospace;
+
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  transition: background 280ms var(--ease-out), color 280ms var(--ease-out);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.preview-c[data-theme='dark'],
+.preview-c .pv-c-themed[data-theme='dark'] {
+  --bg:           oklch(0.16 0.012 60);
+  --bg-deep:      oklch(0.12 0.012 60);
+  --surface:      oklch(0.21 0.010 60);
+  --surface-2:   oklch(0.26 0.010 60);
+  --text:         oklch(0.92 0.015 80);
+  --text-muted:   oklch(0.65 0.012 70);
+  --text-dim:     oklch(0.40 0.010 70);
+  --accent:       oklch(0.78 0.18 55);
+  --accent-deep:  oklch(0.62 0.20 45);
+  --accent-dim:   oklch(0.42 0.08 50);
+  --rule:         color-mix(in oklch, var(--text) 12%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 24%, transparent);
+}
+
+.preview-c .pv-c-themed {
+  background: var(--bg);
+  color: var(--text);
+  transition: background 280ms var(--ease-out), color 280ms var(--ease-out);
+}
+
+/* ─────────────────────────────────────────────────────────────────────────
+   Shared composition primitives (work inside any of the three palettes)
+   ───────────────────────────────────────────────────────────────────────── */
+
+.pv-shell { position: relative; min-height: 100svh; padding-bottom: 80px; }
+
+.pv-container {
+  width: 100%;
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 4vw, 56px);
+}
+
+/* ── Top chrome ── */
+
+.pv-topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: clamp(20px, 3vw, 32px);
+  padding-bottom: clamp(20px, 3vw, 32px);
+}
+
+.pv-mark {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 18px;
+  letter-spacing: -0.02em;
+}
+
+.pv-meta-row {
+  display: flex;
+  gap: clamp(16px, 3vw, 36px);
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.pv-status-dot {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 8px;
+  vertical-align: middle;
+  box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 60%, transparent);
+  animation: pv-pulse 2.6s var(--ease-in-out) infinite;
+}
+
+@keyframes pv-pulse {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--accent) 50%, transparent); }
+  50%      { box-shadow: 0 0 0 7px color-mix(in oklch, var(--accent) 0%, transparent); }
+}
+
+/* ── Hero ── */
+
+.pv-hero {
+  position: relative;
+  padding-top: clamp(24px, 6vw, 56px);
+  padding-bottom: clamp(60px, 10vw, 140px);
+}
+
+.pv-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: clamp(24px, 4vw, 56px);
+  align-items: end;
+}
+
+@media (max-width: 880px) {
+  .pv-hero-grid { grid-template-columns: 1fr; }
+}
+
+.pv-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: clamp(24px, 4vw, 40px);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pv-eyebrow-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--rule);
+  max-width: 220px;
+}
+
+.pv-display {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(56px, 11vw, 184px);
+  line-height: 0.92;
+  letter-spacing: -0.045em;
+  margin: 0;
+}
+
+.pv-display-serif {
+  /* Mock B and C use a display serif; slightly different metrics. */
+  font-weight: 400;
+  font-size: clamp(64px, 13.5vw, 240px);
+  line-height: 0.86;
+  letter-spacing: -0.025em;
+}
+
+.pv-display-line { display: block; }
+
+.pv-display-line .accent { color: var(--accent); }
+
+.pv-display-line.indent {
+  padding-left: clamp(20px, 6vw, 92px);
+}
+
+.pv-tagline {
+  font-family: var(--font-body);
+  font-size: clamp(16px, 1.4vw, 19px);
+  line-height: 1.5;
+  color: var(--text-muted);
+  max-width: 38ch;
+  margin-top: clamp(28px, 4vw, 44px);
+}
+
+.pv-tagline strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
+.pv-cta-row {
+  margin-top: clamp(28px, 4vw, 44px);
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.pv-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 22px;
+  border-radius: 999px;
+  background: var(--text);
+  color: var(--bg);
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  transition: transform 160ms var(--ease-out), background 200ms var(--ease-out);
+  will-change: transform;
+}
+
+.pv-cta:hover  { background: var(--accent); color: var(--bg); }
+.pv-cta:active { transform: scale(0.97); }
+
+.pv-cta-arrow { transition: transform 200ms var(--ease-out); }
+.pv-cta:hover .pv-cta-arrow { transform: translateX(4px); }
+
+.pv-cta-ghost {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-muted);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  transition: color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.pv-cta-ghost:hover { color: var(--text); border-color: var(--rule-strong); }
+
+/* ── Hero right column — index card ── */
+
+.pv-hero-aside {
+  position: relative;
+  padding-bottom: 12px;
+}
+
+.pv-aside-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 18px;
+}
+
+.pv-aside-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule);
+}
+
+.pv-aside-list li {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  transition: color 200ms var(--ease-out);
+}
+
+.pv-aside-list a {
+  color: inherit;
+  text-decoration: none;
+  display: contents;
+}
+
+.pv-aside-list .num   { color: var(--text-dim); font-variant-numeric: tabular-nums; }
+.pv-aside-list .title { color: var(--text); font-weight: 500; }
+.pv-aside-list .meta  { color: var(--text-dim); font-size: 11px; }
+
+.pv-aside-list li:hover .title { color: var(--accent); }
+
+/* ── 3D scene wrapper (uses live HeroScene component) ── */
+
+.pv-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  opacity: 0.85;
+}
+
+.pv-scene > div { width: 100%; height: 100%; }
+
+.pv-hero > * { position: relative; z-index: 1; }
+
+.pv-scene-frame {
+  position: absolute;
+  right: -8%;
+  top: -2%;
+  width: 62%;
+  height: 110%;
+  z-index: 0;
+  pointer-events: auto;
+  mask-image: radial-gradient(ellipse 70% 60% at 60% 50%, black 60%, transparent 100%);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 60% 50%, black 60%, transparent 100%);
+}
+
+.pv-scene-frame > .hero-scene,
+.pv-scene-frame > .hero-scene > * {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+@media (max-width: 880px) {
+  .pv-scene-frame { display: none; }
+}
+
+/* ── Work peek section ── */
+
+.pv-work {
+  padding: clamp(40px, 6vw, 80px) 0;
+  border-top: 1px solid var(--rule);
+}
+
+.pv-section-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: clamp(28px, 4vw, 48px);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pv-section-head .h-title { color: var(--text); }
+
+.pv-work-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.pv-work-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 88px 1fr 200px 100px;
+  align-items: baseline;
+  gap: 16px;
+  padding: clamp(20px, 3vw, 32px) 0;
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-body);
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition: padding-left 240ms var(--ease-out);
+}
+
+@media (max-width: 720px) {
+  .pv-work-row { grid-template-columns: 56px 1fr 80px; }
+  .pv-work-row .role { display: none; }
+}
+
+.pv-work-row:hover { padding-left: clamp(8px, 2vw, 28px); }
+
+.pv-work-row .num {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-dim);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-work-row .title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(26px, 3.6vw, 48px);
+  line-height: 1.05;
+  letter-spacing: -0.025em;
+  color: var(--text);
+  transition: color 240ms var(--ease-out);
+}
+
+.pv-work-row:hover .title { color: var(--accent); }
+
+.pv-work-row .role {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pv-work-row .year {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--text-muted);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.pv-work-row .cover {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: clamp(140px, 22vw, 220px);
+  height: clamp(80px, 14vw, 140px);
+  border-radius: 8px;
+  pointer-events: none;
+  opacity: 0;
+  clip-path: inset(0 0 0 100%);
+  transition: clip-path 360ms var(--ease-out), opacity 200ms var(--ease-out);
+  z-index: 2;
+  background: var(--accent);
+}
+
+.pv-work-row:hover .cover {
+  opacity: 1;
+  clip-path: inset(0 0 0 0);
+}
+
+@media (max-width: 720px) {
+  .pv-work-row .cover { display: none; }
+}
+
+/* ── Mock B specific overrides ── */
+
+.preview-b .pv-display { font-family: var(--font-display); }
+.preview-c .pv-display { font-family: var(--font-display); }
+
+/* Boldonse needs a touch more spacing tuning */
+.preview-b .pv-display, .preview-c .pv-display {
+  letter-spacing: -0.015em;
+  font-weight: 400;
+}
+
+.preview-b .pv-display-line .accent,
+.preview-c .pv-display-line .accent {
+  color: var(--accent);
+  font-style: italic;
+}
+
+/* Mock B: SVG diagram replaces 3D scene */
+
+.pv-diagram {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.pv-diagram-frame {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 5;
+  background: var(--accent);
+  border-radius: 6px;
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.pv-diagram-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 30% 20%,
+      color-mix(in oklch, var(--accent-deep) 60%, transparent) 0%,
+      transparent 60%);
+  pointer-events: none;
+  mix-blend-mode: multiply;
+}
+
+.pv-diagram-label {
+  position: absolute;
+  bottom: 14px;
+  left: 16px;
+  right: 16px;
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--bg);
+  z-index: 3;
+}
+
+/* ── Mock C theme switcher ── */
+
+.pv-theme-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 1px solid var(--rule-strong);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 200ms var(--ease-out), transform 160ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.pv-theme-switch:hover  { background: color-mix(in oklch, var(--text) 6%, transparent); }
+.pv-theme-switch:active { transform: scale(0.97); }
+
+.pv-theme-glyph {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--text);
+  transition: background 200ms var(--ease-out), box-shadow 200ms var(--ease-out);
+}
+
+.preview-c[data-theme='dark'] .pv-theme-glyph {
+  background: transparent;
+  box-shadow: inset 4px -4px 0 0 var(--text);
+}
+
+/* ── Reveal animations (compatible with reduced motion) ── */
+
+.pv-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 600ms var(--ease-out), transform 600ms var(--ease-out);
+}
+
+.pv-reveal.is-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.pv-reveal[data-delay='1'] { transition-delay: 60ms; }
+.pv-reveal[data-delay='2'] { transition-delay: 120ms; }
+.pv-reveal[data-delay='3'] { transition-delay: 200ms; }
+.pv-reveal[data-delay='4'] { transition-delay: 280ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .pv-reveal { transform: none; transition: opacity 200ms ease; }
+  .pv-status-dot { animation: none; }
+  .pv-cta-arrow { transition: none; }
+  .pv-work-row { transition: none; }
+  .pv-work-row .cover { transition: opacity 100ms ease; clip-path: none; }
+}
+
+/* ── Bottom footer ── */
+
+.pv-foot {
+  padding: clamp(40px, 6vw, 72px) 0 clamp(28px, 4vw, 48px);
+  border-top: 1px solid var(--rule);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  flex-wrap: wrap;
+}
+
+.pv-foot a {
+  color: var(--text);
+  text-decoration: none;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 2px;
+  transition: color 200ms var(--ease-out), border-color 200ms var(--ease-out);
+}
+
+.pv-foot a:hover { color: var(--accent); border-color: var(--accent); }
+
+/* ── Preview switcher pill (PreviewShell) ──
+   Floating, top-center so it never collides with hero or footer.
+   Inverts against the current mock so it stays visible on both
+   dark and light backgrounds. */
+
+.pv-switcher {
+  position: fixed;
+  left: 50%;
+  top: clamp(16px, 2.4vw, 28px);
+  transform: translateX(-50%);
+  z-index: 999;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px;
+  border-radius: 999px;
+  background: oklch(0.10 0.012 60 / 0.94);
+  color: oklch(0.96 0.012 80);
+  font-family: 'JetBrains Mono', ui-monospace, monospace;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  backdrop-filter: blur(18px) saturate(140%);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  border: 1px solid oklch(0.96 0.012 80 / 0.18);
+  box-shadow:
+    0 8px 28px oklch(0 0 0 / 0.42),
+    0 1px 0 oklch(0.96 0.012 80 / 0.10) inset;
+}
+
+/* On light mocks, invert: light pill on dark ring */
+.preview-b .pv-switcher,
+.preview-c .pv-switcher {
+  background: oklch(0.98 0.012 80 / 0.94);
+  color: oklch(0.14 0.012 60);
+  border-color: oklch(0.14 0.012 60 / 0.16);
+  box-shadow:
+    0 8px 28px oklch(0.14 0.012 60 / 0.18),
+    0 1px 0 oklch(0.96 0.012 80 / 0.6) inset;
+}
+
+.pv-switcher-label {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px 0 14px;
+  opacity: 0.7;
+  letter-spacing: 0.18em;
+  font-weight: 500;
+}
+
+.pv-switcher-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 30px;
+  min-width: 34px;
+  padding: 0 12px;
+  border-radius: 999px;
+  background: transparent;
+  border: 0;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  transition:
+    background 200ms var(--ease-out, ease-out),
+    color 200ms var(--ease-out, ease-out),
+    transform 160ms var(--ease-out, ease-out);
+}
+
+.pv-switcher-chip:hover  { background: oklch(0.96 0.012 80 / 0.12); }
+.pv-switcher-chip:active { transform: scale(0.96); }
+
+.pv-switcher-chip.is-current {
+  background: oklch(0.96 0.012 80 / 0.96);
+  color: oklch(0.14 0.012 60);
+  box-shadow: 0 2px 8px oklch(0 0 0 / 0.25);
+}
+
+.preview-b .pv-switcher-chip:hover,
+.preview-c .pv-switcher-chip:hover {
+  background: oklch(0.14 0.012 60 / 0.08);
+}
+
+.preview-b .pv-switcher-chip.is-current,
+.preview-c .pv-switcher-chip.is-current {
+  background: oklch(0.14 0.012 60 / 0.96);
+  color: oklch(0.96 0.012 80);
+  box-shadow: 0 2px 8px oklch(0.14 0.012 60 / 0.18);
+}
+
+.pv-switcher-sep {
+  display: inline-block;
+  width: 1px;
+  height: 18px;
+  background: oklch(0.96 0.012 80 / 0.20);
+  margin: 0 4px;
+}
+
+.preview-b .pv-switcher-sep,
+.preview-c .pv-switcher-sep {
+  background: oklch(0.14 0.012 60 / 0.20);
+}
+
+.pv-switcher-back {
+  display: inline-flex;
+  align-items: center;
+  height: 30px;
+  padding: 0 12px;
+  color: oklch(0.96 0.012 80 / 0.72);
+  text-decoration: none;
+  transition: color 200ms var(--ease-out, ease-out);
+  font-size: 14px;
+}
+
+.pv-switcher-back:hover { color: oklch(0.96 0.012 80); }
+
+.preview-b .pv-switcher-back,
+.preview-c .pv-switcher-back {
+  color: oklch(0.14 0.012 60 / 0.72);
+}
+
+.preview-b .pv-switcher-back:hover,
+.preview-c .pv-switcher-back:hover {
+  color: oklch(0.14 0.012 60);
+}

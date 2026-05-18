@@ -1,19 +1,83 @@
+/* ─────────────────────────────────────────────────────────────────────────
+   Design tokens
+   Default: warm-dark drench, amber accent (the "cinematic editorial" mode)
+   [data-theme='light']: paper, vermillion accent (the "ink editorial" mode)
+   Both share the same typography (Boldonse + Onest + JetBrains Mono).
+   ───────────────────────────────────────────────────────────────────────── */
+
 :root {
-  --bg: #0c0c0f;
-  --surface: #141418;
-  --surface-2: #1c1c22;
-  --text: #e8e8f0;
-  --text-muted: #7a7a8c;
-  --text-dim: #3a3a4a;
-  --accent: #5465ff;
-  --accent-lime: #a8ff40;
-  --accent-glow: rgba(84, 101, 255, 0.18);
-  --border: rgba(255, 255, 255, 0.07);
-  --border-hover: rgba(255, 255, 255, 0.14);
-  --sans: 'Inter', system-ui, -apple-system, sans-serif;
-  --heading: 'Space Grotesk', system-ui, sans-serif;
-  --radius: 16px;
-  --radius-lg: 24px;
+  /* ── Surfaces (warm-dark default) ── */
+  --bg:           oklch(0.16 0.012 60);
+  --bg-deep:      oklch(0.12 0.012 60);
+  --surface:      oklch(0.21 0.010 60);
+  --surface-2:    oklch(0.26 0.010 60);
+
+  /* ── Type ── */
+  --text:         oklch(0.92 0.015 80);
+  --text-muted:   oklch(0.66 0.012 70);
+  --text-dim:     oklch(0.44 0.010 70);
+
+  /* ── Accent (amber persimmon, dark mode) ── */
+  --accent:       oklch(0.78 0.18 55);
+  --accent-deep:  oklch(0.62 0.20 45);
+  --accent-dim:   oklch(0.42 0.08 50);
+
+  /* ── Rules + borders ── */
+  --rule:         color-mix(in oklch, var(--text) 12%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 24%, transparent);
+
+  /* ── Backward-compat aliases for unmigrated components ── */
+  --accent-glow:  color-mix(in oklch, var(--accent) 22%, transparent);
+  --accent-lime:  var(--accent);
+  --border:       var(--rule);
+  --border-hover: var(--rule-strong);
+
+  /* ── Typography ── */
+  --font-display: 'Boldonse', 'Times New Roman', serif;
+  --font-body:    'Onest', system-ui, -apple-system, sans-serif;
+  --font-mono:    'Spline Sans Mono', 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Backward-compat aliases */
+  --sans:    var(--font-body);
+  --heading: var(--font-display);
+
+  /* ── Motion ── */
+  --ease-out:    cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+
+  /* ── Radii ── */
+  --radius:    14px;
+  --radius-lg: 20px;
+
+  /* ── Status colors (state-bound, theme-aware) ── */
+  --success:   oklch(0.74 0.14 145);
+  --danger:    oklch(0.60 0.20 25);
+}
+
+[data-theme='light'] {
+  --bg:           oklch(0.94 0.013 75);
+  --bg-deep:      oklch(0.90 0.015 75);
+  --surface:      oklch(0.89 0.018 75);
+  --surface-2:    oklch(0.85 0.020 75);
+
+  --text:         oklch(0.18 0.010 60);
+  --text-muted:   oklch(0.42 0.012 60);
+  --text-dim:     oklch(0.60 0.010 60);
+
+  --accent:       oklch(0.56 0.20 30);
+  --accent-deep:  oklch(0.42 0.18 28);
+  --accent-dim:   oklch(0.78 0.12 35);
+
+  --rule:         color-mix(in oklch, var(--text) 14%, transparent);
+  --rule-strong:  color-mix(in oklch, var(--text) 28%, transparent);
+
+  --accent-glow:  color-mix(in oklch, var(--accent) 18%, transparent);
+  --accent-lime:  var(--accent);
+  --border:       var(--rule);
+  --border-hover: var(--rule-strong);
+
+  --success:   oklch(0.46 0.14 145);
+  --danger:    oklch(0.48 0.20 25);
 }
 
 *, *::before, *::after {
@@ -24,17 +88,24 @@
 
 html {
   scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
 }
 
 body {
   background: var(--bg);
   color: var(--text);
-  font-family: var(--sans);
+  font-family: var(--font-body);
   font-size: 16px;
-  line-height: 1.65;
+  line-height: 1.6;
+  font-feature-settings: 'ss01', 'cv01';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  transition: background 280ms var(--ease-out), color 280ms var(--ease-out);
 }
 
 #root {
@@ -52,21 +123,32 @@ img, svg {
   max-width: 100%;
 }
 
+::selection {
+  background: var(--accent);
+  color: var(--bg);
+}
+
 /* ── Scroll reveal ── */
+
 .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition:
-    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
-    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+    opacity 0.7s var(--ease-out),
+    transform 0.7s var(--ease-out);
 }
 
-.reveal.d1 { transition-delay: 0.1s; }
-.reveal.d2 { transition-delay: 0.2s; }
-.reveal.d3 { transition-delay: 0.3s; }
-.reveal.d4 { transition-delay: 0.4s; }
+.reveal.d1 { transition-delay: 0.04s; }
+.reveal.d2 { transition-delay: 0.10s; }
+.reveal.d3 { transition-delay: 0.16s; }
+.reveal.d4 { transition-delay: 0.22s; }
 
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { transform: none; transition: opacity 220ms ease; }
+  html { scroll-behavior: auto; }
 }
