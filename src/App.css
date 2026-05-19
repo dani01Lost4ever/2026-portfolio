@@ -665,6 +665,25 @@
 @media (max-width: 640px) {
   .theme-toggle-label { display: none; }
   .theme-toggle { padding: 6px; }
+
+  /* Collapse navbar: nav links live in the command palette,
+     search button shrinks to an icon-only tap target. */
+  .navbar-nav { display: none; }
+  .navbar-search {
+    min-width: 0;
+    padding: 8px;
+    gap: 0;
+  }
+  .navbar-search-label,
+  .navbar-search kbd { display: none; }
+
+  /* Section header "meta" spans (e.g. "06 pieces · 2023 — 2025")
+     use white-space:nowrap and would otherwise force horizontal
+     scroll on narrow viewports. They're decorative — hide on mobile. */
+  .work-meta,
+  .about-meta,
+  .exp-meta,
+  .contact-meta { display: none; }
 }
 
 /* ─────────────────────────────────────────
@@ -1942,7 +1961,7 @@
   gap: 16px;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(20px, 2.6vw, 38px);
+  font-size: clamp(15px, 4.4vw, 38px);
   letter-spacing: -0.01em;
   color: var(--text);
   text-decoration: none;
@@ -1953,6 +1972,8 @@
     border-color 220ms var(--ease-out),
     gap 240ms var(--ease-out);
   margin-bottom: clamp(56px, 8vw, 100px);
+  max-width: 100%;
+  word-break: break-word;
 }
 
 .contact-email:hover {
