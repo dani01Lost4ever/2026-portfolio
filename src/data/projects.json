@@ -1,6 +1,90 @@
 [
   {
     "id": "01",
+    "slug": "bugpilot",
+    "year": "2026",
+    "title": "BugPilot",
+    "subtitle": "Self-hosted bug reporting with AI triage",
+    "description": "A one-line embed widget that captures annotated screenshots, pinned DOM elements, console logs, and network traces — then Claude triages everything automatically: severity, type, duplicates, repro steps, fix suggestions. Ships as a five-service Docker stack with a built-in MCP server so AI agents in Cursor or Claude Code can query and resolve bugs directly. Self-hosted — report data never leaves your infra.",
+    "overview": "BugPilot is a self-hosted bug-reporting platform. A single <script> tag adds a feedback widget to any site that snapshots console errors, failing network requests, a 30-second rolling rrweb buffer, and lets reporters annotate / pin / blur on top of the page before submitting. A Claude-powered worker classifies severity, deduplicates against existing reports, writes clean titles and repro steps, and on demand proposes a root cause and fix. Built as a pnpm monorepo across six packages — API, widget, dashboard, browser extension, landing, license server — and packaged as a five-service Docker Compose stack that comes up in under five minutes.",
+    "challenge": "End-user bug reports are almost universally useless: vague descriptions, no repro steps, no environment context. SaaS alternatives exist but route reports — often containing sensitive customer data — through someone else's infrastructure, and none of them speak the protocol that AI dev tools like Claude Code, Cursor, and Windsurf now use to read and write into developer tools. The goal was one self-hostable platform that solved both halves: capture rich context automatically at submit time, and expose every action through both REST and the Model Context Protocol so AI agents could triage, query, and close bugs on your behalf without your data ever leaving your servers.",
+    "solution": "The widget is a dependency-free vanilla TS IIFE that posts to a BullMQ-backed Express API. A worker sends each report to Claude for classification, duplicate detection against the existing report set, and repro-step generation, then pushes the result to the React 19 + Tailwind v4 dashboard over SSE — no polling. Auto-creates issues in GitHub, Linear, and Jira above a per-project severity threshold. The MCP server at POST /api/v1/mcp exposes nine tools (five read, four write) with scoped API keys (bpk_live_…), so a Cursor or Claude Code session can resolve bugs end-to-end without leaving the editor. Hardened with multi-tenant orgs, SSO/OIDC, TOTP 2FA, a tamper-evident audit log, GDPR export/delete, and Prometheus /metrics.",
+    "tags": ["TypeScript", "React 19", "Express", "MongoDB", "Redis", "BullMQ", "MinIO", "Docker", "Claude AI", "MCP", "Tailwind v4"],
+    "gradient": "linear-gradient(135deg, #dc2626 0%, #7c3aed 100%)",
+    "results": [
+      { "value": "9", "label": "MCP tools exposed" },
+      { "value": "< 5 min", "label": "Docker deploy" },
+      { "value": "6", "label": "Monorepo packages" }
+    ],
+    "role": "Solo Developer — Open Source",
+    "timeline": "Personal project",
+    "link": "https://github.com/dani01Lost4ever/BugPilot"
+  },
+  {
+    "id": "02",
+    "slug": "the-loop",
+    "year": "2026",
+    "title": "The Loop",
+    "subtitle": "A field journal of the AI frontier, for engineers who ship",
+    "description": "A self-hosted AI publication built on Next.js 15 (App Router) and Payload CMS v3, with Postgres, Meilisearch for search, Remark42 for comments, Umami for analytics, and Listmonk for the weekly newsletter — all running as sibling Docker services on a European home server. Editorial typography, low-overhead, designed to read like a print field journal.",
+    "overview": "The Loop is a personal publication tracking the AI industry from an engineer's perspective: short dispatches on model releases, security incidents, funding moves, and acquisitions, alongside longer technical guides — scheduling Claude tasks, writing effective prompt files — and Labs experiments. Built on Next.js 15 with Payload CMS v3 as the editorial layer, backed by Postgres, with Meilisearch indexing the article corpus. Comments, analytics, and the weekly email dispatch are handled by sibling Docker services — Remark42, Umami, Listmonk — composed alongside the app and running on a European home server.",
+    "challenge": "AI news cycles move faster than any one publication can cover, and most outlets pad short signals into long articles. The challenge was building a publication that respected the reader's time — sharp dispatches matched to the actual signal-to-noise ratio of the news — while still hosting longer-form technical guides and experiments. Equally hard was the operational side: stand up a CMS, search, comments, analytics, and a newsletter stack that's entirely self-hosted, survives a server swap, and stays low-overhead enough that one person can run it without burning out on ops.",
+    "solution": "Next.js 15 (App Router) drives the three content streams — News, Guides, Labs — sharing primitives like numbered article listings, searchable archive, and per-article comments. Payload CMS v3 provides the editorial layer at /admin, backed by Postgres. Meilisearch indexes the published corpus and is re-fed via a pnpm meili:reindex script. Remark42 handles comments, Umami captures self-hosted analytics, and Listmonk runs the weekly email dispatch — each as a sibling Docker service in the same compose file. Editorial typography — Bricolage Grotesque for headings, Source Serif 4 for body, Fragment Mono for code — chosen to read like a print field journal. A backup script keeps articles portable across server swaps; redeploy is one docker compose command.",
+    "tags": ["Next.js 15", "React", "TypeScript", "Payload CMS", "Postgres", "Meilisearch", "Remark42", "Umami", "Listmonk", "Docker"],
+    "gradient": "linear-gradient(135deg, #0f0f0f 0%, #525252 100%)",
+    "results": [
+      { "value": "5", "label": "Sibling services" },
+      { "value": "Payload v3", "label": "CMS layer" },
+      { "value": "EU", "label": "Home-server stack" }
+    ],
+    "role": "Solo Developer",
+    "timeline": "Personal project",
+    "link": "http://theloop.techdani.cc/"
+  },
+  {
+    "id": "03",
+    "slug": "stellar-freight-co",
+    "year": "2026",
+    "title": "Stellar Freight Co.",
+    "subtitle": "A sci-fi drone-logistics factory tycoon, played in the browser",
+    "description": "A browser-based factory tycoon set in a shared sci-fi universe — players dispatch drones, manage stations, and route production across a real-time simulation. Built as a pnpm + Turborepo monorepo with a Fastify + WebSocket server running a fixed-tick simulation clock, a React + Zustand client, and Zod-validated wire messages that catch protocol mismatches at both ends.",
+    "overview": "Stellar Freight Co. is an in-progress browser game — a sci-fi drone-logistics factory tycoon with a shared-universe design bible. Phase 0 ships the foundation: real-time WebSocket handshake, fixed-tick simulation clock, Zod-validated wire schemas shared between client and server, exponential-backoff reconnects, and a testable manual clock for unit tests of the simulation logic. The architecture is built to scale through later phases — stations, drone dispatch, production chains, multiplayer — without rewriting the protocol layer.",
+    "challenge": "Real-time browser games sit at an awkward intersection: they need the determinism of a simulation, the latency tolerance of the web, and a wire protocol typed strongly enough that desync bugs surface immediately, not three phases later. Most hobby browser games skip the simulation discipline (everything in client memory, no rollback story) or skip the protocol discipline (untyped JSON over WS, errors at runtime). The goal was a Phase 0 that was small enough to ship in a weekend but structured enough that nothing in the protocol or sim layer would need to be thrown away later.",
+    "solution": "pnpm + Turborepo monorepo with three packages. @sfco/shared holds Zod schemas for every wire message plus a typed Emitter and a Result<T, E> utility; both server and client import the same parser, so mismatches are caught at both ends. The Fastify + ws server is composed of three small classes — Session, ConnectionHub, MessageRouter — with no globals. The Clock is an interface with real (createFixedTickClock) and manual implementations so simulation logic is unit-testable without real timers. The React + Zustand client wraps WebSocket in a NetClient with Zod validation, exponential-backoff reconnect, and the same typed emitter — the store subscribes to events and never touches sockets directly. Server deploys to Fly.io; client builds to static.",
+    "tags": ["TypeScript", "React", "Fastify", "WebSocket", "Zustand", "Turborepo", "Zod", "Vite", "Biome", "Fly.io"],
+    "gradient": "linear-gradient(135deg, #0f172a 0%, #6366f1 50%, #a78bfa 100%)",
+    "results": [
+      { "value": "Phase 0", "label": "Foundation shipped" },
+      { "value": "5 Hz", "label": "Server tick rate" },
+      { "value": "Zod", "label": "Both ends typed" }
+    ],
+    "role": "Solo Developer",
+    "timeline": "Personal project — ongoing",
+    "link": "https://sfco.techdani.cc/"
+  },
+  {
+    "id": "04",
+    "slug": "auroratrader",
+    "year": "2026",
+    "title": "AuroraTrader",
+    "subtitle": "AI crypto paper-trading agent with a self-training feedback loop",
+    "description": "An AI-powered crypto paper-trading agent that uses Claude to make trade decisions, executes them against the Alpaca Paper API, logs every decision to MongoDB, resolves outcomes automatically, and exports only the profitable trades as a JSONL dataset — which then fine-tunes a local Ollama model that drops back into the same agent loop, replacing the Claude calls.",
+    "overview": "AuroraTrader is a closed-loop trading agent that lets a frontier LLM teach a local one to trade. The agent runs on a schedule, asks Claude to evaluate the current market and propose a trade, logs the reasoning, decision, and outcome to MongoDB, and resolves win/loss automatically once Alpaca closes the position. A React + Recharts dashboard surfaces stats — win rate, P&L, dataset size — and gates trades behind a human-approval queue. Once enough profitable trades accumulate, one click exports them as a dataset_*.jsonl fine-tuning corpus, which gets fed through a Google Colab notebook running Unsloth QLoRA to produce a GGUF model. That model goes into a local Ollama server on Proxmox — flip a single env var (LLM_PROVIDER=ollama) and the agent runs on a self-trained local model with no code changes.",
+    "challenge": "Frontier LLMs are expensive to run continuously and require external API access for any decision; local models are cheap and private but bad at domain tasks out of the box. The opportunity was the bridge between them: use the expensive model long enough to generate a high-quality, domain-specific, outcome-filtered training set, then graduate to a local model whose decisions match the profitable subset of the teacher's behavior. The hard part was building an interface clean enough that swapping the inference backend was a config flag, and a data pipeline that only fed profitable decisions into the dataset.",
+    "solution": "The agent abstracts inference behind a single interface — Claude or Ollama, chosen by env var. Each decision cycle writes a full record to MongoDB: prompt, market context, model reasoning, the proposed trade, and (later, asynchronously) the resolved outcome. A small Express API exposes /api/trades, /api/stats, approve/reject endpoints, and a /api/dataset/export route that emits a JSONL of only the profitable closed trades, formatted for Unsloth's chat-template. The training notebook fine-tunes Mistral/Llama with QLoRA, exports GGUF, and the model is dropped into Ollama on a Proxmox host. Dashboard built with React + Recharts; everything orchestrated by docker compose up -d.",
+    "tags": ["Node.js", "TypeScript", "Claude AI", "Alpaca API", "MongoDB", "React", "Docker", "Ollama", "QLoRA", "Unsloth", "Recharts"],
+    "gradient": "linear-gradient(135deg, #06b6d4 0%, #10b981 100%)",
+    "results": [
+      { "value": "Claude→Ollama", "label": "Swap by env var" },
+      { "value": "JSONL", "label": "Outcome-filtered dataset" },
+      { "value": "0", "label": "Code changes to swap model" }
+    ],
+    "role": "Solo Developer",
+    "timeline": "Personal project",
+    "link": "https://github.com/dani01Lost4ever/AuroraTrader"
+  },
+  {
+    "id": "05",
     "slug": "cloudflare-ddns-client",
     "year": "2025",
     "title": "Cloudflare DDNS Client",
@@ -21,7 +105,7 @@
     "link": "https://github.com/dani01Lost4ever/cloudflare-ddns-client"
   },
   {
-    "id": "02",
+    "id": "06",
     "slug": "agendash-3",
     "year": "2025",
     "title": "Agendash 3",
@@ -42,7 +126,7 @@
     "link": "https://github.com/dani01Lost4ever/agendash-3"
   },
   {
-    "id": "03",
+    "id": "07",
     "slug": "openai-cost-calculator",
     "year": "2024",
     "title": "OpenAI Cost Calculator",
@@ -63,7 +147,7 @@
     "link": "https://github.com/dani01Lost4ever/openai-cost-calculator-updated"
   },
   {
-    "id": "04",
+    "id": "08",
     "slug": "original-portfolio",
     "year": "2023",
     "title": "Original Portfolio",
@@ -84,7 +168,7 @@
     "link": "https://github.com/dani01Lost4ever/Portfolio"
   },
   {
-    "id": "05",
+    "id": "09",
     "slug": "tictactoe-ai",
     "year": "2023",
     "title": "Tic-Tac-Toe vs AI",
@@ -105,7 +189,7 @@
     "link": "https://github.com/dani01Lost4ever/TicTacToe"
   },
   {
-    "id": "06",
+    "id": "10",
     "slug": "battleship-ai",
     "year": "2023",
     "title": "Battleship vs AI",
