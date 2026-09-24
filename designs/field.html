@@ -74,7 +74,7 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .hero{min-height:100vh;min-height:100svh;display:flex;align-items:flex-start;padding:clamp(120px,19vh,190px) var(--gutter) 64px}
 .hero-inner{max-width:880px}
 .status{font-size:.9rem;color:var(--ink-2);margin:0 0 26px}
-.status i{display:inline-block;vertical-align:middle;margin:-2px 12px 0 0;width:8px;height:8px;border-radius:1px;background:var(--aqua);box-shadow:0 0 12px var(--aqua)}
+.status .dot{display:inline-block;vertical-align:middle;margin:-2px 12px 0 0;width:8px;height:8px;border-radius:1px;background:var(--aqua);box-shadow:0 0 12px var(--aqua)}
 .hero h1{font-size:clamp(2.9rem,7.4vw,7.3rem);line-height:.96;font-weight:330}
 .hero h1 span{display:block}
 .hero-sub{max-width:520px;color:var(--ink-2);font-size:1.08rem;margin:30px 0 34px}
@@ -155,7 +155,7 @@ html.static .copy,html.static .hero-inner,html.static .work-intro,html.static .a
 html.static .spot{background:radial-gradient(circle at 50% 50%,rgba(255,184,138,.55) 0 2px,transparent 3px) 0 0/18px 18px,radial-gradient(closest-side,rgba(114,228,213,.28),transparent)}
 html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent);mask:radial-gradient(closest-side,#000 55%,transparent)}
 
-@media (max-width:760px){
+@media (max-width:900px){
   body{font-size:16px}
   .nav{padding:14px 16px}
   .nav ul{gap:16px}
@@ -165,14 +165,14 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   .hero-sub{margin:20px 0 26px;font-size:1rem}
   .stats{margin-top:34px;gap:22px}
   .work-intro{min-height:auto;padding:14vh 20px 8vh}
-  .project{padding:47vh 20px 6vh;align-items:flex-end;min-height:0}
+  .project{padding:47vh 20px 3vh;align-items:flex-end;min-height:0}
   .project .caption{position:static;transform:none;width:auto;text-align:left;margin:0 0 18px}
   .stack-cap{position:static;transform:none;width:auto;text-align:left;margin-top:12px}
   .project[data-side="right"]{justify-content:flex-start}
   .copy{width:100%}
   .results{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
   .results dt{font-size:1.2rem}
-  .about-intro{grid-template-columns:1fr;padding:16vh 20px 4vh;gap:22px}
+  .about-intro{grid-template-columns:1fr;padding:7vh 20px 4vh;gap:22px}
   .stack{grid-template-columns:1fr;grid-template-rows:none;min-height:auto;padding:4vh 20px 8vh;gap:10px}
   .group{grid-template-columns:40% 1fr;gap:16px}
   .spot{max-width:150px}
@@ -212,7 +212,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 <main>
   <section class="hero" id="top">
     <div class="hero-inner">
-      <p class="status"><i aria-hidden="true"></i>Daniel Busetto, full-stack developer in Venice. Available for work.</p>
+      <p class="status"><span class="dot" aria-hidden="true"></span>Daniel Busetto, full-stack developer in Venice. Available for work.</p>
       <h1><span>From database</span><span>to interface,</span><span>built to scale.</span></h1>
       <p class="hero-sub">Four years building web applications end to end: data models and REST APIs, pipelines and self-hosted stacks, and fast, accessible frontends on top.</p>
       <div class="cta">
@@ -451,7 +451,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     THREE.ColorManagement.enabled = false;
 
     var TAU = Math.PI * 2;
-    var mobile = innerWidth < 760;
+    var mobile = innerWidth < 900;
     var N = mobile ? 4200 : 10000;
     var FOV = 40, CAMZ = 14;
 
@@ -613,29 +613,28 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     }
 
     function genGlobe() {
+      // an unmistakable globe: graticule (8 meridians, 5 parallels) + thin sparse shell + bright DNS-update arcs
       var R = 2.2, r0 = rng(9), ends = [], k;
       function land(v) { return Math.sin(3.1 * v[0] + 0.3) * Math.cos(2.3 * v[1] - 0.4) + 0.6 * Math.sin(2.7 * v[2] + 1.1) * Math.cos(3.7 * v[0] + 0.2) + 0.3 * Math.sin(5.3 * v[1] + 2 * v[2]); }
-      while (ends.length < 16) { var v = unit(r0); if (land(v) > 0.35) ends.push(v); }
+      while (ends.length < 12) { var v0 = unit(r0); if (land(v0) > 0.35 && Math.abs(v0[1]) < 0.8) ends.push(v0); }
       function slerp(a, b, t) {
         var d = clamp(a[0] * b[0] + a[1] * b[1] + a[2] * b[2], -1, 1), om = Math.acos(d), so = Math.sin(om) || 1e-4;
         var s1 = Math.sin((1 - t) * om) / so, s2 = Math.sin(t * om) / so;
         return [a[0] * s1 + b[0] * s2, a[1] * s1 + b[1] * s2, a[2] * s1 + b[2] * s2];
       }
+      function sph(lat, lon, rad) { return [Math.cos(lat) * Math.cos(lon) * rad, Math.sin(lat) * rad, Math.cos(lat) * Math.sin(lon) * rad]; }
       return build([
-        [54, function (r) { var v; do { v = unit(r); } while (land(v) < 0.3); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
-        [15, function (r) { var v = unit(r); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
-        [9, function (r) {
-          var a = r() * TAU, lat;
-          if (r() < 0.5) { lat = (Math.floor(r() * 5) - 2) * Math.PI / 6; return [Math.cos(lat) * Math.cos(a) * R, Math.sin(lat) * R, Math.cos(lat) * Math.sin(a) * R, 0]; }
-          var lon = Math.floor(r() * 6) * Math.PI / 6; lat = a;
-          return [Math.cos(lat) * Math.cos(lon) * R, Math.sin(lat) * R, Math.cos(lat) * Math.sin(lon) * R, 0];
+        [30, function (r) { var lon = Math.floor(r() * 8) * Math.PI / 8, lat = (r() * 2 - 1) * Math.PI / 2; var p = sph(lat, lon, R + jit(r, 1.2e-2)); p.push(0); return p; }],
+        [24, function (r) { var lat = (Math.floor(r() * 5) - 2) * Math.PI / 6.5, lon = r() * TAU; var p = sph(lat, lon, R + jit(r, 1.2e-2)); p.push(0); return p; }],
+        [8, function (r) { var lon = r() * TAU, rad = R + jit(r, 1.2e-2); return [Math.cos(lon) * rad, jit(r, 2e-2), Math.sin(lon) * rad, 0]; }],
+        [12, function (r) { var v = unit(r); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
+        [8, function (r) { var v; do { v = unit(r); } while (land(v) < 0.45); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
+        [14, function (r, j) {
+          var k = j % 6, s = r(), p = slerp(ends[k * 2], ends[k * 2 + 1], s), h = R * (1 + 0.24 * Math.sin(Math.PI * s));
+          return [p[0] * h + jit(r, 1.5e-2), p[1] * h + jit(r, 1.5e-2), p[2] * h + jit(r, 1.5e-2), W(6, (s * 0.7 + k * 0.29) % 1)];
         }],
-        [16, function (r, j) {
-          var k = j % 8, s = r(), p = slerp(ends[k * 2], ends[k * 2 + 1], s), h = R * (1 + 0.3 * Math.sin(Math.PI * s));
-          return [p[0] * h, p[1] * h, p[2] * h, W(2, (s * 0.6 + k * 0.37) % 1)];
-        }],
-        [6, function (r, j) { var e = ends[j % 16], v = unit(r); return [e[0] * R * 1.02 + v[0] * 0.08, e[1] * R * 1.02 + v[1] * 0.08, e[2] * R * 1.02 + v[2] * 0.08, W(1, 0)]; }]
-      ], 0.35, 51);
+        [4, function (r, j) { var e = ends[j % 12], v = unit(r); return [e[0] * R * 1.02 + v[0] * 0.07, e[1] * R * 1.02 + v[1] * 0.07, e[2] * R * 1.02 + v[2] * 0.07, W(1, 0)]; }]
+      ], 0.38, 51);
     }
 
     function genClocks() {
@@ -695,7 +694,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var S = 360, cv = document.createElement('canvas'); cv.width = cv.height = S;
       var cx = cv.getContext('2d');
       cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
-      cx.font = '460 330px Fraunces, Georgia, serif';
+      cx.font = '700 330px Manrope, system-ui, sans-serif';
       cx.fillText('@', S / 2, S / 2 + 10);
       var d = cx.getImageData(0, 0, S, S).data, fill = [], edge = [], x, y, minX = S, maxX = 0, minY = S, maxY = 0;
       function on(x, y) { return x >= 0 && y >= 0 && x < S && y < S && d[(y * S + x) * 4 + 3] > 128; }
@@ -707,7 +706,13 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       }
       if (fill.length < 200) return genTorus();
       var cxm = (minX + maxX) / 2, cym = (minY + maxY) / 2, sc = 5.4 / Math.max(maxX - minX, maxY - minY);
-      function pick(list, r) { var k = Math.floor(r() * list.length / 2) * 2; return [(list[k] - cxm + jit(r, 0.6)) * sc, -(list[k + 1] - cym + jit(r, 0.6)) * sc]; }
+      var rMax = 1;
+      for (var q = 0; q < fill.length; q += 2) rMax = Math.max(rMax, Math.hypot(fill[q] - (minX + maxX) / 2, fill[q + 1] - (minY + maxY) / 2));
+      function pick(list, r) {
+        var k, tries = 0;
+        do { k = Math.floor(r() * list.length / 2) * 2; tries++; }
+        while (tries < 6 && r() > 0.45 + 0.55 * Math.hypot(list[k] - (minX + maxX) / 2, list[k + 1] - (minY + maxY) / 2) / rMax);
+        return [(list[k] - cxm + jit(r, 0.6)) * sc, -(list[k + 1] - cym + jit(r, 0.6)) * sc]; }
       return build([
         [72, function (r) { var p = pick(fill, r); return [p[0], p[1], jit(r, 0.28), 0]; }],
         [28, function (r) { var p = pick(edge, r); return [p[0], p[1], jit(r, 0.12), W(2, Math.atan2(p[1], p[0]) / TAU + 0.5)]; }]
@@ -722,7 +727,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       bug: ['#0B3B3D', '#04181C'], loop: ['#0C3447', '#041722'], planet: ['#132D50', '#060F22'],
       ribbon: ['#0D3B37', '#041915'], globe: ['#0B3350', '#04121F'], clocks: ['#103A45', '#051920']
     };
-    var projXf = { bug: [0, 0.32, 0.12], loop: [0.25, 0, 1.1], planet: [0.08, 0, 0.36], ribbon: [0, 0.45, 0.2], globe: [0.16, 0, 0.35], clocks: [0, 0.28, -0.25] };
+    var projXf = { bug: [0, 0.32, 0.12], loop: [0.25, 0, 1.1], planet: [0.08, 0, 0.36], ribbon: [0, 0.45, 0.2], globe: [0.22, 0, 0.38], clocks: [0, 0.28, -0.25] };
 
     var S = [];
     S.push({ key: 'grid', xf: [0, 0, 0.42], lock: 0, push: 0.8, alpha: 1.15, bg: ['#0E4148', '#031A1F'], shape: genGrid() });
@@ -814,13 +819,14 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '    float sc = fract((p.z + 7.0)/14.0 - uTime*0.05);',
       '    glow += smoothstep(0.95, 1.0, sc)*0.9;',
       '  }',
-      '  else if (fl > 4.5) {',
+      '  else if (fl > 4.5 && fl < 5.5) {',
       '    vec2 c = vec2((floor(p.x/1.5) + 0.5)*1.5, floor(p.y/1.5 + 0.5)*1.5);',
       '    float a = -uTime*(ph > 0.5 ? 0.8 : 0.1);',
       '    vec2 r = p.xy - c; float ca = cos(a), sa = sin(a);',
       '    p.xy = c + vec2(ca*r.x - sa*r.y, sa*r.x + ca*r.y);',
       '    glow = 0.35;',
       '  }',
+      '  else if (fl > 5.5) { float q = fract(ph - uTime*0.16); glow = 0.7 + smoothstep(0.8, 1.0, q)*1.8; }',
       '  float ang = uTime*xf.x + sin(uTime*0.35)*xf.y;',
       '  p = rotY(p, ang); p = rotX(p, xf.z);',
       '  return p;',
@@ -872,7 +878,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     function pageTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
     function layout() {
       Wd = innerWidth; Hd = innerHeight;
-      mobile = Wd < 760;
+      mobile = Wd < 900;
       wpp = 2 * Math.tan(FOV / 2 * Math.PI / 180) * CAMZ / Hd;
       var maxS = ScrollTrigger.maxScroll(window);
       S.forEach(function (s, k) {
@@ -946,6 +952,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     ScrollTrigger.addEventListener('refresh', layout);
     layout();
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+      return document.fonts.load('700 330px Manrope').catch(function () {});
+    }).then(function () {
       S[LAST].shape = genAt();
       ScrollTrigger.refresh();
     });

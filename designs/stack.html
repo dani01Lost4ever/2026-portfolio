@@ -193,7 +193,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
   .about,.exp{padding-top:42vh}
   html.ready .skills-list{position:static!important;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
   .contact{padding-top:42vh;min-height:auto;padding-bottom:24px}
-  .contact .col{min-height:0}
+  .contact .col{min-height:calc(54svh - 128px)}
   .contact h2{font-size:clamp(40px,10.4vw,56px)}
   .contact .lede{margin-top:16px}
   .contact-list{margin-top:22px}
@@ -598,7 +598,13 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     for (var i = 0; i < 4; i++) {
       if (B.via) {
         tw(P.sl[i], Object.assign({}, A.sl[i]), Object.assign({}, B.via[i]), d * 0.44, "power2.inOut", t0 + i * d * 0.03);
-        tw(P.sl[i], Object.assign({}, B.via[i]), Object.assign({}, B.sl[i]), d * 0.42, "power3.inOut", t0 + d * 0.58);
+        var to = Object.assign({}, B.sl[i]), from = Object.assign({}, B.via[i]);
+        if (to.o !== from.o) {
+          /* slabs tucking behind the card stay solid while they move, then drop out once hidden */
+          tw(P.sl[i], { o: from.o }, { o: to.o }, d * 0.08, "none", t0 + d * 0.92);
+          delete to.o; delete from.o;
+        }
+        tw(P.sl[i], from, to, d * 0.42, "power3.inOut", t0 + d * 0.58);
       } else {
         tw(P.sl[i], Object.assign({}, A.sl[i]), Object.assign({}, B.sl[i]), d * 0.76, slabEase, t0 + i * d * 0.08);
       }
