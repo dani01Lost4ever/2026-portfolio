@@ -38,10 +38,11 @@ export default function ProjectDetail() {
 
   useEffect(() => { window.scrollTo(0, 0) }, [slug])
 
+  const projectSlug = project?.slug
   useEffect(() => {
-    if (!project) return
-    incrementProjectViews(project.slug).then(v => { if (v > 0) setViews(v) })
-  }, [project?.slug])
+    if (!projectSlug) return
+    incrementProjectViews(projectSlug).then(v => { if (v > 0) setViews(v) })
+  }, [projectSlug])
 
   // Reveal observer for the below-the-fold sections.
   useEffect(() => {

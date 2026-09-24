@@ -198,15 +198,19 @@ export async function fetchContact(): Promise<ContactData> {
 // ─── project views ────────────────────────────────────────────────────────────
 
 /**
- * Increments the view count for a project and returns the new total.
- * Silently returns 0 if PocketBase is unreachable.
+ * Registers a view for a project and returns the current total.
+ *
+ * Goes through the custom `POST /api/projects/{slug}/view` route
+ * (backend/pb_hooks/views.pb.js) — the `projects` collection itself is not
+ * writable by visitors. Silently returns 0 if PocketBase is unreachable.
  */
 export async function incrementProjectViews(slug: string): Promise<number> {
   try {
-    const r = await pb.collection('projects').getFirstListItem(`slug="${slug}"`)
-    const views = ((r['views'] as number | undefined) ?? 0) + 1
-    await pb.collection('projects').update(r.id, { views })
-    return views
+    const res = await pb.send<{ views?: number }>(
+      `/api/projects/${encodeURIComponent(slug)}/view`,
+      { method: 'POST' },
+    )
+    return typeof res.views === 'number' ? res.views : 0
   } catch {
     return 0
   }

@@ -28,6 +28,7 @@ portfolio/
 ├── backend/
 │   ├── Dockerfile        # PocketBase Docker image
 │   ├── pb_data/          # PocketBase database (gitignored)
+│   ├── pb_hooks/         # PocketBase JS hooks (project view counter route)
 │   └── pb_migrations/    # PocketBase schema migrations
 ├── scripts/
 │   ├── seed.mjs          # Seed PocketBase from data/ JSON files

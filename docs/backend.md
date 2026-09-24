@@ -74,6 +74,7 @@ All collections are treated as **singletons** (one record each) except `projects
 | `timeline` | text | Duration e.g. `"6 months"` |
 | `link` | url | Live site URL (optional) |
 | `order` | number | Display order (ascending) |
+| `views` | number | View counter — only changed via the view route, see [Project view counter](#project-view-counter) |
 
 ### `about_content`
 
@@ -122,6 +123,72 @@ This means:
 If you want to lock down reads too, set **List/View rules** in the admin UI to:
 ```
 @request.auth.id != ""
+```
+
+> Keep the `projects` **Update rule** empty/locked (`null`, superusers only).
+> The view counter does **not** need it — see below.
+
+---
+
+## Project view counter
+
+The project detail page shows a view count. Visitors are anonymous and
+`projects.updateRule` is `null`, so the frontend **cannot** PATCH the record
+(that used to fail with a 403 and the counter stayed at 0). Instead a
+PocketBase JS hook exposes a dedicated route:
+
+```
+POST /api/projects/{slug}/view
+→ 200 { "views": 42, "counted": true }
+→ 404 unknown slug
+```
+
+- **Hook:** `backend/pb_hooks/views.pb.js`
+- **Frontend:** `incrementProjectViews(slug)` in `src/lib/api.ts` calls it with
+  `pb.send(...)`, called from `src/pages/ProjectDetail.tsx`. Any failure
+  (PocketBase down, 404, old backend without the hook) returns `0` and the
+  page just hides the counter.
+
+How it works:
+
+1. The hook runs a single SQL
+   `UPDATE projects SET views = COALESCE(views, 0) + 1 WHERE slug = ?` inside a
+   transaction and reads back the new total. The increment is atomic, so
+   concurrent views never overwrite each other. It bypasses record
+   hooks/realtime events on purpose.
+2. **Why this is safe:** the only input is the slug in the URL, bound as a
+   query parameter. The route can do one thing: add 1 to `views` of a project
+   that already exists. Visitors still can't create, edit or delete project
+   content, and the collection rules stay unchanged.
+3. **Rate limiting:** each client IP counts at most **once per project per
+   60 s** (`VIEW_WINDOW_MS` in the hook). Repeat requests inside the window
+   still get `200` with the current total and `counted: false`. This absorbs
+   refresh spam and React StrictMode's double effect in dev. The window is kept
+   in PocketBase's in-memory app store (claimed atomically, pruned by a cron
+   every 10 min) and resets when PocketBase restarts.
+
+### Behind a reverse proxy
+
+The client IP comes from `e.realIP()`. Behind a proxy (Caddy, Nginx,
+Cloudflare…) PocketBase only trusts forwarded headers you have configured
+under **Dashboard → Settings → Application → User IP proxy headers**
+(e.g. `X-Forwarded-For` / `CF-Connecting-IP`). Without that, every visitor
+shares the proxy's IP, so the whole site counts at most one view per project
+per minute. Set it up in production.
+
+### Shipping the hook
+
+PocketBase loads `pb_hooks/` next to its binary. `backend/Dockerfile` copies
+`backend/pb_hooks` to `/pb/pb_hooks`, so **rebuild and redeploy the
+`pocketbase` image** for the route to exist. Locally, `npm run pb` (run from
+`backend/`) picks up `backend/pb_hooks` automatically. PocketBase restarts
+itself when a hook file changes.
+
+Quick check:
+
+```bash
+curl -X POST http://127.0.0.1:8090/api/projects/bugpilot/view
+# {"counted":true,"views":1}
 ```
 
 ---

@@ -12,6 +12,10 @@ RUN apk add --no-cache unzip wget ca-certificates && \
 
 WORKDIR /pb
 
+# Server-side JS hooks (e.g. the project view counter route). PocketBase loads
+# them from ./pb_hooks next to the binary.
+COPY pb_hooks /pb/pb_hooks
+
 VOLUME /pb/pb_data
 
 EXPOSE 8090
