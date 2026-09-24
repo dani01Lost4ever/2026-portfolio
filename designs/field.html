@@ -88,7 +88,7 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .work-intro{min-height:74vh;display:flex;flex-direction:column;justify-content:center;padding:10vh var(--gutter);max-width:980px}
 .work-intro h2,.about-intro h2,.exp h2{font-size:clamp(2.2rem,4.6vw,4.3rem);line-height:1.02}
 .work-intro p{color:var(--ink-2);max-width:520px;margin:24px 0 0;font-size:1.05rem}
-.project{min-height:100vh;display:flex;align-items:center;padding:12vh var(--gutter)}
+.project{position:relative;min-height:100vh;display:flex;align-items:center;padding:12vh var(--gutter)}
 .project[data-side="right"]{justify-content:flex-end}
 .copy{width:min(40vw,540px)}
 .meta{font-size:.84rem;color:var(--ink-3);margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap}
@@ -102,7 +102,7 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 26px;padding:0}
 .tags li{font-size:.76rem;padding:.32em .62em;border:1px solid rgba(175,203,199,.32);border-radius:2px;color:var(--ink-2);line-height:1.3}
 .caption{font-family:var(--display);font-weight:380;font-size:1.02rem;line-height:1.4;color:var(--ink-2);margin:0;font-variation-settings:"SOFT" 100}
-.project .caption{position:absolute;top:calc(50% + min(35vh,330px));left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
+.project .caption{position:absolute;top:calc(50% + 35vh);left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
 .project[data-side="right"] .caption{left:25%}
 .stack{position:relative}
 .stack-cap{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);width:min(44ch,80vw);text-align:center}
@@ -288,7 +288,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="right" data-shape="ribbon">
       <div class="copy">
-        <p class="caption">Only the green candles become training data.</p>
+        <p class="caption">Only the winning trades become training data.</p>
         <p class="meta"><span>2026</span><span>Solo developer</span><span>AI agent</span></p>
         <h3>AuroraTrader</h3>
         <p class="sub">A crypto paper-trading agent that trains its own replacement.</p>
@@ -786,7 +786,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       uOA: { value: new THREE.Vector3() }, uOB: { value: new THREE.Vector3() },
       uPointer: { value: new THREE.Vector3(99, 99, 0) },
       uColA: { value: new THREE.Vector3().fromArray(hex('#5ED8CB')) },
-      uColB: { value: new THREE.Vector3().fromArray(hex('#FF9E7D')) },
+      uColB: { value: new THREE.Vector3().fromArray(hex('#FF8A6A')) },
       uColH: { value: new THREE.Vector3().fromArray(hex('#FFE8D4')) }
     };
 
@@ -979,11 +979,21 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         el.appendChild(sp); spans.push(sp);
         if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
       });
-      caps.push({ k: k, spans: spans, last: -1 });
+      caps.push({ k: k, el: el, spans: spans, last: -1, ty: 0, follow: el.parentNode.classList.contains('copy') });
     });
-    function lightCaptions(i, T) {
+    function lightCaptions(i, T, sy) {
       for (var c = 0; c < caps.length; c++) {
-        var cp = caps[c], lit = i >= cp.k ? 1 : i === cp.k - 1 ? T : 0;
+        var cp = caps[c];
+        if (cp.follow) {
+          // project captions ride along with their shape (which scrolls at a damped rate), not with the text
+          var ty = mobile ? 0 : clamp((1 - S[cp.k].lock) * (sy - S[cp.k].anchor), -0.6 * Hd, 0.6 * Hd);
+          if (Math.abs(ty - cp.ty) > 0.5 || (ty === 0 && cp.ty !== 0)) { cp.ty = ty; cp.el.style.transform = mobile ? '' : 'translate(-50%,' + ty.toFixed(1) + 'px)'; }
+          // and fade with it, so a caption never drifts onto the next panel's text
+          var vis = mobile ? 1 : i === cp.k ? 1 - smooth(0, 0.3, T) : i === cp.k - 1 ? smooth(0.7, 1, T) : 0;
+          vis = Math.round(vis * 50) / 50;
+          if (vis !== cp.vis) { cp.vis = vis; cp.el.style.opacity = vis; cp.el.style.visibility = vis === 0 ? 'hidden' : ''; }
+        }
+        var lit = i >= cp.k ? 1 : i === cp.k - 1 ? T : 0;
         lit = Math.round(lit * 100) / 100;
         if (lit === cp.last) continue;
         cp.last = lit;
@@ -1027,7 +1037,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       camera.position.set(ptr.sx * 0.45 * par, ptr.sy * 0.3 * par - dive * 1.4, CAMZ - dive * 6.5);
       if (dive > 0 || lastDive > 0) { camera.fov = FOV + dive * 16; camera.updateProjectionMatrix(); lastDive = dive; }
       camera.lookAt(0, -dive * 0.9, 0);
-      lightCaptions(i, T);
+      lightCaptions(i, T, sy);
       if (ptr.active) {
         tmp.set(ptr.x, ptr.y, 0.5).unproject(camera).sub(camera.position).normalize();
         var dist = -camera.position.z / tmp.z;
