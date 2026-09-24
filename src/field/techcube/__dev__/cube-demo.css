@@ -1,0 +1,58 @@
+/* Dev-only harness styling — dark petrol background, tall scroll. */
+html, body {
+  margin: 0;
+  background: linear-gradient(180deg, #071a1e 0%, #04141a 50%, #030f14 100%);
+  color: #eaf4f1;
+  font-family: 'Manrope', 'Segoe UI', system-ui, sans-serif;
+}
+
+.cube-demo {
+  min-height: 100vh;
+  padding-bottom: 20vh;
+}
+
+.cube-demo-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 14px 20px;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: #afcbc7;
+  background: linear-gradient(180deg, rgba(3, 15, 20, 0.92), rgba(3, 15, 20, 0));
+}
+.cube-demo-head p { margin: 0; }
+
+.cube-demo-slot-row {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  padding: 8vh 20px;
+}
+
+.cube-demo-label {
+  margin: 0;
+  font-family: 'Fraunces', Georgia, serif;
+  font-weight: 400;
+  font-size: clamp(1.1rem, 2.4vw, 1.6rem);
+  color: #eaf4f1;
+  text-align: center;
+}
+
+.cube-demo-slot {
+  width: min(46vw, 420px);
+  aspect-ratio: 1;
+  position: relative;
+}
+@media (max-width: 700px) {
+  .cube-demo-slot { width: min(78vw, 320px); }
+}
+
+.cube-demo-foot {
+  padding: 12vh 20px;
+  text-align: center;
+  color: #afcbc7;
+}
