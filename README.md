@@ -148,20 +148,23 @@ npm run docker:publish
 
 ## Environment Variables
 
-The frontend resolves the PocketBase URL in this priority order:
+The frontend resolves the PocketBase URL from the first non-empty value of:
 
-1. **Runtime** — `window._env_.PB_URL` injected by `entrypoint.sh` at container startup (set via `docker-compose.yml` `environment:`)
-2. **Build-time** — `VITE_PB_URL` build arg / `.env` variable
-3. **Fallback** — `http://127.0.0.1:8090`
+1. **Runtime** — `window._env_.PB_URL`, written by `entrypoint.sh` at container startup from the `PB_URL` environment variable
+2. **Build-time** — the `VITE_PB_URL` build arg / `.env` variable
+3. **Fallback** — `http://127.0.0.1:8090` in dev; the same origin in production builds
 
-To point a deployed container at an external PocketBase instance without rebuilding:
+In the Docker images, nginx proxies `/api/` and `/_/` (admin UI) to the `pocketbase` service, so leaving `PB_URL` empty serves the site and PocketBase from one domain. Set it only when PocketBase lives on a separate host:
 
 ```yaml
-# docker-compose.yml
 frontend:
   environment:
     PB_URL: "https://your-pocketbase-host.example.com"
 ```
+
+## Deploying on Coolify
+
+See [docs/deployment.md](docs/deployment.md#coolify-site--pocketbase): one Docker Compose resource from `docker-compose.coolify.yml`, one domain on the `frontend` service.
 
 ## Scripts
 

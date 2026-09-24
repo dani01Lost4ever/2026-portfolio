@@ -22,7 +22,8 @@ services:
       context: .
       dockerfile: Dockerfile
     environment:
-      PB_URL: "https://daniel.api.techdani.cc"
+      # Empty = same origin: nginx proxies /api/ to the pocketbase service
+      PB_URL: ${PB_URL:-}
     ports:
       - "809:80"
     depends_on:

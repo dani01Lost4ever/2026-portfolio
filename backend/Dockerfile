@@ -3,9 +3,11 @@
 FROM alpine:latest
 
 ARG PB_VERSION=0.36.7
+# Set automatically by BuildKit (amd64, arm64, …) so the right binary is fetched
+ARG TARGETARCH=amd64
 
 RUN apk add --no-cache unzip wget ca-certificates && \
-    wget -q "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_amd64.zip" \
+    wget -q "https://github.com/pocketbase/pocketbase/releases/download/v${PB_VERSION}/pocketbase_${PB_VERSION}_linux_${TARGETARCH}.zip" \
          -O /tmp/pb.zip && \
     unzip /tmp/pb.zip -d /pb/ && \
     rm /tmp/pb.zip
