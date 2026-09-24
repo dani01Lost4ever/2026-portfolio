@@ -54,7 +54,7 @@ html.static #field{display:none}
 .nav .btn{color:#082226;padding:.6em 1em}
 
 .btn{
-  display:inline-flex;align-items:center;gap:.65em;padding:.95em 1.35em;border-radius:4px;
+  text-shadow:none;display:inline-flex;align-items:center;gap:.65em;padding:.95em 1.35em;border-radius:4px;
   font-weight:600;font-size:.95rem;text-decoration:none;line-height:1;border:1px solid transparent;
   transition:background .2s,border-color .2s,transform .2s;
 }
@@ -101,6 +101,13 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .results dd{margin:4px 0 0;font-size:.78rem;color:var(--ink-3);max-width:12ch;line-height:1.35}
 .tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 26px;padding:0}
 .tags li{font-size:.76rem;padding:.32em .62em;border:1px solid rgba(175,203,199,.32);border-radius:2px;color:var(--ink-2);line-height:1.3}
+.caption{font-family:var(--display);font-weight:380;font-size:1.02rem;line-height:1.4;color:var(--ink-2);margin:0;font-variation-settings:"SOFT" 100}
+.project .caption{position:absolute;top:calc(50% + min(35vh,330px));left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
+.project[data-side="right"] .caption{left:25%}
+.stack{position:relative}
+.stack-cap{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);width:min(44ch,80vw);text-align:center}
+.exp-cap{margin-top:22px;max-width:44ch}
+.caption .w{transition:none}
 .link{display:inline-flex;align-items:center;gap:.55em;font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:1px solid rgba(255,184,138,.5);padding-bottom:3px;color:var(--ink)}
 .link svg{width:.95em;height:.95em;transition:transform .2s}
 .link:hover svg{transform:translate(3px,-3px)}
@@ -144,6 +151,7 @@ footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-s
 footer a{text-decoration:none}
 
 /* static fallback: soft glows where clusters would be */
+html.static .copy,html.static .hero-inner,html.static .work-intro,html.static .about-intro,html.static .exp,html.static .contact-inner{text-shadow:none}
 html.static .spot{background:radial-gradient(circle at 50% 50%,rgba(255,184,138,.55) 0 2px,transparent 3px) 0 0/18px 18px,radial-gradient(closest-side,rgba(114,228,213,.28),transparent)}
 html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent);mask:radial-gradient(closest-side,#000 55%,transparent)}
 
@@ -157,7 +165,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   .hero-sub{margin:20px 0 26px;font-size:1rem}
   .stats{margin-top:34px;gap:22px}
   .work-intro{min-height:auto;padding:14vh 20px 8vh}
-  .project{padding:50vh 20px 10vh;align-items:flex-end;min-height:100svh}
+  .project{padding:47vh 20px 6vh;align-items:flex-end;min-height:0}
+  .project .caption{position:static;transform:none;width:auto;text-align:left;margin:0 0 18px}
+  .stack-cap{position:static;transform:none;width:auto;text-align:left;margin-top:12px}
   .project[data-side="right"]{justify-content:flex-start}
   .copy{width:100%}
   .results{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
@@ -227,6 +237,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="left" data-shape="bug">
       <div class="copy">
+        <p class="caption">Every report lands in the reticle, already triaged.</p>
         <p class="meta"><span>2026</span><span>Solo developer</span><span>Open source</span></p>
         <h3>BugPilot</h3>
         <p class="sub">Self-hosted bug reporting with AI triage.</p>
@@ -243,6 +254,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="right" data-shape="loop">
       <div class="copy">
+        <p class="caption">One loop of dispatches, guides and labs, all self-hosted.</p>
         <p class="meta"><span>2026</span><span>Solo developer</span><span>Live</span></p>
         <h3>The Loop</h3>
         <p class="sub">A field journal of the AI frontier, for engineers who ship.</p>
@@ -259,6 +271,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="left" data-shape="planet">
       <div class="copy">
+        <p class="caption">Drones on orbit, driven by one fixed-tick clock.</p>
         <p class="meta"><span>2026</span><span>Solo developer</span><span>Ongoing</span></p>
         <h3>Stellar Freight Co.</h3>
         <p class="sub">A sci-fi drone-logistics factory tycoon, played in the browser.</p>
@@ -275,6 +288,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="right" data-shape="ribbon">
       <div class="copy">
+        <p class="caption">Only the green candles become training data.</p>
         <p class="meta"><span>2026</span><span>Solo developer</span><span>AI agent</span></p>
         <h3>AuroraTrader</h3>
         <p class="sub">A crypto paper-trading agent that trains its own replacement.</p>
@@ -291,6 +305,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="left" data-shape="globe">
       <div class="copy">
+        <p class="caption">An IP changes, and the records follow in seconds.</p>
         <p class="meta"><span>2025</span><span>Solo developer</span><span>Self-hosted</span></p>
         <h3>Cloudflare DDNS Client</h3>
         <p class="sub">Dynamic DNS that notices your IP change before your users do.</p>
@@ -307,6 +322,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     <article class="project" data-side="right" data-shape="clocks">
       <div class="copy">
+        <p class="caption">Twelve jobs, twelve clocks, every run logged.</p>
         <p class="meta"><span>2025</span><span>Solo developer</span><span>Published on npm</span></p>
         <h3>Agendash 3</h3>
         <p class="sub">A job-scheduling dashboard for Agenda.js, rebuilt.</p>
@@ -334,6 +350,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       </div>
     </div>
     <div class="stack" aria-label="Skills">
+      <p class="caption stack-cap">Four clusters, sized by how many tools live in each.</p>
       <div class="group" data-count="5"><div class="spot" aria-hidden="true"></div><div><h3>Frontend</h3><p class="count">5 skills</p><ul><li>Angular</li><li>React</li><li>Next.js</li><li>TypeScript</li><li>CSS / Sass</li></ul></div></div>
       <div class="group" data-count="4"><div class="spot" aria-hidden="true"></div><div><h3>Backend</h3><p class="count">4 skills</p><ul><li>Node.js</li><li>Express</li><li>.NET / .NET Framework</li><li>REST APIs</li></ul></div></div>
       <div class="group" data-count="3"><div class="spot" aria-hidden="true"></div><div><h3>Database</h3><p class="count">3 skills</p><ul><li>MongoDB</li><li>SQL Server</li><li>PostgreSQL</li></ul></div></div>
@@ -345,6 +362,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     <div class="exp-head">
       <p class="kicker">Experience and education</p>
       <h2 id="exp-title">Three roles at one company, one diploma cum laude.</h2>
+      <p class="caption exp-cap">A timeline that rises: every ring is a role or a school.</p>
     </div>
     <div class="exp-list">
       <p class="exp-group">Venicecom Group, 3 years on-site</p>
@@ -829,14 +847,16 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '  col = mix(col, uColH, clamp(glow*0.45, 0.0, 0.75));',
       '  vColor = col;',
       '  vAlpha = uAlpha*(0.5 + 0.5*aRand.y)*(1.0 + glow*0.6)*(1.0 - mid*0.25);',
-      '  gl_PointSize = uSize*(0.55 + aRand.y*0.9)*(1.0 + glow*0.8)*uPR / max(-mv.z, 0.5);',
+      '  gl_PointSize = min(uSize*1.7*(0.55 + aRand.y*0.9)*(1.0 + glow*0.8)*uPR / max(-mv.z, 0.5), 56.0*uPR);',
       '}'].join('\n');
     var frag = [
       'varying vec3 vColor; varying float vAlpha;',
       'void main(){',
       '  vec2 c = gl_PointCoord - 0.5; float d = length(c);',
       '  if (d > 0.5) discard;',
-      '  float a = smoothstep(0.5, 0.05, d); a *= a; a += smoothstep(0.16, 0.0, d)*0.5;',
+      '  float core = smoothstep(0.2, 0.04, d);',
+      '  float halo = exp(-d*d*20.0)*0.26;',
+      '  float a = core + halo;',
       '  gl_FragColor = vec4(vColor, a*vAlpha);',
       '}'].join('\n');
 
@@ -948,6 +968,30 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); fallback(); });
 
+    // captions: words light up one by one, scrubbed by the same progress as the morph into their shape
+    var caps = [];
+    Array.prototype.slice.call(document.querySelectorAll('.caption')).forEach(function (el) {
+      var k = el.classList.contains('stack-cap') ? STACK : el.classList.contains('exp-cap') ? EXP : 1 + projects.indexOf(el.closest('.project'));
+      var words = el.textContent.trim().split(/\s+/), spans = [];
+      el.textContent = '';
+      words.forEach(function (w, wi) {
+        var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w;
+        el.appendChild(sp); spans.push(sp);
+        if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
+      });
+      caps.push({ k: k, spans: spans, last: -1 });
+    });
+    function lightCaptions(i, T) {
+      for (var c = 0; c < caps.length; c++) {
+        var cp = caps[c], lit = i >= cp.k ? 1 : i === cp.k - 1 ? T : 0;
+        lit = Math.round(lit * 100) / 100;
+        if (lit === cp.last) continue;
+        cp.last = lit;
+        var n = cp.spans.length;
+        for (var w = 0; w < n; w++) cp.spans[w].style.opacity = (0.18 + 0.82 * clamp(lit * (n + 1) - w - 0.5, 0, 1)).toFixed(2);
+      }
+    }
+    var lastDive = 0;
     var lastScrim = '';
     function offsetOf(s, sy) { return [s.off[0], s.off[1] + (sy - s.anchor) * wpp * s.lock, s.off[2]]; }
     function tick(now) {
@@ -978,8 +1022,12 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var lockW = lerp(A.lock, B.lock, T);
       ptr.sx = lerp(ptr.sx, ptr.active ? ptr.x : 0, 0.05); ptr.sy = lerp(ptr.sy, ptr.active ? ptr.y : 0, 0.05);
       var par = 1 - lockW;
-      camera.position.set(ptr.sx * 0.45 * par, ptr.sy * 0.3 * par, CAMZ);
-      camera.lookAt(0, 0, 0);
+      // leaving the hero: the camera dives into the data grid while it re-forms
+      var dive = i === 0 ? Math.sin(Math.PI * T) : 0;
+      camera.position.set(ptr.sx * 0.45 * par, ptr.sy * 0.3 * par - dive * 1.4, CAMZ - dive * 6.5);
+      if (dive > 0 || lastDive > 0) { camera.fov = FOV + dive * 16; camera.updateProjectionMatrix(); lastDive = dive; }
+      camera.lookAt(0, -dive * 0.9, 0);
+      lightCaptions(i, T);
       if (ptr.active) {
         tmp.set(ptr.x, ptr.y, 0.5).unproject(camera).sub(camera.position).normalize();
         var dist = -camera.position.z / tmp.z;

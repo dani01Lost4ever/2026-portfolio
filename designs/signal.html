@@ -68,6 +68,21 @@ section{scroll-margin-top:72px}
 .nav nav a.nav-cta{color:var(--signal);border:1.5px solid var(--signal);margin-left:6px}
 .nav nav a.nav-cta:hover{background:var(--signal);color:var(--ground)}
 
+.telemetry{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:flex;align-items:center;gap:14px;font-size:14px;white-space:nowrap;pointer-events:none}
+.telemetry::before{content:"";width:7px;height:7px;background:var(--signal)}
+.t-stage{color:var(--text);font-weight:600}
+.t-meta{color:var(--muted)}
+.ticks{position:fixed;right:14px;top:50%;transform:translateY(-50%);z-index:15;display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.ticks a{display:flex;align-items:center;justify-content:flex-end;width:28px;height:16px}
+.ticks a::after{content:"";display:block;width:8px;height:2px;background:var(--plan);transition:width .35s ease,background .35s ease}
+.ticks a:hover::after{background:var(--muted)}
+.ticks a.on::after{width:22px;background:var(--signal)}
+.exp-log{grid-column:2;grid-row:2;align-self:stretch;position:relative;padding-top:40px;font-size:14px;color:#3656AE;pointer-events:none;user-select:none}
+.exp-log li{padding:20px 0;transition:color .5s ease}
+.exp-log li:nth-child(2n){padding-left:64px}
+.exp-log li:nth-child(3n){padding-left:28px}
+.exp-log li.on{color:var(--muted)}
+
 /* ---------- shared type ---------- */
 main{position:relative;z-index:2}
 .wrap{max-width:1280px;margin:0 auto;padding:0 var(--gut)}
@@ -175,7 +190,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 .socials a{font-weight:600;text-decoration:none;border-bottom:1.5px solid var(--ground-3);padding-bottom:2px}
 .socials a:hover{border-color:var(--signal)}
 .cta-wrap{margin-top:120px}
-.cta{position:relative;display:block;max-width:780px;margin:0 auto;padding:30px 40px 32px;border-radius:6px;text-decoration:none;background:var(--signal);color:var(--ground);transition:background .7s ease,color .7s ease}
+.cta{position:relative;display:block;max-width:780px;margin:0 auto;padding:30px 40px 32px;border-radius:6px;text-decoration:none;background:var(--signal);color:var(--ground);transition:background .45s ease,color .45s ease}
 .cta-status{display:flex;align-items:baseline;gap:12px;font-size:15px;font-weight:600;height:28px;line-height:28px}
 .cta-status .code{font-family:var(--display);font-size:22px;font-weight:700;letter-spacing:-.02em}
 .cta-status .s-wait{display:none}
@@ -200,6 +215,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
   .nav{padding:0 14px 0 18px;height:58px}
   .nav nav a{padding:7px 8px;font-size:14px}
   .nav nav a.nav-cta{margin-left:2px}
+  .ticks,.exp-log{display:none}
   .hero{padding:104px 0 56px;min-height:0}
   .hero-grid{grid-template-columns:1fr;gap:0}
   .hero h1{font-size:clamp(58px,17vw,84px)}
@@ -240,6 +256,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
   .now{flex-direction:column;gap:14px}
   #route .lit{stroke-width:2.2}
 }
+@media (max-width:1179px){.telemetry{display:none}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{transition:none!important;animation:none!important}
@@ -250,12 +267,17 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 
 <header class="nav">
   <a class="logo" href="#top" aria-label="Daniel Busetto, back to top"><span class="mark" aria-hidden="true"></span>Daniel Busetto</a>
+  <p class="telemetry" aria-hidden="true"><span class="t-stage">Request queued</span><span class="t-meta">0 of 6 hops · 0 ms</span></p>
   <nav aria-label="Primary">
     <a href="#work">Work</a>
     <a href="#about">About</a>
     <a class="nav-cta" href="#contact">Contact</a>
   </nav>
 </header>
+
+<nav class="ticks" aria-label="Sections">
+  <a href="#top" aria-label="Intro"></a><a href="#work" aria-label="Selected work"></a><a href="#about" aria-label="About"></a><a href="#experience" aria-label="Experience"></a><a href="#contact" aria-label="Contact"></a>
+</nav>
 
 <div class="route-layer" aria-hidden="true">
   <svg id="route" xmlns="http://www.w3.org/2000/svg" width="0" height="0">
@@ -418,6 +440,14 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
           <ul class="tags"><li>Next.js</li><li>C#</li><li>SQL</li><li>MongoDB</li></ul>
         </article>
       </div>
+      <ul class="exp-log" aria-hidden="true">
+        <li>merge: branch education into main</li>
+        <li>feat(api): tasklogs collection per job</li>
+        <li>fix: back off on Cloudflare 429</li>
+        <li>refactor: share Zod schemas on both ends</li>
+        <li>chore: compose up, five services</li>
+        <li>feat(mcp): nine tools for bug triage</li>
+      </ul>
       <div class="exp-edu">
         <p class="kicker">Education</p>
         <article class="commit edu">
@@ -675,6 +705,9 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 
   /* ---------- state ---------- */
   var routes = [], A, B, T, lanes = [], triggers = [], heads = [], built = false;
+  var hopInfo = [], stageV = {}, sectionTops = [];
+  var tStage = document.querySelector('.t-stage'), tMeta = document.querySelector('.t-meta');
+  var tickEls = document.querySelectorAll('.ticks a'), lastStage = '', lastMeta = '', lastTick = -1;
   var state = { p: 0 };
   var mobile = false;
 
@@ -697,12 +730,12 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     routes.push(r);
     return r;
   }
-  function trig(v, node, cls){ triggers.push({ v: v, el: node, cls: cls || 'on', on: null }); }
+  function trig(v, node, cls, v2){ triggers.push({ v: v, v2: v2 == null ? Infinity : v2, el: node, cls: cls || 'on', on: null }); }
 
   /* ---------- build the whole geometry from real DOM positions ---------- */
   function build(){
     gPlan.textContent = ''; gLit.textContent = ''; gDeco.textContent = ''; gNodes.textContent = '';
-    routes = []; lanes = []; triggers = []; drones = [];
+    routes = []; lanes = []; triggers = []; drones = []; hopInfo = [];
     var W = document.documentElement.clientWidth;
     var H = document.querySelector('main').offsetHeight;
     var vh = window.innerHeight;
@@ -749,6 +782,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
         el('line', { x1: (spine - dir*1.38*R).toFixed(1), y1: cy, x2: (edge + dir*6).toFixed(1), y2: cy, 'class': 'conn' }, g);
       }
       trig(vStart + (vEndG - vStart) * 0.3, hop);
+      hopInfo.push({ v: vStart + (vEndG - vStart) * 0.3, title: hop.querySelector('.hop-title').textContent });
       trig(vEndG - a * 0.6, g);
     }
 
@@ -821,6 +855,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var forkY = eduBox.y - (mobile ? 14 : 10);
     var forkH = mobile ? 44 : 80;
     B.to(spine, forkY); B.mark(forkY);
+    stageV.fork = B.vEnd();
     B.cubic(spine, forkY + forkH * 0.55, bx, forkY + forkH * 0.45, bx, forkY + forkH);
     B.mark(forkY + forkH);
     for (var e = 0; e < edus.length; e++) commitNode(edus[e], bx, mobile ? 1 : -1);
@@ -829,6 +864,11 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     B.to(bx, rejoinStart); B.mark(rejoinStart);
     B.cubic(bx, rejoinStart + (rejoinY - rejoinStart) * 0.55, spine, rejoinStart + (rejoinY - rejoinStart) * 0.45, spine, rejoinY);
     B.mark(rejoinY);
+    stageV.rejoin = B.vEnd();
+    if (!mobile){
+      var logs = document.querySelectorAll('.exp-log li');
+      for (var lg = 0; lg < logs.length; lg++){ var lgy = box(logs[lg]).cy; trig(lgy - 50, logs[lg], 'on', lgy + 110); }
+    }
     // main line keeps running alongside the branch (git graph)
     T = new Route().start(spine, forkY, B.A.filter(function(q){ return q[0] >= forkY; })[0][0]);
     T.to(spine, rejoinY); T.mark(rejoinY);
@@ -856,12 +896,14 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
       B.to(rx + cr, ry + rh); B.arc(rx + cr, ry + rh - cr, cr, PI/2, PI);
       B.to(rx, my);
     }
+    stageV.arrive = B.vEnd();
     endV = Math.max(B.vEnd() + 40, Math.min(B.vEnd() + 340, tipMax - 8));
     B.mark(endV);
     addRoute(B);
     addRoute(T);
     B.endV = endV;
 
+    sectionTops = ['top', 'work', 'about', 'experience', 'contact'].map(function(id){ return box(document.getElementById(id)).y; });
     built = true;
     builtH = H;
     render(true);
@@ -916,9 +958,36 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var done = B.drawn >= B.len() - 0.5;
     svg.classList.toggle('done', done);
     ctaEl.classList.toggle('resolved', done);
+    telemetry(v, idle, done);
     for (var t = 0; t < triggers.length; t++){
-      var tr = triggers[t], on = v >= tr.v;
+      var tr = triggers[t], on = v >= tr.v && v < tr.v2;
       if (on !== tr.on){ tr.on = on; tr.el.classList.toggle(tr.cls, on); }
+    }
+  }
+
+  function telemetry(v, idle, done){
+    var hopsOn = 0, lastHop = null;
+    for (var i = 0; i < hopInfo.length; i++) if (v >= hopInfo[i].v){ hopsOn++; lastHop = hopInfo[i].title; }
+    var stage;
+    if (idle) stage = 'Request queued';
+    else if (v < A.vEnd()) stage = lastHop ? 'Passing through ' + lastHop : 'Request in flight';
+    else if (v < lanes[0].vEnd()) stage = 'Fanning out across the stack';
+    else if (v < stageV.fork) stage = 'Committing to main';
+    else if (v < stageV.rejoin) stage = 'On the education branch';
+    else if (v < stageV.arrive) stage = 'Heading for contact';
+    else if (!done) stage = 'Building the response';
+    else stage = '200 OK, response delivered';
+    var drawn = 0;
+    for (var r = 0; r < routes.length; r++) drawn += Math.max(0, routes[r].drawn);
+    var meta = hopsOn + ' of ' + hopInfo.length + ' hops · ' + Math.round(drawn / 16) + ' ms';
+    if (stage !== lastStage){ lastStage = stage; tStage.textContent = stage; }
+    if (meta !== lastMeta){ lastMeta = meta; tMeta.textContent = meta; }
+    var y = window.scrollY + window.innerHeight * 0.5, k = 0;
+    for (var s = 0; s < sectionTops.length; s++) if (y >= sectionTops[s]) k = s;
+    if (window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4) k = sectionTops.length - 1;
+    if (k !== lastTick){
+      for (var q = 0; q < tickEls.length; q++) tickEls[q].classList.toggle('on', q === k);
+      lastTick = k;
     }
   }
 
@@ -936,7 +1005,6 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 
   /* ---------- boot ---------- */
   var builtH = 0;
-  window.__signal = { state: state, v: function(){ return currentV(); } };
   function boot(){
     document.documentElement.classList.add('anim');
     build();
@@ -944,7 +1012,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
       gsap.registerPlugin(ScrollTrigger);
       gsap.to(state, {
         p: 1, ease: 'none', onUpdate: render,
-        scrollTrigger: { trigger: document.body, start: 'top top', end: 'bottom bottom', scrub: 0.6, invalidateOnRefresh: true }
+        scrollTrigger: { start: 0, end: function(){ return ScrollTrigger.maxScroll(window); }, scrub: 0.6, invalidateOnRefresh: true }
       });
       ScrollTrigger.addEventListener('refresh', function(){ render(true); });
       gsap.ticker.add(function(time){ if (drones.length) tickDrones(time); });
@@ -953,6 +1021,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
       (function loop(ts){ tickDrones(ts / 1000); requestAnimationFrame(loop); })(0);
     } else {
       tickDrones(0);
+      window.addEventListener('scroll', function(){ if (built) telemetry(1e9, false, true); }, { passive: true });
     }
     render(true);
 
