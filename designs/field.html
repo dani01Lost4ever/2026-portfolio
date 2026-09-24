@@ -97,22 +97,14 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .sub{font-family:var(--display);font-weight:380;font-size:clamp(1.1rem,1.5vw,1.35rem);line-height:1.35;color:var(--peach);margin:14px 0 18px;font-variation-settings:"SOFT" 100}
 .desc{color:var(--ink-2);margin:0 0 26px;font-size:1rem}
 .desc{margin-bottom:8px}
-.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(200px,21vw,300px);gap:clamp(16px,2vw,32px);align-items:center}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(236px,24vw,300px);gap:clamp(16px,2vw,32px);align-items:center}
 .foot-text{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
 .results{display:grid;gap:14px;margin:0;padding:0}
 .results dt{font-family:var(--display);font-size:1.45rem;font-weight:400;line-height:1.1}
 .results dd{margin:3px 0 0;font-size:.78rem;color:var(--ink-3);line-height:1.35}
-/* slot reserved for the rotating tech cube component (integrated separately) */
-.tech-cube-slot{
-  width:100%;aspect-ratio:1;position:relative;
-  --c:rgba(175,203,199,.28);
-  background:
-    linear-gradient(var(--c),var(--c)) 0 0/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 0/1px 18px no-repeat,
-    linear-gradient(var(--c),var(--c)) 100% 0/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 0/1px 18px no-repeat,
-    linear-gradient(var(--c),var(--c)) 0 100%/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 100%/1px 18px no-repeat,
-    linear-gradient(var(--c),var(--c)) 100% 100%/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 100%/1px 18px no-repeat,
-    radial-gradient(closest-side,rgba(114,228,213,.07),transparent);
-}
+/* tech cube slot: holds one TechCube (inlined below); keeps its square even without JS */
+.tech-cube-slot{width:100%;aspect-ratio:1;position:relative}
+html:not(.js) .tech-cube-slot{visibility:hidden}
 .sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
 html.js:not(.static) body{touch-action:pan-y pinch-zoom}
 html.dragging,html.dragging *{cursor:grabbing!important;user-select:none}
@@ -165,6 +157,145 @@ html.dragging,html.dragging *{cursor:grabbing!important;user-select:none}
 footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--ink-3);padding-top:10vh}
 footer a{text-decoration:none}
 
+/* ---------- TechCube component (inlined) ---------- */
+/* TechCube: four glass slabs that turn to show each project's stack.
+   Size: set --techcube-size (desktop) / --techcube-size-sm (<=700px) on any ancestor,
+   or create with { fit: true } to size the cube from its container. */
+.tc{
+  --tc-size:var(--techcube-size,272px);
+  --tc-g:calc(var(--tc-size) * .034);
+  --tc-h:calc((var(--tc-size) - 3 * var(--tc-g)) / 4);
+  --tc-half:calc(var(--tc-size) / 2);
+  --tc-ink:#EAF4F1;
+  --tc-ink-2:#AFCBC7;
+  --tc-display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --tc-body:"Manrope","Segoe UI",system-ui,sans-serif;
+  position:relative;
+  width:calc(var(--tc-size) * 1.62);
+  height:calc(var(--tc-size) * 1.78);
+  margin:0 auto;
+  touch-action:pan-y;
+  cursor:grab;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+  border-radius:4px;
+}
+.tc.tc-fit{width:100%;height:100%}
+.tc.is-dragging{cursor:grabbing}
+.tc:focus-visible{box-shadow:0 0 0 2px rgba(255,184,138,.9)}
+@media (max-width:700px){ .tc{--tc-size:var(--techcube-size-sm,170px)} }
+
+.tc-stage{position:absolute;inset:0;perspective:calc(var(--tc-size) * 7);perspective-origin:50% 42%;pointer-events:none}
+/* soft ambient light behind the object (flat, never moves) */
+.tc-halo{
+  position:absolute;left:50%;top:58%;width:calc(var(--tc-size) * 1.9);height:calc(var(--tc-size) * 1.2);
+  transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side,rgba(94,216,203,.13),rgba(94,216,203,.04) 55%,transparent);
+}
+.tc-rig,.tc-body,.tc-slab,.tc-rot{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.tc-rig{left:50%;top:45%}
+.tc-slab{transform:translate3d(0,calc((var(--i) - 1.5) * (var(--tc-h) + var(--tc-g))),0)}
+
+.tc-face{
+  position:absolute;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-sizing:border-box;
+}
+.tc-side{
+  width:var(--tc-size);height:var(--tc-h);
+  left:calc(var(--tc-size) / -2);top:calc(var(--tc-h) / -2);
+  background:
+    linear-gradient(180deg,rgba(var(--tc-acc),.10),rgba(var(--tc-acc),0) 46%),
+    linear-gradient(160deg,rgba(18,70,77,.74),rgba(5,31,37,.87));
+  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.46),inset 0 0 calc(var(--tc-size) * .06) rgba(var(--tc-acc),.10);
+}
+.tc-f0{transform:translateZ(var(--tc-half))}
+.tc-f1{transform:rotateY(90deg) translateZ(var(--tc-half))}
+.tc-f2{transform:rotateY(180deg) translateZ(var(--tc-half))}
+.tc-f3{transform:rotateY(-90deg) translateZ(var(--tc-half))}
+.tc-lid{
+  width:var(--tc-size);height:var(--tc-size);
+  left:calc(var(--tc-size) / -2);top:calc(var(--tc-size) / -2);
+  background:
+    radial-gradient(rgba(114,228,213,.20) 1px,transparent 1.5px) 0 0/calc(var(--tc-size) / 13) calc(var(--tc-size) / 13),
+    radial-gradient(closest-side,rgba(var(--tc-acc),.14),transparent),
+    linear-gradient(135deg,rgba(22,80,86,.84),rgba(7,38,44,.90));
+  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.52),inset 0 0 calc(var(--tc-size) * .09) rgba(var(--tc-acc),.12);
+}
+.tc-top{transform:rotateX(90deg) translateZ(calc(var(--tc-h) / 2))}
+.tc-bot{transform:rotateX(-90deg) translateZ(calc(var(--tc-h) / 2))}
+.tc-bot::after{content:"";position:absolute;inset:0;background:rgba(2,14,17,.55)}
+
+/* lighting: JS sets opacity per frame from the face normal */
+.tc-shade{position:absolute;inset:0;background:#02100F;opacity:0}
+.tc i{font-style:normal}
+
+/* label text */
+.tc-txt{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  gap:calc(var(--tc-size) * .016);
+  padding:0 calc(var(--tc-size) * .075);
+  opacity:0;
+}
+.tc-label{
+  display:flex;align-items:center;gap:calc(var(--tc-size) * .026);
+  font:600 max(9px,calc(var(--tc-size) * .04))/1 var(--tc-body);
+  letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;overflow:hidden;
+  color:rgb(var(--tc-acc));
+}
+.tc-label::before{
+  content:"";flex:none;width:max(5px,calc(var(--tc-size) * .021));height:max(5px,calc(var(--tc-size) * .021));
+  border-radius:1px;background:currentColor;box-shadow:0 0 8px currentColor;
+}
+.tc-label:empty{display:none}
+.tc-tech{
+  font-family:var(--tc-display);font-weight:430;
+  font-variation-settings:"SOFT" 60,"opsz" 36;
+  font-size:calc(var(--tc-size) * .088 * var(--fit,1));
+  line-height:1.04;letter-spacing:-.012em;white-space:pre;color:var(--tc-ink);
+}
+
+/* luminous edges + travelling glint */
+.tc-edge{position:absolute;left:0;right:0;height:3px;overflow:hidden;
+  background:linear-gradient(rgba(var(--tc-acc),.5),rgba(var(--tc-acc),.5)) 0 0/100% 1px no-repeat}
+.tc-et{top:0}
+.tc-eb{bottom:0;opacity:.6;background-position:0 100%}
+.tc-spark{
+  position:absolute;left:0;top:0;width:36%;height:100%;
+  background:radial-gradient(50% 100% at 50% 0,rgba(255,247,240,1),rgba(255,226,200,.4) 45%,transparent);
+  transform:translate3d(-110%,0,0);
+  animation:tc-sweep 8s linear infinite;
+  animation-delay:calc(var(--d, 0) * 1s);
+}
+@keyframes tc-sweep{
+  0%{transform:translate3d(-110%,0,0)}
+  24%{transform:translate3d(290%,0,0)}
+  100%{transform:translate3d(290%,0,0)}
+}
+.tc-eb .tc-spark{background:radial-gradient(50% 100% at 50% 100%,rgba(255,247,240,1),rgba(255,226,200,.4) 45%,transparent)}
+
+/* ground light under the object */
+.tc-floor{
+  position:absolute;
+  width:calc(var(--tc-size) * 2.3);height:calc(var(--tc-size) * 2.3);
+  left:calc(var(--tc-size) * -1.15);top:calc(var(--tc-size) * -1.15);
+  transform:translate3d(0,calc(var(--tc-size) * .64),0) rotateX(90deg);
+  background:
+    radial-gradient(closest-side,rgba(1,12,14,.62),rgba(1,12,14,0) 48%),
+    radial-gradient(closest-side,rgba(94,216,203,.30),rgba(94,216,203,.10) 46%,rgba(255,138,106,.05) 64%,transparent 76%);
+}
+
+/* text alternative */
+.tc-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.tc-measure{position:absolute;left:0;top:0;width:max-content;visibility:hidden;pointer-events:none;white-space:pre;
+  font-family:var(--tc-display);font-weight:430;font-variation-settings:"SOFT" 60,"opsz" 36;font-size:100px;letter-spacing:-.012em;line-height:1}
+
+.tc.tc-still .tc-spark{animation:none;opacity:0}
+@media (prefers-reduced-motion:reduce){
+  .tc-spark{animation:none;opacity:0}
+}
+
 /* static fallback: soft glows where clusters would be */
 html.static .copy,html.static .hero-inner,html.static .work-intro,html.static .about-intro,html.static .exp,html.static .contact-inner{text-shadow:none}
 html.static .spot{background:radial-gradient(circle at 50% 50%,rgba(255,184,138,.55) 0 2px,transparent 3px) 0 0/18px 18px,radial-gradient(closest-side,rgba(114,228,213,.28),transparent)}
@@ -185,7 +316,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   .stack-cap{position:static;transform:none;width:auto;text-align:left;margin-top:12px}
   .project[data-side="right"]{justify-content:flex-start}
   .copy{width:100%}
-  .foot{grid-template-columns:minmax(0,1fr) minmax(0,min(46%,300px));gap:16px}
+  .foot{grid-template-columns:1fr;gap:8px}
+  .tech-cube-slot{aspect-ratio:auto;height:clamp(250px,34vh,320px);max-width:420px;justify-self:center;margin-top:4px}
   .results dt{font-size:1.2rem}
   .about-intro{grid-template-columns:1fr;padding:7vh 20px 4vh;gap:22px}
   .stack{grid-template-columns:1fr;grid-template-rows:none;min-height:auto;padding:4vh 20px 8vh;gap:10px}
@@ -266,9 +398,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="https://github.com/dani01Lost4ever/BugPilot">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="TypeScript|React 19|Express|MongoDB|BullMQ|Docker|MCP" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>TypeScript</li><li>React 19</li><li>Express</li><li>MongoDB</li><li>BullMQ</li><li>Docker</li><li>MCP</li></ul>
+        <ul class="sr-only" aria-label="BugPilot architecture, top to bottom"><li>Client: Embed widget</li><li>API: Express</li><li>Worker: BullMQ + Claude</li><li>Storage: MongoDB · Redis · MinIO</li></ul>
       </div>
     </article>
 
@@ -288,9 +420,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="http://theloop.techdani.cc/">Read The Loop <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="Next.js 15|TypeScript|Payload CMS|Postgres|Meilisearch|Docker" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>Next.js 15</li><li>TypeScript</li><li>Payload CMS</li><li>Postgres</li><li>Meilisearch</li><li>Docker</li></ul>
+        <ul class="sr-only" aria-label="The Loop architecture, top to bottom"><li>Front: Next.js 15</li><li>CMS: Payload v3</li><li>Search: Meilisearch</li><li>Data: Postgres</li></ul>
       </div>
     </article>
 
@@ -310,9 +442,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="https://sfco.techdani.cc/">Play the build <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="TypeScript|React|Fastify|WebSocket|Zustand|Turborepo|Fly.io" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>TypeScript</li><li>React</li><li>Fastify</li><li>WebSocket</li><li>Zustand</li><li>Turborepo</li><li>Fly.io</li></ul>
+        <ul class="sr-only" aria-label="Stellar Freight Co. architecture, top to bottom"><li>Client: React + Zustand</li><li>Protocol: Zod wire schemas</li><li>Server: Fastify tick sim</li><li>Deploy: Fly.io</li></ul>
       </div>
     </article>
 
@@ -332,9 +464,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="https://github.com/dani01Lost4ever/AuroraTrader">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="Node.js|TypeScript|Claude AI|Alpaca API|MongoDB|Ollama|QLoRA" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>Node.js</li><li>TypeScript</li><li>Claude AI</li><li>Alpaca API</li><li>MongoDB</li><li>Ollama</li><li>QLoRA</li></ul>
+        <ul class="sr-only" aria-label="AuroraTrader architecture, top to bottom"><li>Dashboard: React + Recharts</li><li>API: Express</li><li>Agent: Claude → Ollama</li><li>Data: MongoDB</li></ul>
       </div>
     </article>
 
@@ -354,9 +486,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="https://github.com/dani01Lost4ever/cloudflare-ddns-client">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="Python|Flask|Docker|Cloudflare API|REST API|Gunicorn" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>Python</li><li>Flask</li><li>Docker</li><li>Cloudflare API</li><li>REST API</li><li>Gunicorn</li></ul>
+        <ul class="sr-only" aria-label="Cloudflare DDNS architecture, top to bottom"><li>Dashboard: Flask</li><li>State: status.json</li><li>Daemon: Python poller</li><li>Upstream: Cloudflare API</li></ul>
       </div>
     </article>
 
@@ -376,9 +508,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
             </dl>
             <a class="link" href="https://github.com/dani01Lost4ever/agendash-3">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
           </div>
-          <div class="tech-cube-slot" data-tech="Node.js|Express|MongoDB|Mongoose|Agenda.js|npm" aria-hidden="true"></div>
+          <div class="tech-cube-slot"></div>
         </div>
-        <ul class="sr-only" aria-label="Technologies"><li>Node.js</li><li>Express</li><li>MongoDB</li><li>Mongoose</li><li>Agenda.js</li><li>npm</li></ul>
+        <ul class="sr-only" aria-label="Agendash 3 architecture, top to bottom"><li>UI: Bootstrap</li><li>Middleware: Express · Hapi · Koa · Fastify</li><li>Scheduler: Agenda.js</li><li>Logs: MongoDB tasklogs</li></ul>
       </div>
     </article>
   </section>
@@ -469,11 +601,427 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script>
+/*!
+ * TechCube: an isometric cube of four glass slabs. For each project the slabs turn 90deg,
+ * top first, to put that project's architecture layers on the front face.
+ * No dependencies. Global: window.TechCube (also CommonJS export).
+ *
+ *   const cube = TechCube.create(el, { projects: [{ name, layers: [{ label, tech }] x4 }] });
+ *   cube.setProgress(p)   // p in [0, projects.length - 1]; integers rest, fractions turn
+ */
+(function (root, factory) {
+  var api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.TechCube = api;
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  var DEG = Math.PI / 180;
+  var SLABS = 4;
+  /* slab edge/caption colours, top to bottom: Field's aqua point colour to its peach */
+  var ACC = ["94,216,203", "154,219,192", "255,184,138", "255,138,106"];
+  /* light direction (screen space, y down), normalised: upper left, in front */
+  var LV = (function () { var x = -0.5, y = -0.7, z = 0.85, l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; })();
+
+  /* turn timing, in units of p: the turn for k -> k+1 occupies [k+ZS, k+ZS+ZW] */
+  var ZS = 0.15, ZW = 0.7, DUR = 0.46, STAG = (ZW - DUR) / (SLABS - 1);
+  var BASE_PITCH = -24, BASE_YAW = -36;
+  var TECH = 0.088, AVAIL = 0.85; /* tech font size and usable face width, as fractions of cube size */
+
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function smooth(t) { return t * t * (3 - 2 * t); }
+  function backOut(t, c1) { var c3 = c1 + 1, u = t - 1; return 1 + c3 * u * u * u + c1 * u * u; }
+  /* gentle start, slight overshoot, soft settle */
+  function turnEase(t) { return backOut(smooth(t), 1.25); }
+
+  function el(tag, cls, parent) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  function create(container, options) {
+    if (!container) throw new Error("TechCube.create: container element required");
+    var opts = options || {};
+    var projects = (opts.projects || []).map(function (p) {
+      return { name: String(p.name || ""), layers: (p.layers || []).slice(0, SLABS).map(function (l) {
+        return { label: String(l.label || ""), tech: String(l.tech || "") };
+      }) };
+    });
+    var n = projects.length;
+    var smoothing = opts.smoothing == null ? 0.09 : Math.max(0, +opts.smoothing);
+    var fit = !!opts.fit;
+    var mqReduce = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+    var reduce = opts.reducedMotion != null ? !!opts.reducedMotion : mqReduce.matches;
+
+    /* ---------- DOM ---------- */
+    var rootEl = el("div", "tc" + (fit ? " tc-fit" : ""));
+    rootEl.tabIndex = 0;
+    rootEl.setAttribute("role", "group");
+    rootEl.setAttribute("aria-roledescription", "architecture cube");
+    var stage = el("div", "tc-stage", rootEl);
+    stage.setAttribute("aria-hidden", "true");
+    el("div", "tc-halo", stage);
+    var rig = el("div", "tc-rig", stage);
+    el("div", "tc-floor", rig);
+    var body = el("div", "tc-body", rig);
+    var measure = el("span", "tc-measure", rootEl);
+    measure.setAttribute("aria-hidden", "true");
+    var sr = el("div", "tc-sr", rootEl);
+    sr.setAttribute("aria-live", "polite");
+    var srTitle = el("p", "", sr), srList = el("ul", "", sr);
+
+    var slabs = [];
+    for (var i = 0; i < SLABS; i++) {
+      var slab = el("div", "tc-slab", body);
+      slab.style.setProperty("--i", i);
+      slab.style.setProperty("--tc-acc", ACC[i]);
+      var rot = el("div", "tc-rot", slab);
+      var faces = [];
+      for (var f = 0; f < 4; f++) {
+        var face = el("div", "tc-face tc-side tc-f" + f, rot);
+        var shade = el("i", "tc-shade", face);
+        var txt = el("div", "tc-txt", face);
+        var lab = el("span", "tc-label", txt), tech = el("span", "tc-tech", txt);
+        /* the glint runs round each slab's perimeter, cascading from the top slab down */
+        for (var e = 0; e < 2; e++) {
+          var edge = el("i", "tc-edge " + (e ? "tc-eb" : "tc-et"), face);
+          var sp = el("i", "tc-spark", edge);
+          sp.style.setProperty("--d", (-(8 - (f * 1.92 + i * 0.42 + e * 0.12)) % 8).toFixed(2));
+        }
+        faces.push({ el: face, shade: shade, txt: txt, lab: lab, tech: tech, m: null, c: {} });
+      }
+      el("div", "tc-face tc-lid tc-top", rot);
+      el("div", "tc-face tc-lid tc-bot", rot);
+      slabs.push({ el: slab, rot: rot, faces: faces, a: 0, c: {} });
+    }
+    container.appendChild(rootEl);
+    if (reduce) rootEl.classList.add("tc-still");
+
+    /* ---------- text fitting (measured once per font load / resize, never per frame) ---------- */
+    var fits = []; /* fits[project][layer] = { text, fit } */
+    function measureEm(s) { measure.textContent = s; return measure.getBoundingClientRect().width / 100; }
+    function computeFits() {
+      fits = projects.map(function (p) {
+        return p.layers.map(function (l) {
+          var t = l.tech, w1 = measureEm(t) || 1;
+          var fit1 = Math.min(1, AVAIL / (TECH * w1));
+          var best = { text: t, fit: fit1 };
+          if (fit1 < 0.76) {
+            /* try two lines, broken at the separator nearest the middle */
+            var re = /\s[·+→\/|&]\s|\s/g, m, cands = [];
+            while ((m = re.exec(t))) cands.push([m.index, m[0]]);
+            cands.forEach(function (c) {
+              var sep = c[1].trim();
+              var a = t.slice(0, c[0]) + (sep ? " " + sep : ""), b = t.slice(c[0] + c[1].length);
+              var wm = Math.max(measureEm(a), measureEm(b)) || 1;
+              var f2 = Math.min(0.74, AVAIL / (TECH * wm));
+              if (f2 > best.fit + 0.02) best = { text: a + "\n" + b, fit: f2 };
+            });
+          }
+          return best;
+        });
+      });
+      measure.textContent = "";
+      slabs.forEach(function (s) { s.faces.forEach(function (fc) { fc.m = null; }); });
+    }
+
+    /* ---------- state ---------- */
+    var target = 0, shown = 0, current = -1;
+    var clock = 0, last = 0, raf = 0, visible = true, destroyed = false;
+    var sizePx = 272;
+    var drag = { on: false, id: null, x: 0, y: 0, rawY: 0, rawX: 0, t: 0 };
+    /* yaw/pitch offsets from dragging (with inertia + spring) and hovering */
+    var sp = { y: 0, x: 0, vy: 0, vx: 0 };
+    var hov = { y: 0, x: 0, ty: 0, tx: 0 };
+    var LY = 70, LX = 20, hovRect = null;
+
+    function setStyle(obj, cache, prop, v) { if (cache[prop] !== v) { obj.style[prop] = v; cache[prop] = v; } }
+
+    function slabAngle(i, p) {
+      if (reduce) return Math.round(p);
+      var q = p - ZS - i * STAG, k = Math.floor(q), t = clamp((q - k) / DUR, 0, 1);
+      return k + (t >= 1 ? 1 : turnEase(t));
+    }
+
+    function writeFace(fc, i, m) {
+      fc.m = m;
+      var L = m >= 0 && m < n ? projects[m].layers[i] : null;
+      if (!L) { fc.lab.textContent = ""; fc.tech.textContent = ""; return; }
+      var ft = fits[m] && fits[m][i] ? fits[m][i] : { text: L.tech, fit: 1 };
+      fc.lab.textContent = L.label;
+      fc.tech.textContent = ft.text;
+      fc.tech.style.setProperty("--fit", ft.fit.toFixed(3));
+    }
+
+    function announce(k) {
+      if (k === current || !n) return;
+      current = k;
+      var p = projects[k];
+      rootEl.setAttribute("aria-label", p.name + " architecture. Drag or use the arrow keys to turn the cube.");
+      srTitle.textContent = p.name + ", architecture from top to bottom:";
+      srList.textContent = "";
+      p.layers.forEach(function (l) { var li = el("li", "", srList); li.textContent = l.label + ": " + l.tech; });
+      if (typeof opts.onChange === "function") opts.onChange(k, p);
+    }
+
+    function render() {
+      var sway = reduce ? 0 : 1;
+      var yaw = BASE_YAW + sway * (5.5 * Math.sin(clock * 0.37) + 1.5 * Math.sin(clock * 0.83)) + sp.y + hov.y;
+      var pitch = BASE_PITCH + sway * 1.6 * Math.sin(clock * 0.51) + sp.x + hov.x;
+      var bob = sway * sizePx * 0.016 * Math.sin(clock * 0.9);
+      setStyle(rig, rig._c || (rig._c = {}), "transform", "rotateX(" + pitch.toFixed(2) + "deg) rotateY(" + yaw.toFixed(2) + "deg)");
+      setStyle(body, body._c || (body._c = {}), "transform", "translate3d(0," + bob.toFixed(2) + "px,0)");
+      var cy = Math.cos(yaw * DEG), sy = Math.sin(yaw * DEG), cp = Math.cos(pitch * DEG), spn = Math.sin(pitch * DEG);
+      for (var i = 0; i < SLABS; i++) {
+        var s = slabs[i], a = slabAngle(i, shown);
+        s.a = a;
+        setStyle(s.rot, s.c, "transform", "rotateY(" + (-90 * a).toFixed(2) + "deg)");
+        for (var f = 0; f < 4; f++) {
+          var fc = s.faces[f];
+          /* which project this face carries: the one it faces front for, switched only
+             while the face points straight back (relative position -1.5 / +2.5) */
+          var m = f + 4 * Math.ceil((a - 1.5 - f) / 4);
+          if (m !== fc.m) writeFace(fc, i, m);
+          /* normal in rig space, then rig rotation (rotateX(pitch) rotateY(yaw)) */
+          var phi = 90 * (f - a) * DEG, nx0 = Math.sin(phi), nz0 = Math.cos(phi);
+          var nx = nx0 * cy + nz0 * sy, nz1 = -nx0 * sy + nz0 * cy;
+          var ny = -nz1 * spn, nz = nz1 * cp;
+          var d = Math.max(0, nx * LV[0] + ny * LV[1] + nz * LV[2]);
+          setStyle(fc.shade, fc.c, "opacity", (0.62 * (1 - d)).toFixed(2));
+          /* text: fades toward grazing angles, and the not-current project reads quieter */
+          var facing = clamp((nz - 0.1) / 0.38, 0, 1);
+          var w = 1 - Math.min(1, Math.abs(m - a));
+          setStyle(fc.txt, fc.c, "opacity", (facing * (0.42 + 0.58 * w)).toFixed(2));
+        }
+      }
+    }
+
+    function stepPhysics(dt) {
+      var busy = false;
+      if (!drag.on) {
+        var K = reduce ? 60 : 30, C = reduce ? 2 * Math.sqrt(60) : 5.6;
+        sp.vy += (-K * sp.y - C * sp.vy) * dt; sp.y += sp.vy * dt;
+        sp.vx += (-K * sp.x - C * sp.vx) * dt; sp.x += sp.vx * dt;
+        if (Math.abs(sp.y) + Math.abs(sp.x) + Math.abs(sp.vy) + Math.abs(sp.vx) < 0.02) { sp.y = sp.x = sp.vy = sp.vx = 0; }
+        else busy = true;
+      } else busy = true;
+      var kh = 1 - Math.exp(-dt / 0.28);
+      hov.y += (hov.ty - hov.y) * kh; hov.x += (hov.tx - hov.x) * kh;
+      if (Math.abs(hov.ty - hov.y) + Math.abs(hov.tx - hov.x) > 0.01) busy = true;
+      var ks = reduce || !smoothing ? 1 : 1 - Math.exp(-dt / smoothing);
+      shown += (target - shown) * ks;
+      if (Math.abs(target - shown) < 1e-4) shown = target; else busy = true;
+      return busy;
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (destroyed) return;
+      var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
+      last = now;
+      if (!reduce) clock += dt;
+      var busy = stepPhysics(dt);
+      render();
+      /* idle life keeps the loop running; with reduced motion it sleeps once settled */
+      if (visible && (!reduce || busy)) raf = requestAnimationFrame(frame);
+      else last = 0;
+    }
+    function wake() { if (!raf && !destroyed && visible) { last = 0; raf = requestAnimationFrame(frame); } }
+
+    /* ---------- pointer: drag with inertia + spring back; hover tilt ---------- */
+    function atanhc(v) { v = clamp(v, -0.995, 0.995); return 0.5 * Math.log((1 + v) / (1 - v)); }
+    function onDown(e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      drag.on = true; drag.id = e.pointerId; drag.x = e.clientX; drag.y = e.clientY; drag.t = performance.now();
+      drag.rawY = LY * atanhc(sp.y / LY); drag.rawX = LX * atanhc(sp.x / LX);
+      sp.vy = sp.vx = 0;
+      try { rootEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      rootEl.classList.add("is-dragging");
+      wake();
+    }
+    function onMove(e) {
+      if (drag.on && e.pointerId === drag.id) {
+        var now = performance.now(), dt = Math.max(0.001, (now - drag.t) / 1000);
+        drag.rawY += (e.clientX - drag.x) * 0.5;
+        drag.rawX += -(e.clientY - drag.y) * 0.28;
+        drag.x = e.clientX; drag.y = e.clientY; drag.t = now;
+        var ny = LY * Math.tanh(drag.rawY / LY), nx = LX * Math.tanh(drag.rawX / LX);
+        var vy = (ny - sp.y) / dt, vx = (nx - sp.x) / dt;
+        sp.vy = sp.vy * 0.6 + vy * 0.4; sp.vx = sp.vx * 0.6 + vx * 0.4;
+        sp.y = ny; sp.x = nx;
+        wake();
+      } else if (e.pointerType === "mouse" && !drag.on) {
+        var r = hovRect || (hovRect = rootEl.getBoundingClientRect());
+        var hx = clamp((e.clientX - r.left) / r.width * 2 - 1, -1, 1), hy = clamp((e.clientY - r.top) / r.height * 2 - 1, -1, 1);
+        hov.ty = hx * 7; hov.tx = -hy * 5;
+        wake();
+      }
+    }
+    function onUp(e) {
+      if (!drag.on || e.pointerId !== drag.id) return;
+      drag.on = false;
+      /* no movement in the last 90ms means the pointer stopped: no fling */
+      if (performance.now() - drag.t > 90) { sp.vy = sp.vx = 0; }
+      sp.vy = clamp(sp.vy, -420, 420); sp.vx = clamp(sp.vx, -160, 160);
+      rootEl.classList.remove("is-dragging");
+      try { rootEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      wake();
+    }
+    function onLeave(e) { hovRect = null; if (e.pointerType === "mouse") { hov.ty = hov.tx = 0; wake(); } }
+    function onEnter() { hovRect = null; }
+    function onKey(e) {
+      var k = e.key, hit = true;
+      if (k === "ArrowLeft") sp.vy -= 160; else if (k === "ArrowRight") sp.vy += 160;
+      else if (k === "ArrowUp") sp.vx += 70; else if (k === "ArrowDown") sp.vx -= 70;
+      else hit = false;
+      if (hit) { e.preventDefault(); wake(); }
+    }
+    rootEl.addEventListener("pointerdown", onDown);
+    rootEl.addEventListener("pointermove", onMove);
+    rootEl.addEventListener("pointerup", onUp);
+    rootEl.addEventListener("pointercancel", onUp);
+    rootEl.addEventListener("pointerleave", onLeave);
+    rootEl.addEventListener("pointerenter", onEnter);
+    rootEl.addEventListener("keydown", onKey);
+
+    /* ---------- visibility, motion preference, fonts ---------- */
+    var io = null;
+    if (window.IntersectionObserver) {
+      io = new IntersectionObserver(function (en) {
+        visible = en[en.length - 1].isIntersecting;
+        if (visible) wake();
+      }, { rootMargin: "120px" });
+      io.observe(rootEl);
+    }
+    function onReduce() {
+      if (opts.reducedMotion != null) return;
+      reduce = mqReduce.matches;
+      rootEl.classList.toggle("tc-still", reduce);
+      wake();
+    }
+    if (mqReduce.addEventListener) mqReduce.addEventListener("change", onReduce);
+
+    function resize() {
+      if (fit) {
+        var r = container.getBoundingClientRect();
+        var s = Math.max(80, Math.min(r.width / 1.62, (r.height || r.width) / 1.62));
+        rootEl.style.setProperty("--tc-size", s.toFixed(1) + "px");
+      }
+      var probe = el("i", "", rootEl);
+      probe.style.cssText = "position:absolute;visibility:hidden;width:var(--tc-size);height:0";
+      sizePx = probe.getBoundingClientRect().width || sizePx;
+      rootEl.removeChild(probe);
+      computeFits();
+      render();
+    }
+    var rt = 0;
+    function onWinResize() { clearTimeout(rt); rt = setTimeout(resize, 120); }
+    function onScroll() { hovRect = null; }
+    window.addEventListener("resize", onWinResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!destroyed) resize(); });
+
+    /* ---------- public API ---------- */
+    function setProgress(p, o) {
+      p = +p;
+      if (!isFinite(p)) return;
+      target = clamp(p, 0, Math.max(0, n - 1));
+      if ((o && o.immediate) || reduce) shown = target;
+      announce(Math.round(target));
+      wake();
+    }
+    function destroy() {
+      destroyed = true;
+      if (raf) cancelAnimationFrame(raf);
+      if (io) io.disconnect();
+      window.removeEventListener("resize", onWinResize);
+      window.removeEventListener("scroll", onScroll);
+      if (mqReduce.removeEventListener) mqReduce.removeEventListener("change", onReduce);
+      if (rootEl.parentNode) rootEl.parentNode.removeChild(rootEl);
+    }
+
+    resize();
+    setProgress(opts.progress || 0, { immediate: true });
+    render();
+    wake();
+
+    return {
+      el: rootEl,
+      setProgress: setProgress,
+      getProgress: function () { return target; },
+      getIndex: function () { return current; },
+      resize: resize,
+      destroy: destroy
+    };
+  }
+
+  return { create: create, version: "1.0.0" };
+});
+</script>
+<script>
 (function () {
   'use strict';
   var root = document.documentElement;
   var canvas = document.getElementById('field');
-  function fallback() { root.classList.add('static'); }
+  var cubes = setupCubes();
+  function fallback() { root.classList.add('static'); if (cubes) cubes.standalone(); }
+
+  /* ---------- tech cubes: one per project slot, all driven by one page-wide progress ---------- */
+  function setupCubes() {
+    if (!window.TechCube) return null;
+    var PROJECTS = [
+    { name: "BugPilot", layers: [{ label: "Client", tech: "Embed widget" }, { label: "API", tech: "Express" }, { label: "Worker", tech: "BullMQ + Claude" }, { label: "Storage", tech: "MongoDB · Redis · MinIO" }] },
+    { name: "The Loop", layers: [{ label: "Front", tech: "Next.js 15" }, { label: "CMS", tech: "Payload v3" }, { label: "Search", tech: "Meilisearch" }, { label: "Data", tech: "Postgres" }] },
+    { name: "Stellar Freight Co.", layers: [{ label: "Client", tech: "React + Zustand" }, { label: "Protocol", tech: "Zod wire schemas" }, { label: "Server", tech: "Fastify tick sim" }, { label: "Deploy", tech: "Fly.io" }] },
+    { name: "AuroraTrader", layers: [{ label: "Dashboard", tech: "React + Recharts" }, { label: "API", tech: "Express" }, { label: "Agent", tech: "Claude → Ollama" }, { label: "Data", tech: "MongoDB" }] },
+    { name: "Cloudflare DDNS", layers: [{ label: "Dashboard", tech: "Flask" }, { label: "State", tech: "status.json" }, { label: "Daemon", tech: "Python poller" }, { label: "Upstream", tech: "Cloudflare API" }] },
+    { name: "Agendash 3", layers: [{ label: "UI", tech: "Bootstrap" }, { label: "Middleware", tech: "Express · Koa · Fastify +1" }, { label: "Scheduler", tech: "Agenda.js" }, { label: "Logs", tech: "MongoDB tasklogs" }] }
+  ];
+    var list = [];
+    Array.prototype.slice.call(document.querySelectorAll('.tech-cube-slot')).forEach(function (slot, j) {
+      try {
+        var c = TechCube.create(slot, { projects: PROJECTS, fit: true, smoothing: 0.09 });
+        // the page keeps one static accessible list per project; silence the cube's live duplicate
+        var srl = c.el.querySelector('.tc-sr');
+        if (srl) { srl.setAttribute('aria-hidden', 'true'); srl.removeAttribute('aria-live'); }
+        list.push({ cube: c, slot: slot, center: 0 });
+      } catch (e) { /* a cube that fails simply stays empty */ }
+    });
+    if (!list.length) return null;
+    var H = innerHeight, lastP = -1, lastRest = 0, api = { onRest: null };
+    function cl(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    api.measure = function () {
+      H = innerHeight;
+      list.forEach(function (o) { var r = o.slot.getBoundingClientRect(); o.center = r.top + window.scrollY + r.height / 2; });
+    };
+    // p rises from j-1 to j while slot j's centre travels from 92% to 50% of the viewport height,
+    // so each turn plays as its cube enters the middle band, then rests there while the project is read
+    api.progress = function (sy) {
+      var p = 0;
+      for (var j = 1; j < list.length; j++) p += cl((0.92 * H - (list[j].center - sy)) / (0.42 * H));
+      return p;
+    };
+    api.update = function (sy) {
+      var p = api.progress(sy);
+      if (Math.abs(p - lastP) > 1e-4) { lastP = p; for (var q = 0; q < list.length; q++) list[q].cube.setProgress(p); }
+      var r = Math.round(p);
+      if (Math.abs(p - r) < 1e-3 && r !== lastRest) { lastRest = r; if (api.onRest) api.onRest(r); }
+    };
+    var standing = false;
+    api.standalone = function () {
+      if (standing) return; standing = true;
+      var q = 0;
+      function kick() { if (!q) q = requestAnimationFrame(function () { q = 0; api.update(window.scrollY); }); }
+      window.addEventListener('scroll', kick, { passive: true });
+      window.addEventListener('resize', function () { api.measure(); kick(); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { api.measure(); kick(); });
+      api.measure(); api.update(window.scrollY);
+    };
+    api.measure(); api.update(window.scrollY);
+    return api;
+  }
 
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   if (reduce || !window.THREE || !window.gsap || !window.ScrollTrigger) return fallback();
@@ -1051,6 +1599,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       S[EXP].shape = genHelix(cfg);
       U.uSize.value = mobile ? 34 : 30 * clamp(Hd / 900, 0.75, 1.4);
       setPair(cur < 0 ? 0 : cur, true);
+      if (cubes) cubes.measure();
     }
 
     var cur = -1;
@@ -1148,7 +1697,15 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     projects.forEach(function (el, pi) { bindHover(el.querySelector('h3'), pi + 1, 0, 1); bindHover(el.querySelector('.link'), pi + 1, 0, 1); });
     Array.prototype.slice.call(document.querySelectorAll('.stack .group')).forEach(function (g, gi) { bindHover(g, STACK, gi + 1, 0); });
     Array.prototype.slice.call(document.querySelectorAll('[data-marker]')).forEach(function (e, ei) { bindHover(e, EXP, ei + 1, 0); });
-    function fxFor(k, out) { if (k === hov.stage && hov.amt > 1e-3) out.set(hov.pulse * hov.amt, hov.group, hov.group ? hov.amt : 0); else out.set(0, 0, 0); }
+    // hovering or dragging a tech cube counts as hovering its project (pointer capture keeps it on while dragging)
+    Array.prototype.slice.call(document.querySelectorAll('.tech-cube-slot')).forEach(function (sl) { var pr = sl.closest('.project'); bindHover(sl, projects.indexOf(pr) + 1, 0, 1); });
+    // a finished cube turn sends a soft pulse through the shape of the project it landed on
+    var turnPulse = { stage: -1, t: -9 };
+    if (cubes) cubes.onRest = function (r) { turnPulse.stage = r + 1; turnPulse.t = U.uTime.value; };
+    function fxFor(k, out) {
+      if (k === hov.stage && hov.amt > 1e-3) out.set(hov.pulse * hov.amt, hov.group, hov.group ? hov.amt : 0); else out.set(0, 0, 0);
+      if (k === turnPulse.stage) { var tp = 0.75 * Math.exp(-(U.uTime.value - turnPulse.t) * 2.2); if (tp > out.x) out.x = tp; }
+    }
     var lastT = 0;
 
     gsap.to(U.uScatter, { value: 0, duration: 3.2, delay: 0.25, ease: 'power2.inOut' });
@@ -1236,6 +1793,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       if (dive > 0 || lastDive > 0) { camera.fov = FOV + dive * 16; camera.updateProjectionMatrix(); lastDive = dive; }
       camera.lookAt(0, -dive * 0.9, 0);
       lightCaptions(i, T, sy);
+      if (cubes) cubes.update(sy);
       // pointer projected onto the cloud plane (z = 0), smoothed; velocity drives drag/swirl
       U.uHover.value = lerp(U.uHover.value, ptr.active ? 1 : 0, 0.08);
       if (ptr.active) {
