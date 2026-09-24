@@ -12,6 +12,10 @@ RUN apk add --no-cache unzip wget ca-certificates && \
 
 WORKDIR /pb
 
+# Schema migrations ship with the image; PocketBase applies any new ones on
+# start and records them in pb_data, so already-applied files are skipped.
+COPY pb_migrations /pb/pb_migrations
+
 VOLUME /pb/pb_data
 
 EXPOSE 8090

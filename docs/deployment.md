@@ -20,6 +20,28 @@ The React app compiles to plain HTML/CSS/JS and can be deployed anywhere.
 
 PocketBase is a single binary with no external dependencies.
 
+### Applying migrations (e.g. the projects `shape`/`layers`/`caption` fields)
+
+`backend/pb_migrations/` includes `1790254698_updated_projects_visuals.js`, which adds the
+`shape`, `layers` and `caption` fields to the `projects` collection (see `docs/backend.md`).
+PocketBase applies every migration in `pb_migrations/` automatically on startup and records each
+applied file in `pb_data`, so files that already ran are skipped.
+
+`backend/Dockerfile` copies `backend/pb_migrations/` into the image at `/pb/pb_migrations`, next to
+the binary. Rebuilding and restarting the `pocketbase` service (`docker compose up --build`) applies
+any new migration against the existing `pb_data` volume. This was checked against a copy of the
+production database: the 14 earlier migrations were already recorded there, so only
+`1790254698_updated_projects_visuals.js` ran, and all 10 projects were untouched.
+
+If you instead run the PocketBase binary directly on a VPS (Option A below) with `backend/` as its
+working directory, `pb_migrations/` is already alongside it and is applied automatically the next
+time you (re)start the `pocketbase serve` process — no extra step needed there.
+
+Either way, the new fields are optional: `src/lib/projectVisuals.ts` falls back to its built-in
+registry (keyed by project slug) or to heuristics from the project's existing tags/subtitle when
+`shape`/`layers`/`caption` aren't set, so the frontend keeps working correctly against a
+PocketBase instance that hasn't had this migration applied yet.
+
 ### Option A — VPS / dedicated server
 
 ```bash
