@@ -1,4 +1,4 @@
-import { useContact, useProjects } from '../context/content-hooks'
+import { useContact } from '../context/content-hooks'
 import nowJson from '../data/now.json'
 import ContactForm from './ContactForm'
 import { ArrowUpRight } from './Icons'
@@ -9,16 +9,8 @@ const now = (nowJson as { items?: NowItem[] }).items ?? []
 
 export default function Contact() {
   const contact = useContact()
-  const projects = useProjects()
-
-  // A GitHub entry still pointing at '#' falls back to the profile the project links live under.
-  const github = projects
-    .map(p => p.link)
-    .find(l => l?.startsWith('https://github.com/'))
-    ?.split('/').slice(0, 4).join('/')
-  const socials = contact.socials
-    .map(s => (s.href === '#' && /github/i.test(s.label) && github ? { ...s, href: github } : s))
-    .filter(s => s.href && s.href !== '#')
+  // CMS placeholders (empty or '#') are left out rather than rendered as dead links.
+  const socials = contact.socials.filter(s => s.href && s.href.trim() !== '#')
 
   return (
     <section

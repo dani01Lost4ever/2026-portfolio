@@ -153,6 +153,7 @@ section { position: relative; }
 
 .link {
   display: inline-flex;
+  white-space: nowrap;
   align-items: center;
   gap: .55em;
   font-weight: 600;
@@ -476,7 +477,7 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
   width: min(34ch, 40vw);
   text-align: center;
 }
-.pd-body { padding: 4vh var(--gutter) 12vh; }
+.pd-body { padding: 4vh var(--gutter) 12vh; overflow-x: clip; }
 .pd-section { max-width: 680px; margin: 0 0 12vh; }
 .pd-section h2 { font-size: clamp(1.9rem, 3.2vw, 2.9rem); line-height: 1.05; margin: 0 0 22px; }
 .pd-section > p { color: var(--ink-2); font-size: 1.08rem; line-height: 1.75; margin: 0; max-width: 64ch; }

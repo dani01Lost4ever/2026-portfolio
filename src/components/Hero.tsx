@@ -1,14 +1,17 @@
 import { useHero } from '../context/content-hooks'
 import { ArrowDown } from './Icons'
 import SectionLink from './SectionLink'
-import { STOP_BG, stopAttrs } from './fieldStops'
+import { STOP_BG, capitalise, stopAttrs } from './fieldStops'
+import { cmsText, taglineLines } from './content'
 
 export default function Hero() {
   const hero = useHero()
 
-  const who = [hero.name, 'full-stack developer', hero.location ? `in ${hero.location}` : '']
-    .filter(Boolean)
-  const status = `${who[0]}, ${who.slice(1).join(' ')}.${hero.availableForWork ? ' Available for work.' : ''}`
+  const name = cmsText(hero.name)
+  const location = cmsText(hero.location)
+  const role = `full-stack developer${location ? ` in ${location}` : ''}`
+  const status = `${name ? `${name}, ${role}` : capitalise(role)}.${hero.availableForWork ? ' Available for work.' : ''}`
+  const lines = taglineLines(hero.taglines)
 
   return (
     <section
@@ -23,7 +26,7 @@ export default function Hero() {
           {status}
         </p>
         <h1 id="hero-title">
-          {hero.taglines.map((line, i) => <span key={i}>{line} </span>)}
+          {lines.map((line, i) => <span key={i}>{line} </span>)}
         </h1>
         <p className="hero-sub">{hero.subtitle}</p>
         <div className="cta">

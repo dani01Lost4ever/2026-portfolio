@@ -10,7 +10,8 @@
  */
 import type { ShapeId } from '../../contract'
 import type { Vec3 } from '../math'
-import { genAt, genBug, genClocks, genGlobe, genGrid, genPlanet, genRibbon, genTorus } from './classic'import { genBattleship, genBrowser, genCoins, genConstellation, genTicTacToe } from './projects'
+import { genAt, genBug, genClocks, genGlobe, genGrid, genPlanet, genRibbon, genTorus } from './classic'
+import { genBattleship, genBrowser, genCoins, genConstellation, genTicTacToe } from './projects'
 
 export { genClusters, genHelix } from './classic'
 export type { ClusterSpot, HelixCfg } from './classic'
