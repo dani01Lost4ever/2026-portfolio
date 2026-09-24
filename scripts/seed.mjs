@@ -71,7 +71,14 @@ const f = {
   json:   (name)            => ({ name, type: 'json',   required: false, maxSize: 5000000 }),
   url:    (name)            => ({ name, type: 'url',    required: false, exceptDomains: [], onlyDomains: [] }),
   editor: (name)            => ({ name, type: 'editor', required: false, convertUrls: false }),
+  select: (name, values)    => ({ name, type: 'select', required: false, maxSelect: 1, values }),
 }
+
+// Kept in sync with the `ShapeId` union in src/field/contract.ts.
+const SHAPE_IDS = [
+  'grid', 'bug', 'loop', 'orbit', 'candles', 'globe', 'clocks', 'coins',
+  'browser', 'tictactoe', 'battleship', 'clusters', 'helix', 'at', 'constellation',
+]
 
 // ─── collection definitions ───────────────────────────────────────────────────
 
@@ -114,6 +121,9 @@ const COLLECTIONS = [
       f.text('timeline'),
       f.url('link'),
       f.number('order'),
+      f.select('shape', SHAPE_IDS),
+      f.json('layers'),
+      f.text('caption'),
     ],
   },
   {
@@ -208,6 +218,9 @@ async function upsertProject(token, p, order) {
     timeline:    p.timeline   ?? '',
     link:        (p.link && p.link !== '#') ? p.link : '',
     order,
+    shape:       p.shape      ?? '',
+    layers:      p.layers     ?? [],
+    caption:     p.caption    ?? '',
   }
   if (list.items?.length > 0) {
     await req(token, 'PATCH', `collections/projects/records/${list.items[0].id}`, payload)

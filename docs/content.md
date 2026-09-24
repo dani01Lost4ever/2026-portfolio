@@ -39,6 +39,14 @@ The seed script is **upsert** — it updates existing records, not duplicates.
 4. Set `order` to the number you want it to appear in (0-based)
 5. Save
 
+`shape`, `layers` and `caption` (the particle field's shape, 4-layer tech
+cube, and caption under the shape) can be left blank — `visualsFor()` in
+`src/lib/projectVisuals.ts` fills in sensible values from a built-in
+registry (for the ten shipped projects) or from the project's own tags and
+subtitle (for anything new). Fill them in only when you want to override
+that default, e.g. to give a brand-new project its own shape instead of the
+generic fallback (`constellation`).
+
 **Via JSON:**
 1. Add an entry to `src/data/projects.json`
 2. Run `npm run seed …`

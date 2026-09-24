@@ -14,7 +14,7 @@ import { useEffect, useState } from 'react'
 import { Link, useParams, Navigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { Helmet } from 'react-helmet-async'
-import { useProjects } from '../context/ContentContext'
+import { useProjects } from '../context/content-hooks'
 import { incrementProjectViews } from '../lib/api'
 
 const fadeUp = {

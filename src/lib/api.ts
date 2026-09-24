@@ -19,6 +19,7 @@ import pb from './pb'
 import type {
   SiteData, HeroData, Project, AboutData, ContactData, ExperienceData, ContentBundle,
 } from './types'
+import { isShapeId, isCubeLayerArray } from './projectVisuals'
 
 import siteJson       from '../data/site.json'
 import heroJson       from '../data/hero.json'
@@ -107,27 +108,36 @@ export async function fetchHero(): Promise<HeroData> {
 
 // ─── projects ─────────────────────────────────────────────────────────────────
 
+/** Maps one PocketBase `projects` record to a Project, with a fallback order/id for callers that don't have one. */
+function mapProjectRecord(r: Record<string, unknown>, fallbackId: string, fallbackOrder: number): Project {
+  const rawLayers = parseJson<unknown>(r['layers'], null)
+  return {
+    id:          (r['display_id'] as string | undefined) ?? fallbackId,
+    slug:        parseText(r['slug'], ''),
+    year:        parseText(r['year'], ''),
+    title:       parseText(r['title'], ''),
+    subtitle:    parseText(r['subtitle'], ''),
+    description: parseText(r['description'], ''),
+    overview:    parseText(r['overview'], ''),
+    challenge:   parseText(r['challenge'], ''),
+    solution:    parseText(r['solution'], ''),
+    tags:        parseTextArray(r['tags'], []),
+    gradient:    parseText(r['gradient'], ''),
+    results:     parseJson(r['results'],  []),
+    role:        parseText(r['role'], ''),
+    timeline:    parseText(r['timeline'], ''),
+    link:        parseText(r['link'], '') || undefined,
+    order:       (r['order'] as number | undefined) ?? fallbackOrder,
+    shape:       isShapeId(r['shape']) ? r['shape'] : undefined,
+    layers:      isCubeLayerArray(rawLayers) ? rawLayers : undefined,
+    caption:     parseText(r['caption'], '') || undefined,
+  }
+}
+
 export async function fetchProjects(): Promise<Project[]> {
   try {
     const records = await pb.collection('projects').getFullList({ sort: '+order' })
-    return records.map((r, i) => ({
-      id:          r['display_id']          ?? String(i + 1).padStart(2, '0'),
-      slug:        parseText(r['slug'], ''),
-      year:        parseText(r['year'], ''),
-      title:       parseText(r['title'], ''),
-      subtitle:    parseText(r['subtitle'], ''),
-      description: parseText(r['description'], ''),
-      overview:    parseText(r['overview'], ''),
-      challenge:   parseText(r['challenge'], ''),
-      solution:    parseText(r['solution'], ''),
-      tags:        parseTextArray(r['tags'], []),
-      gradient:    parseText(r['gradient'], ''),
-      results:     parseJson(r['results'],  []),
-      role:        parseText(r['role'], ''),
-      timeline:    parseText(r['timeline'], ''),
-      link:        parseText(r['link'], '') || undefined,
-      order:       r['order']               ?? i,
-    }))
+    return records.map((r, i) => mapProjectRecord(r, String(i + 1).padStart(2, '0'), i))
   } catch {
     return (projectsJson as Omit<Project, 'order'>[]).map((p, i) => ({ ...p, order: i }))
   }
@@ -136,24 +146,7 @@ export async function fetchProjects(): Promise<Project[]> {
 export async function fetchProjectBySlug(slug: string): Promise<Project | null> {
   try {
     const r = await pb.collection('projects').getFirstListItem(`slug="${slug}"`)
-    return {
-      id:          r['display_id']          ?? r.id,
-      slug:        parseText(r['slug'], ''),
-      year:        parseText(r['year'], ''),
-      title:       parseText(r['title'], ''),
-      subtitle:    parseText(r['subtitle'], ''),
-      description: parseText(r['description'], ''),
-      overview:    parseText(r['overview'], ''),
-      challenge:   parseText(r['challenge'], ''),
-      solution:    parseText(r['solution'], ''),
-      tags:        parseTextArray(r['tags'], []),
-      gradient:    parseText(r['gradient'], ''),
-      results:     parseJson(r['results'],  []),
-      role:        parseText(r['role'], ''),
-      timeline:    parseText(r['timeline'], ''),
-      link:        parseText(r['link'], '') || undefined,
-      order:       r['order']               ?? 0,
-    }
+    return mapProjectRecord(r, r.id, 0)
   } catch {
     const fallback = (projectsJson as Omit<Project, 'order'>[]).find(p => p.slug === slug)
     return fallback ? { ...fallback, order: 0 } : null

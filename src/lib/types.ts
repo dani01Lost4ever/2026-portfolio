@@ -1,3 +1,5 @@
+import type { ShapeId, CubeLayer } from '../field/contract'
+
 // ─── Shared ──────────────────────────────────────────────────────────────────
 
 export interface NavItem {
@@ -58,6 +60,12 @@ export interface Project {
   link?: string
   order: number
   views?: number
+  /** Particle field shape (see field/contract.ts). Falls back to the registry/heuristics in lib/projectVisuals.ts. */
+  shape?: ShapeId
+  /** Tech cube layers, top to bottom (4 entries). Falls back to tag-derived layers when absent. */
+  layers?: CubeLayer[]
+  /** Short line shown under the project's shape in the particle field. Falls back to `subtitle`. */
+  caption?: string
 }
 
 // ─── About ────────────────────────────────────────────────────────────────────
