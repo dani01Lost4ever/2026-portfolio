@@ -1,6 +1,8 @@
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import type { CubeLayer } from '../field/contract'
 import { TechCube } from '../field/techcube/TechCube'
+import { useField } from '../field/useField'
 import type { Project } from '../lib/types'
 import type { ProjectVisuals } from '../lib/projectVisuals'
 import { ArrowRight, ArrowUpRight } from './Icons'
@@ -15,10 +17,56 @@ interface Props {
   cubeProjects: { name: string; layers: CubeLayer[] }[]
 }
 
+function smoothstep(a: number, b: number, v: number) {
+  const t = Math.min(1, Math.max(0, (v - a) / (b - a)))
+  return t * t * (3 - 2 * t)
+}
+
+/**
+ * Desktop only: fade a project's caption with its shape, so it is fully shown while the shape
+ * rests and gone while the field morphs to the next stop (it never drifts over another shape).
+ */
+function useCaptionFade(key: string) {
+  const ref = useRef<HTMLParagraphElement>(null)
+  const field = useField()
+
+  useEffect(() => {
+    const el = ref.current
+    if (!field || !el || field.isStatic) return
+    const mq = window.matchMedia('(max-width: 900px)')
+    let last = -1
+    const apply = (p: number) => {
+      const k = field.stopIndex(key)
+      let vis = 1
+      if (!mq.matches && k >= 0) {
+        const d = p - k
+        vis = d >= 0 ? 1 - smoothstep(0, 0.18, d) : smoothstep(-0.18, 0, d)
+      }
+      vis = Math.round(vis * 50) / 50
+      if (vis !== last) {
+        last = vis
+        el.style.opacity = String(vis)
+      }
+    }
+    const onMq = () => apply(field.getProgress())
+    apply(field.getProgress())
+    const off = field.onProgress(apply)
+    mq.addEventListener('change', onMq)
+    return () => {
+      off()
+      mq.removeEventListener('change', onMq)
+      el.style.opacity = ''
+    }
+  }, [field, key])
+
+  return ref
+}
+
 export default function ProjectPanel({ project: p, visuals, index, cubeProjects }: Props) {
   const key = projectStopKey(p)
   const textSide = index % 2 === 0 ? 'left' : 'right'
   const titleId = `work-${p.slug}-title`
+  const captionRef = useCaptionFade(key)
 
   return (
     <article
@@ -34,7 +82,10 @@ export default function ProjectPanel({ project: p, visuals, index, cubeProjects 
       })}
     >
       <div className="copy">
-        {visuals.caption && <p className="caption">{visuals.caption}</p>}
+        {visuals.caption && (
+          // desktop: the rail spans the shape's column, and the caption sticks under the shape while the panel is read
+          <div className="cap-rail"><p className="caption" ref={captionRef}>{visuals.caption}</p></div>
+        )}
         <p className="meta">{projectMeta(p).map((m, i) => <span key={i}>{m}</span>)}</p>
         <h3 id={titleId} data-field-hover={key}>
           <Link to={`/project/${p.slug}`} className="title-link">{p.title}</Link>

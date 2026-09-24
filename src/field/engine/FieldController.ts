@@ -59,6 +59,7 @@ export class FieldController {
   private bg: BgVarWriter | null = null
 
   private specs: StopSpec[] = []
+  private stopEls: Element[] = []
   private geoms: StopGeom[] = []
   private sig = ''
   private vp: ViewportInfo = { w: 1, h: 1, mobile: false, tablet: false, maxScroll: 0 }
@@ -101,7 +102,7 @@ export class FieldController {
         this.turn = { stage: k, t: this.now || performance.now() / 1000, amp: 0.75 * strength }
       },
       scrollTo: (target, o) => this.scrollTo(target, o),
-      refresh: () => this.schedule('rebuild', 0, () => this.rebuild(true)),
+      refresh: () => this.schedule('refresh', 0, () => this.rebuild(true)),
       get isStatic() {
         return isStatic()
       },
@@ -149,6 +150,13 @@ export class FieldController {
     this.hidden = document.visibilityState === 'hidden'
 
     this.mo = new MutationObserver((muts) => {
+      // stop elements swapped (route change): rebuild now, before the next frame renders the
+      // old stops against the new scroll position; anything else is debounced
+      const els = document.querySelectorAll('[data-field-stop]')
+      if (els.length !== this.stopEls.length || Array.from(els).some((e, k) => e !== this.stopEls[k])) {
+        this.rebuild(false)
+        return
+      }
       for (const m of muts) {
         if (m.type === 'attributes' || Array.from(m.addedNodes).some((n) => n.nodeType === 1) || Array.from(m.removedNodes).some((n) => n.nodeType === 1)) {
           this.schedule('rebuild', 60, () => this.rebuild(false))
@@ -205,6 +213,7 @@ export class FieldController {
     this.bg = null
     document.documentElement.classList.remove('static')
     this.specs = []
+    this.stopEls = []
     this.geoms = []
     this.sig = ''
     this.emitted = NaN
@@ -256,12 +265,14 @@ export class FieldController {
 
   private rebuild(force: boolean): void {
     if (!this.started) return
+    this.stopEls = Array.from(document.querySelectorAll('[data-field-stop]'))
     const specs = readStops()
     const sig = stopsSignature(specs)
     const changed = sig !== this.sig
     if (!changed && !force) return
     const old = this.specs
-    const pageChanged = changed && old.length > 0 && specs.length > 0 && !specs.some((s) => old.some((o) => o.key === s.key))
+    // a wholesale swap of stop elements (route change) morphs the old page's shape into the new one
+    const pageChanged = changed && old.length > 0 && specs.length > 0 && !specs.some((s) => old.some((o) => o.el === s.el))
     this.specs = specs
     this.sig = sig
     if (changed) {
@@ -351,7 +362,16 @@ export class FieldController {
     this.p = p
     if (!(Math.abs(p - this.emitted) < 1e-5)) {
       this.emitted = p
-      for (const cb of this.listeners) cb(p)
+      for (const cb of this.listeners) {
+        try {
+          cb(p)
+        } catch (err) {
+          // a failing subscriber must not stop the field; report it asynchronously
+          queueMicrotask(() => {
+            throw err
+          })
+        }
+      }
     }
     const T = smooth(0.15, 0.85, f)
 

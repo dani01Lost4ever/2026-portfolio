@@ -31,10 +31,6 @@ export default function ProjectDetail() {
   const [views, setViews] = useState<{ slug: string; count: number } | null>(null)
   const counted = useRef<string | null>(null)
 
-  useEffect(() => {
-    window.scrollTo(0, 0)
-  }, [slug])
-
   // Count one view per visit to a project (the ref keeps StrictMode's double effect from counting twice).
   useEffect(() => {
     if (!projectSlug || counted.current === projectSlug) return

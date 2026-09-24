@@ -25,6 +25,19 @@ const SECTIONS = [
   { id: 'contact', label: 'Contact' },
 ] as const
 
+/** Title matches first (word starts beat substrings), then keyword matches; no loose fuzzy hits. */
+function rank(value: string, search: string, keywords?: string[]): number {
+  const q = search.trim().toLowerCase()
+  if (!q) return 1
+  const v = value.toLowerCase()
+  if (v.startsWith(q)) return 1
+  if (v.split(/\s+/).some(w => w.startsWith(q))) return 0.9
+  if (v.includes(q)) return 0.8
+  const k = (keywords ?? []).join(' ').toLowerCase()
+  if (k.split(/\s+/).some(w => w.startsWith(q))) return 0.5
+  return k.includes(q) ? 0.4 : 0
+}
+
 export default function CommandPalette({ open, onClose }: Props) {
   if (!open) return null
   return <PaletteDialog onClose={onClose} />
@@ -76,7 +89,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
     <div className="cmd" data-lenis-prevent onKeyDown={onKeyDown}>
       <div className="cmd-backdrop" onClick={onClose} aria-hidden="true" />
       <div className="cmd-panel" ref={panelRef} role="dialog" aria-modal="true" aria-label="Quick navigation">
-        <Command label="Quick navigation" loop>
+        <Command label="Quick navigation" loop filter={rank}>
           <div className="cmd-input-row">
             <svg className="cmd-search" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3.5 3.5" />
@@ -92,7 +105,8 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
               {projects.map(p => (
                 <Command.Item
                   key={p.slug}
-                  value={`${p.title} ${p.subtitle}`}
+                  value={p.title}
+                  keywords={[p.subtitle]}
                   className="cmd-item"
                   onSelect={() => run(() => navigate(`/project/${p.slug}`))}
                 >
@@ -104,7 +118,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
 
             <Command.Group heading="Sections" className="cmd-group">
               {SECTIONS.map(s => (
-                <Command.Item key={s.id} value={`Go to ${s.label}`} className="cmd-item" onSelect={() => run(() => jump(s.id))}>
+                <Command.Item key={s.id} value={s.label} keywords={['section', 'go to']} className="cmd-item" onSelect={() => run(() => jump(s.id))}>
                   <span className="cmd-item-title">{s.label}</span>
                 </Command.Item>
               ))}
@@ -112,7 +126,8 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
 
             <Command.Group heading="Links" className="cmd-group">
               <Command.Item
-                value={`Email ${contact.email}`}
+                value="Send an email"
+                keywords={['mail', 'contact', contact.email]}
                 className="cmd-item"
                 onSelect={() => run(() => { window.location.href = `mailto:${contact.email}` })}
               >

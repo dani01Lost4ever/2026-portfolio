@@ -19,10 +19,10 @@ export const COIN_PITCH = 1.3
 /** coins: how far the price tick climbs (flag 9). */
 export const TICK_RISE = 3.1
 /** tictactoe: board cell size and board centre y (flag 12). */
-export const TTT_CELL = 0.8
-export const TTT_CY = 1.3
+export const TTT_CELL = 0.9
+export const TTT_CY = 1.15
 /** battleship: grid cell size (flags 13, 14). */
-export const BS_CELL = 0.56
+export const BS_CELL = 0.46
 
 const f = (v: number): string => (Number.isInteger(v) ? v.toFixed(1) : String(v))
 
@@ -75,13 +75,13 @@ export const POINTS_VERT = [
   '  }',
   '  else if (fl > 5.5 && fl < 6.5) { float q = fract(ph - uTime*0.16); glow = 0.7 + smoothstep(0.8, 1.0, q)*1.8; }',
   '  else if (fl > 6.5 && fl < 7.5) { float up = step(0.5, ph); float fk = step(0.6, fract(sin(floor(uTime*2.5) + ph*97.0)*43758.5453)); glow = up*0.55 + fk*(0.25 + up*0.5); }',
-  // coin spin: each stack turns about its own vertical axis, the reeded rims make the turn readable
+  // coin spin: reeded highlights travel round every coin in a stack (each stack at its own speed);
+  // the loose coin (phase < 0.5) really turns about its vertical axis
   '  else if (fl > 7.5 && fl < 8.5) {',
   `    float k = floor(p.x/${f(COIN_PITCH)} + 0.5); float cx = k*${f(COIN_PITCH)};`,
-  '    vec2 r = vec2(p.x - cx, p.z); float a0 = atan(r.y, r.x);',
-  '    r = rot2(r, uTime*(0.42 + 0.09*mod(k + 2.0, 5.0)));',
-  '    p.x = cx + r.x; p.z = r.y;',
-  '    glow = ph > 0.5 ? 0.12 + 0.6*step(0.7, fract(a0*1.2732395)) : ph*2.0;',
+  '    vec2 r = vec2(p.x - cx, p.z); float sp = 0.5 + 0.11*mod(k + 2.0, 5.0);',
+  '    if (ph > 0.5) { float a0 = atan(r.y, r.x) - uTime*sp; glow = 0.1 + (ph > 0.8 ? 0.65 : 0.35)*step(0.68, fract(a0*1.2732395)); }',
+  '    else { r = rot2(r, uTime*sp*1.6); p.x = cx + r.x; p.z = r.y; glow = ph*2.0; }',
   '  }',
   // rising price tick: climbs the chart, fades in at the bottom and out at the top
   '  else if (fl > 8.5 && fl < 9.5) {',
@@ -109,7 +109,7 @@ export const POINTS_VERT = [
   `    vec2 c = (floor(p.xz/${f(BS_CELL)}) + 0.5)*${f(BS_CELL)};`,
   '    vec2 dd = p.xz - c; vec2 dir = dd/(length(dd) + 1e-4);',
   '    float q = fract(uTime*0.28 + ph);',
-  '    p.xz = c + dir*(0.12 + q*2.3); p.y += 0.02;',
+  '    p.xz = c + dir*(0.1 + q*1.55); p.y += 0.02;',
   '    glow = 1.1*(1.0 - q);',
   '    dim = smoothstep(0.0, 0.05, q)*(1.0 - smoothstep(0.5, 1.0, q));',
   '  }',

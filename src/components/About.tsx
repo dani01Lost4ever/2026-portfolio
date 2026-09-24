@@ -25,7 +25,7 @@ export default function About() {
           {capitalise(numberWord(sizes.length))} clusters, sized by how many tools live in each.
         </p>
         {about.skills.map((g, i) => (
-          <div className="group" key={g.category} data-count={g.items.length} data-field-cluster={i}>
+          <div className="group" key={g.category} data-count={g.items.length} data-field-cluster={i + 1}>
             <div className="spot" aria-hidden="true" />
             <div>
               <h3>{g.category}</h3>

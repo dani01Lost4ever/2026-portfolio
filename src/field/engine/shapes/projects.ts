@@ -2,7 +2,7 @@
  * Project shapes added after v3, in the same visual language: outlines drawn with dense
  * points, a few highlighted features, and one idle motion each (see the flag table in shaders.ts).
  */
-import { BS_CELL, COIN_PITCH, TICK_RISE, TTT_CELL, TTT_CY } from '../shaders'
+import { BS_CELL, COIN_PITCH, TTT_CELL, TTT_CY } from '../shaders'
 import { TAU, W, build, clamp, jit, lerp, rng, seg, unit, type Rand, type Vec3 } from '../math'
 
 /* ---------- helpers ---------- */
@@ -48,12 +48,12 @@ function disc(r: Rand, rad: number): [number, number] {
  * above the priciest stack, and a price tick climbs the y axis with a dashed guide across.
  */
 export function genCoins(N: number): Float32Array {
-  const heights = [4, 7, 5, 11, 8]
+  const heights = [3, 5, 4, 8, 6]
   const M = heights.length
-  const R = 0.47
-  const pitch = 0.2
-  const th = 0.13
-  const base = -2.0
+  const R = 0.5
+  const pitch = 0.3
+  const th = 0.12
+  const base = -1.5
   const cx = (k: number): number => (k - (M - 1) / 2) * COIN_PITCH
   let tallest = 0
   heights.forEach((h, k) => { if (h > heights[tallest]) tallest = k })
@@ -61,39 +61,40 @@ export function genCoins(N: number): Float32Array {
   heights.forEach((h, k) => { for (let c = 0; c < h; c++) coins.push({ k, c }) })
   const axisX = cx(0) - 0.95
   const topY = base + heights[tallest] * pitch
-  const floatY = topY + 0.85
+  const floatY = topY + 0.8
   return build(N, [
-    // coin rims: top and bottom edges plus the edge wall, reeded
-    [42, (r) => {
+    // coin rims: mostly the front half of each coin's top and bottom edge, so a stack reads as
+    // countable discs; a sparse back half keeps the volume
+    [44, (r) => {
       const q = coins[Math.floor(r() * coins.length)]
-      const a = r() * TAU
+      const a = r() < 0.82 ? lerp(-0.12, Math.PI + 0.12, r()) : r() * TAU
       const y0 = base + q.c * pitch
       const u = r()
-      const y = u < 0.34 ? y0 : u < 0.68 ? y0 + th : y0 + r() * th
-      const rad = R + jit(r, 0.012)
-      return [cx(q.k) + Math.cos(a) * rad, y, Math.sin(a) * rad, W(8, 0.9)]
+      const y = u < 0.42 ? y0 : u < 0.84 ? y0 + th : y0 + r() * th
+      const rad = R + jit(r, 0.01)
+      return [cx(q.k) + Math.cos(a) * rad, y + jit(r, 0.006), Math.sin(a) * rad, W(8, 0.9)]
     }],
     // the top face of every stack, with an embossed inner ring
-    [13, (r) => {
+    [12, (r) => {
       const k = Math.floor(r() * M)
       const y = base + (heights[k] - 1) * pitch + th
       let p: [number, number]
-      if (r() < 0.45) { const a = r() * TAU; const rr = R * 0.62 + jit(r, 0.012); p = [Math.cos(a) * rr, Math.sin(a) * rr] }
+      if (r() < 0.5) { const a = r() * TAU; const rr = R * 0.6 + jit(r, 0.012); p = [Math.cos(a) * rr, Math.sin(a) * rr] }
       else p = disc(r, R * 0.96)
-      return [cx(k) + p[0], y + jit(r, 0.008), p[1], W(8, 0.12)]
+      return [cx(k) + p[0], y + jit(r, 0.006), p[1], W(8, 0.6)]
     }],
     // loose coin standing on its edge, spinning above the priciest stack
     [9, (r) => {
       const u = r()
-      const rr = u < 0.55 ? 0.42 + jit(r, 0.012) : u < 0.8 ? 0.26 + jit(r, 0.012) : 0.42 * Math.sqrt(r())
+      const rr = u < 0.55 ? 0.44 + jit(r, 0.012) : u < 0.8 ? 0.27 + jit(r, 0.012) : 0.44 * Math.sqrt(r())
       const a = r() * TAU
       return [cx(tallest) + Math.cos(a) * rr, floatY + Math.sin(a) * rr, jit(r, 0.035), W(8, 0.42)]
     }],
     // axes: baseline and y axis with ticks
-    [12, (r) => {
+    [11, (r) => {
       const u = r()
-      if (u < 0.45) return [lerp(axisX, cx(M - 1) + 0.8, r()), base - 0.08 + jit(r, 0.01), jit(r, 0.01), 0]
-      if (u < 0.8) return [axisX + jit(r, 0.01), lerp(base - 0.08, floatY + 0.45, r()), jit(r, 0.01), 0]
+      if (u < 0.45) return [lerp(axisX, cx(M - 1) + 0.8, r()), base - 0.1 + jit(r, 0.01), jit(r, 0.01), 0]
+      if (u < 0.8) return [axisX + jit(r, 0.01), lerp(base - 0.1, floatY + 0.4, r()), jit(r, 0.01), 0]
       const ty = base + Math.floor(r() * 7) * 0.5
       return [axisX - lerp(0, 0.16, r()), ty, 0, W(1, 0)]
     }],
@@ -101,7 +102,7 @@ export function genCoins(N: number): Float32Array {
     [5, (r) => {
       if (r() < 0.55) {
         const s = r() * 2 - 1
-        return [axisX - 0.28 + s * 0.2 + jit(r, 0.015), base - 0.12 * Math.abs(s) * 1.6 + 0.12 + jit(r, 0.015), 0.05, W(9, 0.9)]
+        return [axisX - 0.3 + s * 0.2 + jit(r, 0.015), base + 0.12 - Math.abs(s) * 0.2 + jit(r, 0.015), 0.05, W(9, 0.9)]
       }
       let x: number
       do { x = lerp(axisX, cx(M - 1) + 0.6, r()) } while ((((x * 5) % 1) + 1) % 1 > 0.55)
@@ -111,9 +112,9 @@ export function genCoins(N: number): Float32Array {
     [3, (r, j) => {
       const k = j % M
       const v = unit(r)
-      return [cx(k) + v[0] * 0.06, base + heights[k] * pitch + 0.32 + v[1] * 0.06, v[2] * 0.06, W(1, 0)]
+      return [cx(k) + v[0] * 0.06, base + heights[k] * pitch + 0.3 + v[1] * 0.06, v[2] * 0.06, W(1, 0)]
     }],
-  ], 0.35, 101)
+  ], 0.5, 101)
 }
 
 /* ---------- browser: Original Portfolio (2023, vanilla + particles.js) ---------- */
@@ -129,17 +130,17 @@ export function genBrowser(N: number): Float32Array {
   const r0 = rng(29)
   // constellation nodes inside the window body, behind the blocks
   const nodes: Vec3[] = []
-  while (nodes.length < 30) {
+  while (nodes.length < 22) {
     const p: Vec3 = [lerp(X0 + 0.25, X1 - 0.25, r0()), lerp(Y0 + 0.2, bar - 0.2, r0()), -0.35 - r0() * 0.4]
-    if (nodes.every((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) > 0.55)) nodes.push(p)
+    if (nodes.every((q) => Math.hypot(q[0] - p[0], q[1] - p[1]) > 0.75)) nodes.push(p)
   }
   const links: [number, number][] = []
   nodes.forEach((a, i) => {
     const near = nodes
       .map((b, j) => ({ j, d: Math.hypot(a[0] - b[0], a[1] - b[1]) }))
-      .filter((o) => o.j > i && o.d < 1.35)
+      .filter((o) => o.j > i && o.d < 1.5)
       .sort((p, q) => p.d - q.d)
-      .slice(0, 3)
+      .slice(0, 2)
     for (const o of near) links.push([i, o.j])
   })
   // content blocks: [x0, y0, x1, y1]
@@ -149,7 +150,7 @@ export function genBrowser(N: number): Float32Array {
   const blocks = [about, work, contact]
   return build(N, [
     // window frame, a glint travels round it
-    [17, (r) => {
+    [21, (r) => {
       const t = r()
       const p = roundRect(t, X0, Y0, X1, Y1, 0.2)
       return [p[0] + jit(r, 0.012), p[1] + jit(r, 0.012), jit(r, 0.01), W(2, t)]
@@ -171,7 +172,7 @@ export function genBrowser(N: number): Float32Array {
       return [lerp(-1.3, 0.4, r()), (bar + Y1) / 2 + jit(r, 0.02), 0, 0]
     }],
     // block outlines
-    [18, (r, j) => {
+    [21, (r, j) => {
       const b = blocks[j % 3]
       const p = roundRect(r(), b[0], b[1], b[2], b[3], 0.1)
       return [p[0] + jit(r, 0.01), p[1] + jit(r, 0.01), 0.05, 0]
@@ -209,14 +210,14 @@ export function genBrowser(N: number): Float32Array {
       return [b[0] + 0.25 + r() * [2.1, 1.5][line], b[3] - 0.32 - line * 0.28, 0.05, 0]
     }],
     // particles.js constellation: nodes
-    [11, (r, j) => {
+    [8, (r, j) => {
       const n = nodes[j % nodes.length]
       const v = unit(r)
       const d = 0.075 * Math.cbrt(r())
       return [n[0] + v[0] * d, n[1] + v[1] * d, n[2] + v[2] * d, W(10, 0.9)]
     }],
     // and their links
-    [20, (r, j) => {
+    [10, (r, j) => {
       const L = links[j % links.length]
       const p = seg(r, nodes[L[0]], nodes[L[1]], 0.008)
       return [p[0], p[1], p[2], W(10, 0.1)]
@@ -240,19 +241,19 @@ export function genTicTacToe(N: number): Float32Array {
   const os: [number, number][] = [[2, 0], [0, 1]]
   const ai: [number, number] = [2, 2]
   // tree: the board is the root; three replies, each with three counter-replies
-  const L1 = [-2.25, 0, 2.25].map((x) => [x, -0.75, -0.55] as Vec3)
+  const L1 = [-2.3, 0, 2.3].map((x) => [x, -0.95, -0.55] as Vec3)
   const L2: Vec3[] = []
-  L1.forEach((p) => { for (let k = -1; k <= 1; k++) L2.push([p[0] + k * 0.72, -1.95, -1.1]) })
+  L1.forEach((p) => { for (let k = -1; k <= 1; k++) L2.push([p[0] + k * 0.72, -2.05, -1.1]) })
   const rootP: Vec3 = [0, cy - half - 0.12, 0]
   // edges: [from, to, pruned, onPath]
   const pv = { l1: 2, l2: 7 } // principal variation: right reply, its middle child
   const edges: { a: Vec3; b: Vec3; pruned: boolean; path: boolean; depth: number }[] = []
-  L1.forEach((p, i) => edges.push({ a: rootP, b: [p[0], p[1] + 0.2, p[2]], pruned: false, path: i === pv.l1, depth: 0 }))
+  L1.forEach((p, i) => edges.push({ a: rootP, b: [p[0], p[1] + 0.16, p[2]], pruned: false, path: i === pv.l1, depth: 0 }))
   L2.forEach((p, i) => {
     const par = L1[Math.floor(i / 3)]
     // alpha-beta: the first subtree is searched fully, later ones get cut after their first child
     const pruned = Math.floor(i / 3) === 0 ? false : i % 3 === 2 || (Math.floor(i / 3) === 1 && i % 3 === 1)
-    edges.push({ a: [par[0], par[1] - 0.2, par[2]], b: [p[0], p[1] + 0.12, p[2]], pruned, path: i === pv.l2, depth: 1 })
+    edges.push({ a: [par[0], par[1] - 0.16, par[2]], b: [p[0], p[1] + 0.1, p[2]], pruned, path: i === pv.l2, depth: 1 })
   })
   const cut = edges.filter((e) => e.pruned)
   const nodesAll: { p: Vec3; pruned: boolean; lvl: number }[] = [
@@ -261,7 +262,7 @@ export function genTicTacToe(N: number): Float32Array {
   ]
   return build(N, [
     // board lines
-    [26, (r) => {
+    [30, (r) => {
       const k = Math.floor(r() * 4)
       const s = lerp(-half, half, r())
       const o = (k % 2 ? 0.5 : -0.5) * C
@@ -300,20 +301,17 @@ export function genTicTacToe(N: number): Float32Array {
       if (e.path) return [p[0], p[1], p[2], W(6, clamp(1 - (e.depth + t) / 2, 0, 1))]
       return [p[0], p[1], p[2], 0]
     }],
-    // tree nodes: tiny boards for the replies, dots for the leaves
-    [17, (r, j) => {
+    // tree nodes: rings for the replies, dots for the leaves
+    [14, (r, j) => {
       const nd = nodesAll[j % nodesAll.length]
       const fl = nd.pruned ? W(11, 0) : W(1, 0)
       if (nd.lvl === 1) {
-        const s = 0.19
-        const k = Math.floor(r() * 4)
-        const u = lerp(-s * 1.5, s * 1.5, r())
-        const o = (k % 2 ? 0.5 : -0.5) * s
-        const p = k < 2 ? [o, u] : [u, o]
-        return [nd.p[0] + p[0] + jit(r, 0.01), nd.p[1] + p[1] + jit(r, 0.01), nd.p[2], nd.pruned ? W(11, 0) : 0]
+        const a = r() * TAU
+        const rr = 0.15 + jit(r, 0.015)
+        return [nd.p[0] + Math.cos(a) * rr, nd.p[1] + Math.sin(a) * rr, nd.p[2], fl]
       }
       const v = unit(r)
-      const d = 0.1 * Math.cbrt(r())
+      const d = 0.09 * Math.cbrt(r())
       return [nd.p[0] + v[0] * d, nd.p[1] + v[1] * d, nd.p[2] + v[2] * d, fl]
     }],
     // alpha-beta cuts: a short bright slash across each pruned edge
@@ -352,7 +350,7 @@ export function genBattleship(N: number): Float32Array {
   const r0 = rng(43)
   return build(N, [
     // grid lines on the water plane
-    [30, (r) => {
+    [33, (r) => {
       const k = Math.floor(r() * (G + 1))
       const s = lerp(-E, E, r())
       const o = -E + k * C
@@ -365,7 +363,7 @@ export function genBattleship(N: number): Float32Array {
     [18, (r, j) => {
       const sh = ships[j % ships.length]
       const len = sh[2] * C - 0.12
-      const wid = C * 0.62
+      const wid = C * 0.7
       const t = r()
       // hull outline in ship space (u along the axis, v across)
       let u: number, v: number
@@ -378,9 +376,9 @@ export function genBattleship(N: number): Float32Array {
         u = side * (len / 2) * (r() < 0.5 ? 1 : 0.999)
         v = jit(r, 0.02)
       }
-      const h = 0.12 + r() * 0.1
+      const h = 0.14 + r() * 0.14
       const mid: [number, number] = sh[3] ? [cc(sh[0]) + (sh[2] - 1) * C / 2, cc(sh[1])] : [cc(sh[0]), cc(sh[1]) + (sh[2] - 1) * C / 2]
-      return sh[3] ? [mid[0] + u, h, mid[1] + v, 0] : [mid[0] + v, h, mid[1] + u, 0]
+      return sh[3] ? [mid[0] + u, h, mid[1] + v, W(1, 0)] : [mid[0] + v, h, mid[1] + u, W(1, 0)]
     }],
     // decks and superstructures
     [16, (r, j) => {

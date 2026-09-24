@@ -1,4 +1,4 @@
-import { lazy, Suspense, useCallback, useEffect, useState, type MouseEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 
 import { ContentProvider } from './context/ContentContext'
@@ -16,39 +16,35 @@ const NotFound      = lazy(() => import('./pages/NotFound'))
 function ScrollManager() {
   const { pathname, hash } = useLocation()
   const field = useField()
+  const fieldRef = useRef(field)
+  useEffect(() => { fieldRef.current = field }, [field])
 
   useEffect(() => {
+    const api = fieldRef.current
     if (!hash) {
       window.scrollTo(0, 0)
+      api?.scrollTo('#top', { duration: 0 })
       return
     }
-    const id = decodeURIComponent(hash.slice(1))
+    let id = ''
+    try { id = decodeURIComponent(hash.slice(1)) } catch { return }
     let tries = 0
     let raf = 0
     const land = () => {
       const el = document.getElementById(id)
       if (el) {
+        // native jump: right after a route change the smooth scroller may still hold the previous
+        // page's height and clamp to it; it re-syncs from the native scroll position
         el.scrollIntoView({ block: 'start' })
-        field?.refresh()
-      } else if (tries++ < 30) {
+        fieldRef.current?.refresh()
+      } else if (tries++ < 60) {
         raf = requestAnimationFrame(land) // lazy route still rendering
       }
     }
     raf = requestAnimationFrame(land)
     return () => cancelAnimationFrame(raf)
-    // field is deliberately left out: landing on a hash must not repeat when the field comes up
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pathname, hash])
 
-  return null
-}
-
-/** Mirrors the field's static fallback onto <html> so CSS can drop the mobile scrim and text halos. */
-function StaticFlag() {
-  const field = useField()
-  useEffect(() => {
-    if (field) document.documentElement.classList.toggle('static', field.isStatic)
-  }, [field])
   return null
 }
 
@@ -83,7 +79,6 @@ function Shell() {
     <>
       <SkipLink />
       <ScrollManager />
-      <StaticFlag />
       <Nav />
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Suspense fallback={<main id="main" tabIndex={-1} className="page-loading" aria-busy="true" />}>

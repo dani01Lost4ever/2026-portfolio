@@ -18,21 +18,23 @@ export default function Experience() {
     `${capitalise(numberWord(roleCount))} ${plural(roleCount, 'role')} at ${companies}` +
     (honours ? `, ${numberWord(honours)} ${plural(honours, 'diploma')} cum laude.` : '.')
 
-  // one running index across roles and schools: ring 0 is the newest role, at the top of the helix
+  // one running, 1-based ring number across roles and schools: ring 1 is the newest role, at the top of the helix
   let ring = 0
 
   return (
-    <section className="exp" id="experience" aria-labelledby="exp-title">
+    <section
+      className="exp"
+      id="experience"
+      aria-labelledby="exp-title"
+      {...stopAttrs({ key: 'helix', shape: 'helix', side: 'right', bg: STOP_BG.helix, rings })}
+    >
       <div className="exp-head">
         <p className="kicker">Experience and education</p>
         <h2 id="exp-title">{heading}</h2>
         <p className="caption exp-cap">A timeline that rises: every ring is a role or a school.</p>
       </div>
 
-      <div
-        className="exp-list"
-        {...stopAttrs({ key: 'helix', shape: 'helix', side: 'right', bg: STOP_BG.helix, rings })}
-      >
+      <div className="exp-list">
         {work.map(w => (
           <Fragment key={w.company}>
             <h3 className="exp-group">
@@ -41,7 +43,7 @@ export default function Experience() {
             {w.roles.map(r => {
               const where = [r.type, r.location].filter(Boolean).join(', ')
               return (
-                <div className="entry" key={`${r.role}-${r.period}`} data-marker data-field-ring={ring++}>
+                <div className="entry" key={`${r.role}-${r.period}`} data-marker data-field-ring={++ring}>
                   <p className="period">{r.period}</p>
                   <h4>{r.role}</h4>
                   {where && <p className="where">{where}</p>}
@@ -58,7 +60,7 @@ export default function Experience() {
         {education.map(e => {
           const where = [e.field, e.degree, e.grade].filter(Boolean).join(', ')
           return (
-            <div className="entry" key={`${e.school}-${e.period}`} data-marker data-field-ring={ring++}>
+            <div className="entry" key={`${e.school}-${e.period}`} data-marker data-field-ring={++ring}>
               <p className="period">{e.period}</p>
               <h4>{e.school}</h4>
               {where && <p className="where">{where}</p>}
