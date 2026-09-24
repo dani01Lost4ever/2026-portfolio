@@ -54,9 +54,12 @@ section{scroll-margin-top:72px}
 #route .head .core{fill:var(--signal)}
 #route .head .glow{fill:url(#glow)}
 #route .head .ring{fill:none;stroke:var(--signal);stroke-width:1.5;opacity:0;transform-box:fill-box;transform-origin:center}
-#route.idle .head .ring,#route.done .head .ring{animation:wait 1.8s ease-out infinite}
+#route.idle .head .ring,#route.done .head .ring{animation:wait 3.6s cubic-bezier(.2,.6,.35,1) infinite}
+#route .head .ring.r2{animation-delay:1.2s!important}
+#route .head .ring.r3{animation-delay:2.4s!important}
+#route .head .core,#route .head .glow{transition:r .5s ease}
 #route .head .tr{fill:var(--signal)}
-@keyframes wait{0%{transform:scale(.6);opacity:.95}100%{transform:scale(2.6);opacity:0}}
+@keyframes wait{0%{transform:scale(1);opacity:.8}100%{transform:scale(6);opacity:0}}
 
 /* ---------- nav ---------- */
 .nav{position:fixed;top:0;left:0;right:0;z-index:20;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--gut);background:rgba(14,37,102,.94);border-bottom:1px solid var(--ground-3)}
@@ -114,7 +117,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
 .stats div{display:flex;flex-direction:column}
 .stats dt{order:2;font-size:14px;color:var(--muted)}
 .stats dd{font-family:var(--display);font-weight:700;font-size:34px;letter-spacing:-.03em;line-height:1}
-.hero-origin{display:flex;align-items:center;gap:22px;justify-self:start;margin-left:18%;align-self:center}
+.hero-origin{display:flex;align-items:center;gap:26px;justify-self:start;margin-left:14%;align-self:start;margin-top:96px}
 #origin{width:14px;height:14px;flex:none}
 .origin-label{font-size:15px;line-height:1.4;min-height:2.8em}
 .origin-label>span{display:block}
@@ -682,10 +685,10 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     clock: function(r, cx, cy, R, dir, g, mobile){
       var k = localPen(r, cx, cy, dir), cr = 0.64*R;
       k.to(0, -cr);
-      k.arc(0, 0, cr, -PI/2, -PI/2 + 3*PI);          // one and a half turns, exits at six
+      k.to(0, 0); k.to(0.36*R, 0); k.to(0, 0); k.to(0, -cr);   // hands first, so it reads as a clock early
+      k.arc(0, 0, cr, -PI/2, -PI/2 + 3*PI);          // then the face, one and a half turns, exits at six
       k.to(0, R);
       var c = k.P(0, 0).split(' ');
-      el('line', { x1: c[0], y1: c[1], x2: (cx + dir*0.34*R).toFixed(1), y2: c[1] }, g);
       var h = el('line', { x1: c[0], y1: c[1], x2: c[0], y2: (cy - 0.5*R).toFixed(1), 'class': 'hand' }, g);
       h.style.transformOrigin = c[0] + 'px ' + c[1] + 'px';
       for (var i = 0; i < 12; i++){
@@ -709,6 +712,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
   var tStage = document.querySelector('.t-stage'), tMeta = document.querySelector('.t-meta');
   var tickEls = document.querySelectorAll('.ticks a'), lastStage = '', lastMeta = '', lastTick = -1;
   var state = { p: 0 };
+  var baseR = 5.5, lastIdle = null;
   var mobile = false;
 
   function makeHead(){
@@ -716,9 +720,9 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var trail = [];
     for (var i = 0; i < 9; i++) trail.push(el('circle', { r: 0, 'class': 'tr' }, g));
     var glow = el('circle', { r: 20, 'class': 'glow' }, g);
-    var ring = el('circle', { r: 7, 'class': 'ring' }, g);
+    var rings = [el('circle', { r: 7, 'class': 'ring' }, g), el('circle', { r: 7, 'class': 'ring r2' }, g), el('circle', { r: 7, 'class': 'ring r3' }, g)];
     var core = el('circle', { r: 5.5, 'class': 'core' }, g);
-    return { g: g, trail: trail, glow: glow, ring: ring, core: core };
+    return { g: g, trail: trail, glow: glow, rings: rings, core: core };
   }
   for (var hi = 0; hi < 4; hi++) heads.push(makeHead());
 
@@ -749,7 +753,8 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var tip0 = vh * TIP;
     var tipMax = Math.max(0, document.documentElement.scrollHeight - vh) + tip0;
     var headR = mobile ? 4.6 : 5.5;
-    heads.forEach(function(h){ h.core.setAttribute('r', headR); h.ring.setAttribute('r', headR + 1.5); h.glow.setAttribute('r', mobile ? 15 : 20); });
+    heads.forEach(function(h){ h.core.setAttribute('r', headR); h.rings.forEach(function(q){ q.setAttribute('r', headR + 1.5); }); h.glow.setAttribute('r', mobile ? 15 : 20); });
+    baseR = headR;
 
     /* --- A: hero origin → six hops → split --- */
     A = new Route();
@@ -760,8 +765,21 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var intro = box(document.querySelector('.work .sec-intro'));
     if (!mobile){
       var turnY = intro.y - 20;
-      A.to(ox, turnY - 200);
-      A.cubic(ox, turnY - 60, spine, turnY - 150, spine, turnY);
+      var hg = box(document.querySelector('.hero-grid')), ht = box(document.querySelector('.hero-text'));
+      var xR = Math.min(ox + 190, hg.r - 40), xL = Math.max(ox - 80, ht.r + 60);
+      var top = oy, bot = turnY - 210, av = bot - top;
+      if (av > 320){
+        // the planned route snakes through the hero before heading into the work
+        A.to(ox, top + av*0.08);
+        A.cubic(ox, top + av*0.26, xR, top + av*0.14, xR, top + av*0.36);
+        A.to(xR, top + av*0.46);
+        A.cubic(xR, top + av*0.7, xL, top + av*0.56, xL, top + av*0.82);
+        A.to(xL, bot);
+        A.cubic(xL, turnY - 60, spine, turnY - 150, spine, turnY);
+      } else {
+        A.to(ox, bot);
+        A.cubic(ox, turnY - 60, spine, turnY - 150, spine, turnY);
+      }
       A.mark(Math.max(turnY, v0 + 200));
     }
     var hops = document.querySelectorAll('.hop');
@@ -799,7 +817,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var vSplit = A.vEnd();
     for (var li = 0; li < laneEls.length; li++){
       var lb = box(laneEls[li]);
-      var lx = mobile ? spine + (li - 1.5) * 10 : lb.x + 6;
+      var lx = mobile ? 7 + li * 15 : lb.x + 6;
       var L = new Route().start(spine, splitY, vSplit);
       L.cubic(spine, splitY + fanH * 0.55, lx, splitY + fanH * 0.4, lx, splitY + fanH);
       L.mark(splitY + fanH);
@@ -917,7 +935,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var p = r.pointAt(l);
     h.core.setAttribute('cx', p[0]); h.core.setAttribute('cy', p[1]);
     h.glow.setAttribute('cx', p[0]); h.glow.setAttribute('cy', p[1]);
-    h.ring.setAttribute('cx', p[0]); h.ring.setAttribute('cy', p[1]);
+    for (var rq = 0; rq < h.rings.length; rq++){ h.rings[rq].setAttribute('cx', p[0]); h.rings[rq].setAttribute('cy', p[1]); }
     var gap = mobile ? 5 : 7;
     for (var k = 0; k < h.trail.length; k++){
       var c = h.trail[k], lk = l - (k + 1) * gap;
@@ -958,14 +976,16 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     var done = B.drawn >= B.len() - 0.5;
     svg.classList.toggle('done', done);
     ctaEl.classList.toggle('resolved', done);
-    telemetry(v, idle, done);
+    telemetry(reduced ? window.scrollY + window.innerHeight * TIP : v);
+    if (idle !== lastIdle){ lastIdle = idle; heads[0].core.setAttribute('r', idle ? baseR * 1.8 : baseR); heads[0].glow.setAttribute('r', (idle ? 2 : 1) * (mobile ? 15 : 20)); }
     for (var t = 0; t < triggers.length; t++){
       var tr = triggers[t], on = v >= tr.v && v < tr.v2;
       if (on !== tr.on){ tr.on = on; tr.el.classList.toggle(tr.cls, on); }
     }
   }
 
-  function telemetry(v, idle, done){
+  function telemetry(v){
+    var idle = A.lenAt(v) < 0.5, done = B.lenAt(v) >= B.len() - 0.5;
     var hopsOn = 0, lastHop = null;
     for (var i = 0; i < hopInfo.length; i++) if (v >= hopInfo[i].v){ hopsOn++; lastHop = hopInfo[i].title; }
     var stage;
@@ -978,7 +998,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
     else if (!done) stage = 'Building the response';
     else stage = '200 OK, response delivered';
     var drawn = 0;
-    for (var r = 0; r < routes.length; r++) drawn += Math.max(0, routes[r].drawn);
+    for (var r = 0; r < routes.length; r++) drawn += routes[r].lenAt(v);
     var meta = hopsOn + ' of ' + hopInfo.length + ' hops · ' + Math.round(drawn / 16) + ' ms';
     if (stage !== lastStage){ lastStage = stage; tStage.textContent = stage; }
     if (meta !== lastMeta){ lastMeta = meta; tMeta.textContent = meta; }
@@ -1021,7 +1041,7 @@ a:focus-visible{outline:2px solid var(--signal);outline-offset:3px}
       (function loop(ts){ tickDrones(ts / 1000); requestAnimationFrame(loop); })(0);
     } else {
       tickDrones(0);
-      window.addEventListener('scroll', function(){ if (built) telemetry(1e9, false, true); }, { passive: true });
+      window.addEventListener('scroll', function(){ if (built) telemetry(window.scrollY + window.innerHeight * TIP); }, { passive: true });
     }
     render(true);
 
