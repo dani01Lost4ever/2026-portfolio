@@ -12,6 +12,32 @@
 
 import { useTheme } from '../lib/theme'
 
+// Renders an animated packet on a vertical wire between y1 and y2 on column cx.
+// Multiple packets per wire are spaced by `delay` to read as a continuous stream.
+function Packet({ cx, y1, y2, fill, delay = 0, dur = 1.8 }: {
+  cx: number; y1: number; y2: number; fill: string; delay?: number; dur?: number
+}) {
+  return (
+    <circle r="3" cx={cx} cy={y1} fill={fill}>
+      <animate
+        attributeName="cy"
+        values={`${y1};${y2}`}
+        dur={`${dur}s`}
+        begin={`${delay}s`}
+        repeatCount="indefinite"
+      />
+      <animate
+        attributeName="opacity"
+        values="0;1;1;0"
+        keyTimes="0;0.12;0.85;1"
+        dur={`${dur}s`}
+        begin={`${delay}s`}
+        repeatCount="indefinite"
+      />
+    </circle>
+  )
+}
+
 export default function FlowDiagram() {
   const { theme } = useTheme()
   const isDark = theme === 'dark'
@@ -35,30 +61,6 @@ export default function FlowDiagram() {
     svcBottom:     250,
     uiTop:         296,
   }
-
-  // Renders an animated packet on a vertical wire between y1 and y2 on column cx.
-  // Multiple packets per wire are spaced by `delay` to read as a continuous stream.
-  const Packet = ({ cx, y1, y2, delay = 0, dur = 1.8 }: {
-    cx: number; y1: number; y2: number; delay?: number; dur?: number
-  }) => (
-    <circle r="3" cx={cx} cy={y1} fill={packet}>
-      <animate
-        attributeName="cy"
-        values={`${y1};${y2}`}
-        dur={`${dur}s`}
-        begin={`${delay}s`}
-        repeatCount="indefinite"
-      />
-      <animate
-        attributeName="opacity"
-        values="0;1;1;0"
-        keyTimes="0;0.12;0.85;1"
-        dur={`${dur}s`}
-        begin={`${delay}s`}
-        repeatCount="indefinite"
-      />
-    </circle>
-  )
 
   return (
     <div className="flow-diagram" aria-hidden>
@@ -106,8 +108,8 @@ export default function FlowDiagram() {
         {/* ── Wire: DB → API ── */}
         <line x1="150" y1={W.dbBottom} x2="150" y2={W.apiTop}
               stroke={strokeSoft} strokeWidth="1.2" strokeDasharray="3 4" />
-        <Packet cx={150} y1={W.dbBottom} y2={W.apiTop} delay={0}   dur={1.6} />
-        <Packet cx={150} y1={W.dbBottom} y2={W.apiTop} delay={0.8} dur={1.6} />
+        <Packet fill={packet} cx={150} y1={W.dbBottom} y2={W.apiTop} delay={0}   dur={1.6} />
+        <Packet fill={packet} cx={150} y1={W.dbBottom} y2={W.apiTop} delay={0.8} dur={1.6} />
 
         {/* ── 02 · API / Handler ── */}
         <g>
@@ -140,9 +142,9 @@ export default function FlowDiagram() {
         ))}
 
         {/* Packet that fans out — three stagged dots */}
-        <Packet cx={90}  y1={W.apiBottom + 12} y2={W.svcTop} delay={0.2} dur={1.4} />
-        <Packet cx={150} y1={W.apiBottom + 12} y2={W.svcTop} delay={0.5} dur={1.4} />
-        <Packet cx={210} y1={W.apiBottom + 12} y2={W.svcTop} delay={0.8} dur={1.4} />
+        <Packet fill={packet} cx={90}  y1={W.apiBottom + 12} y2={W.svcTop} delay={0.2} dur={1.4} />
+        <Packet fill={packet} cx={150} y1={W.apiBottom + 12} y2={W.svcTop} delay={0.5} dur={1.4} />
+        <Packet fill={packet} cx={210} y1={W.apiBottom + 12} y2={W.svcTop} delay={0.8} dur={1.4} />
 
         {/* ── 03 · Microservices (three boxes) ── */}
         {[
@@ -195,10 +197,10 @@ export default function FlowDiagram() {
         ))}
 
         {/* Converging packets */}
-        <Packet cx={90}  y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.0} dur={1.2} />
-        <Packet cx={150} y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.4} dur={1.2} />
-        <Packet cx={210} y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.8} dur={1.2} />
-        <Packet cx={150} y1={W.svcBottom + 24} y2={W.uiTop} delay={0.6} dur={1.0} />
+        <Packet fill={packet} cx={90}  y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.0} dur={1.2} />
+        <Packet fill={packet} cx={150} y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.4} dur={1.2} />
+        <Packet fill={packet} cx={210} y1={W.svcBottom + 6} y2={W.svcBottom + 18} delay={0.8} dur={1.2} />
+        <Packet fill={packet} cx={150} y1={W.svcBottom + 24} y2={W.uiTop} delay={0.6} dur={1.0} />
 
         {/* ── 04 · UI mockup (bottom) ── */}
         <g>

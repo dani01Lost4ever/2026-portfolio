@@ -67,6 +67,10 @@ export function ContentProvider({ children }: { children: ReactNode }) {
 
 // ─── Hook ─────────────────────────────────────────────────────────────────────
 
+// The hooks live next to the provider on purpose; the only cost is that
+// editing this file triggers a full reload instead of a fast refresh.
+/* eslint-disable react-refresh/only-export-components */
+
 export function useContent(): ContentBundle {
   return useContext(ContentContext)
 }
