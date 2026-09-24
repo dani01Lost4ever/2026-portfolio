@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react'
 import type { CubeLayer } from '../contract'
 import { createTechCube, type TechCubeInstance, type TechCubeProject } from './techcube'
-import { useField } from './fieldBridge'
+import { useField } from '../useField'
 import './techcube.css'
 
 export interface TechCubeProps {

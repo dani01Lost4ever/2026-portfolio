@@ -344,9 +344,9 @@ export class FieldController {
   private loop = (now: number): void => {
     this.raf = 0
     if (!this.started) return
-    this.tick(now)
     // the canvas has idle motion: keep running while visible; the static page only ticks on scroll/resize
     if (this.engine && !this.hidden) this.raf = requestAnimationFrame(this.loop)
+    this.tick(now)
   }
 
   private tick(now: number): void {
