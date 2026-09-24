@@ -3,18 +3,22 @@
 ## Overview
 
 ```
-┌─────────────────────────────────────────────────────┐
-│                   Browser (React)                   │
-│                                                     │
-│   ContentProvider (context)                         │
-│   ├── loads from local JSON instantly (no flicker)  │
-│   └── re-fetches from PocketBase in background      │
-│                                                     │
-│   Components                                        │
-│   ├── Hero  ├── Work  ├── About  ├── Contact        │
-│   ├── Navbar            ├── ProjectDetail           │
-│   └── Loader / Cursor / ScrollProgress              │
-└────────────────────┬────────────────────────────────┘
+┌───────────────────────────────────────────────────────────┐
+│                     Browser (React)                       │
+│                                                            │
+│   ContentProvider (context)                                │
+│   ├── loads from local JSON instantly (no flicker)          │
+│   └── re-fetches from PocketBase in background               │
+│                                                            │
+│   FieldProvider + FieldCanvas (src/field/)                  │
+│   └── one fixed three.js canvas, driven by scroll progress    │
+│       shared by every section below                           │
+│                                                            │
+│   Components (each marks itself up as a field "stop")        │
+│   ├── Hero  ├── Work/ProjectPanel  ├── About  ├── Experience  │
+│   ├── Contact         ├── Nav             ├── ProjectDetail     │
+│   └── SiteFooter / CommandPalette                              │
+└────────────────────┬───────────────────────────────────────┘
                      │  PocketBase JS SDK (REST)
 ┌────────────────────▼────────────────────────────────┐
 │              PocketBase  :8090                      │
@@ -26,16 +30,20 @@
 └─────────────────────────────────────────────────────┘
 ```
 
+See `docs/frontend.md` for how the field drives the page (the stop contract, progress mapping,
+shapes, tech cube, smooth scroll, and the reduced-motion/no-WebGL fallback).
+
 ## Directory Structure
 
 ```
 2026-portfolio/
 │
+├── designs/                  ← Static HTML prototypes (field.html is the built design's reference)
+│
 ├── backend/                  ← PocketBase binary + data
 │   ├── pocketbase.exe
 │   ├── pb_data/              ← SQLite DB (git-ignored)
-│   ├── pb_migrations/        ← Future Go/JS migrations
-│   └── pb_hooks/             ← Server-side JS hooks
+│   └── pb_migrations/        ← JS migrations, applied on PocketBase start
 │
 ├── docs/                     ← This documentation
 │
@@ -43,24 +51,33 @@
 │   └── seed.mjs              ← One-time bootstrap script
 │
 ├── src/
-│   ├── assets/               ← Static images / SVGs
+│   ├── field/                 ← The particle field: contract, engine, shapes, tech cube
+│   │   ├── contract.ts            ← ShapeId union, FieldApi, data-attribute reference
+│   │   ├── FieldProvider.tsx, FieldCanvas.tsx, useField.ts
+│   │   ├── smoothScroll.ts        ← Lenis + GSAP ScrollTrigger
+│   │   ├── engine/                 ← FieldController (DOM driver) + FieldEngine (three.js)
+│   │   └── techcube/                ← Per-project isometric tech cube
 │   ├── components/           ← UI building blocks
 │   ├── context/
-│   │   └── ContentContext.tsx  ← Single source of truth for content
+│   │   ├── ContentContext.tsx  ← Provider component
+│   │   └── content-hooks.ts    ← Context, JSON defaults, useX() hooks
 │   ├── data/                 ← JSON content files (fallback + source of truth)
 │   │   ├── site.json
 │   │   ├── hero.json
 │   │   ├── projects.json
 │   │   ├── about.json
-│   │   └── contact.json
+│   │   ├── contact.json
+│   │   └── experience.json
 │   ├── lib/
-│   │   ├── pb.ts             ← PocketBase singleton client
-│   │   ├── api.ts            ← Typed fetchers (one per collection)
-│   │   └── types.ts          ← Shared TypeScript interfaces
+│   │   ├── pb.ts               ← PocketBase singleton client
+│   │   ├── api.ts               ← Typed fetchers (one per collection)
+│   │   ├── projectVisuals.ts     ← Resolves each project's field shape / tech-cube layers / tint
+│   │   └── types.ts               ← Shared TypeScript interfaces
 │   ├── pages/
-│   │   └── ProjectDetail.tsx
+│   │   ├── Home.tsx
+│   │   ├── ProjectDetail.tsx
+│   │   └── NotFound.tsx
 │   ├── App.tsx
-│   ├── App.css
 │   ├── main.tsx
 │   └── index.css
 │
@@ -98,7 +115,8 @@ App boot
 | Language | TypeScript | 5.9 |
 | Build tool | Vite | 8 |
 | Routing | React Router | 7 |
-| Animation | Framer Motion + GSAP | 12 / 3 |
+| 3D / particle field | three.js (custom shaders, no R3F/drei) | 0.183 |
+| Scroll animation | GSAP + ScrollTrigger | 3.14 |
 | Smooth scroll | Lenis | 1.3 |
 | Backend | PocketBase | 0.36 |
 | Database | SQLite (embedded) | — |

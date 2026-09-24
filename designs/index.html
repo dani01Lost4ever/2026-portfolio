@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portfolio Proposals</title>
+    <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #101a2e;
+            color: #eef2fa;
+            font-family: Figtree, system-ui, sans-serif;
+            line-height: 1.6;
+            padding: 16px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin: 2rem 0 1rem;
+            font-weight: 700;
+        }
+
+        .intro {
+            color: #9aa8c4;
+            margin-bottom: 3rem;
+            font-size: 1.1rem;
+            line-height: 1.7;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .card {
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            border-radius: 6px;
+            padding: 28px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            flex-direction: column;
+            cursor: pointer;
+        }
+
+        .card:hover {
+            border-color: #ffb224;
+        }
+
+        .card:focus-visible {
+            outline: 2px solid #ffb224;
+            outline-offset: 2px;
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .card-description {
+            color: #9aa8c4;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+
+        .card-tech {
+            font-size: 0.9rem;
+            color: #9aa8c4;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Portfolio redesign proposals</h1>
+        <p class="intro">Three concepts, each built around one scroll-driven animation that runs through the whole page. Open one and scroll.</p>
+
+        <div class="grid">
+            <a href="signal.html" class="card">
+                <div class="card-title">Signal</div>
+                <div class="card-description">A single request travels one amber route down the page: it draws a glyph for each project, splits into four skill lanes, merges into a git-graph career timeline and ends at the contact box as a 200 OK.</div>
+                <div class="card-tech">SVG + GSAP ScrollTrigger</div>
+            </a>
+
+            <a href="stack.html" class="card">
+                <div class="card-title">The Stack</div>
+                <div class="card-description">A pinned 3D stack of four slabs (Interface, API, Queue, Database) reconfigures itself for every section: each project's real architecture, a skill grid, a career staircase, and finally a contact card, over colour-blocked backgrounds.</div>
+                <div class="card-tech">CSS 3D + GSAP ScrollTrigger</div>
+            </a>
+
+            <a href="field.html" class="card">
+                <div class="card-title">Field</div>
+                <div class="card-description">Ten thousand points behind the page morph from a data grid into one shape per project, then skill clusters, a helix timeline and an @ for contact.</div>
+                <div class="card-tech">three.js point cloud + GSAP ScrollTrigger</div>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,118 +1,72 @@
-import { lazy, Suspense, useEffect, useRef, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
-import { AnimatePresence } from 'framer-motion'
-import { Helmet } from 'react-helmet-async'
-import Lenis from 'lenis'
-import './App.css'
 
-import { ContentProvider, useHero } from './context/ContentContext'
-import Navbar         from './components/Navbar'
-import Cursor         from './components/Cursor'
-import ScrollProgress from './components/ScrollProgress'
-import Hero           from './components/Hero'
-import NowPlaying     from './components/NowPlaying'
-import Work           from './components/Work'
-import About          from './components/About'
-import Experience     from './components/Experience'
-import Contact        from './components/Contact'
-import Loader         from './components/Loader'
+import { ContentProvider } from './context/ContentContext'
+import { FieldProvider } from './field/FieldProvider'
+import { FieldCanvas } from './field/FieldCanvas'
+import { useField } from './field/useField'
+import Nav from './components/Nav'
 import CommandPalette from './components/CommandPalette'
-import Grain          from './components/Grain'
+import Home from './pages/Home'
 
-// Lazy-loaded routes
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
-const PreviewMockA  = lazy(() => import('./pages/preview/MockA'))
-const PreviewMockB  = lazy(() => import('./pages/preview/MockB'))
-const PreviewMockC  = lazy(() => import('./pages/preview/MockC'))
 
-// ─── Home page meta ────────────────────────────────────────────────────────────
-function HomeSeo() {
-  const hero = useHero()
-  return (
-    <Helmet>
-      <title>{hero.name ? `${hero.name} — Portfolio` : 'Portfolio'}</title>
-      <meta name="description" content={hero.subtitle} />
-      <meta property="og:title" content={hero.name ? `${hero.name} — Portfolio` : 'Portfolio'} />
-      <meta property="og:description" content={hero.subtitle} />
-      <meta name="twitter:card" content="summary_large_image" />
-    </Helmet>
-  )
-}
+/** Top of the page on route change; a URL hash lands on its section once the page has rendered. */
+function ScrollManager() {
+  const { pathname, hash } = useLocation()
+  const field = useField()
+  const fieldRef = useRef(field)
+  useEffect(() => { fieldRef.current = field }, [field])
 
-// ─── Home page ─────────────────────────────────────────────────────────────────
-function HomePage() {
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      entries => {
-        entries.forEach(entry => {
-          if (entry.isIntersecting) entry.target.classList.add('is-visible')
-        })
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-    )
-    document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-    return () => observer.disconnect()
-  }, [])
+    const api = fieldRef.current
+    if (!hash) {
+      window.scrollTo(0, 0)
+      api?.scrollTo('#top', { duration: 0 })
+      return
+    }
+    let id = ''
+    try { id = decodeURIComponent(hash.slice(1)) } catch { return }
+    let tries = 0
+    let raf = 0
+    const land = () => {
+      const el = document.getElementById(id)
+      if (el) {
+        // native jump: right after a route change the smooth scroller may still hold the previous
+        // page's height and clamp to it; it re-syncs from the native scroll position
+        el.scrollIntoView({ block: 'start' })
+        fieldRef.current?.refresh()
+      } else if (tries++ < 60) {
+        raf = requestAnimationFrame(land) // lazy route still rendering
+      }
+    }
+    raf = requestAnimationFrame(land)
+    return () => cancelAnimationFrame(raf)
+  }, [pathname, hash])
 
-  return (
-    <main>
-      <HomeSeo />
-      <Hero />
-      <NowPlaying />
-      <Work />
-      <About />
-      <Experience />
-      <Contact />
-    </main>
-  )
+  return null
 }
 
-// ─── App ───────────────────────────────────────────────────────────────────────
-export default function App() {
-  const location = useLocation()
-  const isPreview = location.pathname.startsWith('/preview')
-  const [loaderDone, setLoaderDone] = useState(
-    () => isPreview || sessionStorage.getItem('loader-done') === '1'
-  )
+function SkipLink() {
+  function onClick(e: MouseEvent<HTMLAnchorElement>) {
+    const main = document.getElementById('main')
+    if (!main) return
+    e.preventDefault()
+    main.focus({ preventScroll: true })
+    main.scrollIntoView({ block: 'start' })
+  }
+  return <a className="skip-link" href="#main" onClick={onClick}>Skip to main content</a>
+}
+
+function Shell() {
   const [paletteOpen, setPaletteOpen] = useState(false)
+  const closePalette = useCallback(() => setPaletteOpen(false), [])
 
-  // Smooth scroll via Lenis. Held in a ref so other effects can
-  // stop/start it (e.g. when the command palette is open).
-  const lenisRef = useRef<Lenis | null>(null)
-  useEffect(() => {
-    const lenis = new Lenis()
-    lenisRef.current = lenis
-    const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf) }
-    requestAnimationFrame(raf)
-    return () => {
-      lenis.destroy()
-      lenisRef.current = null
-    }
-  }, [])
-
-  // Lock scroll while loader is running
-  useEffect(() => {
-    document.body.style.overflow = loaderDone ? '' : 'hidden'
-    return () => { document.body.style.overflow = '' }
-  }, [loaderDone])
-
-  // Stop Lenis + lock body while the command palette is open, so wheel
-  // events inside the palette scroll the list instead of the page behind.
-  useEffect(() => {
-    if (paletteOpen) {
-      lenisRef.current?.stop()
-      document.body.style.overflow = 'hidden'
-    } else if (loaderDone) {
-      lenisRef.current?.start()
-      document.body.style.overflow = ''
-    }
-  }, [paletteOpen, loaderDone])
-
-  // Global ⌘K / Ctrl+K shortcut
+  // ⌘K / Ctrl+K toggles the command palette
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault()
         setPaletteOpen(prev => !prev)
       }
@@ -121,56 +75,31 @@ export default function App() {
     return () => window.removeEventListener('keydown', onKey)
   }, [])
 
-  // Re-run reveal observer on route change back to home
-  useEffect(() => {
-    if (location.pathname !== '/') return
-    const timer = setTimeout(() => {
-      const observer = new IntersectionObserver(
-        entries => {
-          entries.forEach(entry => {
-            if (entry.isIntersecting) entry.target.classList.add('is-visible')
-          })
-        },
-        { threshold: 0.1, rootMargin: '0px 0px -60px 0px' }
-      )
-      document.querySelectorAll('.reveal').forEach(el => observer.observe(el))
-      return () => observer.disconnect()
-    }, 100)
-    return () => clearTimeout(timer)
-  }, [location.pathname])
+  return (
+    <>
+      <SkipLink />
+      <ScrollManager />
+      <Nav />
+      <CommandPalette open={paletteOpen} onClose={closePalette} />
+      <Suspense fallback={<main id="main" tabIndex={-1} className="page-loading" aria-busy="true" />}>
+        <Routes>
+          <Route path="/"              element={<Home />} />
+          <Route path="/project/:slug" element={<ProjectDetail />} />
+          <Route path="*"              element={<NotFound />} />
+        </Routes>
+      </Suspense>
+    </>
+  )
+}
 
-  function handleLoaderComplete() {
-    sessionStorage.setItem('loader-done', '1')
-    setLoaderDone(true)
-  }
-
+export default function App() {
   return (
     <ContentProvider>
-      {!loaderDone && !isPreview && <Loader onComplete={handleLoaderComplete} />}
-
-      {!isPreview && (
-        <>
-          <Grain />
-          <Cursor />
-          <ScrollProgress />
-          <Navbar onOpenPalette={() => setPaletteOpen(true)} />
-          <CommandPalette open={paletteOpen} onClose={() => setPaletteOpen(false)} />
-        </>
-      )}
-
-      <Suspense fallback={<div className="page-loading" />}>
-        <AnimatePresence mode="wait">
-          <Routes location={location} key={location.pathname}>
-            <Route path="/"              element={<HomePage />} />
-            <Route path="/project/:slug" element={<ProjectDetail />} />
-            <Route path="/preview"       element={<PreviewMockA />} />
-            <Route path="/preview/a"     element={<PreviewMockA />} />
-            <Route path="/preview/b"     element={<PreviewMockB />} />
-            <Route path="/preview/c"     element={<PreviewMockC />} />
-            <Route path="*"              element={<NotFound />} />
-          </Routes>
-        </AnimatePresence>
-      </Suspense>
+      <FieldProvider>
+        <FieldCanvas />
+        <div className="scrim" aria-hidden="true" />
+        <Shell />
+      </FieldProvider>
     </ContentProvider>
   )
 }

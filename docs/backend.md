@@ -74,6 +74,34 @@ All collections are treated as **singletons** (one record each) except `projects
 | `timeline` | text | Duration e.g. `"6 months"` |
 | `link` | url | Live site URL (optional) |
 | `order` | number | Display order (ascending) |
+| `shape` | select | Particle-field shape for this project (one of the `ShapeId` values in `src/field/contract.ts`, e.g. `bug`, `loop`, `orbit`). Optional — leave unset and the frontend resolves one for you, see below. |
+| `layers` | json | Tech cube layers, top to bottom: an array of exactly 4 `{ label, tech }` objects, e.g. `{ "label": "API", "tech": "Express" }`. Optional, same fallback as `shape`. |
+| `caption` | text | Short line shown under the project's shape in the particle field. Optional — falls back to `subtitle`. |
+
+#### How `shape` / `layers` / `caption` are resolved
+
+These three fields are optional so existing and new PocketBase records don't
+need to be filled in right away. `src/lib/projectVisuals.ts` exports
+`visualsFor(project)`, which every project-rendering component should call
+instead of reading `project.shape` etc. directly. For each field it resolves,
+in order:
+
+1. **The CMS value**, if present and valid (`shape` must be one of the known
+   `ShapeId`s; `layers` must be an array of 4 `{ label, tech }` objects) —
+   invalid values are ignored rather than crashing the page.
+2. **A built-in registry**, keyed by `slug`, matching the values baked into
+   `designs/field.html` for the ten shipped projects.
+3. **A generic fallback** for anything else: shape `constellation`, layers
+   derived by chunking the project's `tags` into 4 groups, and `subtitle` as
+   the caption.
+
+`visualsFor` also returns a `tint: [top, bottom]` colour pair for the
+project's point cloud. It comes from the registry when the design specifies
+one explicitly (The Loop's own gradient is greyscale, so the registry gives
+it a soft pearl/silver tint instead), otherwise it's parsed from the
+project's `gradient` string via the exported `parseGradientTint()` — the
+first and last hex colours in the gradient, or the field's aqua/peach pair
+if the gradient has no parseable hex colours at all.
 
 ### `about_content`
 

@@ -18,7 +18,15 @@
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
-    "link": "https://github.com/dani01Lost4ever/BugPilot"
+    "link": "https://github.com/dani01Lost4ever/BugPilot",
+    "shape": "bug",
+    "layers": [
+      { "label": "Client", "tech": "Embed widget" },
+      { "label": "API", "tech": "Express" },
+      { "label": "Worker", "tech": "BullMQ + Claude" },
+      { "label": "Storage", "tech": "MongoDB · Redis · MinIO" }
+    ],
+    "caption": "Every report lands in the reticle, already triaged."
   },
   {
     "id": "02",
@@ -39,7 +47,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
-    "link": "http://theloop.techdani.cc/"
+    "link": "http://theloop.techdani.cc/",
+    "shape": "loop",
+    "layers": [
+      { "label": "Front", "tech": "Next.js 15" },
+      { "label": "CMS", "tech": "Payload v3" },
+      { "label": "Search", "tech": "Meilisearch" },
+      { "label": "Data", "tech": "Postgres" }
+    ],
+    "caption": "One loop of dispatches, guides and labs, all self-hosted."
   },
   {
     "id": "03",
@@ -60,7 +76,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "Personal project — ongoing",
-    "link": "https://sfco.techdani.cc/"
+    "link": "https://sfco.techdani.cc/",
+    "shape": "orbit",
+    "layers": [
+      { "label": "Client", "tech": "React + Zustand" },
+      { "label": "Protocol", "tech": "Zod wire schemas" },
+      { "label": "Server", "tech": "Fastify tick sim" },
+      { "label": "Deploy", "tech": "Fly.io" }
+    ],
+    "caption": "Drones on orbit, driven by one fixed-tick clock."
   },
   {
     "id": "04",
@@ -81,7 +105,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
-    "link": "https://github.com/dani01Lost4ever/AuroraTrader"
+    "link": "https://github.com/dani01Lost4ever/AuroraTrader",
+    "shape": "candles",
+    "layers": [
+      { "label": "Dashboard", "tech": "React + Recharts" },
+      { "label": "API", "tech": "Express" },
+      { "label": "Agent", "tech": "Claude → Ollama" },
+      { "label": "Data", "tech": "MongoDB" }
+    ],
+    "caption": "Only the winning trades become training data."
   },
   {
     "id": "05",
@@ -102,7 +134,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
-    "link": "https://github.com/dani01Lost4ever/cloudflare-ddns-client"
+    "link": "https://github.com/dani01Lost4ever/cloudflare-ddns-client",
+    "shape": "globe",
+    "layers": [
+      { "label": "Dashboard", "tech": "Flask" },
+      { "label": "State", "tech": "status.json" },
+      { "label": "Daemon", "tech": "Python poller" },
+      { "label": "Upstream", "tech": "Cloudflare API" }
+    ],
+    "caption": "An IP changes, and the records follow in seconds."
   },
   {
     "id": "06",
@@ -123,7 +163,15 @@
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
-    "link": "https://github.com/dani01Lost4ever/agendash-3"
+    "link": "https://github.com/dani01Lost4ever/agendash-3",
+    "shape": "clocks",
+    "layers": [
+      { "label": "UI", "tech": "Bootstrap" },
+      { "label": "Middleware", "tech": "Express · Hapi · Koa · Fastify" },
+      { "label": "Scheduler", "tech": "Agenda.js" },
+      { "label": "Logs", "tech": "MongoDB tasklogs" }
+    ],
+    "caption": "Twelve jobs, twelve clocks, every run logged."
   },
   {
     "id": "07",
@@ -144,7 +192,15 @@
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
-    "link": "https://github.com/dani01Lost4ever/openai-cost-calculator-updated"
+    "link": "https://github.com/dani01Lost4ever/openai-cost-calculator-updated",
+    "shape": "coins",
+    "layers": [
+      { "label": "Package", "tech": "npm module" },
+      { "label": "API", "tech": "Five cost functions" },
+      { "label": "Pricing", "tech": "Model price table" },
+      { "label": "Models", "tech": "GPT-4o · Embeddings · Whisper" }
+    ],
+    "caption": "Five functions, one price table, kept current."
   },
   {
     "id": "08",
@@ -165,7 +221,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "2023",
-    "link": "https://github.com/dani01Lost4ever/Portfolio"
+    "link": "https://github.com/dani01Lost4ever/Portfolio",
+    "shape": "browser",
+    "layers": [
+      { "label": "Markup", "tech": "HTML" },
+      { "label": "Style", "tech": "CSS" },
+      { "label": "Script", "tech": "Vanilla JS" },
+      { "label": "Extras", "tech": "Particles.js · Swiper" }
+    ],
+    "caption": "Where it started, built from raw HTML, CSS and JS."
   },
   {
     "id": "09",
@@ -186,7 +250,15 @@
     ],
     "role": "Solo Developer",
     "timeline": "2023",
-    "link": "https://github.com/dani01Lost4ever/TicTacToe"
+    "link": "https://github.com/dani01Lost4ever/TicTacToe",
+    "shape": "tictactoe",
+    "layers": [
+      { "label": "UI", "tech": "WinForms" },
+      { "label": "Engine", "tech": "C#" },
+      { "label": "AI", "tech": "Minimax" },
+      { "label": "Speed", "tech": "Alpha-beta pruning" }
+    ],
+    "caption": "Minimax searches every move, so the AI never loses."
   },
   {
     "id": "10",
@@ -207,6 +279,14 @@
     ],
     "role": "Solo Developer",
     "timeline": "2023",
-    "link": "https://github.com/dani01Lost4ever/BattleShip"
+    "link": "https://github.com/dani01Lost4ever/BattleShip",
+    "shape": "battleship",
+    "layers": [
+      { "label": "UI", "tech": "WinForms" },
+      { "label": "Engine", "tech": ".NET 6" },
+      { "label": "AI", "tech": "Hunt / target" },
+      { "label": "Board", "tech": "10×10 grid" }
+    ],
+    "caption": "Random hits turn to targeted strikes until the ship sinks."
   }
 ]

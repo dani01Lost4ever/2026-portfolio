@@ -1,0 +1,51 @@
+# Coolify stack: site + PocketBase on one domain.
+#
+# In Coolify, create a "Docker Compose" resource from this repository, set the
+# compose file location to /docker-compose.coolify.yml, and give the
+# `frontend` service the domain (e.g. https://daniel.busetto.techdani.cc).
+# Leave `pocketbase` without a domain: nginx in `frontend` proxies /api/ and
+# /_/ (admin UI) to it over the stack's internal network.
+#
+# No host ports are published; Coolify's proxy routes traffic to frontend:80.
+
+services:
+  pocketbase:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      args:
+        PB_VERSION: "0.36.7"
+    expose:
+      - "8090"
+    volumes:
+      - pb_data:/pb/pb_data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8090/api/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    expose:
+      - "80"
+    environment:
+      # Empty = same origin through the nginx proxy. Set a full URL only if
+      # PocketBase is served from a separate domain.
+      PB_URL: ${PB_URL:-}
+    depends_on:
+      pocketbase:
+        condition: service_healthy
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pb_data:

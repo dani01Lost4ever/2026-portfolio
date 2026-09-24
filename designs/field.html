@@ -1,0 +1,1980 @@
+<!doctype html>
+<html lang="en">
+<head>
+<title>Daniel Busetto</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Daniel Busetto, full-stack software developer in Venice, Italy. From database to interface, built to scale.">
+<script>document.documentElement.classList.add('js');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght,SOFT@9..144,300..600,0..100&family=Manrope:wght@400..700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#EAF4F1;
+  --ink-2:#AFCBC7;
+  --ink-3:#86A9A6;
+  --peach:#FFB88A;
+  --aqua:#72E4D5;
+  --deep:#04181D;
+  --rule:rgba(234,244,241,.16);
+  --display:"Fraunces", "Iowan Old Style", Georgia, serif;
+  --body:"Manrope", "Segoe UI", system-ui, sans-serif;
+  --gutter:clamp(16px, 6vw, 96px);
+  --scrim:4,24,29;
+}
+*{box-sizing:border-box}
+html{background:#051E24;-webkit-text-size-adjust:100%}
+body{
+  margin:0;color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.6;
+  overflow-x:clip;
+  background:
+    radial-gradient(rgba(114,228,213,.10) 1px, transparent 1.4px) 0 0/22px 22px,
+    linear-gradient(180deg,#0E4148 0%,#062C33 9%,#0B3A3C 16%,#0C3447 26%,#122C4E 34%,#0D3B37 42%,#0B3350 50%,#103A45 57%,#2B1639 66%,#1E1330 74%,#231B3E 82%,#0B4245 94%,#031C1E 100%);
+}
+::selection{background:var(--peach);color:#082226}
+a{color:inherit}
+img,svg{display:block}
+:focus-visible{outline:2px solid var(--peach);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
+
+#field{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
+.scrim{display:none}
+html.static #field{display:none}
+
+/* nav */
+.nav{
+  position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;
+  padding:18px var(--gutter);
+  background:linear-gradient(180deg,rgba(var(--scrim),.94) 0%,rgba(var(--scrim),.7) 62%,rgba(var(--scrim),0) 100%);
+}
+.logo{font-family:var(--display);font-weight:500;font-size:1.5rem;letter-spacing:-.02em;text-decoration:none;font-variation-settings:"SOFT" 100}
+.nav ul{display:flex;gap:clamp(14px,2.4vw,34px);list-style:none;margin:0;padding:0;align-items:center}
+.nav a{text-decoration:none;font-size:.92rem;font-weight:500;color:var(--ink-2);transition:color .2s}
+.nav a:hover{color:var(--ink)}
+.nav .btn{color:#082226;padding:.6em 1em}
+
+.btn{
+  text-shadow:none;display:inline-flex;align-items:center;gap:.65em;padding:.95em 1.35em;border-radius:4px;
+  font-weight:600;font-size:.95rem;text-decoration:none;line-height:1;border:1px solid transparent;
+  transition:background .2s,border-color .2s,transform .2s;
+}
+.btn svg{width:1em;height:1em;flex:none}
+.btn-primary{background:var(--peach);color:#082226}
+.btn-primary:hover{background:#FFCBA6}
+.btn-ghost{border-color:rgba(234,244,241,.42);color:var(--ink)}
+.btn-ghost:hover{border-color:var(--ink)}
+
+main{position:relative;z-index:1}
+section{position:relative}
+.kicker{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--peach);margin:0 0 18px}
+h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margin:0;font-variation-settings:"SOFT" 60;text-wrap:balance}
+.copy,.hero-inner,.work-intro,.about-intro,.exp,.contact-inner{text-shadow:0 1px 22px rgba(3,20,24,.65)}
+
+/* hero */
+.hero{min-height:100vh;min-height:100svh;display:flex;align-items:flex-start;padding:clamp(120px,19vh,190px) var(--gutter) 64px}
+.hero-inner{max-width:880px}
+.status{font-size:.9rem;color:var(--ink-2);margin:0 0 26px}
+.status .dot{display:inline-block;vertical-align:middle;margin:-2px 12px 0 0;width:8px;height:8px;border-radius:1px;background:var(--aqua);box-shadow:0 0 12px var(--aqua)}
+.hero h1{font-size:clamp(2.9rem,7.4vw,7.3rem);line-height:.96;font-weight:330}
+.hero h1 span{display:block}
+.hero-sub{max-width:520px;color:var(--ink-2);font-size:1.08rem;margin:30px 0 34px}
+.cta{display:flex;gap:12px;flex-wrap:wrap}
+.stats{display:flex;gap:clamp(24px,4vw,56px);margin:48px 0 0;padding:0}
+.stats div{margin:0}
+.stats dt{font-family:var(--display);font-size:clamp(1.8rem,2.6vw,2.4rem);font-weight:360;line-height:1}
+.stats dd{margin:6px 0 0;font-size:.82rem;color:var(--ink-3)}
+
+/* work */
+.work-intro{min-height:74vh;display:flex;flex-direction:column;justify-content:center;padding:10vh var(--gutter);max-width:980px}
+.work-intro h2,.about-intro h2,.exp h2{font-size:clamp(2.2rem,4.6vw,4.3rem);line-height:1.02}
+.work-intro p{color:var(--ink-2);max-width:520px;margin:24px 0 0;font-size:1.05rem}
+.project{position:relative;overflow-x:clip;min-height:100vh;display:flex;align-items:center;padding:12vh var(--gutter)}
+.project[data-side="right"]{justify-content:flex-end}
+.copy{width:min(42vw,580px)}
+.meta{font-size:.84rem;color:var(--ink-3);margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap}
+.meta span+span::before{content:"";display:inline-block;width:14px;height:1px;background:currentColor;vertical-align:middle;margin-right:10px;opacity:.6}
+.project h3{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:1;font-weight:340}
+.sub{font-family:var(--display);font-weight:380;font-size:clamp(1.1rem,1.5vw,1.35rem);line-height:1.35;color:var(--peach);margin:14px 0 18px;font-variation-settings:"SOFT" 100}
+.desc{color:var(--ink-2);margin:0 0 26px;font-size:1rem}
+.desc{margin-bottom:8px}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(276px,27vw,350px);gap:clamp(16px,2vw,32px);align-items:center}
+.foot-text{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.results{display:grid;gap:14px;margin:0;padding:0}
+.results dt{font-family:var(--display);font-size:clamp(1.1rem,1.6vw,1.45rem);font-weight:400;line-height:1.1}
+.results dd{margin:3px 0 0;font-size:.78rem;color:var(--ink-3);line-height:1.35}
+/* tech cube slot: holds one TechCube (inlined below); keeps its square even without JS */
+.tech-cube-slot{width:100%;aspect-ratio:1;position:relative}
+html:not(.js) .tech-cube-slot{visibility:hidden}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+html.js:not(.static) body{touch-action:pan-y pinch-zoom}
+html.dragging,html.dragging *{cursor:grabbing!important;user-select:none}
+.caption{font-family:var(--display);font-weight:380;font-size:1.02rem;line-height:1.4;color:var(--ink-2);margin:0;font-variation-settings:"SOFT" 100}
+.project .caption{position:absolute;top:calc(50% + 39vh);left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
+.project[data-side="right"] .caption{left:25%}
+.stack{position:relative}
+.stack-cap{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);width:min(44ch,80vw);text-align:center}
+.exp-cap{margin-top:22px;max-width:44ch}
+.caption .w{transition:none}
+.link{display:inline-flex;align-items:center;gap:.55em;font-weight:600;font-size:.95rem;text-decoration:none;border-bottom:1px solid rgba(255,184,138,.5);padding-bottom:3px;color:var(--ink)}
+.link svg{width:.95em;height:.95em;transition:transform .2s}
+.link:hover svg{transform:translate(3px,-3px)}
+
+/* about */
+.about-intro{padding:22vh var(--gutter) 6vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:clamp(24px,5vw,80px);align-items:end}
+.about-intro .bio p{color:var(--ink-2);margin:0 0 16px}
+.stack{min-height:100vh;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:4vh 6vw;padding:8vh var(--gutter)}
+.group{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);align-items:center;gap:clamp(16px,2.5vw,36px)}
+.spot{width:100%;max-width:240px;aspect-ratio:1;justify-self:center}
+.group h3{font-size:clamp(1.7rem,2.6vw,2.4rem);line-height:1}
+.group .count{font-size:.8rem;color:var(--peach);margin:8px 0 12px;font-weight:600;letter-spacing:.04em}
+.group ul{list-style:none;margin:0;padding:0;color:var(--ink-2);font-size:.98rem;line-height:1.75}
+
+/* experience */
+.exp{padding:18vh var(--gutter) 16vh}
+.exp-head{max-width:760px;margin-bottom:6vh}
+.exp-list{max-width:560px}
+.exp-group{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;color:var(--ink-3);margin:6vh 0 0;padding-bottom:10px;border-bottom:1px solid var(--rule)}
+.exp-group:first-child{margin-top:0}
+.entry{padding:3.4vh 0}
+.entry .period{font-size:.84rem;color:var(--peach);font-weight:600;margin:0 0 6px}
+.entry h3{font-size:clamp(1.55rem,2.3vw,2.1rem);line-height:1.1;font-weight:380}
+.entry .where{color:var(--ink-2);margin:6px 0 0;font-size:.96rem}
+.entry .tech{color:var(--ink-3);margin:6px 0 0;font-size:.84rem}
+
+/* contact */
+.contact{min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:20vh var(--gutter) 28px}
+.contact-inner{max-width:640px}
+.contact h2{font-size:clamp(2.6rem,6vw,5.6rem);line-height:.98;font-weight:330}
+.contact .avail{color:var(--ink-2);margin:24px 0 34px;font-size:1.05rem;max-width:460px}
+.mail{font-size:clamp(1rem,1.6vw,1.2rem);padding:1.05em 1.4em}
+.socials{display:flex;gap:26px;margin:30px 0 0;list-style:none;padding:0}
+.socials a{text-decoration:none;color:var(--ink-2);font-weight:500;border-bottom:1px solid var(--rule);padding-bottom:2px}
+.socials a:hover{color:var(--ink)}
+.now{margin:44px 0 0;padding:0;display:grid;gap:8px;max-width:520px}
+.now div{display:grid;grid-template-columns:120px 1fr;gap:12px;font-size:.88rem}
+.now dt{color:var(--ink-3)}
+.now dd{margin:0;color:var(--ink-2)}
+footer{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:.8rem;color:var(--ink-3);padding-top:10vh}
+footer a{text-decoration:none}
+
+/* ---------- TechCube component (inlined) ---------- */
+/* TechCube: four glass slabs that turn to show each project's stack.
+   Size: set --techcube-size (desktop) / --techcube-size-sm (<=700px) on any ancestor,
+   or create with { fit: true } to size the cube from its container. */
+.tc{
+  --tc-size:var(--techcube-size,272px);
+  --tc-g:calc(var(--tc-size) * .034);
+  --tc-h:calc((var(--tc-size) - 3 * var(--tc-g)) / 4);
+  --tc-half:calc(var(--tc-size) / 2);
+  --tc-ink:#EAF4F1;
+  --tc-ink-2:#AFCBC7;
+  --tc-display:"Fraunces","Iowan Old Style",Georgia,serif;
+  --tc-body:"Manrope","Segoe UI",system-ui,sans-serif;
+  position:relative;
+  width:calc(var(--tc-size) * 1.62);
+  height:calc(var(--tc-size) * 1.78);
+  margin:0 auto;
+  touch-action:pan-y;
+  cursor:grab;
+  -webkit-user-select:none;user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  outline:none;
+  border-radius:4px;
+}
+.tc.tc-fit{width:100%;height:100%}
+.tc.is-dragging{cursor:grabbing}
+.tc:focus-visible{box-shadow:0 0 0 2px rgba(255,184,138,.9)}
+@media (max-width:700px){ .tc{--tc-size:var(--techcube-size-sm,170px)} }
+
+.tc-stage{position:absolute;inset:0;perspective:calc(var(--tc-size) * 7);perspective-origin:50% 42%;pointer-events:none}
+.tc-side,.tc-lid{pointer-events:auto}
+.tc-slab{outline:none}
+.tc-slab.is-hot .tc-side,.tc-slab.is-hot .tc-lid{filter:brightness(1.35) saturate(1.15)}
+.tc-slab:focus-visible .tc-side{box-shadow:inset 0 0 0 2px rgba(255,184,138,.95)}
+/* soft ambient light behind the object (flat, never moves) */
+.tc-halo{
+  position:absolute;left:50%;top:58%;width:calc(var(--tc-size) * 1.9);height:calc(var(--tc-size) * 1.2);
+  transform:translate(-50%,-50%);
+  background:radial-gradient(closest-side,rgba(var(--tc-tint,94,216,203),.16),rgba(var(--tc-tint,94,216,203),.05) 55%,transparent);
+}
+.tc-rig,.tc-body,.tc-slab,.tc-rot{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
+.tc-rig{left:50%;top:45%}
+.tc-slab{transform:translate3d(0,calc((var(--i) - 1.5) * (var(--tc-h) + var(--tc-g))),0)}
+
+.tc-face{
+  position:absolute;overflow:hidden;
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  box-sizing:border-box;
+}
+.tc-side{
+  width:var(--tc-size);height:var(--tc-h);
+  left:calc(var(--tc-size) / -2);top:calc(var(--tc-h) / -2);
+  background:
+    linear-gradient(180deg,rgba(var(--tc-acc),.10),rgba(var(--tc-acc),0) 46%),
+    linear-gradient(160deg,rgba(18,70,77,.74),rgba(5,31,37,.87));
+  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.46),inset 0 0 calc(var(--tc-size) * .07) rgba(var(--tc-tint,var(--tc-acc)),.16);
+}
+.tc-f0{transform:translateZ(var(--tc-half))}
+.tc-f1{transform:rotateY(90deg) translateZ(var(--tc-half))}
+.tc-f2{transform:rotateY(180deg) translateZ(var(--tc-half))}
+.tc-f3{transform:rotateY(-90deg) translateZ(var(--tc-half))}
+.tc-lid{
+  width:var(--tc-size);height:var(--tc-size);
+  left:calc(var(--tc-size) / -2);top:calc(var(--tc-size) / -2);
+  background:
+    radial-gradient(rgba(114,228,213,.20) 1px,transparent 1.5px) 0 0/calc(var(--tc-size) / 13) calc(var(--tc-size) / 13),
+    radial-gradient(closest-side,rgba(var(--tc-acc),.14),transparent),
+    linear-gradient(135deg,rgba(22,80,86,.84),rgba(7,38,44,.90));
+  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.52),inset 0 0 calc(var(--tc-size) * .09) rgba(var(--tc-acc),.12);
+}
+.tc-top{transform:rotateX(90deg) translateZ(calc(var(--tc-h) / 2))}
+.tc-bot{transform:rotateX(-90deg) translateZ(calc(var(--tc-h) / 2))}
+.tc-bot::after{content:"";position:absolute;inset:0;background:rgba(2,14,17,.55)}
+
+/* lighting: JS sets opacity per frame from the face normal */
+.tc-shade{position:absolute;inset:0;background:#02100F;opacity:0}
+.tc i{font-style:normal}
+
+/* label text */
+.tc-txt{
+  position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;
+  gap:calc(var(--tc-size) * .016);
+  padding:0 calc(var(--tc-size) * .075);
+  opacity:0;
+}
+.tc-label{
+  display:flex;align-items:center;gap:calc(var(--tc-size) * .026);
+  font:600 max(11px,calc(var(--tc-size) * .05))/1 var(--tc-body);
+  letter-spacing:.16em;text-transform:uppercase;white-space:nowrap;overflow:hidden;
+  color:rgb(var(--tc-acc));
+}
+.tc-label::before{
+  content:"";flex:none;width:max(5px,calc(var(--tc-size) * .021));height:max(5px,calc(var(--tc-size) * .021));
+  border-radius:1px;background:currentColor;box-shadow:0 0 8px currentColor;
+}
+.tc-label:empty{display:none}
+.tc-tech{
+  font-family:var(--tc-display);font-weight:430;
+  font-variation-settings:"SOFT" 60,"opsz" 36;
+  font-size:calc(var(--tc-size) * .088 * var(--fit,1));
+  line-height:1.04;letter-spacing:-.012em;white-space:pre;color:var(--tc-ink);
+}
+
+/* luminous edges + travelling glint */
+.tc-edge{position:absolute;left:0;right:0;height:3px;overflow:hidden;
+  background:linear-gradient(rgba(var(--tc-acc),.5),rgba(var(--tc-acc),.5)) 0 0/100% 1px no-repeat}
+.tc-et{top:0}
+.tc-eb{bottom:0;opacity:.6;background-position:0 100%}
+.tc-spark{
+  position:absolute;left:0;top:0;width:36%;height:100%;
+  background:radial-gradient(50% 100% at 50% 0,rgba(255,247,240,1),rgba(255,226,200,.4) 45%,transparent);
+  transform:translate3d(-110%,0,0);
+  animation:tc-sweep 8s linear infinite;
+  animation-delay:calc(var(--d, 0) * 1s);
+}
+@keyframes tc-sweep{
+  0%{transform:translate3d(-110%,0,0)}
+  24%{transform:translate3d(290%,0,0)}
+  100%{transform:translate3d(290%,0,0)}
+}
+.tc-eb .tc-spark{background:radial-gradient(50% 100% at 50% 100%,rgba(255,247,240,1),rgba(255,226,200,.4) 45%,transparent)}
+
+/* ground light under the object */
+.tc-floor{
+  position:absolute;
+  width:calc(var(--tc-size) * 2.3);height:calc(var(--tc-size) * 2.3);
+  left:calc(var(--tc-size) * -1.15);top:calc(var(--tc-size) * -1.15);
+  transform:translate3d(0,calc(var(--tc-size) * .64),0) rotateX(90deg);
+  background:
+    radial-gradient(closest-side,rgba(1,12,14,.62),rgba(1,12,14,0) 48%),
+    radial-gradient(closest-side,rgba(var(--tc-tint,94,216,203),.30),rgba(var(--tc-tint,94,216,203),.10) 46%,rgba(255,138,106,.05) 64%,transparent 76%);
+}
+
+/* text alternative */
+.tc-sr{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.tc-measure{position:absolute;left:0;top:0;width:max-content;visibility:hidden;pointer-events:none;white-space:pre;
+  font-family:var(--tc-display);font-weight:430;font-variation-settings:"SOFT" 60,"opsz" 36;font-size:100px;letter-spacing:-.012em;line-height:1}
+
+.tc.tc-still .tc-spark{animation:none;opacity:0}
+@media (prefers-reduced-motion:reduce){
+  .tc-spark{animation:none;opacity:0}
+}
+
+/* static fallback: soft glows where clusters would be */
+html.static .copy,html.static .hero-inner,html.static .work-intro,html.static .about-intro,html.static .exp,html.static .contact-inner{text-shadow:none}
+html.static .spot{background:radial-gradient(circle at 50% 50%,rgba(255,184,138,.55) 0 2px,transparent 3px) 0 0/18px 18px,radial-gradient(closest-side,rgba(114,228,213,.28),transparent)}
+html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent);mask:radial-gradient(closest-side,#000 55%,transparent)}
+
+@media (max-width:900px){
+  body{font-size:16px}
+  .nav{padding:14px 16px}
+  .nav ul{gap:16px}
+  .nav li.hide-s{display:none}
+  .hero{padding:47vh 20px 48px;min-height:100svh}
+  .hero h1{font-size:clamp(2.5rem,11.5vw,3.4rem)}
+  .hero-sub{margin:20px 0 26px;font-size:1rem}
+  .stats{margin-top:34px;gap:22px}
+  .work-intro{min-height:auto;padding:14vh 20px 8vh}
+  .project{padding:47vh 20px 3vh;align-items:flex-end;min-height:0}
+  .project .caption{position:static;transform:none;width:auto;text-align:left;margin:0 0 18px}
+  .stack-cap{position:static;transform:none;width:auto;text-align:left;margin-top:12px}
+  .project[data-side="right"]{justify-content:flex-start}
+  .copy{width:100%}
+  .foot{grid-template-columns:1fr;gap:8px}
+  .tech-cube-slot{aspect-ratio:auto;height:clamp(290px,40vh,375px);max-width:490px;justify-self:center;margin-top:4px}
+  .results dt{font-size:1.2rem}
+  .about-intro{grid-template-columns:1fr;padding:7vh 20px 4vh;gap:22px}
+  .stack{grid-template-columns:1fr;grid-template-rows:none;min-height:auto;padding:4vh 20px 8vh;gap:10px}
+  .group{grid-template-columns:40% 1fr;gap:16px}
+  .spot{max-width:150px}
+  .group ul{font-size:.92rem;line-height:1.6}
+  .exp{padding:30vh 20px 10vh}
+  .contact{padding:40vh 20px 22px}
+  .contact-inner{margin-top:auto}
+  .contact .avail{margin:18px 0 24px}
+  .socials{margin-top:22px}
+  .now{display:none}
+  footer{padding-top:34px}
+  .copy,.hero-inner,.work-intro,.about-intro,.exp,.contact-inner{text-shadow:0 0 16px rgba(var(--scrim),.95),0 1px 3px rgba(var(--scrim),.9)}
+  html.js:not(.static) .scrim{
+    display:block;position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:linear-gradient(180deg,rgba(var(--scrim),.12) 0%,rgba(var(--scrim),.22) 42%,rgba(var(--scrim),.78) 56%,rgba(var(--scrim),.9) 100%);
+  }
+}
+/* tablet portrait: cube sits beside the results, tighter gaps between projects */
+@media (min-width:600px) and (max-width:900px){
+  .project{padding-top:28vh}
+  .foot{grid-template-columns:minmax(0,1fr) minmax(0,min(54%,385px));gap:20px;align-items:center}
+  .tech-cube-slot{aspect-ratio:1;height:auto;max-width:none;margin-top:0}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+}
+</style>
+</head>
+<body>
+<canvas id="field" aria-hidden="true"></canvas>
+<div class="scrim" aria-hidden="true"></div>
+
+<nav class="nav" aria-label="Primary">
+  <a class="logo" href="#top" aria-label="Daniel Busetto, home">DB</a>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li class="hide-s"><a href="#experience">Experience</a></li>
+    <li><a class="btn btn-primary" href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<main>
+  <section class="hero" id="top">
+    <div class="hero-inner">
+      <p class="status"><span class="dot" aria-hidden="true"></span>Daniel Busetto, full-stack developer in Venice. Available for work.</p>
+      <h1><span>From database</span><span>to interface,</span><span>built to scale.</span></h1>
+      <p class="hero-sub">Four years building web applications end to end: data models and REST APIs, pipelines and self-hosted stacks, and fast, accessible frontends on top.</p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#work">View work
+          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M8 3v10M3.5 8.5 8 13l4.5-4.5"/></svg></a>
+        <a class="btn btn-ghost" href="#contact">Get in touch</a>
+      </div>
+      <dl class="stats">
+        <div><dt>4+</dt><dd>Years experience</dd></div>
+        <div><dt>20+</dt><dd>Projects shipped</dd></div>
+        <div><dt>10+</dt><dd>Happy clients</dd></div>
+      </dl>
+    </div>
+  </section>
+
+  <section id="work" aria-labelledby="work-title">
+    <header class="work-intro">
+      <p class="kicker">Selected work</p>
+      <h2 id="work-title">Self-hosted platforms, AI agents and tools other developers install.</h2>
+      <p>Six projects, each built alone from schema to screen, and each one running somewhere real.</p>
+    </header>
+
+    <article class="project" data-side="left" data-shape="bug">
+      <div class="copy">
+        <p class="caption">Every report lands in the reticle, already triaged.</p>
+        <p class="meta"><span>2026</span><span>Solo developer</span><span>Open source</span></p>
+        <h3>BugPilot</h3>
+        <p class="sub">Self-hosted bug reporting with AI triage.</p>
+        <p class="desc">A one-line embed widget captures annotated screenshots, console logs and network traces, then Claude triages every report: severity, duplicates, repro steps, fix suggestions. It ships as a five-service Docker stack with a built-in MCP server, so agents in Cursor or Claude Code can query and resolve bugs directly.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>9</dt><dd>MCP tools exposed</dd></div>
+              <div><dt>&lt; 5 min</dt><dd>Docker deploy</dd></div>
+              <div><dt>6</dt><dd>Monorepo packages</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/BugPilot">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="BugPilot architecture, top to bottom"><li>Client: Embed widget</li><li>API: Express</li><li>Worker: BullMQ + Claude</li><li>Storage: MongoDB · Redis · MinIO</li></ul>
+      </div>
+    </article>
+
+    <article class="project" data-side="right" data-shape="loop">
+      <div class="copy">
+        <p class="caption">One loop of dispatches, guides and labs, all self-hosted.</p>
+        <p class="meta"><span>2026</span><span>Solo developer</span><span>Live</span></p>
+        <h3>The Loop</h3>
+        <p class="sub">A field journal of the AI frontier, for engineers who ship.</p>
+        <p class="desc">A self-hosted AI publication on Next.js 15 and Payload CMS v3, with Postgres, Meilisearch, Remark42, Umami and Listmonk running as sibling Docker services on a European home server. Short dispatches, longer guides, designed to read like a print journal.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>5</dt><dd>Sibling services</dd></div>
+              <div><dt>Payload v3</dt><dd>CMS layer</dd></div>
+              <div><dt>EU</dt><dd>Home-server stack</dd></div>
+            </dl>
+            <a class="link" href="http://theloop.techdani.cc/">Read The Loop <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="The Loop architecture, top to bottom"><li>Front: Next.js 15</li><li>CMS: Payload v3</li><li>Search: Meilisearch</li><li>Data: Postgres</li></ul>
+      </div>
+    </article>
+
+    <article class="project" data-side="left" data-shape="planet">
+      <div class="copy">
+        <p class="caption">Drones on orbit, driven by one fixed-tick clock.</p>
+        <p class="meta"><span>2026</span><span>Solo developer</span><span>Ongoing</span></p>
+        <h3>Stellar Freight Co.</h3>
+        <p class="sub">A sci-fi drone-logistics factory tycoon, played in the browser.</p>
+        <p class="desc">Players dispatch drones, manage stations and route production across a real-time simulation. A pnpm and Turborepo monorepo: a Fastify and WebSocket server on a fixed-tick clock, a React and Zustand client, and Zod-validated wire messages checked at both ends.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>Phase 0</dt><dd>Foundation shipped</dd></div>
+              <div><dt>5 Hz</dt><dd>Server tick rate</dd></div>
+              <div><dt>Zod</dt><dd>Both ends typed</dd></div>
+            </dl>
+            <a class="link" href="https://sfco.techdani.cc/">Play the build <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="Stellar Freight Co. architecture, top to bottom"><li>Client: React + Zustand</li><li>Protocol: Zod wire schemas</li><li>Server: Fastify tick sim</li><li>Deploy: Fly.io</li></ul>
+      </div>
+    </article>
+
+    <article class="project" data-side="right" data-shape="ribbon">
+      <div class="copy">
+        <p class="caption">Only the winning trades become training data.</p>
+        <p class="meta"><span>2026</span><span>Solo developer</span><span>AI agent</span></p>
+        <h3>AuroraTrader</h3>
+        <p class="sub">A crypto paper-trading agent that trains its own replacement.</p>
+        <p class="desc">Claude makes the calls against the Alpaca Paper API, every decision and outcome lands in MongoDB, and only the profitable trades are exported as a JSONL dataset. That dataset fine-tunes a local Ollama model, which drops back into the same agent loop.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>Claude → Ollama</dt><dd>Swap by env var</dd></div>
+              <div><dt>JSONL</dt><dd>Outcome-filtered dataset</dd></div>
+              <div><dt>0</dt><dd>Code changes to swap model</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/AuroraTrader">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="AuroraTrader architecture, top to bottom"><li>Dashboard: React + Recharts</li><li>API: Express</li><li>Agent: Claude → Ollama</li><li>Data: MongoDB</li></ul>
+      </div>
+    </article>
+
+    <article class="project" data-side="left" data-shape="globe">
+      <div class="copy">
+        <p class="caption">An IP changes, and the records follow in seconds.</p>
+        <p class="meta"><span>2025</span><span>Solo developer</span><span>Self-hosted</span></p>
+        <h3>Cloudflare DDNS Client</h3>
+        <p class="sub">Dynamic DNS that notices your IP change before your users do.</p>
+        <p class="desc">A containerised client that keeps Cloudflare records in sync with your real public IP: polling across independent providers, a sliding-window rate limiter that never nears the API ceiling, and a live web dashboard instead of config files.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>&lt; 5 s</dt><dd>IP sync latency</dd></div>
+              <div><dt>0</dt><dd>API rate-limit hits</dd></div>
+              <div><dt>1 cmd</dt><dd>Docker deploy</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/cloudflare-ddns-client">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="Cloudflare DDNS architecture, top to bottom"><li>Dashboard: Flask</li><li>State: status.json</li><li>Daemon: Python poller</li><li>Upstream: Cloudflare API</li></ul>
+      </div>
+    </article>
+
+    <article class="project" data-side="right" data-shape="clocks">
+      <div class="copy">
+        <p class="caption">Twelve jobs, twelve clocks, every run logged.</p>
+        <p class="meta"><span>2025</span><span>Solo developer</span><span>Published on npm</span></p>
+        <h3>Agendash 3</h3>
+        <p class="sub">A job-scheduling dashboard for Agenda.js, rebuilt.</p>
+        <p class="desc">A heavily enhanced fork of Agendash: a full UI overhaul, per-job execution logs stored in MongoDB so silent failures finally leave a trace, and adapters for Express, Hapi, Koa and Fastify. Published to npm as agendash3-rework.</p>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>npm</dt><dd>Published package</dd></div>
+              <div><dt>4</dt><dd>Frameworks supported</dd></div>
+              <div><dt>0</dt><dd>Breaking changes</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/agendash-3">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot"></div>
+        </div>
+        <ul class="sr-only" aria-label="Agendash 3 architecture, top to bottom"><li>UI: Bootstrap</li><li>Middleware: Express · Hapi · Koa · Fastify</li><li>Scheduler: Agenda.js</li><li>Logs: MongoDB tasklogs</li></ul>
+      </div>
+    </article>
+  </section>
+
+  <section id="about" aria-labelledby="about-title">
+    <div class="about-intro">
+      <div>
+        <p class="kicker">About</p>
+        <h2 id="about-title">Full-stack developer, end to end.</h2>
+      </div>
+      <div class="bio">
+        <p>I studied full-stack web development and work across the whole stack, from designing data models and building APIs to responsive, accessible frontends.</p>
+        <p>My main stack is MEAN, and I am just as fluent in React, Next.js and .NET. I care about clean architecture, maintainable code, and shipping things that actually work.</p>
+      </div>
+    </div>
+    <div class="stack" aria-label="Skills">
+      <p class="caption stack-cap">Four clusters, sized by how many tools live in each.</p>
+      <div class="group" data-count="5"><div class="spot" aria-hidden="true"></div><div><h3>Frontend</h3><p class="count">5 skills</p><ul><li>Angular</li><li>React</li><li>Next.js</li><li>TypeScript</li><li>CSS / Sass</li></ul></div></div>
+      <div class="group" data-count="4"><div class="spot" aria-hidden="true"></div><div><h3>Backend</h3><p class="count">4 skills</p><ul><li>Node.js</li><li>Express</li><li>.NET / .NET Framework</li><li>REST APIs</li></ul></div></div>
+      <div class="group" data-count="3"><div class="spot" aria-hidden="true"></div><div><h3>Database</h3><p class="count">3 skills</p><ul><li>MongoDB</li><li>SQL Server</li><li>PostgreSQL</li></ul></div></div>
+      <div class="group" data-count="5"><div class="spot" aria-hidden="true"></div><div><h3>Tools</h3><p class="count">5 skills</p><ul><li>Git</li><li>Docker</li><li>CI/CD</li><li>Postman</li><li>Vite</li></ul></div></div>
+    </div>
+  </section>
+
+  <section class="exp" id="experience" aria-labelledby="exp-title">
+    <div class="exp-head">
+      <p class="kicker">Experience and education</p>
+      <h2 id="exp-title">Three roles at one company, one diploma cum laude.</h2>
+      <p class="caption exp-cap">A timeline that rises: every ring is a role or a school.</p>
+    </div>
+    <div class="exp-list">
+      <p class="exp-group">Venicecom Group, 3 years on-site</p>
+      <div class="entry" data-marker>
+        <p class="period">Jul 2024 — Present</p>
+        <h3>Software Developer</h3>
+        <p class="where">Full-time, Marghera</p>
+        <p class="tech">C# · .NET · Angular · Node.js · MongoDB · Docker · CI/CD · Azure · SQL Server</p>
+      </div>
+      <div class="entry" data-marker>
+        <p class="period">Jul 2023 — Jul 2024</p>
+        <h3>Web Developer Junior</h3>
+        <p class="where">Apprenticeship</p>
+        <p class="tech">C# · .NET · Entity Framework · Windows Azure</p>
+      </div>
+      <div class="entry" data-marker>
+        <p class="period">Apr 2023 — Jun 2023</p>
+        <h3>Web Developer</h3>
+        <p class="where">Internship, Venice</p>
+        <p class="tech">Next.js · C# · .NET · SQL · MongoDB · REST API</p>
+      </div>
+      <p class="exp-group">Education</p>
+      <div class="entry" data-marker>
+        <p class="period">Oct 2022 — Jul 2024</p>
+        <h3>ITS Digital Academy “Mario Volpato”</h3>
+        <p class="where">Higher Technical Diploma in Full Stack Web Development, 100/100 cum laude</p>
+      </div>
+      <div class="entry" data-marker>
+        <p class="period">Oct 2020 — Jun 2022</p>
+        <h3>Università degli Studi di Padova</h3>
+        <p class="where">Information Engineering, bachelor's not completed</p>
+      </div>
+      <div class="entry" data-marker>
+        <p class="period">2015 — 2020</p>
+        <h3>Liceo Statale Ettore Majorana</h3>
+        <p class="where">Scientific high school diploma, 84/100</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact" id="contact" aria-labelledby="contact-title">
+    <div class="contact-inner">
+      <p class="kicker">Contact</p>
+      <h2 id="contact-title">Let's build something great together.</h2>
+      <p class="avail">Currently open to freelance projects and full-time opportunities. Tell me what you are building.</p>
+      <a class="btn btn-primary mail" href="mailto:daniel.busetto.db@gmail.com">daniel.busetto.db@gmail.com
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+      <ul class="socials"><li><a href="#">GitHub</a></li><li><a href="#">LinkedIn</a></li></ul>
+      <dl class="now">
+        <div><dt>Now building</dt><dd>Cloudflare DDNS Client, v0.4 dashboard polish</dd></div>
+        <div><dt>Now reading</dt><dd>Designing Data-Intensive Applications</dd></div>
+      </dl>
+    </div>
+    <footer><span>© 2026 Daniel Busetto. Marghera, Italy.</span><a href="#top">Back to top</a></footer>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
+<script>
+/*!
+ * TechCube: an isometric cube of four glass slabs. For each project the slabs turn 90deg,
+ * top first, to put that project's architecture layers on the front face.
+ * No dependencies. Global: window.TechCube (also CommonJS export).
+ *
+ *   const cube = TechCube.create(el, { projects: [{ name, layers: [{ label, tech }] x4 }] });
+ *   cube.setProgress(p)   // p in [0, projects.length - 1]; integers rest, fractions turn
+ */
+(function (root, factory) {
+  var api = factory();
+  if (typeof module === "object" && module.exports) module.exports = api;
+  root.TechCube = api;
+})(typeof self !== "undefined" ? self : this, function () {
+  "use strict";
+
+  var DEG = Math.PI / 180;
+  var SLABS = 4;
+  /* slab edge/caption colours, top to bottom: Field's aqua point colour to its peach */
+  var ACC = ["94,216,203", "154,219,192", "255,184,138", "255,138,106"];
+  /* light direction (screen space, y down), normalised: upper left, in front */
+  var LV = (function () { var x = -0.5, y = -0.7, z = 0.85, l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; })();
+
+  /* turn timing, in units of p: the turn for k -> k+1 occupies [k+ZS, k+ZS+ZW] */
+  var ZS = 0.15, ZW = 0.7, DUR = 0.46, STAG = (ZW - DUR) / (SLABS - 1);
+  var BASE_PITCH = -24, BASE_YAW = -36;
+  var TECH = 0.088, AVAIL = 0.85; /* tech font size and usable face width, as fractions of cube size */
+
+  function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+  function smooth(t) { return t * t * (3 - 2 * t); }
+  function backOut(t, c1) { var c3 = c1 + 1, u = t - 1; return 1 + c3 * u * u * u + c1 * u * u; }
+  /* gentle start, slight overshoot, soft settle */
+  function turnEase(t) { return backOut(smooth(t), 1.25); }
+
+  function el(tag, cls, parent) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+
+  function create(container, options) {
+    if (!container) throw new Error("TechCube.create: container element required");
+    var opts = options || {};
+    var projects = (opts.projects || []).map(function (p) {
+      return { name: String(p.name || ""), layers: (p.layers || []).slice(0, SLABS).map(function (l) {
+        return { label: String(l.label || ""), tech: String(l.tech || "") };
+      }) };
+    });
+    var n = projects.length;
+    var smoothing = opts.smoothing == null ? 0.09 : Math.max(0, +opts.smoothing);
+    var fit = !!opts.fit;
+    var mqReduce = window.matchMedia ? matchMedia("(prefers-reduced-motion: reduce)") : { matches: false };
+    var reduce = opts.reducedMotion != null ? !!opts.reducedMotion : mqReduce.matches;
+
+    /* ---------- DOM ---------- */
+    var rootEl = el("div", "tc" + (fit ? " tc-fit" : ""));
+    rootEl.tabIndex = 0;
+    rootEl.setAttribute("role", "group");
+    rootEl.setAttribute("aria-roledescription", "architecture cube");
+    var stage = el("div", "tc-stage", rootEl);
+    el("div", "tc-halo", stage).setAttribute("aria-hidden", "true");
+    var rig = el("div", "tc-rig", stage);
+    el("div", "tc-floor", rig).setAttribute("aria-hidden", "true");
+    var body = el("div", "tc-body", rig);
+    var measure = el("span", "tc-measure", rootEl);
+    measure.setAttribute("aria-hidden", "true");
+    var sr = el("div", "tc-sr", rootEl);
+    sr.setAttribute("aria-live", "polite");
+    var srTitle = el("p", "", sr), srList = el("ul", "", sr);
+
+    var slabs = [];
+    for (var i = 0; i < SLABS; i++) {
+      var slab = el("div", "tc-slab", body);
+      /* each slab is its own control: focusable, arrow keys turn it */
+      slab.tabIndex = 0;
+      slab.setAttribute("role", "group");
+      slab.setAttribute("aria-roledescription", "turnable layer");
+      slab.setAttribute("data-i", i);
+      slab.style.setProperty("--i", i);
+      slab.style.setProperty("--tc-acc", ACC[i]);
+      var rot = el("div", "tc-rot", slab);
+      var faces = [];
+      for (var f = 0; f < 4; f++) {
+        var face = el("div", "tc-face tc-side tc-f" + f, rot);
+        face.setAttribute("aria-hidden", "true");
+        var shade = el("i", "tc-shade", face);
+        var txt = el("div", "tc-txt", face);
+        var lab = el("span", "tc-label", txt), tech = el("span", "tc-tech", txt);
+        /* the glint runs round each slab's perimeter, cascading from the top slab down */
+        for (var e = 0; e < 2; e++) {
+          var edge = el("i", "tc-edge " + (e ? "tc-eb" : "tc-et"), face);
+          var sp = el("i", "tc-spark", edge);
+          sp.style.setProperty("--d", (-(8 - (f * 1.92 + i * 0.42 + e * 0.12)) % 8).toFixed(2));
+        }
+        faces.push({ el: face, shade: shade, txt: txt, lab: lab, tech: tech, m: null, c: {} });
+      }
+      el("div", "tc-face tc-lid tc-top", rot).setAttribute("aria-hidden", "true");
+      el("div", "tc-face tc-lid tc-bot", rot).setAttribute("aria-hidden", "true");
+      /* man/mv: manual spin (in quarter turns) layered on top of the scroll pose, with inertia and a spring home */
+      slabs.push({ el: slab, rot: rot, faces: faces, a: 0, man: 0, mv: 0, c: {} });
+    }
+    container.appendChild(rootEl);
+    if (reduce) rootEl.classList.add("tc-still");
+
+    /* ---------- text fitting (measured once per font load / resize, never per frame) ---------- */
+    var fits = []; /* fits[project][layer] = { text, fit } */
+    function measureEm(s) { measure.textContent = s; return measure.getBoundingClientRect().width / 100; }
+    function computeFits() {
+      fits = projects.map(function (p) {
+        return p.layers.map(function (l) {
+          var t = l.tech, w1 = measureEm(t) || 1;
+          var fit1 = Math.min(1, AVAIL / (TECH * w1));
+          var best = { text: t, fit: fit1 };
+          if (fit1 < 0.76) {
+            /* try two lines, broken at the separator nearest the middle */
+            var re = /\s[·+→\/|&]\s|\s/g, m, cands = [];
+            while ((m = re.exec(t))) cands.push([m.index, m[0]]);
+            cands.forEach(function (c) {
+              var sep = c[1].trim();
+              var a = t.slice(0, c[0]) + (sep ? " " + sep : ""), b = t.slice(c[0] + c[1].length);
+              var wm = Math.max(measureEm(a), measureEm(b)) || 1;
+              var f2 = Math.min(0.74, AVAIL / (TECH * wm));
+              if (f2 > best.fit + 0.02) best = { text: a + "\n" + b, fit: f2 };
+            });
+          }
+          return best;
+        });
+      });
+      measure.textContent = "";
+      slabs.forEach(function (s) { s.faces.forEach(function (fc) { fc.m = null; }); });
+    }
+
+    /* ---------- state ---------- */
+    var target = 0, shown = 0, current = -1;
+    var clock = 0, last = 0, raf = 0, visible = true, destroyed = false;
+    var sizePx = 272;
+    var drag = { on: false, id: null, x: 0, y: 0, rawY: 0, rawX: 0, t: 0, slab: null };
+    var hot = null;
+    /* yaw/pitch offsets from dragging (with inertia + spring) and hovering */
+    var sp = { y: 0, x: 0, vy: 0, vx: 0 };
+    var hov = { y: 0, x: 0, ty: 0, tx: 0 };
+    var LY = 70, LX = 20, hovRect = null;
+
+    function setStyle(obj, cache, prop, v) { if (cache[prop] !== v) { obj.style[prop] = v; cache[prop] = v; } }
+
+    function slabAngle(i, p) {
+      if (reduce) return Math.round(p);
+      var q = p - ZS - i * STAG, k = Math.floor(q), t = clamp((q - k) / DUR, 0, 1);
+      return k + (t >= 1 ? 1 : turnEase(t));
+    }
+
+    function writeFace(fc, i, m) {
+      fc.m = m;
+      var L = m >= 0 && m < n ? projects[m].layers[i] : null;
+      if (!L) { fc.lab.textContent = ""; fc.tech.textContent = ""; return; }
+      var ft = fits[m] && fits[m][i] ? fits[m][i] : { text: L.tech, fit: 1 };
+      fc.lab.textContent = L.label;
+      fc.tech.textContent = ft.text;
+      fc.tech.style.setProperty("--fit", ft.fit.toFixed(3));
+    }
+
+    function announce(k) {
+      if (k === current || !n) return;
+      current = k;
+      var p = projects[k];
+      rootEl.setAttribute("aria-label", p.name + " architecture. Drag or use the arrow keys to turn the cube.");
+      srTitle.textContent = p.name + ", architecture from top to bottom:";
+      srList.textContent = "";
+      p.layers.forEach(function (l, li0) {
+        var li = el("li", "", srList); li.textContent = l.label + ": " + l.tech;
+        if (slabs[li0]) slabs[li0].el.setAttribute("aria-label", "Layer " + (li0 + 1) + " of " + SLABS + ", " + l.label + ": " + l.tech + ". Left and right arrow keys turn this layer.");
+      });
+      if (typeof opts.onChange === "function") opts.onChange(k, p);
+    }
+
+    function render() {
+      var sway = reduce ? 0 : 1;
+      var yaw = BASE_YAW + sway * (5.5 * Math.sin(clock * 0.37) + 1.5 * Math.sin(clock * 0.83)) + sp.y + hov.y;
+      var pitch = BASE_PITCH + sway * 1.6 * Math.sin(clock * 0.51) + sp.x + hov.x;
+      var bob = sway * sizePx * 0.016 * Math.sin(clock * 0.9);
+      setStyle(rig, rig._c || (rig._c = {}), "transform", "rotateX(" + pitch.toFixed(2) + "deg) rotateY(" + yaw.toFixed(2) + "deg)");
+      setStyle(body, body._c || (body._c = {}), "transform", "translate3d(0," + bob.toFixed(2) + "px,0)");
+      var cy = Math.cos(yaw * DEG), sy = Math.sin(yaw * DEG), cp = Math.cos(pitch * DEG), spn = Math.sin(pitch * DEG);
+      for (var i = 0; i < SLABS; i++) {
+        var s = slabs[i], a = slabAngle(i, shown) + s.man;
+        s.a = a;
+        setStyle(s.rot, s.c, "transform", "rotateY(" + (-90 * a).toFixed(2) + "deg)");
+        for (var f = 0; f < 4; f++) {
+          var fc = s.faces[f];
+          /* which project this face carries: the one it faces front for, switched only
+             while the face points straight back (relative position -1.5 / +2.5) */
+          var m = f + 4 * Math.ceil((a - 1.5 - f) / 4);
+          if (m !== fc.m) writeFace(fc, i, m);
+          /* normal in rig space, then rig rotation (rotateX(pitch) rotateY(yaw)) */
+          var phi = 90 * (f - a) * DEG, nx0 = Math.sin(phi), nz0 = Math.cos(phi);
+          var nx = nx0 * cy + nz0 * sy, nz1 = -nx0 * sy + nz0 * cy;
+          var ny = -nz1 * spn, nz = nz1 * cp;
+          var d = Math.max(0, nx * LV[0] + ny * LV[1] + nz * LV[2]);
+          setStyle(fc.shade, fc.c, "opacity", (0.62 * (1 - d)).toFixed(2));
+          /* text: fades toward grazing angles, and the not-current project reads quieter */
+          var facing = clamp((nz - 0.21) / 0.3, 0, 1); /* zero within ~12deg of edge-on */
+          var w = 1 - Math.min(1, Math.abs(m - a));
+          setStyle(fc.txt, fc.c, "opacity", (facing * (0.42 + 0.58 * w)).toFixed(2));
+        }
+      }
+    }
+
+    function stepPhysics(dt) {
+      var busy = false;
+      if (!drag.on) {
+        var K = reduce ? 60 : 30, C = reduce ? 2 * Math.sqrt(60) : 5.6;
+        sp.vy += (-K * sp.y - C * sp.vy) * dt; sp.y += sp.vy * dt;
+        sp.vx += (-K * sp.x - C * sp.vx) * dt; sp.x += sp.vx * dt;
+        if (Math.abs(sp.y) + Math.abs(sp.x) + Math.abs(sp.vy) + Math.abs(sp.vx) < 0.02) { sp.y = sp.x = sp.vy = sp.vx = 0; }
+        else busy = true;
+      } else busy = true;
+      for (var si = 0; si < SLABS; si++) {
+        var sl = slabs[si];
+        if (drag.on && drag.slab === sl) { busy = true; continue; }
+        if (sl.man === 0 && sl.mv === 0) continue;
+        /* coast on the fling, then spring back to the scroll pose (scroll always wins) */
+        var Ks = reduce ? 90 : 16, Cs = reduce ? 2 * Math.sqrt(90) : 4.6;
+        sl.mv += (-Ks * sl.man - Cs * sl.mv) * dt; sl.man += sl.mv * dt;
+        if (Math.abs(sl.man) + Math.abs(sl.mv) < 2e-3) { sl.man = 0; sl.mv = 0; } else busy = true;
+      }
+      var kh = 1 - Math.exp(-dt / 0.28);
+      hov.y += (hov.ty - hov.y) * kh; hov.x += (hov.tx - hov.x) * kh;
+      if (Math.abs(hov.ty - hov.y) + Math.abs(hov.tx - hov.x) > 0.01) busy = true;
+      var ks = reduce || !smoothing ? 1 : 1 - Math.exp(-dt / smoothing);
+      shown += (target - shown) * ks;
+      if (Math.abs(target - shown) < 1e-4) shown = target; else busy = true;
+      return busy;
+    }
+
+    function frame(now) {
+      raf = 0;
+      if (destroyed) return;
+      var dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
+      last = now;
+      if (!reduce) clock += dt;
+      var busy = stepPhysics(dt);
+      render();
+      /* idle life keeps the loop running; with reduced motion it sleeps once settled */
+      if (visible && (!reduce || busy)) raf = requestAnimationFrame(frame);
+      else last = 0;
+    }
+    function wake() { if (!raf && !destroyed && visible) { last = 0; raf = requestAnimationFrame(frame); } }
+
+    /* ---------- pointer: drag with inertia + spring back; hover tilt ---------- */
+    function atanhc(v) { v = clamp(v, -0.995, 0.995); return 0.5 * Math.log((1 + v) / (1 - v)); }
+    function onDown(e) {
+      if (e.pointerType === "mouse" && e.button !== 0) return;
+      var se = e.target && e.target.closest ? e.target.closest(".tc-slab") : null;
+      drag.slab = se ? slabs[+se.getAttribute("data-i")] : null;
+      drag.on = true; drag.id = e.pointerId; drag.x = e.clientX; drag.y = e.clientY; drag.t = performance.now();
+      if (drag.slab) {
+        drag.slab.mv = 0;
+        try { rootEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        rootEl.classList.add("is-dragging");
+        wake(); return;
+      }
+      drag.rawY = LY * atanhc(sp.y / LY); drag.rawX = LX * atanhc(sp.x / LX);
+      sp.vy = sp.vx = 0;
+      try { rootEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      rootEl.classList.add("is-dragging");
+      wake();
+    }
+    function onMove(e) {
+      if (drag.on && e.pointerId === drag.id && drag.slab) {
+        var nw = performance.now(), dts = Math.max(0.001, (nw - drag.t) / 1000), dq = -(e.clientX - drag.x) / (sizePx * 0.95);
+        drag.slab.man += dq; drag.slab.mv = drag.slab.mv * 0.5 + (dq / dts) * 0.5;
+        drag.x = e.clientX; drag.y = e.clientY; drag.t = nw;
+        wake(); return;
+      }
+      if (e.pointerType === "mouse" && !drag.on) {
+        var he = e.target && e.target.closest ? e.target.closest(".tc-slab") : null;
+        if (he !== hot) { if (hot) hot.classList.remove("is-hot"); hot = he; if (hot) hot.classList.add("is-hot"); }
+      }
+      if (drag.on && e.pointerId === drag.id) {
+        var now = performance.now(), dt = Math.max(0.001, (now - drag.t) / 1000);
+        drag.rawY += (e.clientX - drag.x) * 0.5;
+        drag.rawX += -(e.clientY - drag.y) * 0.28;
+        drag.x = e.clientX; drag.y = e.clientY; drag.t = now;
+        var ny = LY * Math.tanh(drag.rawY / LY), nx = LX * Math.tanh(drag.rawX / LX);
+        var vy = (ny - sp.y) / dt, vx = (nx - sp.x) / dt;
+        sp.vy = sp.vy * 0.6 + vy * 0.4; sp.vx = sp.vx * 0.6 + vx * 0.4;
+        sp.y = ny; sp.x = nx;
+        wake();
+      } else if (e.pointerType === "mouse" && !drag.on) {
+        var r = hovRect || (hovRect = rootEl.getBoundingClientRect());
+        var hx = clamp((e.clientX - r.left) / r.width * 2 - 1, -1, 1), hy = clamp((e.clientY - r.top) / r.height * 2 - 1, -1, 1);
+        hov.ty = hx * 7; hov.tx = -hy * 5;
+        wake();
+      }
+    }
+    function onUp(e) {
+      if (!drag.on || e.pointerId !== drag.id) return;
+      drag.on = false;
+      if (drag.slab) {
+        if (performance.now() - drag.t > 90) drag.slab.mv = 0;
+        drag.slab.mv = clamp(drag.slab.mv, -7, 7);
+        drag.slab = null;
+        rootEl.classList.remove("is-dragging");
+        try { rootEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        wake(); return;
+      }
+      /* no movement in the last 90ms means the pointer stopped: no fling */
+      if (performance.now() - drag.t > 90) { sp.vy = sp.vx = 0; }
+      sp.vy = clamp(sp.vy, -420, 420); sp.vx = clamp(sp.vx, -160, 160);
+      rootEl.classList.remove("is-dragging");
+      try { rootEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+      wake();
+    }
+    function onLeave(e) { hovRect = null; if (hot) { hot.classList.remove("is-hot"); hot = null; } if (e.pointerType === "mouse") { hov.ty = hov.tx = 0; wake(); } }
+    function onEnter() { hovRect = null; }
+    function onKey(e) {
+      var k = e.key, hit = true;
+      var fs = e.target && e.target.classList && e.target.classList.contains("tc-slab") ? slabs[+e.target.getAttribute("data-i")] : null;
+      if (fs && (k === "ArrowLeft" || k === "ArrowRight")) {
+        fs.mv += k === "ArrowLeft" ? 3.4 : -3.4;
+        e.preventDefault(); wake(); return;
+      }
+      if (k === "ArrowLeft") sp.vy -= 160; else if (k === "ArrowRight") sp.vy += 160;
+      else if (k === "ArrowUp") sp.vx += 70; else if (k === "ArrowDown") sp.vx -= 70;
+      else hit = false;
+      if (hit) { e.preventDefault(); wake(); }
+    }
+    rootEl.addEventListener("pointerdown", onDown);
+    rootEl.addEventListener("pointermove", onMove);
+    rootEl.addEventListener("pointerup", onUp);
+    rootEl.addEventListener("pointercancel", onUp);
+    rootEl.addEventListener("pointerleave", onLeave);
+    rootEl.addEventListener("pointerenter", onEnter);
+    rootEl.addEventListener("keydown", onKey);
+
+    /* ---------- visibility, motion preference, fonts ---------- */
+    var io = null;
+    if (window.IntersectionObserver) {
+      io = new IntersectionObserver(function (en) {
+        visible = en[en.length - 1].isIntersecting;
+        if (visible) wake();
+      }, { rootMargin: "120px" });
+      io.observe(rootEl);
+    }
+    function onReduce() {
+      if (opts.reducedMotion != null) return;
+      reduce = mqReduce.matches;
+      rootEl.classList.toggle("tc-still", reduce);
+      wake();
+    }
+    if (mqReduce.addEventListener) mqReduce.addEventListener("change", onReduce);
+
+    function resize() {
+      if (fit) {
+        var r = container.getBoundingClientRect();
+        var s = Math.max(80, Math.min(r.width / 1.62, (r.height || r.width) / 1.62));
+        rootEl.style.setProperty("--tc-size", s.toFixed(1) + "px");
+      }
+      var probe = el("i", "", rootEl);
+      probe.style.cssText = "position:absolute;visibility:hidden;width:var(--tc-size);height:0";
+      sizePx = probe.getBoundingClientRect().width || sizePx;
+      rootEl.removeChild(probe);
+      computeFits();
+      render();
+    }
+    var rt = 0;
+    function onWinResize() { clearTimeout(rt); rt = setTimeout(resize, 120); }
+    function onScroll() { hovRect = null; }
+    window.addEventListener("resize", onWinResize);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { if (!destroyed) resize(); });
+
+    /* ---------- public API ---------- */
+    function setProgress(p, o) {
+      p = +p;
+      if (!isFinite(p)) return;
+      target = clamp(p, 0, Math.max(0, n - 1));
+      if ((o && o.immediate) || reduce) shown = target;
+      announce(Math.round(target));
+      wake();
+    }
+    function destroy() {
+      destroyed = true;
+      if (raf) cancelAnimationFrame(raf);
+      if (io) io.disconnect();
+      window.removeEventListener("resize", onWinResize);
+      window.removeEventListener("scroll", onScroll);
+      if (mqReduce.removeEventListener) mqReduce.removeEventListener("change", onReduce);
+      if (rootEl.parentNode) rootEl.parentNode.removeChild(rootEl);
+    }
+
+    resize();
+    setProgress(opts.progress || 0, { immediate: true });
+    render();
+    wake();
+
+    return {
+      el: rootEl,
+      setProgress: setProgress,
+      getProgress: function () { return target; },
+      getIndex: function () { return current; },
+      resize: resize,
+      destroy: destroy
+    };
+  }
+
+  return { create: create, version: "1.0.0" };
+});
+</script>
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var canvas = document.getElementById('field');
+  var cubes = setupCubes();
+  var lenis = null;
+
+  /* ---------- in-page anchors: eased Lenis scroll (instant with reduced motion), offset for the fixed nav, focus follows ---------- */
+  function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = decodeURIComponent(a.getAttribute('href').slice(1)), t = id && document.getElementById(id);
+    if (!t) return;
+    e.preventDefault();
+    var nav = document.querySelector('.nav'), navH = nav ? nav.offsetHeight : 0;
+    var y = id === 'top' ? 0 : Math.max(0, t.getBoundingClientRect().top + window.scrollY - navH);
+    function done() {
+      if (!t.hasAttribute('tabindex')) t.setAttribute('tabindex', '-1');
+      try { t.focus({ preventScroll: true }); } catch (err) { t.focus(); }
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+    }
+    if (lenis) lenis.scrollTo(y, { duration: 1.4, easing: easeInOutCubic, onComplete: done });
+    else { window.scrollTo({ top: y, behavior: 'auto' }); done(); }
+  });
+  function fallback() { root.classList.add('static'); if (cubes) cubes.standalone(); }
+
+  /* ---------- tech cubes: one per project slot, all driven by one page-wide progress ---------- */
+  function setupCubes() {
+    if (!window.TechCube) return null;
+    var PROJECTS = [
+    { name: "BugPilot", layers: [{ label: "Client", tech: "Embed widget" }, { label: "API", tech: "Express" }, { label: "Worker", tech: "BullMQ + Claude" }, { label: "Storage", tech: "MongoDB · Redis · MinIO" }] },
+    { name: "The Loop", layers: [{ label: "Front", tech: "Next.js 15" }, { label: "CMS", tech: "Payload v3" }, { label: "Search", tech: "Meilisearch" }, { label: "Data", tech: "Postgres" }] },
+    { name: "Stellar Freight Co.", layers: [{ label: "Client", tech: "React + Zustand" }, { label: "Protocol", tech: "Zod wire schemas" }, { label: "Server", tech: "Fastify tick sim" }, { label: "Deploy", tech: "Fly.io" }] },
+    { name: "AuroraTrader", layers: [{ label: "Dashboard", tech: "React + Recharts" }, { label: "API", tech: "Express" }, { label: "Agent", tech: "Claude → Ollama" }, { label: "Data", tech: "MongoDB" }] },
+    { name: "Cloudflare DDNS", layers: [{ label: "Dashboard", tech: "Flask" }, { label: "State", tech: "status.json" }, { label: "Daemon", tech: "Python poller" }, { label: "Upstream", tech: "Cloudflare API" }] },
+    { name: "Agendash 3", layers: [{ label: "UI", tech: "Bootstrap" }, { label: "Middleware", tech: "Express · Koa · Fastify +1" }, { label: "Scheduler", tech: "Agenda.js" }, { label: "Logs", tech: "MongoDB tasklogs" }] }
+  ];
+    var list = [];
+    Array.prototype.slice.call(document.querySelectorAll('.tech-cube-slot')).forEach(function (slot, j) {
+      try {
+        var c = TechCube.create(slot, { projects: PROJECTS, fit: true, smoothing: 0.09 });
+        // the page keeps one static accessible list per project; silence the cube's live duplicate
+        var srl = c.el.querySelector('.tc-sr');
+        if (srl) { srl.setAttribute('aria-hidden', 'true'); srl.removeAttribute('aria-live'); }
+        list.push({ cube: c, slot: slot, center: 0 });
+      } catch (e) { /* a cube that fails simply stays empty */ }
+    });
+    if (!list.length) return null;
+    var H = innerHeight, lastP = -1, lastRest = 0, api = { onRest: null };
+    function cl(v) { return v < 0 ? 0 : v > 1 ? 1 : v; }
+    api.measure = function () {
+      H = innerHeight;
+      list.forEach(function (o) { var r = o.slot.getBoundingClientRect(); o.center = r.top + window.scrollY + r.height / 2; });
+    };
+    // p rises from j-1 to j while slot j's centre travels from 92% to 50% of the viewport height,
+    // so each turn plays as its cube enters the middle band, then rests there while the project is read
+    api.progress = function (sy) {
+      var p = 0;
+      for (var j = 1; j < list.length; j++) p += cl((0.92 * H - (list[j].center - sy)) / (0.42 * H));
+      return p;
+    };
+    // cube glow picks up each project's tint (its gradient, softened toward the page aqua)
+    var TINT = [['#dc2626', '#7c3aed'], ['#EEF0F4', '#A9B1C2'], ['#a78bfa', '#6366f1'], ['#06b6d4', '#10b981'], ['#f6821f', '#0051ff'], ['#667eea', '#38ef7d']].map(function (g) {
+      var a = parseInt(g[0].slice(1), 16), b = parseInt(g[1].slice(1), 16), aq = [94, 216, 203];
+      return [16, 8, 0].map(function (sh, ci) { return Math.round((((a >> sh) & 255) + ((b >> sh) & 255)) / 2 * 0.62 + aq[ci] * 0.38); });
+    });
+    var lastTint = '';
+    api.update = function (sy) {
+      var p = api.progress(sy);
+      if (Math.abs(p - lastP) > 1e-4) {
+        lastP = p; for (var q = 0; q < list.length; q++) list[q].cube.setProgress(p);
+        var k0 = Math.min(Math.floor(p), TINT.length - 1), k1 = Math.min(k0 + 1, TINT.length - 1), ft = p - k0;
+        var tv = [0, 1, 2].map(function (ci) { return Math.round(TINT[k0][ci] + (TINT[k1][ci] - TINT[k0][ci]) * ft); }).join(',');
+        if (tv !== lastTint) { lastTint = tv; for (var q2 = 0; q2 < list.length; q2++) list[q2].cube.el.style.setProperty('--tc-tint', tv); }
+      }
+      var r = Math.round(p);
+      if (Math.abs(p - r) < 1e-3 && r !== lastRest) { lastRest = r; if (api.onRest) api.onRest(r); }
+    };
+    var standing = false;
+    api.standalone = function () {
+      if (standing) return; standing = true;
+      var q = 0;
+      function kick() { if (!q) q = requestAnimationFrame(function () { q = 0; api.update(window.scrollY); }); }
+      window.addEventListener('scroll', kick, { passive: true });
+      window.addEventListener('resize', function () { api.measure(); kick(); });
+      if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { api.measure(); kick(); });
+      api.measure(); api.update(window.scrollY);
+    };
+    api.measure(); api.update(window.scrollY);
+    return api;
+  }
+
+  var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduce || !window.THREE || !window.gsap || !window.ScrollTrigger) return fallback();
+  (function probe() {
+    var ok = false;
+    try {
+      var c = document.createElement('canvas');
+      var gl = c.getContext('webgl2') || c.getContext('webgl');
+      ok = !!gl;
+      if (gl) { var ext = gl.getExtension('WEBGL_lose_context'); if (ext) ext.loseContext(); }
+    } catch (e) { ok = false; }
+    if (!ok) reduce = true;
+  })();
+  if (reduce) return fallback();
+
+  try { init(); } catch (err) { fallback(); }
+
+  function init() {
+    gsap.registerPlugin(ScrollTrigger);
+    // smooth wheel scrolling synced to ScrollTrigger; touch keeps native scrolling
+    if (window.Lenis) {
+      try {
+        lenis = new Lenis({ duration: 1.15, smoothWheel: true, syncTouch: false });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      } catch (e) { lenis = null; }
+    }
+    THREE.ColorManagement.enabled = false;
+
+    var TAU = Math.PI * 2;
+    var mobile = innerWidth < 900;
+    var N = mobile ? 4200 : 10000;
+    var FOV = 40, CAMZ = 14;
+
+    /* ---------- helpers ---------- */
+    function rng(seed) {
+      return function () {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+      };
+    }
+    function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
+    function lerp(a, b, t) { return a + (b - a) * t; }
+    function smooth(a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
+    function W(flag, phase, group) { return (group || 0) * 8 + flag + clamp(phase, 0, 1) * 0.98; }
+    function unit(r) { var u = r() * 2 - 1, a = r() * TAU, s = Math.sqrt(1 - u * u); return [s * Math.cos(a), u, s * Math.sin(a)]; }
+    function jit(r, s) { return (r() - 0.5) * 2 * s; }
+    function hex(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; }
+
+    function xy2d(n, x, y) {
+      var d = 0, s, rx, ry, t;
+      for (s = n >> 1; s > 0; s >>= 1) {
+        rx = (x & s) > 0 ? 1 : 0; ry = (y & s) > 0 ? 1 : 0;
+        d += s * s * ((3 * rx) ^ ry);
+        if (ry === 0) { if (rx === 1) { x = n - 1 - x; y = n - 1 - y; } t = x; x = y; y = t; }
+      }
+      return d;
+    }
+    // Order points along a Hilbert curve (in screen-ish space) so index i lands in a similar
+    // region in every shape: morphs read as a coherent flow instead of an explosion.
+    function hilbertSort(buf, tilt) {
+      var c = Math.cos(tilt), s = Math.sin(tilt), keys = new Float64Array(N), order = new Array(N), i;
+      for (i = 0; i < N; i++) {
+        var x = buf[i * 4], y = buf[i * 4 + 1], z = buf[i * 4 + 2];
+        var sy = c * y - s * z;
+        var hx = clamp(Math.round((x + 9) / 18 * 1023), 0, 1023), hy = clamp(Math.round((sy + 9) / 18 * 1023), 0, 1023);
+        keys[i] = xy2d(1024, hx, hy); order[i] = i;
+      }
+      order.sort(function (a, b) { return keys[a] - keys[b]; });
+      var out = new Float32Array(N * 4);
+      for (i = 0; i < N; i++) out.set(buf.subarray(order[i] * 4, order[i] * 4 + 4), i * 4);
+      return out;
+    }
+    function build(parts, tilt, seed) {
+      var r = rng(seed), buf = new Float32Array(N * 4), tw = 0, i = 0;
+      parts.forEach(function (p) { tw += p[0]; });
+      parts.forEach(function (p, pi) {
+        var n = pi === parts.length - 1 ? N - i : Math.round(N * p[0] / tw);
+        for (var j = 0; j < n && i < N; j++, i++) buf.set(p[1](r, j, n), i * 4);
+      });
+      return hilbertSort(buf, tilt);
+    }
+    function seg(r, a, b, th) { var t = r(); return [lerp(a[0], b[0], t) + jit(r, th), lerp(a[1], b[1], t) + jit(r, th), lerp(a[2], b[2], t) + jit(r, th)]; }
+    function bez(r, a, c, b, th) {
+      var t = r(), u = 1 - t;
+      return [u * u * a[0] + 2 * u * t * c[0] + t * t * b[0] + jit(r, th), u * u * a[1] + 2 * u * t * c[1] + t * t * b[1] + jit(r, th), jit(r, th)];
+    }
+    function ell(r, c, rad) { var v = unit(r); return [c[0] + v[0] * rad[0], c[1] + v[1] * rad[1], c[2] + v[2] * rad[2]]; }
+
+    /* ---------- shapes (local units, radius ~3) ---------- */
+    function genGrid() {
+      var cols = Math.round(Math.sqrt(N * 1.6)), rows = Math.ceil(N / cols);
+      return build([[1, function (r, j) {
+        var cx = j % cols, cz = Math.floor(j / cols);
+        var x = -11 + 22 * cx / (cols - 1), z = -7 + 14 * cz / Math.max(rows - 1, 1);
+        var line = (cx % 8 === 0 || cz % 6 === 0) ? 0.8 : 0.2;
+        return [x, 0, z, W(4, line)];
+      }]], 0.42, 3);
+    }
+
+    function genBug() {
+      var legs = [
+        [[0.62, 1.25], [1.55, 1.9], [2.2, 2.65]],
+        [[0.72, 0.9], [1.8, 0.95], [2.5, 0.7]],
+        [[0.8, 0.3], [1.65, -0.25], [2.15, -1.35]]
+      ];
+      var off = -0.55;
+      function sh(p, f) { return [p[0], p[1] + off, p[2], f]; }
+      return build([
+        [30, function (r) { return sh(ell(r, [0, -0.55, 0], [1.05, 1.5, 0.6]), 0); }],
+        [3, function (r) { var y = -2.0 + r() * 2.85, k = (y + 0.55) / 1.5; return sh([jit(r, 0.025), y, 0.6 * Math.sqrt(Math.max(0, 1 - k * k)) + 0.02], W(1, 0)); }],
+        [8, function (r) { return sh(ell(r, [0, 1.2, 0], [0.72, 0.48, 0.45]), 0); }],
+        [5, function (r) { return sh(ell(r, [0, 1.95, 0], [0.44, 0.36, 0.34]), 0); }],
+        [1.5, function (r, j) { var s = j % 2 ? 1 : -1, v = unit(r); return sh([0.24 * s + v[0] * 0.07, 2.08 + v[1] * 0.07, 0.28 + v[2] * 0.07], W(1, 0)); }],
+        [16, function (r, j) {
+          var L = j % 6, s = L < 3 ? -1 : 1, g = legs[L % 3], t = r();
+          var a = [g[0][0] * s, g[0][1], -0.1], k = [g[1][0] * s, g[1][1], -0.15], f = [g[2][0] * s, g[2][1], -0.2];
+          var p = t < 0.45 ? seg(r, a, k, 0.035) : seg(r, k, f, 0.03);
+          return sh(p, 0);
+        }],
+        [5, function (r, j) { var s = j % 2 ? 1 : -1; return sh(bez(r, [0.14 * s, 2.25, 0], [0.35 * s, 3.0, 0], [1.0 * s, 3.15, 0], 0.025), 0); }],
+        [23, function (r) {
+          var a; do { a = r() * TAU; } while (Math.abs(Math.sin(2 * a)) < 0.12);
+          var rad = 3.05 + jit(r, 0.02);
+          return [Math.cos(a) * rad, Math.sin(a) * rad, jit(r, 0.02), W(2, a / TAU)];
+        }],
+        [6, function (r, j) { var a = (j % 4) * TAU / 4, rad = 2.6 + r() * 0.85; return [Math.cos(a) * rad + jit(r, 0.02), Math.sin(a) * rad + jit(r, 0.02), 0, W(1, 0)]; }],
+        [2.5, function (r) { var v = unit(r); return [v[0] * 0.09, v[1] * 0.09, v[2] * 0.09 + 0.8, W(1, 0)]; }]
+      ], 0.12, 11);
+    }
+
+    function genTorus() {
+      var R = 2.2, rr = 0.62;
+      return build([
+        [76, function (r) {
+          var u, v; do { u = r() * TAU; v = r() * TAU; } while (r() > (R + rr * Math.cos(v)) / (R + rr));
+          return [(R + rr * Math.cos(v)) * Math.cos(u), rr * Math.sin(v), (R + rr * Math.cos(v)) * Math.sin(u), 0];
+        }],
+        [12, function (r) { var u = r() * TAU, rad = R + rr + 0.02; return [rad * Math.cos(u), jit(r, 0.05), rad * Math.sin(u), W(2, u / TAU)]; }],
+        [12, function (r) { var u = r() * TAU, rad = 3.25 + jit(r, 0.02); return [rad * Math.cos(u), jit(r, 0.02), rad * Math.sin(u), W(2, (u / TAU * 2) % 1)]; }]
+      ], 1.1, 21);
+    }
+
+    function genPlanet() {
+      var clumps = []; var r0 = rng(5);
+      for (var k = 0; k < 9; k++) clumps.push(k * TAU / 9 + r0() * 0.3);
+      return build([
+        [58, function (r) {
+          var v; do { v = unit(r); } while (r() > 0.3 + 0.7 * Math.pow(Math.sin(v[1] * 7 + 0.6), 2));
+          return [v[0] * 1.6, v[1] * 1.6, v[2] * 1.6, 0];
+        }],
+        [28, function (r) { var a = r() * TAU, rad = 2.15 + Math.pow(r(), 0.8) * 0.85; if (rad > 2.55 && rad < 2.62) rad += 0.08; return [Math.cos(a) * rad, jit(r, 0.035), Math.sin(a) * rad, W(3, r() * 0.8)]; }],
+        [14, function (r, j) {
+          var a = clumps[j % 9] + jit(r, 0.05) - r() * r() * 0.35, rad = 3.35 + jit(r, 0.06);
+          return [Math.cos(a) * rad, jit(r, 0.06), Math.sin(a) * rad, W(3, 0.95)];
+        }]
+      ], 0.36, 31);
+    }
+
+    function genRibbon() {
+      var r0 = rng(77), price = 0, cs = [], k, lo = 1e9, hi = -1e9, M = 22;
+      for (k = 0; k < M; k++) {
+        var o = price, c = o + 0.17 + (r0() - 0.45) * 0.62;
+        var h = Math.max(o, c) + r0() * 0.22, l = Math.min(o, c) - r0() * 0.22;
+        cs.push({ o: o, c: c, h: h, l: l }); price = c; lo = Math.min(lo, l); hi = Math.max(hi, h);
+      }
+      function Y(v) { return -2.1 + (v - lo) / (hi - lo) * 4.1; }
+      function X(k) { return -3.3 + 6.6 * k / (M - 1); }
+      function curve(s) {
+        var u = s * (M - 1), i = Math.min(Math.floor(u), M - 2), t = u - i;
+        var p0 = cs[Math.max(i - 1, 0)].c, p1 = cs[i].c, p2 = cs[i + 1].c, p3 = cs[Math.min(i + 2, M - 1)].c;
+        var v = 0.5 * ((2 * p1) + (-p0 + p2) * t + (2 * p0 - 5 * p1 + 4 * p2 - p3) * t * t + (-p0 + 3 * p1 - 3 * p2 + p3) * t * t * t);
+        return Y(v);
+      }
+      return build([
+        [36, function (r) {
+          var k = Math.floor(r() * M), q = cs[k], a = Y(Math.min(q.o, q.c)), b = Math.max(Y(Math.max(q.o, q.c)), a + 0.08);
+          return [X(k) + jit(r, 0.09), lerp(a, b, r()), jit(r, 0.09), W(7, (q.c >= q.o ? 0.5 : 0) + k / M * 0.49)];
+        }],
+        [10, function (r) { var k = Math.floor(r() * M), q = cs[k]; return [X(k) + jit(r, 1.2e-2), lerp(Y(q.l), Y(q.h), r()), 0, 0]; }],
+        [44, function (r) { var s = r(); return [-3.3 + 6.6 * s, curve(s) + 0.45 + jit(r, 0.02), -0.3 - r() * 0.9, W(2, s)]; }],
+        [10, function (r) {
+          var x = -3.6 + r() * 7.2, z = -1.5 + r() * 2.2;
+          if (r() < 0.5) x = Math.round(x * 2) / 2; else z = Math.round(z * 2) / 2;
+          return [x, -2.55, z, 0];
+        }]
+      ], 0.2, 41);
+    }
+
+    function genGlobe() {
+      // an unmistakable globe: graticule (8 meridians, 5 parallels) + thin sparse shell + bright DNS-update arcs
+      var R = 2.2, r0 = rng(9), ends = [], k;
+      function land(v) { return Math.sin(3.1 * v[0] + 0.3) * Math.cos(2.3 * v[1] - 0.4) + 0.6 * Math.sin(2.7 * v[2] + 1.1) * Math.cos(3.7 * v[0] + 0.2) + 0.3 * Math.sin(5.3 * v[1] + 2 * v[2]); }
+      while (ends.length < 12) { var v0 = unit(r0); if (land(v0) > 0.35 && Math.abs(v0[1]) < 0.8) ends.push(v0); }
+      function slerp(a, b, t) {
+        var d = clamp(a[0] * b[0] + a[1] * b[1] + a[2] * b[2], -1, 1), om = Math.acos(d), so = Math.sin(om) || 1e-4;
+        var s1 = Math.sin((1 - t) * om) / so, s2 = Math.sin(t * om) / so;
+        return [a[0] * s1 + b[0] * s2, a[1] * s1 + b[1] * s2, a[2] * s1 + b[2] * s2];
+      }
+      function sph(lat, lon, rad) { return [Math.cos(lat) * Math.cos(lon) * rad, Math.sin(lat) * rad, Math.cos(lat) * Math.sin(lon) * rad]; }
+      return build([
+        [30, function (r) { var lon = Math.floor(r() * 8) * Math.PI / 8, lat = (r() * 2 - 1) * Math.PI / 2; var p = sph(lat, lon, R + jit(r, 1.2e-2)); p.push(0); return p; }],
+        [24, function (r) { var lat = (Math.floor(r() * 5) - 2) * Math.PI / 6.5, lon = r() * TAU; var p = sph(lat, lon, R + jit(r, 1.2e-2)); p.push(0); return p; }],
+        [8, function (r) { var lon = r() * TAU, rad = R + jit(r, 1.2e-2); return [Math.cos(lon) * rad, jit(r, 2e-2), Math.sin(lon) * rad, 0]; }],
+        [12, function (r) { var v = unit(r); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
+        [8, function (r) { var v; do { v = unit(r); } while (land(v) < 0.45); return [v[0] * R, v[1] * R, v[2] * R, 0]; }],
+        [14, function (r, j) {
+          var k = j % 6, s = r(), p = slerp(ends[k * 2], ends[k * 2 + 1], s), h = R * (1 + 0.24 * Math.sin(Math.PI * s));
+          return [p[0] * h + jit(r, 1.5e-2), p[1] * h + jit(r, 1.5e-2), p[2] * h + jit(r, 1.5e-2), W(6, (s * 0.7 + k * 0.29) % 1)];
+        }],
+        [4, function (r, j) { var e = ends[j % 12], v = unit(r); return [e[0] * R * 1.02 + v[0] * 0.07, e[1] * R * 1.02 + v[1] * 0.07, e[2] * R * 1.02 + v[2] * 0.07, W(1, 0)]; }]
+      ], 0.38, 51);
+    }
+
+    function genClocks() {
+      var P = 1.5, r0 = rng(13), cells = [];
+      for (var k = 0; k < 12; k++) cells.push({ x: (k % 4 - 1.5) * P, y: (1 - Math.floor(k / 4)) * P, h: r0() * TAU, m: r0() * TAU });
+      return build([
+        [46, function (r, j) { var c = cells[j % 12], a = r() * TAU, rad = 0.58 + jit(r, 1.5e-2); return [c.x + Math.cos(a) * rad, c.y + Math.sin(a) * rad, jit(r, 0.03), W(2, (j % 12) / 12)]; }],
+        [12, function (r, j) { var c = cells[j % 12], a = Math.floor(r() * 12) * TAU / 12, rad = lerp(0.43, 0.51, r()); return [c.x + Math.cos(a) * rad, c.y + Math.sin(a) * rad, 0, 0]; }],
+        [20, function (r, j) { var c = cells[j % 12], t = r() * 0.46; return [c.x + Math.cos(c.m) * t, c.y + Math.sin(c.m) * t, jit(r, 1.5e-2), W(5, 0.9)]; }],
+        [14, function (r, j) { var c = cells[j % 12], t = r() * 0.3; return [c.x + Math.cos(c.h) * t, c.y + Math.sin(c.h) * t, jit(r, 0.02), W(5, 0.1)]; }],
+        [8, function (r, j) { var c = cells[j % 12], v = unit(r); return [c.x + v[0] * 0.06, c.y + v[1] * 0.06, v[2] * 0.06, W(1, 0)]; }]
+      ], -0.25, 61);
+    }
+
+    // DOM driven: four clusters sitting in the .spot boxes next to their labels
+    function genClusters(spots) {
+      var total = 0; spots.forEach(function (s) { total += s.count; });
+      var r0 = rng(17);
+      spots.forEach(function (s) {
+        s.knots = [];
+        for (var k = 0; k < s.count; k++) { var v = unit(r0), d = s.rad * 0.55 * Math.cbrt(r0()); s.knots.push([s.x + v[0] * d, s.y + v[1] * d, v[2] * d]); }
+      });
+      var gapY = 0; spots.forEach(function (s) { gapY += s.y / spots.length; });
+      var stacked = Math.abs(spots[0].x - spots[1].x) < 0.5;
+      // links avoid the labels: vertical runs inside the spot column, cross-links bow through the row gap
+      var links = stacked ? [[2, 1], [1, 0], [3, 2]] : [[2, 0], [3, 1], [0, 1], [2, 3]];
+      var parts = spots.map(function (s, si) {
+        return [88 * s.count / total, function (r) {
+          if (r() < 0.4) { var kc = s.knots[Math.floor(r() * s.count)], v = unit(r), d = 0.13 * Math.cbrt(r()); return [kc[0] + v[0] * d, kc[1] + v[1] * d, kc[2] + v[2] * d, W(1, 0, si + 1)]; }
+          var u = unit(r), dd = s.rad * Math.pow(r(), 0.55);
+          return [s.x + u[0] * dd, s.y + u[1] * dd, u[2] * dd, W(0, 0, si + 1)];
+        }];
+      });
+      parts.push([12, function (r, j) {
+        var L = links[j % links.length], a = spots[L[0]], b = spots[L[1]];
+        var dx = b.x - a.x, dy = b.y - a.y, len = Math.hypot(dx, dy) || 1;
+        var s0 = a.rad / len * 0.9, s1 = 1 - b.rad / len * 0.9, s = lerp(s0, s1, r()), u = 1 - s;
+        var cxp = (a.x + b.x) / 2, cyp = Math.abs(dx) < 0.5 ? (a.y + b.y) / 2 : 2 * gapY - (a.y + b.y) / 2;
+        var x = u * u * a.x + 2 * u * s * cxp + s * s * b.x, y = u * u * a.y + 2 * u * s * cyp + s * s * b.y;
+        return [x + jit(r, 0.03), y + jit(r, 0.03), Math.sin(Math.PI * s) * 0.3 + jit(r, 0.03), W(2, s)];
+      }]);
+      return build(parts, 0, 71);
+    }
+
+    function genHelix(cfg) {
+      var H = cfg.yMax - cfg.yMin, turns = H / 2.3, R = cfg.R, M = cfg.markers.length;
+      function at(s, off, rad) { var th = s * turns * TAU + off; return [rad * Math.cos(th), cfg.yMin + s * H, rad * Math.sin(th)]; }
+      return build([
+        [46, function (r) { var s = r(), p = at(s, 0, R); return [p[0] + jit(r, 0.06), p[1] + jit(r, 0.06), p[2] + jit(r, 0.06), W(2, (s * 3) % 1)]; }],
+        [14, function (r) { var s = r(), p = at(s, Math.PI, R * 0.9); return [p[0] + jit(r, 0.04), p[1], p[2] + jit(r, 0.04), 0]; }],
+        [28, function (r, j) { var y = cfg.markers[j % M], a = r() * TAU, rad = cfg.ringR + jit(r, 0.03); return [Math.cos(a) * rad, y + jit(r, 0.02), Math.sin(a) * rad, W(1, 0, (j % M) + 1)]; }],
+        [12, function (r, j) { var y = cfg.markers[j % M], p = at((y - cfg.yMin) / H, 0, R), v = unit(r); return [p[0] + v[0] * 0.15, p[1] + v[1] * 0.15, p[2] + v[2] * 0.15, W(1, 0, (j % M) + 1)]; }]
+      ], cfg.tilt, 81);
+    }
+
+    function genAt() {
+      var S = 360, cv = document.createElement('canvas'); cv.width = cv.height = S;
+      var cx = cv.getContext('2d');
+      cx.fillStyle = '#fff'; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+      cx.font = '700 330px Manrope, system-ui, sans-serif';
+      cx.fillText('@', S / 2, S / 2 + 10);
+      var d = cx.getImageData(0, 0, S, S).data, fill = [], edge = [], x, y, minX = S, maxX = 0, minY = S, maxY = 0;
+      function on(x, y) { return x >= 0 && y >= 0 && x < S && y < S && d[(y * S + x) * 4 + 3] > 128; }
+      for (y = 0; y < S; y += 1) for (x = 0; x < S; x += 1) {
+        if (!on(x, y)) continue;
+        fill.push(x, y);
+        if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y;
+        if (!on(x + 2, y) || !on(x - 2, y) || !on(x, y + 2) || !on(x, y - 2)) edge.push(x, y);
+      }
+      if (fill.length < 200) return genTorus();
+      var cxm = (minX + maxX) / 2, cym = (minY + maxY) / 2, sc = 5.4 / Math.max(maxX - minX, maxY - minY);
+      var rMax = 1;
+      for (var q = 0; q < fill.length; q += 2) rMax = Math.max(rMax, Math.hypot(fill[q] - (minX + maxX) / 2, fill[q + 1] - (minY + maxY) / 2));
+      function pick(list, r) {
+        var k, tries = 0;
+        do { k = Math.floor(r() * list.length / 2) * 2; tries++; }
+        while (tries < 6 && r() > 0.45 + 0.55 * Math.hypot(list[k] - (minX + maxX) / 2, list[k + 1] - (minY + maxY) / 2) / rMax);
+        return [(list[k] - cxm + jit(r, 0.6)) * sc, -(list[k + 1] - cym + jit(r, 0.6)) * sc]; }
+      return build([
+        [72, function (r) { var p = pick(fill, r); return [p[0], p[1], jit(r, 0.28), 0]; }],
+        [28, function (r) { var p = pick(edge, r); return [p[0], p[1], jit(r, 0.12), W(2, Math.atan2(p[1], p[0]) / TAU + 0.5)]; }]
+      ], 0, 91);
+    }
+
+    /* ---------- stage config ---------- */
+    var projects = Array.prototype.slice.call(document.querySelectorAll('.project'));
+    var stageEls = [document.getElementById('top')].concat(projects, [document.querySelector('.stack'), document.querySelector('.exp-list'), document.getElementById('contact')]);
+    var gens = { bug: genBug, loop: genTorus, planet: genPlanet, ribbon: genRibbon, globe: genGlobe, clocks: genClocks };
+    var projBg = {
+      bug: ['#0B3B3D', '#04181C'], loop: ['#0C3447', '#041722'], planet: ['#132D50', '#060F22'],
+      ribbon: ['#0D3B37', '#041915'], globe: ['#0B3350', '#04121F'], clocks: ['#103A45', '#051920']
+    };
+    // each project's own gradient (projects.json), top colour then bottom; The Loop is greyscale, so pearl/silver
+    var projTint = { bug: ['#dc2626', '#7c3aed'], loop: ['#EEF0F4', '#A9B1C2'], planet: ['#a78bfa', '#6366f1'],
+      ribbon: ['#06b6d4', '#10b981'], globe: ['#f6821f', '#0051ff'], clocks: ['#667eea', '#38ef7d'] };
+    var projXf = { bug: [0, 0.32, 0.12], loop: [0.25, 0, 1.1], planet: [0.08, 0, 0.36], ribbon: [0, 0.45, 0.2], globe: [0.22, 0, 0.38], clocks: [0, 0.28, -0.25] };
+
+    var S = [];
+    S.push({ key: 'grid', rotW: [0.6, 0.25], xf: [0, 0, 0.42], lock: 0, push: 1, alpha: 1.15, bg: ['#0E4148', '#031A1F'], shape: genGrid() });
+    projects.forEach(function (el) {
+      var k = el.getAttribute('data-shape');
+      S.push({ key: k, el: el, tint: projTint[k], rotW: [1, 1], xf: projXf[k], lock: 0.22, push: 1, alpha: 1, bg: projBg[k], shape: gens[k]() });
+    });
+    S.push({ key: 'stack', rotW: [0, 0], xf: [0, 0, 0], lock: 1, push: 0.8, alpha: 1, bg: ['#2B1639', '#110A1C'], shape: null });
+    S.push({ key: 'exp', rotW: [1, 0.15], xf: [0.2, 0, 0.1], lock: 0, push: 0.8, alpha: 1, bg: ['#231B3E', '#0A1321'], shape: null });
+    S.push({ key: 'at', rotW: [1, 0.8], xf: [0, 0.3, 0], lock: 0, push: 1.3, alpha: 1, bg: ['#0B4245', '#031C1E'], shape: genAt() });
+    // visual half-extents of a shape (x, y) including its spin/wobble/tilt, used to size it to its slot
+    function extent(buf, xf) {
+      var ex = 0, ey = 0, c = Math.abs(Math.cos(xf[2])), sn = Math.abs(Math.sin(xf[2])), spin = xf[0] > 0, w = Math.min(xf[1], 1.2);
+      for (var q = 0; q < N; q++) {
+        var x = Math.abs(buf[q * 4]), y = Math.abs(buf[q * 4 + 1]), z = Math.abs(buf[q * 4 + 2]), rad = Math.hypot(x, z);
+        var hx = spin ? rad : x * Math.cos(w) + z * Math.sin(w), rz = spin ? rad : z + x * Math.sin(w);
+        ex = Math.max(ex, hx); ey = Math.max(ey, c * y + sn * rz);
+      }
+      return [ex, ey];
+    }
+    S.forEach(function (s) { s.t0 = hex(s.tint ? s.tint[0] : '#000000'); s.t1 = hex(s.tint ? s.tint[1] : '#000000'); s.tAmt = s.tint ? 0.58 : 0; s.bgA = hex(s.bg[0]); s.bgB = hex(s.bg[1]); s.off = [0, 0, 0]; s.scale = 1; s.anchor = 0; if (s.shape) s.ext = extent(s.shape, s.xf); });
+    var LAST = S.length - 1, STACK = LAST - 2, EXP = LAST - 1;
+
+    /* ---------- three ---------- */
+    var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: false, alpha: false, powerPreference: 'high-performance' });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    renderer.setSize(innerWidth, innerHeight, false);
+    renderer.setClearColor(0x04181D, 1);
+    var scene = new THREE.Scene();
+    var camera = new THREE.PerspectiveCamera(FOV, innerWidth / innerHeight, 0.1, 100);
+    camera.position.set(0, 0, CAMZ);
+
+    var bgU = { uTop: { value: new THREE.Vector3() }, uBot: { value: new THREE.Vector3() }, uGlow: { value: new THREE.Vector2(0.7, 0.5) } };
+    var bg = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), new THREE.ShaderMaterial({
+      uniforms: bgU, depthTest: false, depthWrite: false,
+      vertexShader: 'varying vec2 vUv; void main(){ vUv = uv; gl_Position = vec4(position.xy, 0.0, 1.0); }',
+      fragmentShader: [
+        'uniform vec3 uTop; uniform vec3 uBot; uniform vec2 uGlow; varying vec2 vUv;',
+        'void main(){',
+        '  vec3 c = mix(uBot, uTop, smoothstep(0.0, 1.0, vUv.y));',
+        '  vec2 q = vUv - uGlow; q.x *= 1.6;',
+        '  c += uTop * 0.45 * exp(-dot(q, q) * 5.0);',
+        '  vec2 v = vUv - 0.5; c *= 1.0 - dot(v, v) * 0.45;',
+        '  float n = fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453);',
+        '  c += (n - 0.5) * 0.006;',
+        '  gl_FragColor = vec4(c, 1.0);',
+        '}'].join('\n')
+    }));
+    bg.frustumCulled = false; bg.renderOrder = -1;
+    scene.add(bg);
+
+    var geo = new THREE.BufferGeometry();
+    var dust = new Float32Array(N * 3), rnd = new Float32Array(N * 4), rr = rng(123);
+    for (var i = 0; i < N; i++) {
+      dust[i * 3] = jit(rr, 11); dust[i * 3 + 1] = jit(rr, 6.5); dust[i * 3 + 2] = jit(rr, 5);
+      rnd[i * 4] = 0.42 * (0.55 * i / N + 0.45 * rr());
+      rnd[i * 4 + 1] = rr(); rnd[i * 4 + 2] = rr(); rnd[i * 4 + 3] = rr();
+    }
+    var aFrom = new THREE.BufferAttribute(new Float32Array(N * 4), 4), aTo = new THREE.BufferAttribute(new Float32Array(N * 4), 4);
+    aFrom.setUsage(THREE.DynamicDrawUsage); aTo.setUsage(THREE.DynamicDrawUsage);
+    geo.setAttribute('position', new THREE.BufferAttribute(dust, 3));
+    geo.setAttribute('aFrom', aFrom);
+    geo.setAttribute('aTo', aTo);
+    geo.setAttribute('aRand', new THREE.BufferAttribute(rnd, 4));
+
+    var U = {
+      uTime: { value: 0 }, uT: { value: 0 }, uScatter: { value: 1 },
+      uSize: { value: 30 }, uPR: { value: renderer.getPixelRatio() }, uAlpha: { value: 1 },
+      uMouse: { value: new THREE.Vector3(99, 99, 0) }, uMouseVel: { value: new THREE.Vector2() }, uHover: { value: 0 }, uMouseAmt: { value: 1 },
+      uWaves: { value: [0, 1, 2, 3, 4, 5, 6, 7].map(function () { return new THREE.Vector3(99, 99, -99); }) },
+      uTA0: { value: new THREE.Vector3() }, uTA1: { value: new THREE.Vector3() }, uTB0: { value: new THREE.Vector3() }, uTB1: { value: new THREE.Vector3() },
+      uTAa: { value: 0 }, uTBa: { value: 0 },
+      uRotA: { value: new THREE.Vector2() }, uRotB: { value: new THREE.Vector2() },
+      uFxA: { value: new THREE.Vector3() }, uFxB: { value: new THREE.Vector3() },
+      uSA: { value: 1 }, uSB: { value: 1 },
+      uXfA: { value: new THREE.Vector3() }, uXfB: { value: new THREE.Vector3() },
+      uOA: { value: new THREE.Vector3() }, uOB: { value: new THREE.Vector3() },
+      uColA: { value: new THREE.Vector3().fromArray(hex('#5ED8CB')) },
+      uColB: { value: new THREE.Vector3().fromArray(hex('#FF8A6A')) },
+      uColH: { value: new THREE.Vector3().fromArray(hex('#FFE8D4')) }
+    };
+
+    var vert = [
+      'uniform float uTime, uT, uScatter, uSize, uPR, uAlpha, uSA, uSB, uHover, uMouseAmt, uTAa, uTBa;',
+      'uniform vec3 uXfA, uXfB, uOA, uOB, uMouse, uColA, uColB, uColH, uFxA, uFxB, uTA0, uTA1, uTB0, uTB1;',
+      'uniform vec3 uWaves[8];',
+      'uniform vec2 uMouseVel, uRotA, uRotB;',
+      'attribute vec4 aFrom; attribute vec4 aTo; attribute vec4 aRand;',
+      'varying vec3 vColor; varying float vAlpha;',
+      'vec3 rotY(vec3 p, float a){ float c = cos(a), s = sin(a); return vec3(c*p.x + s*p.z, p.y, -s*p.x + c*p.z); }',
+      'vec3 rotX(vec3 p, float a){ float c = cos(a), s = sin(a); return vec3(p.x, c*p.y - s*p.z, s*p.y + c*p.z); }',
+      'vec3 flow(vec3 p){',
+      '  return vec3(sin(p.y*1.7 + uTime*0.5) + sin(p.z*1.3 + 1.7),',
+      '              sin(p.z*1.5 + uTime*0.4) + sin(p.x*1.1 + 2.3),',
+      '              sin(p.x*1.4 + uTime*0.45) + sin(p.y*1.2 + 0.4));',
+      '}',
+      // w packs group*8 + flag + phase. flags: 0 plain, 1 highlight, 2 travelling pulse, 3 orbiting,
+      // 4 breathing terrain, 5 clock hand, 6 bright pulse, 7 flickering candle
+      'vec3 shape(vec4 d, vec3 xf, vec3 fx, vec2 rot, out float glow, out float dim){',
+      '  vec3 p = d.xyz; float g = floor(d.w/8.0); float rem = d.w - g*8.0; float fl = floor(rem); float ph = rem - fl; glow = 0.0; dim = 1.0;',
+      '  if (fl > 0.5 && fl < 1.5) { glow = 0.75; }',
+      '  else if (fl > 1.5 && fl < 2.5) { float q = fract(ph - uTime*0.11); glow = 0.12 + smoothstep(0.84, 1.0, q)*1.5; }',
+      '  else if (fl > 2.5 && fl < 3.5) { p = rotY(p, uTime*0.4); glow = step(0.9, ph); }',
+      '  else if (fl > 3.5 && fl < 4.5) {',
+      '    p.y += sin(p.x*0.55 + uTime*0.6)*cos(p.z*0.7 - uTime*0.4)*0.38 + sin((p.x - p.z)*1.1 + uTime*0.9)*0.07;',
+      '    glow = step(0.5, ph)*0.45;',
+      '    float sc = fract((p.z + 7.0)/14.0 - uTime*0.05);',
+      '    glow += smoothstep(0.95, 1.0, sc)*0.9;',
+      '  }',
+      '  else if (fl > 4.5 && fl < 5.5) {',
+      '    vec2 c = vec2((floor(p.x/1.5) + 0.5)*1.5, floor(p.y/1.5 + 0.5)*1.5);',
+      '    float a = -uTime*(ph > 0.5 ? 0.8 : 0.1);',
+      '    vec2 r = p.xy - c; float ca = cos(a), sa = sin(a);',
+      '    p.xy = c + vec2(ca*r.x - sa*r.y, sa*r.x + ca*r.y);',
+      '    glow = 0.35;',
+      '  }',
+      '  else if (fl > 5.5 && fl < 6.5) { float q = fract(ph - uTime*0.16); glow = 0.7 + smoothstep(0.8, 1.0, q)*1.8; }',
+      '  else if (fl > 6.5) { float up = step(0.5, ph); float fk = step(0.6, fract(sin(floor(uTime*2.5) + ph*97.0)*43758.5453)); glow = up*0.55 + fk*(0.25 + up*0.5); }',
+      '  p *= 1.0 + 0.02*sin(uTime*0.9);',
+      '  float ang = uTime*xf.x + sin(uTime*0.35)*xf.y + rot.x;',
+      '  p = rotY(p, ang); p = rotX(p, xf.z + rot.y);',
+      '  if (fx.x > 0.0) glow += fx.x*(0.3 + 1.2*pow(max(sin(length(p)*2.2 - uTime*4.0), 0.0), 6.0));',
+      '  if (fx.z > 0.0 && fx.y > 0.5) { if (abs(g - fx.y) < 0.5) glow += 1.2*fx.z; else dim = 1.0 - 0.62*fx.z; }',
+      '  return p;',
+      '}',
+      'void main(){',
+      '  float gA, gB, dA, dB;',
+      '  vec3 a = shape(aFrom, uXfA, uFxA, uRotA, gA, dA);',
+      '  vec3 b = shape(aTo, uXfB, uFxB, uRotB, gB, dB);',
+      '  float t = smoothstep(aRand.x, aRand.x + 0.58, uT);',
+      '  float mid = sin(3.14159265*t);',
+      '  vec3 la = mix(a, b, t);',
+      '  vec3 p = mix(a*uSA + uOA, b*uSB + uOB, t);',
+      '  p += flow(p*0.35 + aRand.w*5.0)*mid*0.5;',
+      '  float s = smoothstep(aRand.z*0.5, aRand.z*0.5 + 0.5, uScatter);',
+      '  p = mix(p, position, s);',
+      '  p += vec3(sin(uTime*0.7 + aRand.z*40.0), cos(uTime*0.6 + aRand.w*40.0), sin(uTime*0.5 + aRand.y*40.0))*0.025;',
+      // pointer field: push away with a smooth falloff, drag + swirl from cursor velocity (bounded)
+      '  vec2 dv = p.xy - uMouse.xy; float dl = length(dv); vec2 dir = dv/(dl + 1e-3);',
+      '  float fall = exp(-dl*dl*0.7) * uHover * uMouseAmt;',
+      '  float sp = min(length(uMouseVel), 4.0);',
+      '  p.xy += dir*fall*0.75 + uMouseVel*fall*0.1 + vec2(-dir.y, dir.x)*fall*sp*0.07;',
+      '  p.z += fall*0.45;',
+      // click shockwaves: up to 8 concurrent rings; displacements add, crossings interfere (extra lift + light), total clamped
+      '  vec2 wdisp = vec2(0.0); float wsum = 0.0, wsq = 0.0;',
+      '  for (int k = 0; k < 8; k++) {',
+      '    float ct = uTime - uWaves[k].z;',
+      '    if (ct > 0.0 && ct < 3.0) {',
+      '      vec2 dc = p.xy - uWaves[k].xy; float dcl = length(dc);',
+      '      float w = exp(-pow((dcl - ct*5.5)/0.5, 2.0)) * exp(-ct);',
+      '      wdisp += dc/(dcl + 1e-3)*w; wsum += w; wsq += w*w;',
+      '    }',
+      '  }',
+      '  float inter = clamp(wsum*wsum - wsq, 0.0, 1.0);',
+      '  float wdl = length(wdisp); if (wdl > 1.3) wdisp *= 1.3/wdl;',
+      '  float wave = min(wsum, 1.3);',
+      '  p.xy += wdisp*0.8; p.z += wave*0.5 + inter*0.5;',
+      '  vec4 mv = viewMatrix * vec4(p, 1.0);',
+      '  gl_Position = projectionMatrix * mv;',
+      '  float tw = step(0.965, aRand.y)*pow(max(sin(uTime*1.3 + aRand.z*60.0), 0.0), 12.0)*1.4;',
+      '  float glow = mix(gA, gB, t)*(1.0 - s) + fall*0.5 + min(wave, 1.0)*1.2 + inter*1.1 + tw;',
+      '  float dim = mix(dA, dB, t);',
+      '  float h = smoothstep(-2.1, 2.1, la.y + la.z*0.3);',
+      // project tints blended into the aqua->peach palette, cross-faded per point with the morph
+      '  vec3 lo = mix(mix(uColA, uTA1, uTAa), mix(uColA, uTB1, uTBa), t);',
+      '  vec3 hi = mix(mix(uColB, uTA0, uTAa), mix(uColB, uTB0, uTBa), t);',
+      '  vec3 col = mix(lo, hi, h);',
+      '  col = mix(col, uColH, clamp(glow*0.45, 0.0, 0.75));',
+      '  vColor = col;',
+      '  vAlpha = uAlpha*dim*(0.5 + 0.5*aRand.y)*(1.0 + glow*0.6)*(1.0 - mid*0.25);',
+      '  gl_PointSize = min(uSize*1.7*(0.55 + aRand.y*0.9)*(1.0 + glow*0.8)*uPR / max(-mv.z, 0.5), 56.0*uPR);',
+      '}'].join('\n');
+    var frag = [
+      'varying vec3 vColor; varying float vAlpha;',
+      'void main(){',
+      '  vec2 c = gl_PointCoord - 0.5; float d = length(c);',
+      '  if (d > 0.5) discard;',
+      '  float core = smoothstep(0.2, 0.04, d);',
+      '  float halo = exp(-d*d*20.0)*0.26;',
+      '  float a = core + halo;',
+      '  gl_FragColor = vec4(vColor, a*vAlpha);',
+      '}'].join('\n');
+
+    var points = new THREE.Points(geo, new THREE.ShaderMaterial({
+      uniforms: U, vertexShader: vert, fragmentShader: frag,
+      transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending
+    }));
+    points.frustumCulled = false; points.renderOrder = 1;
+    scene.add(points);
+
+    /* ---------- ambient layer: sparse dim dust through the whole viewport, in depth ---------- */
+    var NA = mobile ? 1200 : 2600, ar = rng(321), aPos = new Float32Array(NA * 3), aSeed = new Float32Array(NA * 4);
+    var spanX = 14 * Math.max(innerWidth / innerHeight, 0.6) / 1.6 + 2;
+    for (var q = 0; q < NA; q++) {
+      aPos[q * 3] = jit(ar, spanX); aPos[q * 3 + 1] = jit(ar, 9); aPos[q * 3 + 2] = -10 + ar() * 16;
+      aSeed[q * 4] = ar(); aSeed[q * 4 + 1] = ar(); aSeed[q * 4 + 2] = ar(); aSeed[q * 4 + 3] = ar();
+    }
+    var ageo = new THREE.BufferGeometry();
+    ageo.setAttribute('position', new THREE.BufferAttribute(aPos, 3));
+    ageo.setAttribute('aSeed', new THREE.BufferAttribute(aSeed, 4));
+    var AU = {
+      uTime: U.uTime, uPR: U.uPR, uHover: U.uHover, uColA: U.uColA, uColB: U.uColB,
+      uScroll: { value: 0 }, uCam: { value: new THREE.Vector3(0, 0, CAMZ) }, uRay: { value: new THREE.Vector3(0, 0, -1) },
+      uWaves: U.uWaves, uSize: { value: mobile ? 26 : 22 }
+    };
+    var ambient = new THREE.Points(ageo, new THREE.ShaderMaterial({
+      uniforms: AU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+      vertexShader: [
+        'uniform float uTime, uPR, uHover, uScroll, uSize; uniform vec3 uCam, uRay, uColA, uColB; uniform vec3 uWaves[8];',
+        'attribute vec4 aSeed; varying vec3 vC; varying float vA; float vB = 0.0;',
+        'void main(){',
+        '  vec3 p = position; float depth = (p.z + 10.0)/16.0;',
+        '  p.x += sin(uTime*0.05 + aSeed.x*6.283)*0.7;',
+        '  p.y += cos(uTime*0.04 + aSeed.y*6.283)*0.6 + uScroll*(0.25 + depth*0.9);',
+        '  p.y = mod(p.y + 9.0, 18.0) - 9.0;',
+        '  vec2 m = uCam.xy + uRay.xy*((p.z - uCam.z)/uRay.z);',
+        '  vec2 dv = p.xy - m; float dl = length(dv);',
+        '  p.xy += dv/(dl + 1e-3)*exp(-dl*dl*0.45)*uHover*0.6;',
+        '  vec2 wd = vec2(0.0); float ws = 0.0, wq = 0.0;',
+        '  for (int k = 0; k < 8; k++) { float ct = uTime - uWaves[k].z; if (ct > 0.0 && ct < 3.0) { vec2 dc = p.xy - uWaves[k].xy; float dcl = length(dc); float w = exp(-pow((dcl - ct*5.5)/0.6, 2.0))*exp(-ct); wd += dc/(dcl + 1e-3)*w; ws += w; wq += w*w; } }',
+        '  float wl = length(wd); if (wl > 1.2) wd *= 1.2/wl;',
+        '  p.xy += wd*0.6; vB = min(ws, 1.2)*0.6 + clamp(ws*ws - wq, 0.0, 1.5)*1.2;',
+        '  vec4 mv = viewMatrix*vec4(p, 1.0); gl_Position = projectionMatrix*mv;',
+        '  float tw = 0.6 + 0.4*sin(uTime*(0.6 + aSeed.w) + aSeed.z*40.0);',
+        '  vC = mix(uColA, uColB, aSeed.x*0.8);',
+        '  vA = (0.2 + 0.34*aSeed.w)*tw*(1.0 + vB*2.5);',
+        '  gl_PointSize = uSize*(0.35 + aSeed.z*0.65)*uPR / max(-mv.z, 1.0);',
+        '}'].join('\n'),
+      fragmentShader: [
+        'varying vec3 vC; varying float vA;',
+        'void main(){ float d = length(gl_PointCoord - 0.5); if (d > 0.5) discard; gl_FragColor = vec4(vC, smoothstep(0.5, 0.0, d)*vA); }'].join('\n')
+    }));
+    ambient.frustumCulled = false; ambient.renderOrder = 0;
+    scene.add(ambient);
+
+    /* ---------- layout ---------- */
+    var Wd = innerWidth, Hd = innerHeight, wpp = 1, expCenters = [];
+    function pageTop(el) { return el.getBoundingClientRect().top + window.scrollY; }
+    function layout() {
+      Wd = innerWidth; Hd = innerHeight;
+      mobile = Wd < 900; var tablet = mobile && Wd >= 600;
+      wpp = 2 * Math.tan(FOV / 2 * Math.PI / 180) * CAMZ / Hd;
+      var maxS = ScrollTrigger.maxScroll(window);
+      S.forEach(function (s, k) {
+        var el = k === 0 ? null : stageEls[k];
+        if (k === 0) s.anchor = 0;
+        else if (k === LAST) s.anchor = maxS;
+        else if (k === EXP) {
+          // helix is fully formed once the experience heading reaches mid-viewport, and holds until the last entry passes
+          var hd = document.querySelector('.exp-head'), ents = document.querySelectorAll('[data-marker]'), le = ents[ents.length - 1];
+          s.anchor = clamp(pageTop(hd) + hd.offsetHeight / 2 - Hd / 2, 0, maxS);
+          s.end = clamp(pageTop(le) + le.offsetHeight / 2 - Hd / 2, s.anchor, maxS);
+          expCenters = Array.prototype.map.call(ents, function (e) { return pageTop(e) + e.offsetHeight / 2; });
+        }
+        else if (mobile && s.el) s.anchor = clamp(pageTop(s.el.querySelector('.copy')) - Hd * (tablet ? 0.5 : 0.52), 0, maxS);
+        else s.anchor = clamp(pageTop(el) + el.offsetHeight / 2 - Hd / 2, 0, maxS);
+        if (k !== EXP) s.end = s.anchor;
+        if (k > 0 && s.anchor <= S[k - 1].end) { s.anchor = S[k - 1].end + 1; s.end = Math.max(s.end, s.anchor); }
+      });
+      var qx = Wd * 0.25 * wpp, topY = Hd * 0.235 * wpp;
+      var visW = Wd * wpp, visH = Hd * wpp;
+      S.forEach(function (s, k) {
+        if (k === 0) { s.off = mobile ? [0, 1.5, 0] : [0.6, -2.0, 0]; s.scale = mobile ? 0.48 : 1; }
+        else if (s.el) {
+          var right = s.el.getAttribute('data-side') === 'left';
+          s.off = mobile ? [0, tablet ? Hd * 0.2 * wpp : topY, 0] : [right ? qx : -qx, 0, 0];
+          s.scale = mobile ? clamp(Math.min(visW * 0.88 / (2 * s.ext[0]), visH * (tablet ? 0.31 : 0.38) / (2 * s.ext[1])), 0.4, 1)
+                           : clamp(Math.min(visW * 0.5 * 0.8 / (2 * s.ext[0]), visH * 0.72 / (2 * s.ext[1])), 0.6, 1.5);
+        }
+        else if (k === STACK) { s.off = [0, 0, 0]; s.scale = 1; }
+        else if (k === EXP) {
+          if (mobile) { s.off = [0, topY, 0]; s.scale = 1; }
+          else {
+            // centre the helix in the free space right of the experience text, never tighter than the right half
+            var tr = 0;
+            // measure the text itself (block boxes are wider than their lines)
+            var rg = document.createRange();
+            Array.prototype.forEach.call(document.querySelectorAll('.exp-head h2, .exp-head .caption, .exp-list h3, .exp-list .where, .exp-list .tech'), function (e) { rg.selectNodeContents(e); tr = Math.max(tr, rg.getBoundingClientRect().right); });
+            var left = Math.max(tr + 24, Wd * 0.5), cxp = (left + Wd - 24) / 2, halfPx = (Wd - 24 - left) / 2;
+            s.off = [(cxp - Wd / 2) * wpp, -0.35, 0]; s.scale = clamp(halfPx * wpp * 0.94 / 2.1, 0.6, 1.15);
+          }
+          s.alpha = mobile ? 0.7 : 1;
+        }
+        else if (k === LAST) { s.off = mobile ? [0, Hd * 0.29 * wpp, 0] : [qx, 0.2, 0]; s.ext = extent(s.shape, s.xf); s.scale = mobile ? Math.min(0.54, visW * 0.8 / 5.4) : clamp(Math.min(visW * 0.5 * 0.8 / (2 * s.ext[0]), visH * 0.64 / (2 * s.ext[1])), 0.6, 1.3); }
+      });
+
+      // clusters next to their labels, measured at the moment the stack block is centred
+      var sa = S[STACK].anchor, st = window.scrollY;
+      var spots = Array.prototype.slice.call(document.querySelectorAll('.stack .group')).map(function (g) {
+        var sp = g.querySelector('.spot').getBoundingClientRect();
+        var cxp = sp.left + sp.width / 2, cyp = sp.top + st + sp.height / 2 - sa;
+        var count = +g.getAttribute('data-count');
+        var base = Math.min(sp.width, sp.height) * 0.5 * wpp * 0.92;
+        return { x: (cxp - Wd / 2) * wpp, y: -(cyp - Hd / 2) * wpp, rad: base * Math.sqrt(count / 5), count: count };
+      });
+      S[STACK].shape = genClusters(spots);
+
+      // helix: one ring per timeline entry, newest at the top, sized to stay whole in the viewport
+      var cfg, nm = expCenters.length || 6, top = mobile ? 1.9 : Math.min(visH * 0.3, 3.7);
+      cfg = mobile ? { markers: [], yMin: -2.5, yMax: 2.5, R: 0.95, ringR: 1.35, tilt: 0.1 }
+                   : { markers: [], yMin: -top - 0.9, yMax: top + 0.9, R: 1.45, ringR: 2.05, tilt: 0.1 };
+      for (var m = 0; m < nm; m++) cfg.markers.push(top - m * 2 * top / Math.max(nm - 1, 1));
+      S[EXP].shape = genHelix(cfg);
+      U.uSize.value = mobile ? 34 : 30 * clamp(Hd / 900, 0.75, 1.4);
+      setPair(cur < 0 ? 0 : cur, true);
+      if (cubes) cubes.measure();
+    }
+
+    var cur = -1;
+    function setPair(i, force) {
+      if (i === cur && !force) return;
+      cur = i;
+      var A = S[i], B = S[i + 1];
+      if (!A.shape || !B.shape) return;
+      aFrom.array.set(A.shape); aTo.array.set(B.shape);
+      aFrom.needsUpdate = true; aTo.needsUpdate = true;
+      U.uXfA.value.fromArray(A.xf); U.uXfB.value.fromArray(B.xf);
+    }
+
+    /* ---------- scroll: one ScrollTrigger scrubs everything ---------- */
+    var proxy = { y: 0 };
+    gsap.fromTo(proxy, { y: 0 }, {
+      y: function () { return ScrollTrigger.maxScroll(window); }, ease: 'none',
+      scrollTrigger: { start: 0, end: 'max', scrub: 0.7, invalidateOnRefresh: true }
+    });
+    ScrollTrigger.addEventListener('refresh', layout);
+    layout();
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () {
+      return document.fonts.load('700 330px Manrope').catch(function () {});
+    }).then(function () {
+      S[LAST].shape = genAt();
+      ScrollTrigger.refresh();
+    });
+
+    window.addEventListener('resize', function () {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
+    });
+
+    /* ---------- interaction: pointer field, drag-rotate with inertia, click/tap shockwave ---------- */
+    var ptr = { x: 0, y: 0, sx: 0, sy: 0, active: false, type: 'mouse', down: false, id: -1, x0: 0, y0: 0, lx: 0, ly: 0, t0: 0, moved: false, drag: false, canDrag: false };
+    var rot = { x: 0, y: 0, vx: 0, vy: 0 };
+    var tmp = new THREE.Vector3(), mouseT = new THREE.Vector3(99, 99, 0), mousePrev = new THREE.Vector3(99, 99, 0), velRaw = new THREE.Vector2();
+    var TEXTY = 'a,button,input,textarea,select,label,.nav,.tech-cube-slot,p,h1,h2,h3,li,dt,dd,span,svg';
+    var CONTROL = 'a,button,input,textarea,select,label,.nav,.tech-cube-slot';
+    function onEmpty(el) { return !(el && el.closest && el.closest(TEXTY)); }
+    function onControl(el) { return !!(el && el.closest && el.closest(CONTROL)); }
+    function ndc(e) { ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = -(e.clientY / innerHeight) * 2 + 1; }
+    function worldAt(nx, ny, out) {
+      tmp.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
+      var d = -camera.position.z / tmp.z;
+      return out.set(camera.position.x + tmp.x * d, camera.position.y + tmp.y * d, 0);
+    }
+    var waveTmp = new THREE.Vector3();
+    function shock(cx, cy) {
+      // ring buffer of 8: take a finished slot, recycle the oldest only when all are busy
+      var now = U.uTime.value, ws = U.uWaves.value, pick = -1, old = 0;
+      for (var k = 0; k < ws.length; k++) { if (now - ws[k].z >= 3) { pick = k; break; } if (ws[k].z < ws[old].z) old = k; }
+      if (pick < 0) pick = old;
+      worldAt(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1, waveTmp);
+      ws[pick].set(waveTmp.x, waveTmp.y, now);
+    }
+    window.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      ndc(e); ptr.active = true; ptr.type = e.pointerType;
+      ptr.down = true; ptr.id = e.pointerId; ptr.x0 = ptr.lx = e.clientX; ptr.y0 = ptr.ly = e.clientY; ptr.t0 = performance.now();
+      ptr.moved = false; ptr.drag = false;
+      ptr.canDrag = e.pointerType === 'mouse' ? onEmpty(e.target) : !onControl(e.target);
+      if (e.pointerType === 'mouse' && ptr.canDrag) e.preventDefault();
+    });
+    window.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'mouse' || (ptr.down && e.pointerId === ptr.id)) { ndc(e); ptr.active = true; ptr.type = e.pointerType; }
+      if (!ptr.down || e.pointerId !== ptr.id) return;
+      var dx = e.clientX - ptr.lx, dy = e.clientY - ptr.ly, tx = e.clientX - ptr.x0, ty = e.clientY - ptr.y0;
+      ptr.lx = e.clientX; ptr.ly = e.clientY;
+      if (!ptr.moved && Math.hypot(tx, ty) > 6) {
+        ptr.moved = true;
+        // touch: only horizontal-ish drags rotate, vertical ones stay native page scroll
+        if (ptr.canDrag && (ptr.type === 'mouse' || Math.abs(tx) > Math.abs(ty) * 1.3)) { ptr.drag = true; root.classList.add('dragging'); }
+      }
+      if (ptr.drag) {
+        rot.vx = dx * 0.006; rot.vy = dy * 0.004;
+        rot.x += rot.vx; rot.y = clamp(rot.y + rot.vy, -0.7, 0.7);
+      }
+    }, { passive: true });
+    function endPtr(e, cancelled) {
+      if (!ptr.down || e.pointerId !== ptr.id) return;
+      if (!cancelled && !ptr.moved && ptr.canDrag && performance.now() - ptr.t0 < 500) shock(e.clientX, e.clientY);
+      ptr.down = false; ptr.drag = false; root.classList.remove('dragging');
+      if (ptr.type !== 'mouse') ptr.active = false;
+    }
+    window.addEventListener('pointerup', function (e) { endPtr(e, false); });
+    window.addEventListener('pointercancel', function (e) { endPtr(e, true); });
+    document.documentElement.addEventListener('mouseleave', function () { ptr.active = false; });
+    window.addEventListener('blur', function () { ptr.active = false; });
+
+    // DOM coupling: project title/link pulses its shape; skill category lights its cluster; timeline entry lights its ring
+    var hov = { stage: -1, group: 0, pulse: 0, on: false, amt: 0 };
+    function bindHover(el, stage, group, pulse) {
+      if (!el) return;
+      function on() { hov.stage = stage; hov.group = group; hov.pulse = pulse; hov.on = true; }
+      function off() { hov.on = false; }
+      el.addEventListener('pointerenter', on); el.addEventListener('focusin', on);
+      el.addEventListener('pointerleave', off); el.addEventListener('focusout', off);
+    }
+    projects.forEach(function (el, pi) { bindHover(el.querySelector('h3'), pi + 1, 0, 1); bindHover(el.querySelector('.link'), pi + 1, 0, 1); });
+    Array.prototype.slice.call(document.querySelectorAll('.stack .group')).forEach(function (g, gi) { bindHover(g, STACK, gi + 1, 0); });
+    Array.prototype.slice.call(document.querySelectorAll('[data-marker]')).forEach(function (e, ei) { bindHover(e, EXP, ei + 1, 0); });
+    // hovering or dragging a tech cube counts as hovering its project (pointer capture keeps it on while dragging)
+    Array.prototype.slice.call(document.querySelectorAll('.tech-cube-slot')).forEach(function (sl) { var pr = sl.closest('.project'); bindHover(sl, projects.indexOf(pr) + 1, 0, 1); });
+    // a finished cube turn sends a soft pulse through the shape of the project it landed on
+    var turnPulse = { stage: -1, t: -9 };
+    if (cubes) cubes.onRest = function (r) { turnPulse.stage = r + 1; turnPulse.t = U.uTime.value; };
+    var expRing = { g: 0, amt: 0 };
+    function fxFor(k, out) {
+      if (k === hov.stage && hov.amt > 1e-3) out.set(hov.pulse * hov.amt, hov.group, hov.group ? hov.amt : 0);
+      else if (k === EXP && expRing.g) out.set(0, expRing.g, expRing.amt);
+      else out.set(0, 0, 0);
+      if (k === turnPulse.stage) { var tp = 0.75 * Math.exp(-(U.uTime.value - turnPulse.t) * 2.2); if (tp > out.x) out.x = tp; }
+    }
+    var lastT = 0;
+
+    gsap.to(U.uScatter, { value: 0, duration: 3.2, delay: 0.25, ease: 'power2.inOut' });
+
+    canvas.addEventListener('webglcontextlost', function (e) { e.preventDefault(); fallback(); });
+
+    // captions: words light up one by one, scrubbed by the same progress as the morph into their shape
+    var caps = [];
+    Array.prototype.slice.call(document.querySelectorAll('.caption')).forEach(function (el) {
+      var k = el.classList.contains('stack-cap') ? STACK : el.classList.contains('exp-cap') ? EXP : 1 + projects.indexOf(el.closest('.project'));
+      var words = el.textContent.trim().split(/\s+/), spans = [];
+      el.textContent = '';
+      words.forEach(function (w, wi) {
+        var sp = document.createElement('span'); sp.className = 'w'; sp.textContent = w;
+        el.appendChild(sp); spans.push(sp);
+        if (wi < words.length - 1) el.appendChild(document.createTextNode(' '));
+      });
+      caps.push({ k: k, el: el, spans: spans, last: -1, ty: 0, follow: el.parentNode.classList.contains('copy') });
+    });
+    function lightCaptions(i, T, sy) {
+      for (var c = 0; c < caps.length; c++) {
+        var cp = caps[c];
+        if (cp.follow) {
+          // project captions ride along with their shape (which scrolls at a damped rate), not with the text
+          var ty = mobile ? 0 : clamp((1 - S[cp.k].lock) * (sy - S[cp.k].anchor), -0.6 * Hd, 0.6 * Hd);
+          if (Math.abs(ty - cp.ty) > 0.5 || (ty === 0 && cp.ty !== 0)) { cp.ty = ty; cp.el.style.transform = mobile ? '' : 'translate(-50%,' + ty.toFixed(1) + 'px)'; }
+          // and fade with it, so a caption never drifts onto the next panel's text
+          var vis = mobile ? 1 : i === cp.k ? 1 - smooth(0, 0.16, T) : i === cp.k - 1 ? smooth(0.84, 1, T) : 0;
+          vis = Math.round(vis * 50) / 50;
+          if (vis !== cp.vis) { cp.vis = vis; cp.el.style.opacity = vis; cp.el.style.visibility = vis === 0 ? 'hidden' : ''; }
+        }
+        var lit = i >= cp.k ? 1 : i === cp.k - 1 ? T : 0;
+        lit = Math.round(lit * 100) / 100;
+        if (lit === cp.last) continue;
+        cp.last = lit;
+        var n = cp.spans.length;
+        for (var w = 0; w < n; w++) cp.spans[w].style.opacity = (0.18 + 0.82 * clamp(lit * (n + 1) - w - 0.5, 0, 1)).toFixed(2);
+      }
+    }
+    var lastDive = 0;
+    var lastScrim = '';
+    function offsetOf(s, sy) { return [s.off[0], s.off[1] + (sy - s.anchor) * wpp * s.lock, s.off[2]]; }
+    function tick(now) {
+      var t = now / 1000, sp = proxy.y, sy = window.scrollY;
+      U.uTime.value = t;
+      var i = 0;
+      while (i < LAST - 1 && sp >= S[i + 1].anchor) i++;
+      var A0 = S[i].end, A1 = S[i + 1].anchor;
+      var f = clamp((sp - A0) / Math.max(A1 - A0, 1), 0, 1);
+      // the timeline entry nearest mid-viewport lights its ring
+      if (expCenters.length) {
+        var mid = sy + Hd / 2, best = 0;
+        for (var e = 1; e < expCenters.length; e++) if (Math.abs(expCenters[e] - mid) < Math.abs(expCenters[best] - mid)) best = e;
+        if (best + 1 !== expRing.g) { expRing.g = best + 1; expRing.amt = 0.2; }
+        expRing.amt = lerp(expRing.amt, 0.8, 0.08);
+      }
+      var T = smooth(0.15, 0.85, f);
+      setPair(i);
+      var A = S[i], B = S[i + 1];
+      U.uT.value = T;
+      var oa = offsetOf(A, sy), ob = offsetOf(B, sy);
+      U.uOA.value.fromArray(oa); U.uOB.value.fromArray(ob);
+      U.uSA.value = A.scale; U.uSB.value = B.scale;
+      U.uTA0.value.fromArray(A.t0); U.uTA1.value.fromArray(A.t1); U.uTAa.value = A.tAmt;
+      U.uTB0.value.fromArray(B.t0); U.uTB1.value.fromArray(B.t1); U.uTBa.value = B.tAmt;
+      U.uMouseAmt.value = lerp(A.push, B.push, T);
+      var dt = clamp(t - lastT, 1e-3, 0.05); lastT = t;
+      // drag rotation: inertia after release, then ease back to rest
+      if (!ptr.drag) {
+        rot.x += rot.vx; rot.y = clamp(rot.y + rot.vy, -0.7, 0.7); rot.vx *= 0.93; rot.vy *= 0.93;
+        if (Math.abs(rot.vx) + Math.abs(rot.vy) < 4e-3) { rot.x *= 0.96; rot.y *= 0.96; }
+      } else { rot.vx *= 0.7; rot.vy *= 0.7; }
+      U.uRotA.value.set(rot.x * A.rotW[0], rot.y * A.rotW[1]);
+      U.uRotB.value.set(rot.x * B.rotW[0], rot.y * B.rotW[1]);
+      hov.amt = lerp(hov.amt, hov.on ? 1 : 0, 0.12);
+      fxFor(i, U.uFxA.value); fxFor(i + 1, U.uFxB.value);
+      U.uAlpha.value = lerp(A.alpha, B.alpha, T);
+      for (var c = 0; c < 3; c++) {
+        bgU.uTop.value.setComponent(c, lerp(A.bgA[c], B.bgA[c], T));
+        bgU.uBot.value.setComponent(c, lerp(A.bgB[c], B.bgB[c], T));
+      }
+      // soft glow behind wherever the cloud currently is
+      var gx = lerp(oa[0], ob[0], T) / (Wd * wpp) + 0.5, gy = lerp(oa[1], ob[1], T) / (Hd * wpp) + 0.5;
+      bgU.uGlow.value.set(lerp(bgU.uGlow.value.x, gx, 0.08), lerp(bgU.uGlow.value.y, gy, 0.08));
+
+      // pointer parallax (damped while the cloud is pinned to DOM labels)
+      var lockW = lerp(A.lock, B.lock, T);
+      var mo = ptr.active && ptr.type === 'mouse';
+      ptr.sx = lerp(ptr.sx, mo ? ptr.x : 0, 0.05); ptr.sy = lerp(ptr.sy, mo ? ptr.y : 0, 0.05);
+      var par = 1 - lockW;
+      // leaving the hero: the camera dives into the data grid while it re-forms
+      var dive = i === 0 ? Math.sin(Math.PI * T) : 0;
+      camera.position.set(ptr.sx * 0.45 * par, ptr.sy * 0.3 * par - dive * 1.4, CAMZ - dive * 6.5);
+      if (dive > 0 || lastDive > 0) { camera.fov = FOV + dive * 16; camera.updateProjectionMatrix(); lastDive = dive; }
+      camera.lookAt(0, -dive * 0.9, 0);
+      lightCaptions(i, T, sy);
+      if (cubes) cubes.update(sy);
+      // pointer projected onto the cloud plane (z = 0), smoothed; velocity drives drag/swirl
+      U.uHover.value = lerp(U.uHover.value, ptr.active ? 1 : 0, 0.08);
+      if (ptr.active) {
+        worldAt(ptr.x, ptr.y, mouseT);
+        if (U.uMouse.value.x > 90) U.uMouse.value.copy(mouseT);
+        U.uMouse.value.lerp(mouseT, 0.3);
+        AU.uRay.value.copy(tmp); AU.uCam.value.copy(camera.position);
+      }
+      velRaw.set((U.uMouse.value.x - mousePrev.x) / dt, (U.uMouse.value.y - mousePrev.y) / dt);
+      if (mousePrev.x > 90 || velRaw.length() > 60) velRaw.set(0, 0);
+      mousePrev.copy(U.uMouse.value);
+      U.uMouseVel.value.lerp(velRaw, 0.15);
+      if (U.uMouseVel.value.length() > 4) U.uMouseVel.value.setLength(4);
+      AU.uScroll.value = sy * wpp * 0.35;
+
+      if (mobile) {
+        var sw = (i === STACK ? 1 - T : 0) + (i + 1 === STACK ? T : 0);
+        var col = Math.round(lerp(A.bgB[0], B.bgB[0], T) * 255) + ',' + Math.round(lerp(A.bgB[1], B.bgB[1], T) * 255) + ',' + Math.round(lerp(A.bgB[2], B.bgB[2], T) * 255);
+        var key = col + '|' + sw.toFixed(2);
+        if (key !== lastScrim) { lastScrim = key; root.style.setProperty('--scrim', col); scrimEl.style.opacity = (1 - sw * 0.85).toFixed(2); }
+      }
+      renderer.render(scene, camera);
+      requestAnimationFrame(tick);
+    }
+    var scrimEl = document.querySelector('.scrim');
+    requestAnimationFrame(tick);
+  }
+})();
+</script>
+</body>
+</html>

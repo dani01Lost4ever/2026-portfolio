@@ -1,5 +1,60 @@
 # Deployment
 
+## Coolify (site + PocketBase)
+
+The production setup. `docker-compose.coolify.yml` runs two services in one stack:
+
+| Service | Role | Domain |
+|---|---|---|
+| `frontend` | nginx serving the built site; proxies `/api/` and `/_/` to PocketBase | `https://daniel.busetto.techdani.cc` |
+| `pocketbase` | PocketBase 0.36.7, data in the `pb_data` volume, migrations baked into the image | none (internal only) |
+
+No host ports are published: Coolify's proxy routes the domain to `frontend:80`, and nginx
+reaches `pocketbase:8090` over the stack's internal network. The site, the API and the admin UI
+share one domain, so there is no CORS to configure.
+
+### First deploy
+
+1. **New resource** → your server → **Docker Compose** → this GitHub repository and branch.
+2. Set **Docker Compose Location** to `/docker-compose.coolify.yml`.
+3. On the `frontend` service, set the domain to `https://daniel.busetto.techdani.cc`.
+   Leave `pocketbase` without a domain.
+4. Leave `PB_URL` empty (same origin). Deploy.
+5. Open a terminal on the `pocketbase` container in Coolify and create a temporary admin:
+   ```bash
+   ./pocketbase superuser upsert you@example.com 'a-long-temporary-password' --dir=/pb/pb_data
+   ```
+
+### Restore the production data
+
+6. Sign in at `https://<coolify-temporary-domain-or-final-domain>/_/` with that temporary admin.
+7. **Settings → Backups → Upload backup**, choose the `pb_data` backup zip, then **Restore**.
+   PocketBase replaces its data and restarts itself; on start it applies any migration not yet
+   recorded in the restored database (currently `1790254698_updated_projects_visuals.js`).
+8. Sign in again with the **production** admin account: the restore brings back the original
+   superusers, and the temporary one is gone.
+9. **Settings → Application → Trusted proxy**: add the header `X-Real-IP` so PocketBase logs and
+   rate-limits by the visitor's IP (nginx sets it from Coolify's `X-Forwarded-For`, trusting only
+   private networks).
+
+This procedure was rehearsed locally with the real backup: 10 projects restored, the new migration
+applied on restart, all content served through `/api/`, the admin UI through `/_/`, and a contact
+form message saved.
+
+### Switch the domain
+
+10. Point the DNS record for `daniel.busetto.techdani.cc` at the Coolify server (A/AAAA, or a
+    CNAME to the server's hostname). Coolify requests the TLS certificate once DNS resolves.
+11. The old API domain (`daniel.api.techdani.cc`) is no longer used by the site. Keep the old
+    stack running until the new one is verified, then retire it.
+
+### Afterwards
+
+- Every push to the branch can redeploy automatically (enable the webhook in Coolify).
+- New migrations in `backend/pb_migrations/` apply on the next PocketBase start.
+- Configure scheduled backups in PocketBase (**Settings → Backups**), ideally to S3-compatible
+  storage, since the `pb_data` volume lives on the Coolify server.
+
 ## Frontend (Vite → static)
 
 The React app compiles to plain HTML/CSS/JS and can be deployed anywhere.
@@ -19,6 +74,28 @@ The React app compiles to plain HTML/CSS/JS and can be deployed anywhere.
 ## Backend (PocketBase)
 
 PocketBase is a single binary with no external dependencies.
+
+### Applying migrations (e.g. the projects `shape`/`layers`/`caption` fields)
+
+`backend/pb_migrations/` includes `1790254698_updated_projects_visuals.js`, which adds the
+`shape`, `layers` and `caption` fields to the `projects` collection (see `docs/backend.md`).
+PocketBase applies every migration in `pb_migrations/` automatically on startup and records each
+applied file in `pb_data`, so files that already ran are skipped.
+
+`backend/Dockerfile` copies `backend/pb_migrations/` into the image at `/pb/pb_migrations`, next to
+the binary. Rebuilding and restarting the `pocketbase` service (`docker compose up --build`) applies
+any new migration against the existing `pb_data` volume. This was checked against a copy of the
+production database: the 14 earlier migrations were already recorded there, so only
+`1790254698_updated_projects_visuals.js` ran, and all 10 projects were untouched.
+
+If you instead run the PocketBase binary directly on a VPS (Option A below) with `backend/` as its
+working directory, `pb_migrations/` is already alongside it and is applied automatically the next
+time you (re)start the `pocketbase serve` process — no extra step needed there.
+
+Either way, the new fields are optional: `src/lib/projectVisuals.ts` falls back to its built-in
+registry (keyed by project slug) or to heuristics from the project's existing tags/subtitle when
+`shape`/`layers`/`caption` aren't set, so the frontend keeps working correctly against a
+PocketBase instance that hasn't had this migration applied yet.
 
 ### Option A — VPS / dedicated server
 
@@ -63,11 +140,12 @@ This is the simplest option for a portfolio — you edit content from your machi
 
 ## Environment variables
 
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `VITE_PB_URL` | `http://127.0.0.1:8090` | Full URL to your PocketBase instance |
+| Variable | Where | Default | Description |
+|----------|-------|---------|-------------|
+| `PB_URL` | `frontend` container (runtime) | empty | PocketBase URL written to `env-config.js`. Empty = same origin through the nginx proxy |
+| `VITE_PB_URL` | build arg / `.env` | empty | Build-time PocketBase URL, used when `PB_URL` is empty |
 
-Set in `.env` for local dev, in the hosting dashboard for production.
+With both empty, dev uses `http://127.0.0.1:8090` and production builds use the same origin.
 
 ---
 
