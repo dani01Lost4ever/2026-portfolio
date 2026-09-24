@@ -1,0 +1,620 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Daniel Busetto</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Daniel Busetto, full-stack software developer in Venice, Italy. From database to interface, built to scale.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@700;800;900&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --cobalt:#1E3BD8; --tomato:#D63A1E; --green:#0B5A42; --plum:#5A2470; --deep:#1B2FB8;
+  --ink:#141A40; --side:#262F6E; --sun:#FFD447; --white:#FFFFFF;
+  --text:#FFFFFF; --text-2:rgba(255,255,255,.8); --line:rgba(255,255,255,.28);
+  --display:"Big Shoulders Display", "Arial Narrow", system-ui, sans-serif;
+  --body:"Figtree", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --gutter:64px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion: no-preference){ html{scroll-behavior:smooth} }
+body{margin:0;background:var(--cobalt);color:var(--text);font-family:var(--body);font-size:17px;line-height:1.55;overflow-x:hidden;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+h1,h2,h3,h4{font-family:var(--display);font-weight:900;text-transform:uppercase;line-height:.9;letter-spacing:.005em;margin:0}
+p{margin:0}
+ul,ol{margin:0;padding:0;list-style:none}
+::selection{background:var(--sun);color:var(--ink)}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+
+/* ---------- colour field ---------- */
+.bgfield{position:fixed;inset:0;background:var(--cobalt);z-index:0}
+
+/* ---------- nav ---------- */
+.nav{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;gap:28px;padding:18px var(--gutter);background:var(--cobalt)}
+.logo{display:inline-grid;place-items:center;width:44px;height:44px;background:var(--white);color:var(--ink);font-family:var(--display);font-weight:900;font-size:22px;text-decoration:none;border-radius:4px;letter-spacing:.02em}
+.nav nav{display:flex;gap:26px;margin-left:auto}
+.nav nav a{font-weight:600;font-size:15px;text-decoration:none;padding:6px 0;border-bottom:2px solid transparent}
+.nav nav a:hover,.nav nav a:focus-visible{border-bottom-color:currentColor}
+.btn{display:inline-flex;align-items:center;gap:10px;padding:15px 22px;background:var(--sun);color:var(--ink);font-family:var(--body);font-weight:700;font-size:15px;line-height:1;text-decoration:none;border-radius:4px;border:0;transition:transform .2s ease, background-color .2s ease}
+.btn:hover{transform:translateY(-2px)}
+.btn:focus-visible,.nav a:focus-visible,.link:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+.btn.ghost{background:transparent;color:var(--white);box-shadow:inset 0 0 0 2px var(--white)}
+.btn.sm{padding:12px 16px;font-size:14px}
+
+/* ---------- the stage (the stack) ---------- */
+.stage{position:absolute;top:0;left:0;width:100%;height:100vh;z-index:5;pointer-events:none;overflow:hidden;color:var(--cobalt)}
+html.ready .stage{position:fixed}
+.rig{position:absolute;left:0;top:0;width:0;height:0;perspective:2600px;transform:translate3d(72vw,52vh,0)}
+.world{position:absolute;left:0;top:0;transform-style:preserve-3d;transform:rotateX(-26deg) rotateY(-36deg)}
+.slab{position:absolute;left:0;top:0;transform-style:preserve-3d}
+.face{position:absolute;backface-visibility:hidden;-webkit-backface-visibility:hidden;overflow:hidden}
+.side{width:300px;height:64px;left:-150px;top:-32px;background:var(--side);color:var(--white);box-shadow:inset 0 2px 0 rgba(255,255,255,.22), inset 0 -2px 0 rgba(0,0,0,.18)}
+.f-front{transform:translateZ(150px)}
+.f-right{transform:rotateY(90deg) translateZ(150px)}
+.f-back{transform:rotateY(180deg) translateZ(150px)}
+.f-left{transform:rotateY(-90deg) translateZ(150px)}
+.cap{width:300px;height:300px;left:-150px;top:-150px;background:var(--white);color:var(--ink)}
+.f-top{transform:rotateX(90deg) translateZ(32px)}
+.f-bottom{transform:rotateX(-90deg) translateZ(32px)}
+.shade{position:absolute;inset:0;background:#060A24;opacity:0;z-index:3}
+.cw{position:absolute;inset:0}
+.c{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;gap:5px;padding:0 20px;opacity:0}
+.c small{font:700 10.5px/1 var(--body);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.66)}
+.c b{font:800 25px/1 var(--display);text-transform:uppercase;letter-spacing:.01em;white-space:nowrap}
+.c-hero,.c-loop,.c-sfco{opacity:1}
+.c-hero b{font-size:30px}
+.sk{justify-content:flex-start;padding:28px 30px;gap:0}
+.sk h4{font-size:50px;color:var(--ink);margin-bottom:14px}
+.sk li{font:600 20px/1.2 var(--body);color:var(--ink);padding:7px 0;border-top:2px solid rgba(20,26,64,.12)}
+.card{position:absolute;inset:0;padding:26px 28px;display:flex;flex-direction:column;color:var(--ink)}
+.card-top{display:flex;justify-content:space-between;align-items:center;font:700 11px/1 var(--body);letter-spacing:.14em;text-transform:uppercase}
+.card-top .mk{display:inline-grid;place-items:center;width:34px;height:34px;background:var(--ink);color:var(--white);font:900 17px/1 var(--display);letter-spacing:.02em;border-radius:3px}
+.card-top .av{display:flex;align-items:center;gap:7px}
+.card-top .av:before{content:"";width:8px;height:8px;background:#18B26B}
+.card-h{font:900 52px/.86 var(--display);text-transform:uppercase;margin:auto 0 12px}
+.card a{pointer-events:none;color:var(--ink)}
+.stage.live .card a{pointer-events:auto}
+.card-mail{font:700 16px/1.2 var(--body);text-decoration:none;border-bottom:2px solid var(--ink);align-self:flex-start;margin-bottom:12px}
+.card-links{display:flex;gap:18px;font:600 14px/1 var(--body);margin-bottom:18px}
+.card-links a{text-decoration:none;border-bottom:2px solid rgba(20,26,64,.3);padding-bottom:3px}
+.card-cta{display:flex;justify-content:space-between;align-items:center;background:var(--ink);color:var(--white)!important;padding:14px 16px;border-radius:4px;font:700 15px/1 var(--body);text-decoration:none}
+
+/* ---------- layout ---------- */
+main{position:relative;z-index:2}
+.sec{position:relative;padding:0 var(--gutter)}
+.col{position:relative}
+.col.left{width:min(600px,44vw)}
+.col.right{width:min(560px,40vw);margin-left:auto}
+h2{font-size:clamp(64px,7.4vw,112px)}
+.intro p,.lede{font-size:20px;line-height:1.5;color:var(--text-2);margin-top:22px;max-width:30em}
+
+/* hero */
+.hero{min-height:100vh;display:flex;align-items:center;padding-top:90px;padding-bottom:40px}
+.hero .col{width:min(720px,52vw)}
+.kicker{display:flex;align-items:center;gap:12px;font-weight:600;font-size:15px;letter-spacing:.02em;margin-bottom:26px}
+.kicker .sq{width:10px;height:10px;background:var(--sun);flex:none}
+h1{font-size:clamp(60px,7.5vw,112px);line-height:.84}
+h1 .l{display:block}
+.hero .lede{margin-top:28px;max-width:32em;font-size:19px}
+.hero .lede strong{color:var(--white);font-weight:700}
+.ctas{display:flex;gap:14px;flex-wrap:wrap;margin-top:32px}
+.stats{display:flex;gap:44px;margin-top:44px}
+.stats b{display:block;font:900 52px/1 var(--display)}
+.stats span{font-size:14px;color:var(--text-2)}
+
+/* work */
+.work{padding-top:62vh}
+.proj{min-height:100vh;display:flex;align-items:center;padding:40px 0}
+.meta{font-weight:600;font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.proj h3{font-size:clamp(60px,6.4vw,96px);margin-top:14px}
+.sub{font-weight:700;font-size:21px;line-height:1.3;margin-top:14px}
+.desc{margin-top:16px;color:var(--text-2)}
+.layers{display:flex;flex-wrap:wrap;gap:6px 0;margin-top:22px;font-weight:600;font-size:14px}
+.layers li{display:flex;align-items:center}
+.layers li+li:before{content:"";width:18px;height:2px;background:var(--line);margin:0 10px}
+.results{display:flex;gap:34px;margin-top:26px;padding-top:22px;border-top:2px solid var(--line)}
+.results b{display:block;font:900 38px/1 var(--display);text-transform:uppercase}
+.results span{font-size:13px;color:var(--text-2)}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
+.tags li{font-weight:600;font-size:13px;line-height:1;padding:7px 10px;border:1.5px solid rgba(255,255,255,.42);border-radius:3px}
+.link{display:inline-flex;margin-top:26px;font-weight:700;font-size:16px;text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:3px}
+.also{padding:24vh 0 0}
+.also h3{font-size:44px}
+.also li{padding:18px 0;border-top:2px solid var(--line)}
+.also li:last-child{border-bottom:2px solid var(--line)}
+.also b{font:800 26px/1.1 var(--display);text-transform:uppercase;display:block}
+.also span{display:block;font-size:15px;color:var(--text-2);margin-top:4px}
+
+/* about */
+.about{padding-top:60vh}
+.about p+p{margin-top:16px}
+.about .bio{margin-top:28px;color:var(--text-2);font-size:18px}
+.skills-list{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.skills-list h3{font-size:24px;margin-bottom:6px}
+.skills-list li{font-size:15px;color:var(--text-2)}
+html.ready .skills-list{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.now{margin-top:34px;display:grid;gap:8px;padding-top:20px;border-top:2px solid var(--line);font-size:15px}
+.now b{display:inline-block;min-width:118px;font-weight:700}
+
+/* experience */
+.exp{padding-top:62vh}
+.steps{margin-top:30px}
+.steps>li{padding:20px 0;border-top:2px solid var(--line)}
+.when{font-weight:600;font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--text-2)}
+.steps h3{font-size:40px;margin-top:8px}
+.org{font-weight:600;margin-top:6px}
+.grade{display:inline-block;margin-left:8px;background:var(--sun);color:var(--ink);font-weight:700;font-size:13px;padding:3px 7px;border-radius:3px;vertical-align:2px}
+.steps .tags{margin-top:12px}
+.before{margin-top:22px;font-size:15px;color:var(--text-2);padding-top:18px;border-top:2px solid var(--line)}
+
+/* contact */
+.contact{padding-top:62vh;min-height:100vh}
+.contact .col{min-height:78vh}
+.contact h2{font-size:clamp(60px,6.6vw,104px)}
+.contact-list{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
+.contact-list .plain{font-weight:700;text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:2px}
+html.ready.desk .contact-list{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;display:flex;justify-content:space-between;font-size:14px;color:var(--text-2)}
+
+/* ---------- mobile ---------- */
+@media (max-width: 820px){
+  :root{--gutter:20px}
+  body{font-size:16px}
+  .nav{padding:12px var(--gutter);gap:14px}
+  .logo{width:38px;height:38px;font-size:19px}
+  .nav nav{gap:16px}
+  .nav nav a{font-size:14px}
+  .nav .btn{display:none}
+  .stage{height:calc(46svh + 40px);background:linear-gradient(to bottom, currentColor calc(100% - 40px), transparent)}
+  .col.left,.col.right,.hero .col{width:100%;margin-left:0}
+  .hero{min-height:auto;display:block;padding-top:calc(46svh + 28px);padding-bottom:0}
+  h1{font-size:clamp(50px,15vw,76px)}
+  h2{font-size:clamp(52px,15vw,72px)}
+  .kicker{font-size:13px;margin-bottom:18px}
+  .hero .lede,.intro p,.lede{font-size:17px}
+  .stats{gap:26px;margin-top:32px}
+  .stats b{font-size:40px}
+  .work{padding-top:50vh}
+  .proj{min-height:auto;display:block;padding:44vh 0 0}
+  .proj:first-of-type{padding-top:22vh}
+  .proj h3{font-size:56px}
+  .results{gap:20px;flex-wrap:wrap}
+  .results b{font-size:30px}
+  .also{padding-top:34vh}
+  .about,.exp{padding-top:52vh}
+  html.ready .skills-list{position:static!important;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
+  .contact{padding-top:52vh;min-height:auto;padding-bottom:90px}
+  .contact .col{min-height:0}
+  .contact h2{font-size:clamp(48px,13vw,64px)}
+  footer{position:static;margin-top:48px;flex-direction:column;gap:4px}
+  .c small{display:none}
+  .c b{font-size:30px}
+  .c-hero b{font-size:36px}
+  .sk li{font-size:25px;padding:6px 0}
+  .sk h4{font-size:56px}
+}
+
+/* ---------- reduced motion: static per-section snapshots ---------- */
+@media (prefers-reduced-motion: reduce){
+  .btn{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="bgfield" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="logo" href="#top" aria-label="Daniel Busetto, back to top">DB</a>
+  <nav aria-label="Primary">
+    <a href="#work">Work</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+  <a class="btn sm" href="mailto:daniel.busetto.db@gmail.com">Email me</a>
+</header>
+
+<div class="stage" aria-hidden="true"><div class="rig"><div class="world"></div></div></div>
+
+<main>
+  <section class="sec hero" id="top">
+    <div class="col left">
+      <p class="kicker"><span class="sq"></span>Daniel Busetto · Full-stack developer · Venice, Italy</p>
+      <h1><span class="l">From database</span> <span class="l">to interface</span></h1>
+      <p class="lede"><strong>Built to scale.</strong> I build web applications end to end: data models and REST APIs underneath, job queues and AI workers in the middle, responsive and fast interfaces on top. Four years of shipping it.</p>
+      <div class="ctas">
+        <a class="btn" href="#work">View work</a>
+        <a class="btn ghost" href="#contact">Get in touch</a>
+      </div>
+      <ul class="stats">
+        <li><b>4+</b><span>Years experience</span></li>
+        <li><b>20+</b><span>Projects shipped</span></li>
+        <li><b>10+</b><span>Happy clients</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec work" id="work">
+    <div class="col right intro" data-anchor="work">
+      <h2>Selected work</h2>
+      <p>Four systems I designed and shipped end to end. As you scroll, the stack re-layers itself into each project's real architecture.</p>
+    </div>
+
+    <article class="proj">
+      <div class="col right proj-in">
+        <p class="meta">2026 · Solo developer, open source</p>
+        <h3>BugPilot</h3>
+        <p class="sub">Self-hosted bug reporting with AI triage</p>
+        <p class="desc">A one-line embed widget captures annotated screenshots, console logs and network traces, then a Claude worker triages every report: severity, duplicates, repro steps, fix suggestions. It ships as a five-service Docker stack with a built-in MCP server, so agents in Cursor or Claude Code can query and resolve bugs directly.</p>
+        <ul class="layers" aria-label="Architecture, top to bottom"><li>Embed widget</li><li>Express API</li><li>BullMQ worker + Claude</li><li>MongoDB · Redis · MinIO</li></ul>
+        <ul class="results"><li><b>9</b><span>MCP tools exposed</span></li><li><b>&lt; 5 min</b><span>Docker deploy</span></li><li><b>6</b><span>Monorepo packages</span></li></ul>
+        <ul class="tags"><li>TypeScript</li><li>React 19</li><li>Express</li><li>BullMQ</li><li>MongoDB</li><li>Redis</li><li>MinIO</li><li>Claude AI</li><li>MCP</li><li>Docker</li></ul>
+        <a class="link" href="https://github.com/dani01Lost4ever/BugPilot">Source on GitHub</a>
+      </div>
+    </article>
+
+    <article class="proj">
+      <div class="col right proj-in">
+        <p class="meta">2026 · Solo developer</p>
+        <h3>The Loop</h3>
+        <p class="sub">A field journal of the AI frontier, for engineers who ship</p>
+        <p class="desc">A self-hosted AI publication. Next.js 15 on the App Router renders it, Payload CMS v3 is the editorial layer over Postgres, Meilisearch powers search, and Remark42, Umami and Listmonk run beside it as sibling Docker services on a European home server.</p>
+        <ul class="layers" aria-label="Architecture, top to bottom"><li>Next.js 15</li><li>Payload CMS v3</li><li>Meilisearch</li><li>Postgres</li></ul>
+        <ul class="results"><li><b>5</b><span>Sibling services</span></li><li><b>Payload v3</b><span>CMS layer</span></li><li><b>EU</b><span>Home-server stack</span></li></ul>
+        <ul class="tags"><li>Next.js 15</li><li>React</li><li>TypeScript</li><li>Payload CMS</li><li>Postgres</li><li>Meilisearch</li><li>Listmonk</li><li>Docker</li></ul>
+        <a class="link" href="http://theloop.techdani.cc/">Visit theloop.techdani.cc</a>
+      </div>
+    </article>
+
+    <article class="proj">
+      <div class="col right proj-in">
+        <p class="meta">2026 · Solo developer, ongoing</p>
+        <h3>Stellar Freight Co.</h3>
+        <p class="sub">A sci-fi drone-logistics factory tycoon, played in the browser</p>
+        <p class="desc">Players dispatch drones and route production across a real-time simulation. It's a pnpm + Turborepo monorepo: a Fastify + WebSocket server runs a fixed-tick clock, a React + Zustand client renders it, and Zod-validated wire messages catch protocol mismatches at both ends.</p>
+        <ul class="layers" aria-label="Architecture, top to bottom"><li>React + Zustand</li><li>Zod wire protocol</li><li>Fastify tick sim</li><li>Fly.io</li></ul>
+        <ul class="results"><li><b>5 Hz</b><span>Server tick rate</span></li><li><b>Zod</b><span>Both ends typed</span></li><li><b>Phase 0</b><span>Foundation shipped</span></li></ul>
+        <ul class="tags"><li>TypeScript</li><li>React</li><li>Fastify</li><li>WebSocket</li><li>Zustand</li><li>Turborepo</li><li>Zod</li><li>Fly.io</li></ul>
+        <a class="link" href="https://sfco.techdani.cc/">Visit sfco.techdani.cc</a>
+      </div>
+    </article>
+
+    <article class="proj">
+      <div class="col right proj-in">
+        <p class="meta">2026 · Solo developer</p>
+        <h3>AuroraTrader</h3>
+        <p class="sub">An AI paper-trading agent that trains its own replacement</p>
+        <p class="desc">The agent asks Claude for trade decisions, executes them on the Alpaca Paper API and logs every call to MongoDB. Profitable trades export as a JSONL dataset that fine-tunes a local Ollama model, which then drops back into the same loop and replaces the Claude calls.</p>
+        <ul class="layers" aria-label="Architecture, top to bottom"><li>React dashboard</li><li>Express API</li><li>Claude → Ollama agent</li><li>MongoDB</li></ul>
+        <ul class="results"><li><b>Env var</b><span>Swaps Claude for Ollama</span></li><li><b>JSONL</b><span>Outcome-filtered dataset</span></li><li><b>QLoRA</b><span>Local fine-tune</span></li></ul>
+        <ul class="tags"><li>Node.js</li><li>TypeScript</li><li>Claude AI</li><li>Alpaca API</li><li>MongoDB</li><li>React</li><li>Ollama</li><li>Unsloth</li></ul>
+        <a class="link" href="https://github.com/dani01Lost4ever/AuroraTrader">Source on GitHub</a>
+      </div>
+    </article>
+
+    <div class="col right also">
+      <h3>Also shipped</h3>
+      <ul>
+        <li><b>Cloudflare DDNS Client</b><span>Keeps Cloudflare DNS in sync with a dynamic IP in under five seconds, with a live dashboard. Python, Flask, Docker.</span></li>
+        <li><b>Agendash 3</b><span>A rebuilt dashboard for Agenda.js with per-job execution logs, published to npm as agendash3-rework.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="sec about" id="about">
+    <div class="col left" data-anchor="about">
+      <h2>Full-stack, end to end</h2>
+      <div class="bio">
+        <p>I'm Daniel, a software developer with four years of hands-on experience. I work across the whole stack, from designing data models and building APIs to crafting responsive, accessible frontends.</p>
+        <p>My primary stack is MEAN (MongoDB, Express, Angular, Node.js), and I'm equally fluent in React, Next.js and .NET. I care about clean architecture, maintainable code, and shipping things that actually work.</p>
+      </div>
+      <div class="skills-list">
+        <div><h3>Frontend</h3><ul><li>Angular</li><li>React</li><li>Next.js</li><li>TypeScript</li><li>CSS / Sass</li></ul></div>
+        <div><h3>Backend</h3><ul><li>Node.js</li><li>Express</li><li>.NET / .NET Framework</li><li>REST APIs</li></ul></div>
+        <div><h3>Database</h3><ul><li>MongoDB</li><li>SQL Server</li><li>PostgreSQL</li></ul></div>
+        <div><h3>Tools</h3><ul><li>Git</li><li>Docker</li><li>CI/CD</li><li>Postman</li><li>Vite</li></ul></div>
+      </div>
+      <div class="now">
+        <p><b>Now building</b>Cloudflare DDNS Client, v0.4 dashboard polish</p>
+        <p><b>Now reading</b>Designing Data-Intensive Applications</p>
+        <p><b>Now shipping</b>agendash3-rework on npm</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec exp" id="experience">
+    <div class="col right" data-anchor="exp">
+      <h2>Experience</h2>
+      <p class="lede">Three roles at one company, standing on one diploma. Each step was built on the one below it.</p>
+      <ol class="steps">
+        <li>
+          <p class="when">Jul 2024 — Present · Marghera</p>
+          <h3>Software Developer</h3>
+          <p class="org">Venicecom Group · Full-time</p>
+          <ul class="tags"><li>C#</li><li>.NET</li><li>Angular</li><li>Node.js</li><li>MongoDB</li><li>Docker</li><li>CI/CD</li><li>Azure</li><li>SQL Server</li></ul>
+        </li>
+        <li>
+          <p class="when">Jul 2023 — Jul 2024</p>
+          <h3>Web Developer Junior</h3>
+          <p class="org">Venicecom Group · Apprenticeship</p>
+          <ul class="tags"><li>C#</li><li>.NET</li><li>Entity Framework</li><li>Azure</li></ul>
+        </li>
+        <li>
+          <p class="when">Apr 2023 — Jun 2023 · Venice</p>
+          <h3>Web Developer intern</h3>
+          <p class="org">Venicecom Group · Internship</p>
+          <ul class="tags"><li>Next.js</li><li>C#</li><li>.NET</li><li>SQL</li><li>MongoDB</li><li>REST API</li></ul>
+        </li>
+        <li>
+          <p class="when">Oct 2022 — Jul 2024</p>
+          <h3>ITS Digital Academy</h3>
+          <p class="org">"Mario Volpato" · Full Stack Web Development, EQF 5 <span class="grade">100/100 cum laude</span></p>
+        </li>
+      </ol>
+      <p class="before">Before that: Information Engineering at the Università degli Studi di Padova (2020 — 2022) and a scientific diploma from Liceo Ettore Majorana.</p>
+    </div>
+  </section>
+
+  <section class="sec contact" id="contact">
+    <div class="col left" data-anchor="contact">
+      <h2>Let's build something great together</h2>
+      <p class="lede">Currently open to freelance projects and full-time opportunities. Tell me what you're building and which layer hurts.</p>
+      <div class="contact-list">
+        <a class="btn" href="mailto:daniel.busetto.db@gmail.com">daniel.busetto.db@gmail.com</a>
+        <a class="plain" href="#">GitHub</a>
+        <a class="plain" href="#">LinkedIn</a>
+      </div>
+    </div>
+    <footer><span>© 2026 Daniel Busetto</span><span>Venice / Marghera, Italy</span></footer>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script>
+(function () {
+  "use strict";
+  var doc = document.documentElement;
+  doc.classList.add("js");
+
+  var S = 300, H = 64, DEG = Math.PI / 180;
+  var COL = { cobalt: "#1E3BD8", tomato: "#D63A1E", green: "#0B5A42", plum: "#5A2470", deep: "#1B2FB8",
+              white: "#FFFFFF", sun: "#FFD447", sky: "#9BE7FF", mint: "#8CF5C0" };
+
+  /* ---- slab labels: [small role, big label] top to bottom ---- */
+  var L = {
+    hero:   [["Angular · React", "Interface"], ["Express · .NET", "API"], ["Jobs · workers", "Queue"], ["Mongo · SQL", "Database"]],
+    bug:    [["Client", "Embed widget"], ["API", "Express API"], ["Worker", "BullMQ worker + Claude"], ["Storage", "MongoDB · Redis · MinIO"]],
+    loop:   [["Front", "Next.js 15"], ["CMS", "Payload CMS v3"], ["Search", "Meilisearch"], ["Data", "Postgres"]],
+    sfco:   [["Client", "React + Zustand"], ["Protocol", "Zod wire protocol"], ["Server", "Fastify tick sim"], ["Infra", "Fly.io"]],
+    aurora: [["Client", "React dashboard"], ["API", "Express API"], ["Agent", "Claude → Ollama agent"], ["Data", "MongoDB"]],
+    stairs: [["2024 — now", "Software Developer"], ["2023 — 2024", "Web Dev Junior"], ["2023", "Web Dev intern"], ["100/100 cum laude", "ITS Digital Academy"]]
+  };
+  var SKILLS = [
+    ["Frontend", ["Angular", "React", "Next.js", "TypeScript", "CSS / Sass"]],
+    ["Backend", ["Node.js", "Express", ".NET Framework", "REST APIs"]],
+    ["Tools", ["Git", "Docker", "CI/CD", "Postman", "Vite"]],
+    ["Database", ["MongoDB", "SQL Server", "PostgreSQL"]]
+  ];
+  var MAIL = "daniel.busetto.db@gmail.com";
+  function lab(p, cls) { return '<div class="c ' + cls + '"><small>' + p[0] + "</small><b>" + p[1] + "</b></div>"; }
+
+  var stage = document.querySelector(".stage"), rigEl = stage.querySelector(".rig"), worldEl = stage.querySelector(".world");
+  var bgEl = document.querySelector(".bgfield"), navEl = document.querySelector(".nav");
+  var slabEls = [], sideFaces = [], allFaces = [];
+  for (var i = 0; i < 4; i++) {
+    var el = document.createElement("div");
+    el.className = "slab";
+    var card = i === 0 ?
+      '<div class="card"><div class="card-top"><span class="mk">DB</span><span class="av">Open to work</span></div>' +
+      '<p class="card-h">Say hello</p>' +
+      '<a class="card-mail" tabindex="-1" href="mailto:' + MAIL + '">' + MAIL + "</a>" +
+      '<div class="card-links"><a tabindex="-1" href="#">GitHub</a><a tabindex="-1" href="#">LinkedIn</a></div>' +
+      '<a class="card-cta" tabindex="-1" href="mailto:' + MAIL + '"><span>Start a project</span><span>→</span></a></div>' : "";
+    el.innerHTML =
+      '<div class="face side f-front"><div class="cw">' + lab(L.hero[i], "c-hero") + lab(L.aurora[i], "c-aurora") + lab(L.stairs[i], "c-stairs") + '</div><span class="shade"></span></div>' +
+      '<div class="face side f-right"><div class="cw">' + lab(L.bug[i], "c-bug") + '</div><span class="shade"></span></div>' +
+      '<div class="face side f-back"><div class="cw">' + lab(L.loop[i], "c-loop") + '</div><span class="shade"></span></div>' +
+      '<div class="face side f-left"><div class="cw">' + lab(L.sfco[i], "c-sfco") + '</div><span class="shade"></span></div>' +
+      '<div class="face cap f-top"><div class="c sk c-skills"><h4>' + SKILLS[i][0] + "</h4><ul>" +
+        SKILLS[i][1].map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ul></div></div>" +
+      '<div class="face cap f-bottom">' + card + "</div>";
+    worldEl.appendChild(el);
+    slabEls.push(el);
+    sideFaces.push([].slice.call(el.querySelectorAll(".side .shade")));
+    allFaces.push([].slice.call(el.querySelectorAll(".face")));
+  }
+  var topFaces = [].slice.call(worldEl.querySelectorAll(".f-top"));
+  function q(s) { return [].slice.call(worldEl.querySelectorAll(s)); }
+
+  /* ---- live values that every frame is rendered from ---- */
+  function slab(x, y, z, rx, ry, s, o) { return { x: x, y: y, z: z, rx: rx, ry: ry, s: s == null ? 1 : s, o: o == null ? 1 : o }; }
+  var P = { rig: { x: 0, y: 0, s: 1 }, w: { tilt: -26, spin: -36, amp: 1 }, sl: [0, 1, 2, 3].map(function () { return slab(0, 0, 0, 0, 0); }) };
+
+  var mobile = false, vw = innerWidth, vh = innerHeight;
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)");
+
+  function buildStates() {
+    mobile = matchMedia("(max-width: 820px)").matches;
+    vw = innerWidth; vh = innerHeight;
+    var band = Math.round(vh * 0.46);
+    var dm = Math.min(1, vw / 1440, vh / 860);
+    var mm = Math.min(1.15, vw / 390);
+    function pos(fx, s, sm) {
+      return mobile ? { x: vw / 2, y: 52 + (band - 52) / 2 + 4, s: sm * mm } : { x: fx * vw, y: vh * 0.53, s: s * dm };
+    }
+    function stackY(gap, ry) { return [0, 1, 2, 3].map(function (i) { return slab(0, (i - 1.5) * (H + gap), 0, 0, ry); }); }
+    var grid = [0, 1, 2, 3].map(function (i) {
+      return slab(((i % 2) - 0.5) * (S + 26), (Math.floor(i / 2) - 0.5) * (S + 26), 0, -90, -360);
+    });
+    var sh = mobile ? 118 : 150;
+    var stairs = [0, 1, 2, 3].map(function (i) { var j = 3 - i; return slab((j - 1.5) * sh, -(j - 1.5) * (H + 30), 0, 0, -360); });
+    var cardS = [0, 1, 2, 3].map(function (i) { return i === 0 ? slab(0, 0, 0, 90, -360) : slab(0, 0, -(H + 10) * i, 90, -360, 0.86, 0); });
+    return [
+      { rig: pos(0.715, 1.0, 0.6),  tilt: -26, spin: -36, amp: 1, bg: COL.cobalt, top: COL.white, sl: stackY(6, 0) },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.sun,   sl: stackY(40, -90) },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.white, sl: stackY(40, -180) },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.sky,   sl: stackY(40, -270) },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.mint,  sl: stackY(40, -360) },
+      { rig: pos(0.72, 0.8, 0.47),  tilt: -7,  spin: -12, amp: 0, bg: COL.green,  top: COL.white, sl: grid },
+      { rig: pos(0.29, 0.8, 0.46),  tilt: -24, spin: -38, amp: 0, bg: COL.plum,   top: COL.white, sl: stairs },
+      { rig: pos(0.70, 1.18, 0.8),  tilt: -5,  spin: -9,  amp: 0.3, bg: COL.deep, top: COL.white, sl: cardS, via: stackY(6, -360) }
+    ];
+  }
+
+  function docY(el) { return el.getBoundingClientRect().top + scrollY; }
+  function buildWindows() {
+    var a = function (n) { return document.querySelector('[data-anchor="' + n + '"]'); };
+    var projs = [].slice.call(document.querySelectorAll(".proj-in"));
+    function sec(el) { var t = docY(el); return mobile ? [t - 1.0 * vh, t - 0.62 * vh] : [t - 1.05 * vh, t - 0.6 * vh]; }
+    function prj(el) { var t = docY(el); return mobile ? [t - 0.98 * vh, t - 0.6 * vh] : [t - 0.95 * vh, t - 0.5 * vh]; }
+    return [sec(a("work")), prj(projs[1]), prj(projs[2]), prj(projs[3]), sec(a("about")), sec(a("exp")), sec(a("contact"))]
+      .map(function (w) { var s = Math.max(0, w[0]); return [s, Math.max(w[1], s + 80)]; });
+  }
+
+  /* ---- rendering ---- */
+  var cache = new Map();
+  function setStyle(el, prop, v) { var k = cache.get(el) || {}; if (k[prop] !== v) { el.style[prop] = v; k[prop] = v; cache.set(el, k); } }
+  var FA = [0, 90, 180, -90];
+  var LV = (function () { var x = -0.45, y = -0.75, z = 0.9, l = Math.hypot(x, y, z); return [x / l, y / l, z / l]; })();
+  var clock = 0;
+  function render() {
+    var r = P.rig, w = P.w, a = w.amp;
+    var iy = a ? a * 7 * Math.sin(clock * 0.55) : 0, bob = a ? a * 7 * Math.sin(clock * 0.9) : 0;
+    setStyle(rigEl, "transform", "translate3d(" + r.x.toFixed(1) + "px," + r.y.toFixed(1) + "px,0) scale(" + r.s.toFixed(4) + ")");
+    setStyle(worldEl, "transform", "translate3d(0," + bob.toFixed(2) + "px,0) rotateX(" + w.tilt.toFixed(3) + "deg) rotateY(" + (w.spin + iy).toFixed(3) + "deg)");
+    for (var i = 0; i < 4; i++) {
+      var s = P.sl[i];
+      setStyle(slabEls[i], "transform", "translate3d(" + s.x.toFixed(1) + "px," + s.y.toFixed(1) + "px," + s.z.toFixed(1) + "px) rotateY(" + s.ry.toFixed(3) + "deg) rotateX(" + s.rx.toFixed(3) + "deg) scale(" + s.s.toFixed(4) + ")");
+      var o = (Math.round(s.o * 100) / 100).toString();
+      for (var f = 0; f < allFaces[i].length; f++) setStyle(allFaces[i][f], "opacity", o);
+      setStyle(slabEls[i], "visibility", s.o < 0.01 ? "hidden" : "visible");
+      /* fake lighting on the four sides: normal after rotateX(rx) then rotateY(ry + spin) */
+      var beta = (s.ry + w.spin + iy) * DEG, sr = Math.sin(s.rx * DEG), cr = Math.cos(s.rx * DEG);
+      for (var k = 0; k < 4; k++) {
+        var al = FA[k] * DEG, nx0 = Math.sin(al), ca = Math.cos(al);
+        var ny = -ca * sr, nz0 = ca * cr;
+        var nx = nx0 * Math.cos(beta) + nz0 * Math.sin(beta), nz = -nx0 * Math.sin(beta) + nz0 * Math.cos(beta);
+        var d = Math.max(0, nx * LV[0] + ny * LV[1] + nz * LV[2]);
+        setStyle(sideFaces[i][k], "opacity", (0.62 * (1 - d)).toFixed(2));
+      }
+    }
+    stage.classList.toggle("live", P.sl[0].rx > 80);
+  }
+
+  function copyState(st) {
+    P.rig.x = st.rig.x; P.rig.y = st.rig.y; P.rig.s = st.rig.s;
+    P.w.tilt = st.tilt; P.w.spin = st.spin; P.w.amp = reduce.matches ? 0 : st.amp;
+    for (var i = 0; i < 4; i++) Object.assign(P.sl[i], st.sl[i]);
+  }
+  function setContent(k) {
+    function op(sel, on) { q(sel).forEach(function (e) { e.style.opacity = on ? 1 : 0; }); }
+    op(".c-hero", k <= 1); op(".c-aurora", k >= 2 && k <= 5); op(".c-stairs", k >= 6);
+    op(".c-bug", k >= 1 && k <= 4); op(".cw", k <= 4 || k === 6); op(".c-loop", true); op(".c-sfco", true); op(".c-skills", k === 5);
+  }
+  function applyState(k, ST) {
+    var st = ST[k];
+    copyState(st);
+    bgEl.style.backgroundColor = st.bg; navEl.style.backgroundColor = st.bg; stage.style.color = st.bg;
+    topFaces.forEach(function (t) { t.style.backgroundColor = st.top; });
+    setContent(k);
+    render();
+  }
+
+  /* ---- boot ---- */
+  var ST = buildStates();
+  applyState(0, ST);
+  if (!mobile) doc.classList.add("desk");
+  var hasGsap = !!(window.gsap && window.ScrollTrigger);
+  if (!hasGsap && !reduce.matches) return; /* static hero object; page reads top to bottom */
+  doc.classList.add("ready");
+
+  var tl = null, st = null, W = null, rmIndex = -1;
+
+  function onReducedScroll() {
+    var y = scrollY, k = 0;
+    for (var i = 0; i < W.length; i++) if (y >= (W[i][0] + W[i][1]) / 2) k = i + 1;
+    if (k !== rmIndex) { rmIndex = k; applyState(k, ST); }
+  }
+
+  function addTransition(A, B, t0, t1, k) {
+    var d = t1 - t0, E = "power3.inOut", ir = { immediateRender: false };
+    function tw(target, from, to, dur, ease, at) {
+      tl.fromTo(target, from, Object.assign({ duration: Math.max(dur, 1), ease: ease }, to, ir), at);
+    }
+    tw(P.rig, { x: A.rig.x, y: A.rig.y }, { x: B.rig.x, y: B.rig.y }, d, "power2.inOut", t0);
+    if (Math.abs(A.rig.x - B.rig.x) > vw * 0.2) {
+      var mid = Math.min(A.rig.s, B.rig.s) * 0.74;
+      tw(P.rig, { s: A.rig.s }, { s: mid }, d / 2, "sine.out", t0);
+      tw(P.rig, { s: mid }, { s: B.rig.s }, d / 2, "sine.in", t0 + d / 2);
+    } else tw(P.rig, { s: A.rig.s }, { s: B.rig.s }, d, E, t0);
+    tw(P.w, { tilt: A.tilt, spin: A.spin, amp: A.amp }, { tilt: B.tilt, spin: B.spin, amp: B.amp }, d, E, t0);
+
+    var slabEase = (k >= 1 && k <= 3) ? "back.inOut(1.5)" : E;
+    for (var i = 0; i < 4; i++) {
+      if (B.via) {
+        tw(P.sl[i], Object.assign({}, A.sl[i]), Object.assign({}, B.via[i]), d * 0.44, "power2.inOut", t0 + i * d * 0.03);
+        tw(P.sl[i], Object.assign({}, B.via[i]), Object.assign({}, B.sl[i]), d * 0.42, "power3.inOut", t0 + d * 0.58);
+      } else {
+        tw(P.sl[i], Object.assign({}, A.sl[i]), Object.assign({}, B.sl[i]), d * 0.76, slabEase, t0 + i * d * 0.08);
+      }
+    }
+    if (A.bg !== B.bg) {
+      tw([bgEl, navEl], { backgroundColor: A.bg }, { backgroundColor: B.bg }, d * 0.7, "power1.inOut", t0 + d * 0.15);
+      tw(stage, { color: A.bg }, { color: B.bg }, d * 0.7, "power1.inOut", t0 + d * 0.15);
+    }
+    if (A.top !== B.top) tw(topFaces, { backgroundColor: A.top }, { backgroundColor: B.top }, d * 0.35, "none", t0 + d * 0.3);
+    function ct(sel, a, b, s, e) { tw(q(sel), { opacity: a }, { opacity: b }, (e - s) * d, "none", t0 + s * d); }
+    if (k === 0) ct(".c-bug", 0, 1, 0.05, 0.35);
+    if (k === 1) { ct(".c-hero", 1, 0, 0.4, 0.5); ct(".c-aurora", 0, 1, 0.5, 0.6); }
+    if (k === 4) ct(".c-skills", 0, 1, 0.55, 0.95);
+    if (k === 4) ct(".cw", 1, 0, 0.72, 0.9);
+    if (k === 5) { ct(".c-skills", 1, 0, 0, 0.3); ct(".c-aurora", 1, 0, 0, 0.04); ct(".c-bug", 1, 0, 0, 0.04); ct(".c-stairs", 0, 1, 0.04, 0.08); ct(".cw", 0, 1, 0.1, 0.3); }
+    if (k === 6) ct(".cw", 1, 0, 0.56, 0.7);
+  }
+
+  function build() {
+    if (st) { st.kill(); st = null; }
+    if (tl) { tl.kill(); tl = null; }
+    ST = buildStates();
+    doc.classList.toggle("desk", !mobile);
+    W = buildWindows();
+    if (reduce.matches) { rmIndex = -1; onReducedScroll(); return; }
+    applyState(0, ST);
+    var max = Math.max(1, doc.scrollHeight - innerHeight);
+    tl = gsap.timeline({ paused: true });
+    for (var k = 0; k < 7; k++) addTransition(ST[k], ST[k + 1], W[k][0], W[k][1], k);
+    tl.set({}, {}, max);
+    st = ScrollTrigger.create({ start: 0, end: max, scrub: 0.7, animation: tl });
+    tl.progress(Math.min(1, scrollY / max));
+    render();
+  }
+
+  if (reduce.matches || !hasGsap) {
+    build();
+    addEventListener("scroll", onReducedScroll, { passive: true });
+  } else {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.ticker.add(function (time) { clock = time; render(); });
+    build();
+  }
+
+  var lastW = innerWidth, lastH = innerHeight, rt;
+  addEventListener("resize", function () {
+    clearTimeout(rt);
+    rt = setTimeout(function () {
+      var mob = matchMedia("(max-width: 820px)").matches;
+      if (mob && innerWidth === lastW && Math.abs(innerHeight - lastH) < 120) return; /* mobile toolbar */
+      lastW = innerWidth; lastH = innerHeight;
+      build();
+      if (window.ScrollTrigger) ScrollTrigger.refresh();
+    }, 180);
+  });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { build(); });
+  addEventListener("load", function () { build(); });
+  reduce.addEventListener && reduce.addEventListener("change", function () { location.reload(); });
+})();
+</script>
+</body>
+</html>
