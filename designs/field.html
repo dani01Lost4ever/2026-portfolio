@@ -36,6 +36,10 @@ body{
 a{color:inherit}
 img,svg{display:block}
 :focus-visible{outline:2px solid var(--peach);outline-offset:3px}
+[tabindex="-1"]:focus{outline:none}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-stopped{overflow:hidden}
 
 #field{position:fixed;inset:0;width:100%;height:100%;z-index:0;display:block}
 .scrim{display:none}
@@ -90,17 +94,17 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .work-intro p{color:var(--ink-2);max-width:520px;margin:24px 0 0;font-size:1.05rem}
 .project{position:relative;overflow-x:clip;min-height:100vh;display:flex;align-items:center;padding:12vh var(--gutter)}
 .project[data-side="right"]{justify-content:flex-end}
-.copy{width:min(40vw,540px)}
+.copy{width:min(42vw,580px)}
 .meta{font-size:.84rem;color:var(--ink-3);margin:0 0 16px;display:flex;gap:10px;flex-wrap:wrap}
 .meta span+span::before{content:"";display:inline-block;width:14px;height:1px;background:currentColor;vertical-align:middle;margin-right:10px;opacity:.6}
 .project h3{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:1;font-weight:340}
 .sub{font-family:var(--display);font-weight:380;font-size:clamp(1.1rem,1.5vw,1.35rem);line-height:1.35;color:var(--peach);margin:14px 0 18px;font-variation-settings:"SOFT" 100}
 .desc{color:var(--ink-2);margin:0 0 26px;font-size:1rem}
 .desc{margin-bottom:8px}
-.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(236px,24vw,300px);gap:clamp(16px,2vw,32px);align-items:center}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(276px,27vw,350px);gap:clamp(16px,2vw,32px);align-items:center}
 .foot-text{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
 .results{display:grid;gap:14px;margin:0;padding:0}
-.results dt{font-family:var(--display);font-size:1.45rem;font-weight:400;line-height:1.1}
+.results dt{font-family:var(--display);font-size:clamp(1.1rem,1.6vw,1.45rem);font-weight:400;line-height:1.1}
 .results dd{margin:3px 0 0;font-size:.78rem;color:var(--ink-3);line-height:1.35}
 /* tech cube slot: holds one TechCube (inlined below); keeps its square even without JS */
 .tech-cube-slot{width:100%;aspect-ratio:1;position:relative}
@@ -187,11 +191,15 @@ footer a{text-decoration:none}
 @media (max-width:700px){ .tc{--tc-size:var(--techcube-size-sm,170px)} }
 
 .tc-stage{position:absolute;inset:0;perspective:calc(var(--tc-size) * 7);perspective-origin:50% 42%;pointer-events:none}
+.tc-side,.tc-lid{pointer-events:auto}
+.tc-slab{outline:none}
+.tc-slab.is-hot .tc-side,.tc-slab.is-hot .tc-lid{filter:brightness(1.35) saturate(1.15)}
+.tc-slab:focus-visible .tc-side{box-shadow:inset 0 0 0 2px rgba(255,184,138,.95)}
 /* soft ambient light behind the object (flat, never moves) */
 .tc-halo{
   position:absolute;left:50%;top:58%;width:calc(var(--tc-size) * 1.9);height:calc(var(--tc-size) * 1.2);
   transform:translate(-50%,-50%);
-  background:radial-gradient(closest-side,rgba(94,216,203,.13),rgba(94,216,203,.04) 55%,transparent);
+  background:radial-gradient(closest-side,rgba(var(--tc-tint,94,216,203),.16),rgba(var(--tc-tint,94,216,203),.05) 55%,transparent);
 }
 .tc-rig,.tc-body,.tc-slab,.tc-rot{position:absolute;left:0;top:0;width:0;height:0;transform-style:preserve-3d}
 .tc-rig{left:50%;top:45%}
@@ -208,7 +216,7 @@ footer a{text-decoration:none}
   background:
     linear-gradient(180deg,rgba(var(--tc-acc),.10),rgba(var(--tc-acc),0) 46%),
     linear-gradient(160deg,rgba(18,70,77,.74),rgba(5,31,37,.87));
-  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.46),inset 0 0 calc(var(--tc-size) * .06) rgba(var(--tc-acc),.10);
+  box-shadow:inset 0 0 0 1px rgba(var(--tc-acc),.46),inset 0 0 calc(var(--tc-size) * .07) rgba(var(--tc-tint,var(--tc-acc)),.16);
 }
 .tc-f0{transform:translateZ(var(--tc-half))}
 .tc-f1{transform:rotateY(90deg) translateZ(var(--tc-half))}
@@ -283,7 +291,7 @@ footer a{text-decoration:none}
   transform:translate3d(0,calc(var(--tc-size) * .64),0) rotateX(90deg);
   background:
     radial-gradient(closest-side,rgba(1,12,14,.62),rgba(1,12,14,0) 48%),
-    radial-gradient(closest-side,rgba(94,216,203,.30),rgba(94,216,203,.10) 46%,rgba(255,138,106,.05) 64%,transparent 76%);
+    radial-gradient(closest-side,rgba(var(--tc-tint,94,216,203),.30),rgba(var(--tc-tint,94,216,203),.10) 46%,rgba(255,138,106,.05) 64%,transparent 76%);
 }
 
 /* text alternative */
@@ -317,7 +325,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   .project[data-side="right"]{justify-content:flex-start}
   .copy{width:100%}
   .foot{grid-template-columns:1fr;gap:8px}
-  .tech-cube-slot{aspect-ratio:auto;height:clamp(250px,34vh,320px);max-width:420px;justify-self:center;margin-top:4px}
+  .tech-cube-slot{aspect-ratio:auto;height:clamp(290px,40vh,375px);max-width:490px;justify-self:center;margin-top:4px}
   .results dt{font-size:1.2rem}
   .about-intro{grid-template-columns:1fr;padding:7vh 20px 4vh;gap:22px}
   .stack{grid-template-columns:1fr;grid-template-rows:none;min-height:auto;padding:4vh 20px 8vh;gap:10px}
@@ -340,7 +348,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 /* tablet portrait: cube sits beside the results, tighter gaps between projects */
 @media (min-width:600px) and (max-width:900px){
   .project{padding-top:28vh}
-  .foot{grid-template-columns:minmax(0,1fr) minmax(0,min(48%,330px));gap:20px;align-items:center}
+  .foot{grid-template-columns:minmax(0,1fr) minmax(0,min(54%,385px));gap:20px;align-items:center}
   .tech-cube-slot{aspect-ratio:1;height:auto;max-width:none;margin-top:0}
 }
 @media (prefers-reduced-motion:reduce){
@@ -605,6 +613,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.160.0/three.min.js"></script>
 <script>
 /*!
@@ -667,10 +676,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     rootEl.setAttribute("role", "group");
     rootEl.setAttribute("aria-roledescription", "architecture cube");
     var stage = el("div", "tc-stage", rootEl);
-    stage.setAttribute("aria-hidden", "true");
-    el("div", "tc-halo", stage);
+    el("div", "tc-halo", stage).setAttribute("aria-hidden", "true");
     var rig = el("div", "tc-rig", stage);
-    el("div", "tc-floor", rig);
+    el("div", "tc-floor", rig).setAttribute("aria-hidden", "true");
     var body = el("div", "tc-body", rig);
     var measure = el("span", "tc-measure", rootEl);
     measure.setAttribute("aria-hidden", "true");
@@ -681,12 +689,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     var slabs = [];
     for (var i = 0; i < SLABS; i++) {
       var slab = el("div", "tc-slab", body);
+      /* each slab is its own control: focusable, arrow keys turn it */
+      slab.tabIndex = 0;
+      slab.setAttribute("role", "group");
+      slab.setAttribute("aria-roledescription", "turnable layer");
+      slab.setAttribute("data-i", i);
       slab.style.setProperty("--i", i);
       slab.style.setProperty("--tc-acc", ACC[i]);
       var rot = el("div", "tc-rot", slab);
       var faces = [];
       for (var f = 0; f < 4; f++) {
         var face = el("div", "tc-face tc-side tc-f" + f, rot);
+        face.setAttribute("aria-hidden", "true");
         var shade = el("i", "tc-shade", face);
         var txt = el("div", "tc-txt", face);
         var lab = el("span", "tc-label", txt), tech = el("span", "tc-tech", txt);
@@ -698,9 +712,10 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         }
         faces.push({ el: face, shade: shade, txt: txt, lab: lab, tech: tech, m: null, c: {} });
       }
-      el("div", "tc-face tc-lid tc-top", rot);
-      el("div", "tc-face tc-lid tc-bot", rot);
-      slabs.push({ el: slab, rot: rot, faces: faces, a: 0, c: {} });
+      el("div", "tc-face tc-lid tc-top", rot).setAttribute("aria-hidden", "true");
+      el("div", "tc-face tc-lid tc-bot", rot).setAttribute("aria-hidden", "true");
+      /* man/mv: manual spin (in quarter turns) layered on top of the scroll pose, with inertia and a spring home */
+      slabs.push({ el: slab, rot: rot, faces: faces, a: 0, man: 0, mv: 0, c: {} });
     }
     container.appendChild(rootEl);
     if (reduce) rootEl.classList.add("tc-still");
@@ -737,7 +752,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     var target = 0, shown = 0, current = -1;
     var clock = 0, last = 0, raf = 0, visible = true, destroyed = false;
     var sizePx = 272;
-    var drag = { on: false, id: null, x: 0, y: 0, rawY: 0, rawX: 0, t: 0 };
+    var drag = { on: false, id: null, x: 0, y: 0, rawY: 0, rawX: 0, t: 0, slab: null };
+    var hot = null;
     /* yaw/pitch offsets from dragging (with inertia + spring) and hovering */
     var sp = { y: 0, x: 0, vy: 0, vx: 0 };
     var hov = { y: 0, x: 0, ty: 0, tx: 0 };
@@ -768,7 +784,10 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       rootEl.setAttribute("aria-label", p.name + " architecture. Drag or use the arrow keys to turn the cube.");
       srTitle.textContent = p.name + ", architecture from top to bottom:";
       srList.textContent = "";
-      p.layers.forEach(function (l) { var li = el("li", "", srList); li.textContent = l.label + ": " + l.tech; });
+      p.layers.forEach(function (l, li0) {
+        var li = el("li", "", srList); li.textContent = l.label + ": " + l.tech;
+        if (slabs[li0]) slabs[li0].el.setAttribute("aria-label", "Layer " + (li0 + 1) + " of " + SLABS + ", " + l.label + ": " + l.tech + ". Left and right arrow keys turn this layer.");
+      });
       if (typeof opts.onChange === "function") opts.onChange(k, p);
     }
 
@@ -781,7 +800,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       setStyle(body, body._c || (body._c = {}), "transform", "translate3d(0," + bob.toFixed(2) + "px,0)");
       var cy = Math.cos(yaw * DEG), sy = Math.sin(yaw * DEG), cp = Math.cos(pitch * DEG), spn = Math.sin(pitch * DEG);
       for (var i = 0; i < SLABS; i++) {
-        var s = slabs[i], a = slabAngle(i, shown);
+        var s = slabs[i], a = slabAngle(i, shown) + s.man;
         s.a = a;
         setStyle(s.rot, s.c, "transform", "rotateY(" + (-90 * a).toFixed(2) + "deg)");
         for (var f = 0; f < 4; f++) {
@@ -813,6 +832,15 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         if (Math.abs(sp.y) + Math.abs(sp.x) + Math.abs(sp.vy) + Math.abs(sp.vx) < 0.02) { sp.y = sp.x = sp.vy = sp.vx = 0; }
         else busy = true;
       } else busy = true;
+      for (var si = 0; si < SLABS; si++) {
+        var sl = slabs[si];
+        if (drag.on && drag.slab === sl) { busy = true; continue; }
+        if (sl.man === 0 && sl.mv === 0) continue;
+        /* coast on the fling, then spring back to the scroll pose (scroll always wins) */
+        var Ks = reduce ? 90 : 16, Cs = reduce ? 2 * Math.sqrt(90) : 4.6;
+        sl.mv += (-Ks * sl.man - Cs * sl.mv) * dt; sl.man += sl.mv * dt;
+        if (Math.abs(sl.man) + Math.abs(sl.mv) < 2e-3) { sl.man = 0; sl.mv = 0; } else busy = true;
+      }
       var kh = 1 - Math.exp(-dt / 0.28);
       hov.y += (hov.ty - hov.y) * kh; hov.x += (hov.tx - hov.x) * kh;
       if (Math.abs(hov.ty - hov.y) + Math.abs(hov.tx - hov.x) > 0.01) busy = true;
@@ -840,7 +868,15 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     function atanhc(v) { v = clamp(v, -0.995, 0.995); return 0.5 * Math.log((1 + v) / (1 - v)); }
     function onDown(e) {
       if (e.pointerType === "mouse" && e.button !== 0) return;
+      var se = e.target && e.target.closest ? e.target.closest(".tc-slab") : null;
+      drag.slab = se ? slabs[+se.getAttribute("data-i")] : null;
       drag.on = true; drag.id = e.pointerId; drag.x = e.clientX; drag.y = e.clientY; drag.t = performance.now();
+      if (drag.slab) {
+        drag.slab.mv = 0;
+        try { rootEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        rootEl.classList.add("is-dragging");
+        wake(); return;
+      }
       drag.rawY = LY * atanhc(sp.y / LY); drag.rawX = LX * atanhc(sp.x / LX);
       sp.vy = sp.vx = 0;
       try { rootEl.setPointerCapture(e.pointerId); } catch (err) { /* ignore */ }
@@ -848,6 +884,16 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       wake();
     }
     function onMove(e) {
+      if (drag.on && e.pointerId === drag.id && drag.slab) {
+        var nw = performance.now(), dts = Math.max(0.001, (nw - drag.t) / 1000), dq = -(e.clientX - drag.x) / (sizePx * 0.95);
+        drag.slab.man += dq; drag.slab.mv = drag.slab.mv * 0.5 + (dq / dts) * 0.5;
+        drag.x = e.clientX; drag.y = e.clientY; drag.t = nw;
+        wake(); return;
+      }
+      if (e.pointerType === "mouse" && !drag.on) {
+        var he = e.target && e.target.closest ? e.target.closest(".tc-slab") : null;
+        if (he !== hot) { if (hot) hot.classList.remove("is-hot"); hot = he; if (hot) hot.classList.add("is-hot"); }
+      }
       if (drag.on && e.pointerId === drag.id) {
         var now = performance.now(), dt = Math.max(0.001, (now - drag.t) / 1000);
         drag.rawY += (e.clientX - drag.x) * 0.5;
@@ -868,6 +914,14 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     function onUp(e) {
       if (!drag.on || e.pointerId !== drag.id) return;
       drag.on = false;
+      if (drag.slab) {
+        if (performance.now() - drag.t > 90) drag.slab.mv = 0;
+        drag.slab.mv = clamp(drag.slab.mv, -7, 7);
+        drag.slab = null;
+        rootEl.classList.remove("is-dragging");
+        try { rootEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
+        wake(); return;
+      }
       /* no movement in the last 90ms means the pointer stopped: no fling */
       if (performance.now() - drag.t > 90) { sp.vy = sp.vx = 0; }
       sp.vy = clamp(sp.vy, -420, 420); sp.vx = clamp(sp.vx, -160, 160);
@@ -875,10 +929,15 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       try { rootEl.releasePointerCapture(e.pointerId); } catch (err) { /* ignore */ }
       wake();
     }
-    function onLeave(e) { hovRect = null; if (e.pointerType === "mouse") { hov.ty = hov.tx = 0; wake(); } }
+    function onLeave(e) { hovRect = null; if (hot) { hot.classList.remove("is-hot"); hot = null; } if (e.pointerType === "mouse") { hov.ty = hov.tx = 0; wake(); } }
     function onEnter() { hovRect = null; }
     function onKey(e) {
       var k = e.key, hit = true;
+      var fs = e.target && e.target.classList && e.target.classList.contains("tc-slab") ? slabs[+e.target.getAttribute("data-i")] : null;
+      if (fs && (k === "ArrowLeft" || k === "ArrowRight")) {
+        fs.mv += k === "ArrowLeft" ? 3.4 : -3.4;
+        e.preventDefault(); wake(); return;
+      }
       if (k === "ArrowLeft") sp.vy -= 160; else if (k === "ArrowRight") sp.vy += 160;
       else if (k === "ArrowUp") sp.vx += 70; else if (k === "ArrowDown") sp.vx -= 70;
       else hit = false;
@@ -972,6 +1031,27 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   var root = document.documentElement;
   var canvas = document.getElementById('field');
   var cubes = setupCubes();
+  var lenis = null;
+
+  /* ---------- in-page anchors: eased Lenis scroll (instant with reduced motion), offset for the fixed nav, focus follows ---------- */
+  function easeInOutCubic(t) { return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2; }
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var a = e.target.closest ? e.target.closest('a[href^="#"]') : null;
+    if (!a) return;
+    var id = decodeURIComponent(a.getAttribute('href').slice(1)), t = id && document.getElementById(id);
+    if (!t) return;
+    e.preventDefault();
+    var nav = document.querySelector('.nav'), navH = nav ? nav.offsetHeight : 0;
+    var y = id === 'top' ? 0 : Math.max(0, t.getBoundingClientRect().top + window.scrollY - navH);
+    function done() {
+      if (!t.hasAttribute('tabindex')) t.setAttribute('tabindex', '-1');
+      try { t.focus({ preventScroll: true }); } catch (err) { t.focus(); }
+      if (history.replaceState) history.replaceState(null, '', '#' + id);
+    }
+    if (lenis) lenis.scrollTo(y, { duration: 1.4, easing: easeInOutCubic, onComplete: done });
+    else { window.scrollTo({ top: y, behavior: 'auto' }); done(); }
+  });
   function fallback() { root.classList.add('static'); if (cubes) cubes.standalone(); }
 
   /* ---------- tech cubes: one per project slot, all driven by one page-wide progress ---------- */
@@ -1009,9 +1089,20 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       for (var j = 1; j < list.length; j++) p += cl((0.92 * H - (list[j].center - sy)) / (0.42 * H));
       return p;
     };
+    // cube glow picks up each project's tint (its gradient, softened toward the page aqua)
+    var TINT = [['#dc2626', '#7c3aed'], ['#EEF0F4', '#A9B1C2'], ['#a78bfa', '#6366f1'], ['#06b6d4', '#10b981'], ['#f6821f', '#0051ff'], ['#667eea', '#38ef7d']].map(function (g) {
+      var a = parseInt(g[0].slice(1), 16), b = parseInt(g[1].slice(1), 16), aq = [94, 216, 203];
+      return [16, 8, 0].map(function (sh, ci) { return Math.round((((a >> sh) & 255) + ((b >> sh) & 255)) / 2 * 0.62 + aq[ci] * 0.38); });
+    });
+    var lastTint = '';
     api.update = function (sy) {
       var p = api.progress(sy);
-      if (Math.abs(p - lastP) > 1e-4) { lastP = p; for (var q = 0; q < list.length; q++) list[q].cube.setProgress(p); }
+      if (Math.abs(p - lastP) > 1e-4) {
+        lastP = p; for (var q = 0; q < list.length; q++) list[q].cube.setProgress(p);
+        var k0 = Math.min(Math.floor(p), TINT.length - 1), k1 = Math.min(k0 + 1, TINT.length - 1), ft = p - k0;
+        var tv = [0, 1, 2].map(function (ci) { return Math.round(TINT[k0][ci] + (TINT[k1][ci] - TINT[k0][ci]) * ft); }).join(',');
+        if (tv !== lastTint) { lastTint = tv; for (var q2 = 0; q2 < list.length; q2++) list[q2].cube.el.style.setProperty('--tc-tint', tv); }
+      }
       var r = Math.round(p);
       if (Math.abs(p - r) < 1e-3 && r !== lastRest) { lastRest = r; if (api.onRest) api.onRest(r); }
     };
@@ -1047,6 +1138,15 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
   function init() {
     gsap.registerPlugin(ScrollTrigger);
+    // smooth wheel scrolling synced to ScrollTrigger; touch keeps native scrolling
+    if (window.Lenis) {
+      try {
+        lenis = new Lenis({ duration: 1.15, smoothWheel: true, syncTouch: false });
+        lenis.on('scroll', ScrollTrigger.update);
+        gsap.ticker.add(function (time) { lenis.raf(time * 1000); });
+        gsap.ticker.lagSmoothing(0);
+      } catch (e) { lenis = null; }
+    }
     THREE.ColorManagement.enabled = false;
 
     var TAU = Math.PI * 2;
@@ -1326,13 +1426,16 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       bug: ['#0B3B3D', '#04181C'], loop: ['#0C3447', '#041722'], planet: ['#132D50', '#060F22'],
       ribbon: ['#0D3B37', '#041915'], globe: ['#0B3350', '#04121F'], clocks: ['#103A45', '#051920']
     };
+    // each project's own gradient (projects.json), top colour then bottom; The Loop is greyscale, so pearl/silver
+    var projTint = { bug: ['#dc2626', '#7c3aed'], loop: ['#EEF0F4', '#A9B1C2'], planet: ['#a78bfa', '#6366f1'],
+      ribbon: ['#06b6d4', '#10b981'], globe: ['#f6821f', '#0051ff'], clocks: ['#667eea', '#38ef7d'] };
     var projXf = { bug: [0, 0.32, 0.12], loop: [0.25, 0, 1.1], planet: [0.08, 0, 0.36], ribbon: [0, 0.45, 0.2], globe: [0.22, 0, 0.38], clocks: [0, 0.28, -0.25] };
 
     var S = [];
     S.push({ key: 'grid', rotW: [0.6, 0.25], xf: [0, 0, 0.42], lock: 0, push: 1, alpha: 1.15, bg: ['#0E4148', '#031A1F'], shape: genGrid() });
     projects.forEach(function (el) {
       var k = el.getAttribute('data-shape');
-      S.push({ key: k, el: el, rotW: [1, 1], xf: projXf[k], lock: 0.22, push: 1, alpha: 1, bg: projBg[k], shape: gens[k]() });
+      S.push({ key: k, el: el, tint: projTint[k], rotW: [1, 1], xf: projXf[k], lock: 0.22, push: 1, alpha: 1, bg: projBg[k], shape: gens[k]() });
     });
     S.push({ key: 'stack', rotW: [0, 0], xf: [0, 0, 0], lock: 1, push: 0.8, alpha: 1, bg: ['#2B1639', '#110A1C'], shape: null });
     S.push({ key: 'exp', rotW: [1, 0.15], xf: [0.2, 0, 0.1], lock: 0, push: 0.8, alpha: 1, bg: ['#231B3E', '#0A1321'], shape: null });
@@ -1347,7 +1450,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       }
       return [ex, ey];
     }
-    S.forEach(function (s) { s.bgA = hex(s.bg[0]); s.bgB = hex(s.bg[1]); s.off = [0, 0, 0]; s.scale = 1; s.anchor = 0; if (s.shape) s.ext = extent(s.shape, s.xf); });
+    S.forEach(function (s) { s.t0 = hex(s.tint ? s.tint[0] : '#000000'); s.t1 = hex(s.tint ? s.tint[1] : '#000000'); s.tAmt = s.tint ? 0.58 : 0; s.bgA = hex(s.bg[0]); s.bgB = hex(s.bg[1]); s.off = [0, 0, 0]; s.scale = 1; s.anchor = 0; if (s.shape) s.ext = extent(s.shape, s.xf); });
     var LAST = S.length - 1, STACK = LAST - 2, EXP = LAST - 1;
 
     /* ---------- three ---------- */
@@ -1396,7 +1499,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       uTime: { value: 0 }, uT: { value: 0 }, uScatter: { value: 1 },
       uSize: { value: 30 }, uPR: { value: renderer.getPixelRatio() }, uAlpha: { value: 1 },
       uMouse: { value: new THREE.Vector3(99, 99, 0) }, uMouseVel: { value: new THREE.Vector2() }, uHover: { value: 0 }, uMouseAmt: { value: 1 },
-      uClickPos: { value: new THREE.Vector3(99, 99, 0) }, uClickTime: { value: -99 },
+      uWaves: { value: [0, 1, 2, 3, 4, 5, 6, 7].map(function () { return new THREE.Vector3(99, 99, -99); }) },
+      uTA0: { value: new THREE.Vector3() }, uTA1: { value: new THREE.Vector3() }, uTB0: { value: new THREE.Vector3() }, uTB1: { value: new THREE.Vector3() },
+      uTAa: { value: 0 }, uTBa: { value: 0 },
       uRotA: { value: new THREE.Vector2() }, uRotB: { value: new THREE.Vector2() },
       uFxA: { value: new THREE.Vector3() }, uFxB: { value: new THREE.Vector3() },
       uSA: { value: 1 }, uSB: { value: 1 },
@@ -1408,8 +1513,9 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     };
 
     var vert = [
-      'uniform float uTime, uT, uScatter, uSize, uPR, uAlpha, uSA, uSB, uHover, uMouseAmt, uClickTime;',
-      'uniform vec3 uXfA, uXfB, uOA, uOB, uMouse, uClickPos, uColA, uColB, uColH, uFxA, uFxB;',
+      'uniform float uTime, uT, uScatter, uSize, uPR, uAlpha, uSA, uSB, uHover, uMouseAmt, uTAa, uTBa;',
+      'uniform vec3 uXfA, uXfB, uOA, uOB, uMouse, uColA, uColB, uColH, uFxA, uFxB, uTA0, uTA1, uTB0, uTB1;',
+      'uniform vec3 uWaves[8];',
       'uniform vec2 uMouseVel, uRotA, uRotB;',
       'attribute vec4 aFrom; attribute vec4 aTo; attribute vec4 aRand;',
       'varying vec3 vColor; varying float vAlpha;',
@@ -1467,20 +1573,30 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '  float sp = min(length(uMouseVel), 4.0);',
       '  p.xy += dir*fall*0.75 + uMouseVel*fall*0.1 + vec2(-dir.y, dir.x)*fall*sp*0.07;',
       '  p.z += fall*0.45;',
-      // click shockwave: an expanding ring that shoves and lights points as it passes
-      '  float ct = uTime - uClickTime; float wave = 0.0;',
-      '  if (ct > 0.0 && ct < 3.0) {',
-      '    vec2 dc = p.xy - uClickPos.xy; float dcl = length(dc);',
-      '    wave = exp(-pow((dcl - ct*5.5)/0.5, 2.0)) * exp(-ct*1.0);',
-      '    p.xy += dc/(dcl + 1e-3)*wave*0.9; p.z += wave*0.6;',
+      // click shockwaves: up to 8 concurrent rings; displacements add, crossings interfere (extra lift + light), total clamped
+      '  vec2 wdisp = vec2(0.0); float wsum = 0.0, wsq = 0.0;',
+      '  for (int k = 0; k < 8; k++) {',
+      '    float ct = uTime - uWaves[k].z;',
+      '    if (ct > 0.0 && ct < 3.0) {',
+      '      vec2 dc = p.xy - uWaves[k].xy; float dcl = length(dc);',
+      '      float w = exp(-pow((dcl - ct*5.5)/0.5, 2.0)) * exp(-ct);',
+      '      wdisp += dc/(dcl + 1e-3)*w; wsum += w; wsq += w*w;',
+      '    }',
       '  }',
+      '  float inter = clamp(wsum*wsum - wsq, 0.0, 1.0);',
+      '  float wdl = length(wdisp); if (wdl > 1.3) wdisp *= 1.3/wdl;',
+      '  float wave = min(wsum, 1.3);',
+      '  p.xy += wdisp*0.8; p.z += wave*0.5 + inter*0.5;',
       '  vec4 mv = viewMatrix * vec4(p, 1.0);',
       '  gl_Position = projectionMatrix * mv;',
       '  float tw = step(0.965, aRand.y)*pow(max(sin(uTime*1.3 + aRand.z*60.0), 0.0), 12.0)*1.4;',
-      '  float glow = mix(gA, gB, t)*(1.0 - s) + fall*0.5 + wave*1.6 + tw;',
+      '  float glow = mix(gA, gB, t)*(1.0 - s) + fall*0.5 + min(wave, 1.0)*1.2 + inter*1.1 + tw;',
       '  float dim = mix(dA, dB, t);',
       '  float h = smoothstep(-2.1, 2.1, la.y + la.z*0.3);',
-      '  vec3 col = mix(uColA, uColB, h);',
+      // project tints blended into the aqua->peach palette, cross-faded per point with the morph
+      '  vec3 lo = mix(mix(uColA, uTA1, uTAa), mix(uColA, uTB1, uTBa), t);',
+      '  vec3 hi = mix(mix(uColB, uTA0, uTAa), mix(uColB, uTB0, uTBa), t);',
+      '  vec3 col = mix(lo, hi, h);',
       '  col = mix(col, uColH, clamp(glow*0.45, 0.0, 0.75));',
       '  vColor = col;',
       '  vAlpha = uAlpha*dim*(0.5 + 0.5*aRand.y)*(1.0 + glow*0.6)*(1.0 - mid*0.25);',
@@ -1517,13 +1633,13 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     var AU = {
       uTime: U.uTime, uPR: U.uPR, uHover: U.uHover, uColA: U.uColA, uColB: U.uColB,
       uScroll: { value: 0 }, uCam: { value: new THREE.Vector3(0, 0, CAMZ) }, uRay: { value: new THREE.Vector3(0, 0, -1) },
-      uClickPos: U.uClickPos, uClickTime: U.uClickTime, uSize: { value: mobile ? 26 : 22 }
+      uWaves: U.uWaves, uSize: { value: mobile ? 26 : 22 }
     };
     var ambient = new THREE.Points(ageo, new THREE.ShaderMaterial({
       uniforms: AU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
       vertexShader: [
-        'uniform float uTime, uPR, uHover, uScroll, uSize, uClickTime; uniform vec3 uCam, uRay, uColA, uColB, uClickPos;',
-        'attribute vec4 aSeed; varying vec3 vC; varying float vA;',
+        'uniform float uTime, uPR, uHover, uScroll, uSize; uniform vec3 uCam, uRay, uColA, uColB; uniform vec3 uWaves[8];',
+        'attribute vec4 aSeed; varying vec3 vC; varying float vA; float vB = 0.0;',
         'void main(){',
         '  vec3 p = position; float depth = (p.z + 10.0)/16.0;',
         '  p.x += sin(uTime*0.05 + aSeed.x*6.283)*0.7;',
@@ -1532,12 +1648,14 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         '  vec2 m = uCam.xy + uRay.xy*((p.z - uCam.z)/uRay.z);',
         '  vec2 dv = p.xy - m; float dl = length(dv);',
         '  p.xy += dv/(dl + 1e-3)*exp(-dl*dl*0.45)*uHover*0.6;',
-        '  float ct = uTime - uClickTime;',
-        '  if (ct > 0.0 && ct < 3.0) { vec2 dc = p.xy - uClickPos.xy; float dcl = length(dc); float w = exp(-pow((dcl - ct*5.5)/0.6, 2.0))*exp(-ct); p.xy += dc/(dcl + 1e-3)*w*0.6; }',
+        '  vec2 wd = vec2(0.0); float ws = 0.0, wq = 0.0;',
+        '  for (int k = 0; k < 8; k++) { float ct = uTime - uWaves[k].z; if (ct > 0.0 && ct < 3.0) { vec2 dc = p.xy - uWaves[k].xy; float dcl = length(dc); float w = exp(-pow((dcl - ct*5.5)/0.6, 2.0))*exp(-ct); wd += dc/(dcl + 1e-3)*w; ws += w; wq += w*w; } }',
+        '  float wl = length(wd); if (wl > 1.2) wd *= 1.2/wl;',
+        '  p.xy += wd*0.6; vB = min(ws, 1.2)*0.6 + clamp(ws*ws - wq, 0.0, 1.5)*1.2;',
         '  vec4 mv = viewMatrix*vec4(p, 1.0); gl_Position = projectionMatrix*mv;',
         '  float tw = 0.6 + 0.4*sin(uTime*(0.6 + aSeed.w) + aSeed.z*40.0);',
         '  vC = mix(uColA, uColB, aSeed.x*0.8);',
-        '  vA = (0.2 + 0.34*aSeed.w)*tw;',
+        '  vA = (0.2 + 0.34*aSeed.w)*tw*(1.0 + vB*2.5);',
         '  gl_PointSize = uSize*(0.35 + aSeed.z*0.65)*uPR / max(-mv.z, 1.0);',
         '}'].join('\n'),
       fragmentShader: [
@@ -1665,9 +1783,14 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var d = -camera.position.z / tmp.z;
       return out.set(camera.position.x + tmp.x * d, camera.position.y + tmp.y * d, 0);
     }
+    var waveTmp = new THREE.Vector3();
     function shock(cx, cy) {
-      worldAt(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1, U.uClickPos.value);
-      U.uClickTime.value = U.uTime.value;
+      // ring buffer of 8: take a finished slot, recycle the oldest only when all are busy
+      var now = U.uTime.value, ws = U.uWaves.value, pick = -1, old = 0;
+      for (var k = 0; k < ws.length; k++) { if (now - ws[k].z >= 3) { pick = k; break; } if (ws[k].z < ws[old].z) old = k; }
+      if (pick < 0) pick = old;
+      worldAt(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1, waveTmp);
+      ws[pick].set(waveTmp.x, waveTmp.y, now);
     }
     window.addEventListener('pointerdown', function (e) {
       if (e.button !== 0) return;
@@ -1754,7 +1877,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
           var ty = mobile ? 0 : clamp((1 - S[cp.k].lock) * (sy - S[cp.k].anchor), -0.6 * Hd, 0.6 * Hd);
           if (Math.abs(ty - cp.ty) > 0.5 || (ty === 0 && cp.ty !== 0)) { cp.ty = ty; cp.el.style.transform = mobile ? '' : 'translate(-50%,' + ty.toFixed(1) + 'px)'; }
           // and fade with it, so a caption never drifts onto the next panel's text
-          var vis = mobile ? 1 : i === cp.k ? 1 - smooth(0, 0.3, T) : i === cp.k - 1 ? smooth(0.7, 1, T) : 0;
+          var vis = mobile ? 1 : i === cp.k ? 1 - smooth(0, 0.16, T) : i === cp.k - 1 ? smooth(0.84, 1, T) : 0;
           vis = Math.round(vis * 50) / 50;
           if (vis !== cp.vis) { cp.vis = vis; cp.el.style.opacity = vis; cp.el.style.visibility = vis === 0 ? 'hidden' : ''; }
         }
@@ -1790,6 +1913,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var oa = offsetOf(A, sy), ob = offsetOf(B, sy);
       U.uOA.value.fromArray(oa); U.uOB.value.fromArray(ob);
       U.uSA.value = A.scale; U.uSB.value = B.scale;
+      U.uTA0.value.fromArray(A.t0); U.uTA1.value.fromArray(A.t1); U.uTAa.value = A.tAmt;
+      U.uTB0.value.fromArray(B.t0); U.uTB1.value.fromArray(B.t1); U.uTBa.value = B.tAmt;
       U.uMouseAmt.value = lerp(A.push, B.push, T);
       var dt = clamp(t - lastT, 1e-3, 0.05); lastT = t;
       // drag rotation: inertia after release, then ease back to rest
