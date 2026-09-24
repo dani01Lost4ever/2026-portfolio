@@ -75,6 +75,7 @@ html.ready .stage{position:fixed}
 .card-top .av:before{content:"";width:8px;height:8px;background:#18B26B}
 .card-h{font:900 52px/.86 var(--display);text-transform:uppercase;margin:auto 0 12px}
 .card a{pointer-events:none;color:var(--ink)}
+.card a:focus-visible{outline:3px solid var(--cobalt);outline-offset:3px}
 .stage.live .card a{pointer-events:auto}
 .card-mail{font:700 16px/1.2 var(--body);text-decoration:none;border-bottom:2px solid var(--ink);align-self:flex-start;margin-bottom:12px}
 .card-links{display:flex;gap:18px;font:600 14px/1 var(--body);margin-bottom:18px}
@@ -122,13 +123,15 @@ h1 .l{display:block}
 .link{display:inline-flex;margin-top:26px;font-weight:700;font-size:16px;text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:3px}
 .also{padding:24vh 0 0}
 .also h3{font-size:44px}
-.also li{padding:18px 0;border-top:2px solid var(--line)}
-.also li:last-child{border-bottom:2px solid var(--line)}
+.also>ul>li{padding:18px 0;border-top:2px solid var(--line)}
+.also>ul>li+li{margin-top:44vh}
+.also .layers{margin-top:12px;font-size:13px}
+.also>ul>li{border-bottom:2px solid var(--line)}
 .also b{font:800 26px/1.1 var(--display);text-transform:uppercase;display:block}
 .also span{display:block;font-size:15px;color:var(--text-2);margin-top:4px}
 
 /* about */
-.about{padding-top:60vh}
+.about{padding-top:56vh}
 .about p+p{margin-top:16px}
 .about .bio{margin-top:28px;color:var(--text-2);font-size:18px}
 .skills-list{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
@@ -156,6 +159,9 @@ html.ready .skills-list{position:absolute!important;width:1px;height:1px;overflo
 .contact-list{margin-top:30px;display:flex;flex-wrap:wrap;gap:12px 22px;align-items:center}
 .contact-list .plain{font-weight:700;text-decoration:none;border-bottom:2px solid currentColor;padding-bottom:2px}
 html.ready.desk .contact-list{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+/* keyboard users: the list reveals itself as soon as focus lands in it */
+html.ready.desk .contact-list:focus-within{position:relative!important;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
+.contact-list .plain:focus-visible{outline:3px solid var(--sun);outline-offset:4px}
 footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;display:flex;justify-content:space-between;font-size:14px;color:var(--text-2)}
 
 /* ---------- mobile ---------- */
@@ -167,7 +173,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
   .nav nav{gap:16px}
   .nav nav a{font-size:14px}
   .nav .btn{display:none}
-  .stage{height:calc(46svh + 40px);background:linear-gradient(to bottom, currentColor calc(100% - 40px), transparent)}
+  .stage{height:calc(46svh + 28px);background:linear-gradient(to bottom, currentColor calc(100% - 28px), transparent)}
   .col.left,.col.right,.hero .col{width:100%;margin-left:0}
   .hero{min-height:auto;display:block;padding-top:calc(46svh + 28px);padding-bottom:0}
   h1{font-size:clamp(46px,13.4vw,72px)}
@@ -183,6 +189,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
   .results{gap:20px;flex-wrap:wrap}
   .results b{font-size:30px}
   .also{padding-top:26vh}
+  .also>ul>li+li{margin-top:30vh}
   .about,.exp{padding-top:42vh}
   html.ready .skills-list{position:static!important;width:auto;height:auto;overflow:visible;clip:auto;white-space:normal}
   .contact{padding-top:42vh;min-height:auto;padding-bottom:24px}
@@ -217,8 +224,6 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
   </nav>
   <a class="btn sm" href="mailto:daniel.busetto.db@gmail.com">Email me</a>
 </header>
-
-<div class="stage" aria-hidden="true"><div class="rig"><div class="world"></div></div></div>
 
 <main>
   <section class="sec hero" id="top">
@@ -299,8 +304,10 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     <div class="col right also">
       <h3>Also shipped</h3>
       <ul>
-        <li><b>Cloudflare DDNS Client</b><span>Keeps Cloudflare DNS in sync with a dynamic IP in under five seconds, with a live dashboard. Python, Flask, Docker.</span></li>
-        <li><b>Agendash 3</b><span>A rebuilt dashboard for Agenda.js with per-job execution logs, published to npm as agendash3-rework.</span></li>
+        <li><b>Cloudflare DDNS Client</b><span>Keeps Cloudflare DNS in sync with a dynamic IP in under five seconds, without ever touching the rate limit, and shows it all on a live dashboard.</span>
+          <ul class="layers" aria-label="Architecture, top to bottom"><li>Flask dashboard</li><li>status.json</li><li>Python daemon</li><li>Cloudflare API</li></ul></li>
+        <li><b>Agendash 3</b><span>A rebuilt dashboard for Agenda.js with per-job execution logs, published to npm as agendash3-rework.</span>
+          <ul class="layers" aria-label="Architecture, top to bottom"><li>Bootstrap UI</li><li>Express · Hapi · Koa · Fastify middleware</li><li>Agenda.js</li><li>MongoDB tasklogs</li></ul></li>
       </ul>
     </div>
   </section>
@@ -363,7 +370,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     <div class="col left" data-anchor="contact">
       <h2>Let's build something great together</h2>
       <p class="lede">Currently open to freelance projects and full-time opportunities. Tell me what you're building and which layer hurts.</p>
-      <div class="contact-list">
+      <div class="contact-list" id="contact-list">
         <a class="btn" href="mailto:daniel.busetto.db@gmail.com">daniel.busetto.db@gmail.com</a>
         <a class="plain" href="#">GitHub</a>
         <a class="plain" href="#">LinkedIn</a>
@@ -372,6 +379,8 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     <footer><span>© 2026 Daniel Busetto</span><span>Venice / Marghera, Italy</span></footer>
   </section>
 </main>
+
+<div class="stage"><div class="rig" aria-hidden="true"><div class="world"></div></div></div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
@@ -383,7 +392,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
 
   var S = 300, H = 64, DEG = Math.PI / 180;
   var COL = { cobalt: "#1E3BD8", tomato: "#D63A1E", green: "#0B5A42", plum: "#5A2470", deep: "#1B2FB8",
-              white: "#FFFFFF", sun: "#FFD447", sky: "#9BE7FF", mint: "#8CF5C0" };
+              white: "#FFFFFF", sun: "#FFD447", sky: "#9BE7FF", mint: "#8CF5C0", lilac: "#D9CCFF" };
 
   /* ---- slab labels: [small role, big label] top to bottom ---- */
   var L = {
@@ -392,6 +401,8 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     loop:   [["Front", "Next.js 15"], ["CMS", "Payload CMS v3"], ["Search", "Meilisearch"], ["Data", "Postgres"]],
     sfco:   [["Client", "React + Zustand"], ["Protocol", "Zod wire protocol"], ["Server", "Fastify tick sim"], ["Infra", "Fly.io"]],
     aurora: [["Client", "React dashboard"], ["API", "Express API"], ["Agent", "Claude → Ollama agent"], ["Data", "MongoDB"]],
+    ddns:   [["Dashboard", "Flask dashboard"], ["State", "status.json"], ["Daemon", "Python daemon"], ["Upstream", "Cloudflare API"]],
+    agenda: [["UI", "Bootstrap UI"], ["Express · Hapi · Koa · Fastify", "Middleware"], ["Scheduler", "Agenda.js"], ["Logs", "MongoDB tasklogs"]],
     stairs: [["2024 — now", "Software Developer"], ["2023 — 2024", "Web Dev Junior"], ["2023", "Web Dev intern"], ["100/100 cum laude", "ITS Digital Academy"]]
   };
   var SKILLS = [
@@ -417,18 +428,31 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
       '<a class="card-cta" tabindex="-1" href="mailto:' + MAIL + '"><span>Start a project</span><span>→</span></a></div>' : "";
     el.innerHTML =
       '<div class="face side f-front"><div class="cw">' + lab(L.hero[i], "c-hero") + lab(L.aurora[i], "c-aurora") + lab(L.stairs[i], "c-stairs") + '</div><span class="shade"></span></div>' +
-      '<div class="face side f-right"><div class="cw">' + lab(L.bug[i], "c-bug") + '</div><span class="shade"></span></div>' +
-      '<div class="face side f-back"><div class="cw">' + lab(L.loop[i], "c-loop") + '</div><span class="shade"></span></div>' +
+      '<div class="face side f-right"><div class="cw">' + lab(L.bug[i], "c-bug") + lab(L.ddns[i], "c-ddns") + '</div><span class="shade"></span></div>' +
+      '<div class="face side f-back"><div class="cw">' + lab(L.loop[i], "c-loop") + lab(L.agenda[i], "c-agenda") + '</div><span class="shade"></span></div>' +
       '<div class="face side f-left"><div class="cw">' + lab(L.sfco[i], "c-sfco") + '</div><span class="shade"></span></div>' +
       '<div class="face cap f-top"><div class="c sk c-skills"><h4>' + SKILLS[i][0] + "</h4><ul>" +
         SKILLS[i][1].map(function (s) { return "<li>" + s + "</li>"; }).join("") + "</ul></div></div>" +
       '<div class="face cap f-bottom">' + card + "</div>";
     worldEl.appendChild(el);
+    [].forEach.call(el.querySelectorAll(".face"), function (f) { if (!f.querySelector(".card")) f.setAttribute("aria-hidden", "true"); });
     slabEls.push(el);
     sideFaces.push([].slice.call(el.querySelectorAll(".side .shade")));
     allFaces.push([].slice.call(el.querySelectorAll(".face")));
   }
   var topFaces = [].slice.call(worldEl.querySelectorAll(".f-top"));
+  var cardEl = worldEl.querySelector(".card"), cardLinks = [].slice.call(cardEl.querySelectorAll("a"));
+  cardEl.setAttribute("aria-hidden", "true");
+  rigEl.removeAttribute("aria-hidden");
+  var liveNow = false;
+  function setLive(on) {
+    if (on === liveNow) return;
+    liveNow = on;
+    stage.classList.toggle("live", on);
+    cardEl.setAttribute("aria-hidden", on ? "false" : "true");
+    cardLinks.forEach(function (a) { a.tabIndex = on ? 0 : -1; });
+    if (!on && cardEl.contains(document.activeElement)) document.activeElement.blur();
+  }
   function q(s) { return [].slice.call(worldEl.querySelectorAll(s)); }
 
   /* ---- live values that every frame is rendered from ---- */
@@ -450,31 +474,44 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     }
     function stackY(gap, ry) { return [0, 1, 2, 3].map(function (i) { return slab(0, (i - 1.5) * (H + gap), 0, 0, ry); }); }
     var grid = [0, 1, 2, 3].map(function (i) {
-      return slab(((i % 2) - 0.5) * (S + 30), (Math.floor(i / 2) - 0.5) * (S + 30), 0, -90, -360, 1, 1, [-2.6, 2.2, 1.8, -2.4][i]);
+      return slab(((i % 2) - 0.5) * (S + 30), (Math.floor(i / 2) - 0.5) * (S + 30), 0, -90, -720, 1, 1, [-2.6, 2.2, 1.8, -2.4][i]);
     });
+    /* spread sideways first (flat, still stacked apart in y), then tip: no faces ever interpenetrate */
+    var spread = [0, 1, 2, 3].map(function (i) { return slab(((i % 2) - 0.5) * (S + 30), (i - 1.5) * (H + 40), 0, 0, -720); });
     var sh = mobile ? 118 : 150;
-    var stairs = [0, 1, 2, 3].map(function (i) { var j = 3 - i; return slab((j - 1.5) * sh, -(j - 1.5) * (H + 30), 0, 0, -360); });
-    var cardS = [0, 1, 2, 3].map(function (i) { return i === 0 ? slab(0, 0, 0, 90, -360) : slab(0, 0, -(H + 10) * i, 90, -360, 0.86, 0); });
+    var stairs = [0, 1, 2, 3].map(function (i) { var j = 3 - i; return slab((j - 1.5) * sh, -(j - 1.5) * (H + 30), 0, 0, -720); });
+    var cardS = [0, 1, 2, 3].map(function (i) { return i === 0 ? slab(0, 0, 0, 90, -720) : slab(0, 0, -(H + 10) * i, 90, -720, 0.86, 0); });
     return [
       { rig: pos(0.715, 1.0, 0.6),  tilt: -26, spin: -36, amp: 1, bg: COL.cobalt, top: COL.white, sl: stackY(6, 0) },
       { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.sun,   sl: stackY(40, -90) },
       { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.white, sl: stackY(40, -180) },
       { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.sky,   sl: stackY(40, -270) },
       { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.mint,  sl: stackY(40, -360) },
-      { rig: pos(0.72, 0.8, 0.47),  tilt: -7,  spin: -12, amp: 0, bg: COL.green,  top: COL.white, sl: grid },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.lilac, sl: stackY(40, -450) },
+      { rig: pos(0.28, 0.92, 0.58), tilt: -18, spin: -30, amp: 0, bg: COL.tomato, top: COL.white, sl: stackY(40, -540) },
+      { rig: pos(0.72, 0.8, 0.47),  tilt: -7,  spin: -12, amp: 0, bg: COL.green,  top: COL.white, sl: grid, via: spread },
       { rig: pos(0.29, 0.8, 0.46),  tilt: -24, spin: -38, amp: 0, bg: COL.plum,   top: COL.white, sl: stairs },
-      { rig: pos(0.70, 1.18, 0.8),  tilt: -5,  spin: -9,  amp: 0.3, bg: COL.deep, top: COL.white, sl: cardS, via: stackY(6, -360) }
+      { rig: pos(0.70, 1.18, 0.66), tilt: -5,  spin: -9,  amp: 0.3, bg: COL.deep, top: COL.white, sl: cardS, via: stackY(6, -720) }
     ];
   }
 
-  function docY(el) { return el.getBoundingClientRect().top + scrollY; }
+  function docY(el) { var y = 0; while (el) { y += el.offsetTop; el = el.offsetParent; } return y; }
   function buildWindows() {
     var a = function (n) { return document.querySelector('[data-anchor="' + n + '"]'); };
     var projs = [].slice.call(document.querySelectorAll(".proj-in"));
-    function sec(el) { var t = docY(el); return mobile ? [t - 1.0 * vh, t - 0.62 * vh] : [t - 1.05 * vh, t - 0.6 * vh]; }
-    function prj(el) { var t = docY(el); return mobile ? [t - 0.98 * vh, t - 0.6 * vh] : [t - 0.95 * vh, t - 0.5 * vh]; }
-    return [sec(a("work")), prj(projs[1]), prj(projs[2]), prj(projs[3]), sec(a("about")), sec(a("exp")), sec(a("contact"))]
-      .map(function (w) { var s = Math.max(0, w[0]); return [s, Math.max(w[1], s + 80)]; });
+    var also = [].slice.call(document.querySelectorAll(".also li > b"));
+    /* mobile: each swap runs while its heading rises from low in the viewport to just below the opaque band,
+       so the heading is fully visible at the moment the slabs change */
+    var edge = stage.offsetHeight - 28;
+    function mob(h) { var t = docY(h); return [t - edge - 30 - 0.3 * vh, t - edge - 30]; }
+    function sec(el) { if (mobile) return mob(el.querySelector("h2")); var t = docY(el); return [t - 1.05 * vh, t - 0.6 * vh]; }
+    function prj(el) { if (mobile) return mob(el.querySelector("h3") || el); var t = docY(el); return [t - 0.95 * vh, t - 0.5 * vh]; }
+    return [sec(a("work")), prj(projs[1]), prj(projs[2]), prj(projs[3]), prj(also[0]), prj(also[1]), sec(a("about")), sec(a("exp")), sec(a("contact"))]
+      .map(function (w) {
+        var max = doc.scrollHeight - innerHeight - 2, len = Math.max(80, w[1] - w[0]);
+        var e = Math.min(Math.max(w[1], len), max), s = Math.max(0, e - len);
+        return [s, e];
+      });
   }
 
   /* ---- rendering ---- */
@@ -505,7 +542,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
         setStyle(sideFaces[i][k], "opacity", (0.62 * (1 - d)).toFixed(2));
       }
     }
-    stage.classList.toggle("live", P.sl[0].rx > 80);
+    setLive(P.sl[0].rx > 80);
   }
 
   function copyState(st) {
@@ -515,8 +552,9 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
   }
   function setContent(k) {
     function op(sel, on) { q(sel).forEach(function (e) { e.style.opacity = on ? 1 : 0; }); }
-    op(".c-hero", k <= 1); op(".c-aurora", k >= 2 && k <= 5); op(".c-stairs", k >= 6);
-    op(".c-bug", k >= 1 && k <= 4); op(".cw", k <= 4 || k === 6); op(".c-loop", true); op(".c-sfco", true); op(".c-skills", k === 5);
+    op(".c-hero", k <= 1); op(".c-aurora", k >= 2 && k <= 4); op(".c-stairs", k >= 5);
+    op(".c-bug", k >= 1 && k <= 2); op(".c-ddns", k >= 3 && k <= 6); op(".c-loop", k <= 3); op(".c-agenda", k >= 4 && k <= 6);
+    op(".c-sfco", k <= 4); op(".cw", k <= 6 || k === 8); op(".c-skills", k === 7);
   }
   function applyState(k, ST) {
     var st = ST[k];
@@ -556,7 +594,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     } else tw(P.rig, { s: A.rig.s }, { s: B.rig.s }, d, E, t0);
     tw(P.w, { tilt: A.tilt, spin: A.spin, amp: A.amp }, { tilt: B.tilt, spin: B.spin, amp: B.amp }, d, E, t0);
 
-    var slabEase = (k >= 1 && k <= 3) ? "back.inOut(1.5)" : E;
+    var slabEase = (k >= 1 && k <= 5) ? "back.inOut(1.5)" : E;
     for (var i = 0; i < 4; i++) {
       if (B.via) {
         tw(P.sl[i], Object.assign({}, A.sl[i]), Object.assign({}, B.via[i]), d * 0.44, "power2.inOut", t0 + i * d * 0.03);
@@ -571,12 +609,16 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     }
     if (A.top !== B.top) tw(topFaces, { backgroundColor: A.top }, { backgroundColor: B.top }, d * 0.35, "none", t0 + d * 0.3);
     function ct(sel, a, b, s, e) { tw(q(sel), { opacity: a }, { opacity: b }, (e - s) * d, "none", t0 + s * d); }
+    /* label swaps happen only while that face points away from the viewer */
     if (k === 0) ct(".c-bug", 0, 1, 0.05, 0.35);
     if (k === 1) { ct(".c-hero", 1, 0, 0.4, 0.5); ct(".c-aurora", 0, 1, 0.5, 0.6); }
-    if (k === 4) ct(".c-skills", 0, 1, 0.55, 0.95);
-    if (k === 4) ct(".cw", 1, 0, 0.72, 0.9);
-    if (k === 5) { ct(".c-skills", 1, 0, 0, 0.3); ct(".c-aurora", 1, 0, 0, 0.04); ct(".c-bug", 1, 0, 0, 0.04); ct(".c-stairs", 0, 1, 0.04, 0.08); ct(".cw", 0, 1, 0.1, 0.3); }
-    if (k === 6) ct(".cw", 1, 0, 0.56, 0.7);
+    if (k === 2) { ct(".c-bug", 1, 0, 0.4, 0.5); ct(".c-ddns", 0, 1, 0.5, 0.6); }
+    if (k === 3) { ct(".c-loop", 1, 0, 0.4, 0.5); ct(".c-agenda", 0, 1, 0.5, 0.6); }
+    if (k === 4) ct(".c-sfco", 1, 0, 0.3, 0.5);
+    if (k === 5) { ct(".c-aurora", 1, 0, 0.4, 0.5); ct(".c-stairs", 0, 1, 0.5, 0.6); }
+    if (k === 6) { ct(".cw", 1, 0, 0.06, 0.26); ct(".c-skills", 0, 1, 0.62, 0.95); }
+    if (k === 7) { ct(".c-skills", 1, 0, 0, 0.3); ct(".c-ddns", 1, 0, 0, 0.04); ct(".c-agenda", 1, 0, 0, 0.04); ct(".cw", 0, 1, 0.1, 0.3); }
+    if (k === 8) ct(".cw", 1, 0, 0.56, 0.7);
   }
 
   function build() {
@@ -589,7 +631,7 @@ footer{position:absolute;left:var(--gutter);right:var(--gutter);bottom:28px;disp
     applyState(0, ST);
     var max = Math.max(1, doc.scrollHeight - innerHeight);
     tl = gsap.timeline({ paused: true });
-    for (var k = 0; k < 7; k++) addTransition(ST[k], ST[k + 1], W[k][0], W[k][1], k);
+    for (var k = 0; k < ST.length - 1; k++) addTransition(ST[k], ST[k + 1], W[k][0], W[k][1], k);
     tl.set({}, {}, max);
     st = ScrollTrigger.create({ start: 0, end: max, scrub: 0.7, animation: tl });
     tl.progress(Math.min(1, scrollY / max));
