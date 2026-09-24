@@ -96,13 +96,28 @@ h1,h2,h3{font-family:var(--display);font-weight:360;letter-spacing:-.022em;margi
 .project h3{font-size:clamp(2.4rem,4.8vw,4.4rem);line-height:1;font-weight:340}
 .sub{font-family:var(--display);font-weight:380;font-size:clamp(1.1rem,1.5vw,1.35rem);line-height:1.35;color:var(--peach);margin:14px 0 18px;font-variation-settings:"SOFT" 100}
 .desc{color:var(--ink-2);margin:0 0 26px;font-size:1rem}
-.results{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:12px clamp(20px,3vw,40px);margin:0 0 24px;padding:0}
+.desc{margin-bottom:8px}
+.foot{display:grid;grid-template-columns:minmax(0,1fr) clamp(200px,21vw,300px);gap:clamp(16px,2vw,32px);align-items:center}
+.foot-text{display:flex;flex-direction:column;gap:22px;align-items:flex-start}
+.results{display:grid;gap:14px;margin:0;padding:0}
 .results dt{font-family:var(--display);font-size:1.45rem;font-weight:400;line-height:1.1}
-.results dd{margin:4px 0 0;font-size:.78rem;color:var(--ink-3);max-width:12ch;line-height:1.35}
-.tags{display:flex;flex-wrap:wrap;gap:6px;list-style:none;margin:0 0 26px;padding:0}
-.tags li{font-size:.76rem;padding:.32em .62em;border:1px solid rgba(175,203,199,.32);border-radius:2px;color:var(--ink-2);line-height:1.3}
+.results dd{margin:3px 0 0;font-size:.78rem;color:var(--ink-3);line-height:1.35}
+/* slot reserved for the rotating tech cube component (integrated separately) */
+.tech-cube-slot{
+  width:100%;aspect-ratio:1;position:relative;
+  --c:rgba(175,203,199,.28);
+  background:
+    linear-gradient(var(--c),var(--c)) 0 0/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 0/1px 18px no-repeat,
+    linear-gradient(var(--c),var(--c)) 100% 0/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 0/1px 18px no-repeat,
+    linear-gradient(var(--c),var(--c)) 0 100%/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 0 100%/1px 18px no-repeat,
+    linear-gradient(var(--c),var(--c)) 100% 100%/18px 1px no-repeat,linear-gradient(var(--c),var(--c)) 100% 100%/1px 18px no-repeat,
+    radial-gradient(closest-side,rgba(114,228,213,.07),transparent);
+}
+.sr-only{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+html.js:not(.static) body{touch-action:pan-y pinch-zoom}
+html.dragging,html.dragging *{cursor:grabbing!important;user-select:none}
 .caption{font-family:var(--display);font-weight:380;font-size:1.02rem;line-height:1.4;color:var(--ink-2);margin:0;font-variation-settings:"SOFT" 100}
-.project .caption{position:absolute;top:calc(50% + 35vh);left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
+.project .caption{position:absolute;top:calc(50% + 39vh);left:75%;transform:translateX(-50%);width:min(34ch,40vw);text-align:center}
 .project[data-side="right"] .caption{left:25%}
 .stack{position:relative}
 .stack-cap{position:absolute;left:50%;bottom:3vh;transform:translateX(-50%);width:min(44ch,80vw);text-align:center}
@@ -170,7 +185,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
   .stack-cap{position:static;transform:none;width:auto;text-align:left;margin-top:12px}
   .project[data-side="right"]{justify-content:flex-start}
   .copy{width:100%}
-  .results{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px 14px}
+  .foot{grid-template-columns:minmax(0,1fr) minmax(0,min(46%,300px));gap:16px}
   .results dt{font-size:1.2rem}
   .about-intro{grid-template-columns:1fr;padding:7vh 20px 4vh;gap:22px}
   .stack{grid-template-columns:1fr;grid-template-rows:none;min-height:auto;padding:4vh 20px 8vh;gap:10px}
@@ -242,13 +257,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>BugPilot</h3>
         <p class="sub">Self-hosted bug reporting with AI triage.</p>
         <p class="desc">A one-line embed widget captures annotated screenshots, console logs and network traces, then Claude triages every report: severity, duplicates, repro steps, fix suggestions. It ships as a five-service Docker stack with a built-in MCP server, so agents in Cursor or Claude Code can query and resolve bugs directly.</p>
-        <dl class="results">
-          <div><dt>9</dt><dd>MCP tools exposed</dd></div>
-          <div><dt>&lt; 5 min</dt><dd>Docker deploy</dd></div>
-          <div><dt>6</dt><dd>Monorepo packages</dd></div>
-        </dl>
-        <ul class="tags"><li>TypeScript</li><li>React 19</li><li>Express</li><li>MongoDB</li><li>BullMQ</li><li>Docker</li><li>MCP</li></ul>
-        <a class="link" href="https://github.com/dani01Lost4ever/BugPilot">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>9</dt><dd>MCP tools exposed</dd></div>
+              <div><dt>&lt; 5 min</dt><dd>Docker deploy</dd></div>
+              <div><dt>6</dt><dd>Monorepo packages</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/BugPilot">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="TypeScript|React 19|Express|MongoDB|BullMQ|Docker|MCP" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>TypeScript</li><li>React 19</li><li>Express</li><li>MongoDB</li><li>BullMQ</li><li>Docker</li><li>MCP</li></ul>
       </div>
     </article>
 
@@ -259,13 +279,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>The Loop</h3>
         <p class="sub">A field journal of the AI frontier, for engineers who ship.</p>
         <p class="desc">A self-hosted AI publication on Next.js 15 and Payload CMS v3, with Postgres, Meilisearch, Remark42, Umami and Listmonk running as sibling Docker services on a European home server. Short dispatches, longer guides, designed to read like a print journal.</p>
-        <dl class="results">
-          <div><dt>5</dt><dd>Sibling services</dd></div>
-          <div><dt>Payload v3</dt><dd>CMS layer</dd></div>
-          <div><dt>EU</dt><dd>Home-server stack</dd></div>
-        </dl>
-        <ul class="tags"><li>Next.js 15</li><li>TypeScript</li><li>Payload CMS</li><li>Postgres</li><li>Meilisearch</li><li>Docker</li></ul>
-        <a class="link" href="http://theloop.techdani.cc/">Read The Loop <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>5</dt><dd>Sibling services</dd></div>
+              <div><dt>Payload v3</dt><dd>CMS layer</dd></div>
+              <div><dt>EU</dt><dd>Home-server stack</dd></div>
+            </dl>
+            <a class="link" href="http://theloop.techdani.cc/">Read The Loop <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="Next.js 15|TypeScript|Payload CMS|Postgres|Meilisearch|Docker" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>Next.js 15</li><li>TypeScript</li><li>Payload CMS</li><li>Postgres</li><li>Meilisearch</li><li>Docker</li></ul>
       </div>
     </article>
 
@@ -276,13 +301,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>Stellar Freight Co.</h3>
         <p class="sub">A sci-fi drone-logistics factory tycoon, played in the browser.</p>
         <p class="desc">Players dispatch drones, manage stations and route production across a real-time simulation. A pnpm and Turborepo monorepo: a Fastify and WebSocket server on a fixed-tick clock, a React and Zustand client, and Zod-validated wire messages checked at both ends.</p>
-        <dl class="results">
-          <div><dt>Phase 0</dt><dd>Foundation shipped</dd></div>
-          <div><dt>5 Hz</dt><dd>Server tick rate</dd></div>
-          <div><dt>Zod</dt><dd>Both ends typed</dd></div>
-        </dl>
-        <ul class="tags"><li>TypeScript</li><li>React</li><li>Fastify</li><li>WebSocket</li><li>Zustand</li><li>Turborepo</li><li>Fly.io</li></ul>
-        <a class="link" href="https://sfco.techdani.cc/">Play the build <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>Phase 0</dt><dd>Foundation shipped</dd></div>
+              <div><dt>5 Hz</dt><dd>Server tick rate</dd></div>
+              <div><dt>Zod</dt><dd>Both ends typed</dd></div>
+            </dl>
+            <a class="link" href="https://sfco.techdani.cc/">Play the build <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="TypeScript|React|Fastify|WebSocket|Zustand|Turborepo|Fly.io" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>TypeScript</li><li>React</li><li>Fastify</li><li>WebSocket</li><li>Zustand</li><li>Turborepo</li><li>Fly.io</li></ul>
       </div>
     </article>
 
@@ -293,13 +323,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>AuroraTrader</h3>
         <p class="sub">A crypto paper-trading agent that trains its own replacement.</p>
         <p class="desc">Claude makes the calls against the Alpaca Paper API, every decision and outcome lands in MongoDB, and only the profitable trades are exported as a JSONL dataset. That dataset fine-tunes a local Ollama model, which drops back into the same agent loop.</p>
-        <dl class="results">
-          <div><dt>Claude → Ollama</dt><dd>Swap by env var</dd></div>
-          <div><dt>JSONL</dt><dd>Outcome-filtered dataset</dd></div>
-          <div><dt>0</dt><dd>Code changes to swap model</dd></div>
-        </dl>
-        <ul class="tags"><li>Node.js</li><li>TypeScript</li><li>Claude AI</li><li>Alpaca API</li><li>MongoDB</li><li>Ollama</li><li>QLoRA</li></ul>
-        <a class="link" href="https://github.com/dani01Lost4ever/AuroraTrader">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>Claude → Ollama</dt><dd>Swap by env var</dd></div>
+              <div><dt>JSONL</dt><dd>Outcome-filtered dataset</dd></div>
+              <div><dt>0</dt><dd>Code changes to swap model</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/AuroraTrader">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="Node.js|TypeScript|Claude AI|Alpaca API|MongoDB|Ollama|QLoRA" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>Node.js</li><li>TypeScript</li><li>Claude AI</li><li>Alpaca API</li><li>MongoDB</li><li>Ollama</li><li>QLoRA</li></ul>
       </div>
     </article>
 
@@ -310,13 +345,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>Cloudflare DDNS Client</h3>
         <p class="sub">Dynamic DNS that notices your IP change before your users do.</p>
         <p class="desc">A containerised client that keeps Cloudflare records in sync with your real public IP: polling across independent providers, a sliding-window rate limiter that never nears the API ceiling, and a live web dashboard instead of config files.</p>
-        <dl class="results">
-          <div><dt>&lt; 5 s</dt><dd>IP sync latency</dd></div>
-          <div><dt>0</dt><dd>API rate-limit hits</dd></div>
-          <div><dt>1 cmd</dt><dd>Docker deploy</dd></div>
-        </dl>
-        <ul class="tags"><li>Python</li><li>Flask</li><li>Docker</li><li>Cloudflare API</li><li>REST API</li><li>Gunicorn</li></ul>
-        <a class="link" href="https://github.com/dani01Lost4ever/cloudflare-ddns-client">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>&lt; 5 s</dt><dd>IP sync latency</dd></div>
+              <div><dt>0</dt><dd>API rate-limit hits</dd></div>
+              <div><dt>1 cmd</dt><dd>Docker deploy</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/cloudflare-ddns-client">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="Python|Flask|Docker|Cloudflare API|REST API|Gunicorn" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>Python</li><li>Flask</li><li>Docker</li><li>Cloudflare API</li><li>REST API</li><li>Gunicorn</li></ul>
       </div>
     </article>
 
@@ -327,13 +367,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <h3>Agendash 3</h3>
         <p class="sub">A job-scheduling dashboard for Agenda.js, rebuilt.</p>
         <p class="desc">A heavily enhanced fork of Agendash: a full UI overhaul, per-job execution logs stored in MongoDB so silent failures finally leave a trace, and adapters for Express, Hapi, Koa and Fastify. Published to npm as agendash3-rework.</p>
-        <dl class="results">
-          <div><dt>npm</dt><dd>Published package</dd></div>
-          <div><dt>4</dt><dd>Frameworks supported</dd></div>
-          <div><dt>0</dt><dd>Breaking changes</dd></div>
-        </dl>
-        <ul class="tags"><li>Node.js</li><li>Express</li><li>MongoDB</li><li>Mongoose</li><li>Agenda.js</li><li>npm</li></ul>
-        <a class="link" href="https://github.com/dani01Lost4ever/agendash-3">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+        <div class="foot">
+          <div class="foot-text">
+            <dl class="results">
+              <div><dt>npm</dt><dd>Published package</dd></div>
+              <div><dt>4</dt><dd>Frameworks supported</dd></div>
+              <div><dt>0</dt><dd>Breaking changes</dd></div>
+            </dl>
+            <a class="link" href="https://github.com/dani01Lost4ever/agendash-3">View on GitHub <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M5 11 11 5M6 5h5v5"/></svg></a>
+          </div>
+          <div class="tech-cube-slot" data-tech="Node.js|Express|MongoDB|Mongoose|Agenda.js|npm" aria-hidden="true"></div>
+        </div>
+        <ul class="sr-only" aria-label="Technologies"><li>Node.js</li><li>Express</li><li>MongoDB</li><li>Mongoose</li><li>Agenda.js</li><li>npm</li></ul>
       </div>
     </article>
   </section>
@@ -370,19 +415,19 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         <p class="period">Jul 2024 — Present</p>
         <h3>Software Developer</h3>
         <p class="where">Full-time, Marghera</p>
-        <p class="tech">C#, .NET, Angular, Node.js, MongoDB, Docker, CI/CD, Azure, SQL Server</p>
+        <p class="tech">C# · .NET · Angular · Node.js · MongoDB · Docker · CI/CD · Azure · SQL Server</p>
       </div>
       <div class="entry" data-marker>
         <p class="period">Jul 2023 — Jul 2024</p>
         <h3>Web Developer Junior</h3>
         <p class="where">Apprenticeship</p>
-        <p class="tech">C#, .NET, Entity Framework, Windows Azure</p>
+        <p class="tech">C# · .NET · Entity Framework · Windows Azure</p>
       </div>
       <div class="entry" data-marker>
         <p class="period">Apr 2023 — Jun 2023</p>
         <h3>Web Developer</h3>
         <p class="where">Internship, Venice</p>
-        <p class="tech">Next.js, C#, .NET, SQL, MongoDB, REST API</p>
+        <p class="tech">Next.js · C# · .NET · SQL · MongoDB · REST API</p>
       </div>
       <p class="exp-group">Education</p>
       <div class="entry" data-marker>
@@ -467,7 +512,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     function clamp(v, a, b) { return v < a ? a : v > b ? b : v; }
     function lerp(a, b, t) { return a + (b - a) * t; }
     function smooth(a, b, x) { var t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); }
-    function W(flag, phase) { return flag + clamp(phase, 0, 1) * 0.98; }
+    function W(flag, phase, group) { return (group || 0) * 8 + flag + clamp(phase, 0, 1) * 0.98; }
     function unit(r) { var u = r() * 2 - 1, a = r() * TAU, s = Math.sqrt(1 - u * u); return [s * Math.cos(a), u, s * Math.sin(a)]; }
     function jit(r, s) { return (r() - 0.5) * 2 * s; }
     function hex(h) { var n = parseInt(h.slice(1), 16); return [(n >> 16 & 255) / 255, (n >> 8 & 255) / 255, (n & 255) / 255]; }
@@ -600,7 +645,7 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       return build([
         [36, function (r) {
           var k = Math.floor(r() * M), q = cs[k], a = Y(Math.min(q.o, q.c)), b = Math.max(Y(Math.max(q.o, q.c)), a + 0.08);
-          return [X(k) + jit(r, 0.09), lerp(a, b, r()), jit(r, 0.09), q.c >= q.o ? W(1, 0) : 0];
+          return [X(k) + jit(r, 0.09), lerp(a, b, r()), jit(r, 0.09), W(7, (q.c >= q.o ? 0.5 : 0) + k / M * 0.49)];
         }],
         [10, function (r) { var k = Math.floor(r() * M), q = cs[k]; return [X(k) + jit(r, 1.2e-2), lerp(Y(q.l), Y(q.h), r()), 0, 0]; }],
         [44, function (r) { var s = r(); return [-3.3 + 6.6 * s, curve(s) + 0.45 + jit(r, 0.02), -0.3 - r() * 0.9, W(2, s)]; }],
@@ -661,11 +706,11 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var stacked = Math.abs(spots[0].x - spots[1].x) < 0.5;
       // links avoid the labels: vertical runs inside the spot column, cross-links bow through the row gap
       var links = stacked ? [[2, 1], [1, 0], [3, 2]] : [[2, 0], [3, 1], [0, 1], [2, 3]];
-      var parts = spots.map(function (s) {
+      var parts = spots.map(function (s, si) {
         return [88 * s.count / total, function (r) {
-          if (r() < 0.4) { var kc = s.knots[Math.floor(r() * s.count)], v = unit(r), d = 0.13 * Math.cbrt(r()); return [kc[0] + v[0] * d, kc[1] + v[1] * d, kc[2] + v[2] * d, W(1, 0)]; }
+          if (r() < 0.4) { var kc = s.knots[Math.floor(r() * s.count)], v = unit(r), d = 0.13 * Math.cbrt(r()); return [kc[0] + v[0] * d, kc[1] + v[1] * d, kc[2] + v[2] * d, W(1, 0, si + 1)]; }
           var u = unit(r), dd = s.rad * Math.pow(r(), 0.55);
-          return [s.x + u[0] * dd, s.y + u[1] * dd, u[2] * dd, 0];
+          return [s.x + u[0] * dd, s.y + u[1] * dd, u[2] * dd, W(0, 0, si + 1)];
         }];
       });
       parts.push([12, function (r, j) {
@@ -685,8 +730,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       return build([
         [46, function (r) { var s = r(), p = at(s, 0, R); return [p[0] + jit(r, 0.06), p[1] + jit(r, 0.06), p[2] + jit(r, 0.06), W(2, (s * 3) % 1)]; }],
         [14, function (r) { var s = r(), p = at(s, Math.PI, R * 0.9); return [p[0] + jit(r, 0.04), p[1], p[2] + jit(r, 0.04), 0]; }],
-        [28, function (r, j) { var y = cfg.markers[j % M], a = r() * TAU, rad = cfg.ringR + jit(r, 0.03); return [Math.cos(a) * rad, y + jit(r, 0.02), Math.sin(a) * rad, W(1, 0)]; }],
-        [12, function (r, j) { var y = cfg.markers[j % M], p = at((y - cfg.yMin) / H, 0, R), v = unit(r); return [p[0] + v[0] * 0.15, p[1] + v[1] * 0.15, p[2] + v[2] * 0.15, W(1, 0)]; }]
+        [28, function (r, j) { var y = cfg.markers[j % M], a = r() * TAU, rad = cfg.ringR + jit(r, 0.03); return [Math.cos(a) * rad, y + jit(r, 0.02), Math.sin(a) * rad, W(1, 0, (j % M) + 1)]; }],
+        [12, function (r, j) { var y = cfg.markers[j % M], p = at((y - cfg.yMin) / H, 0, R), v = unit(r); return [p[0] + v[0] * 0.15, p[1] + v[1] * 0.15, p[2] + v[2] * 0.15, W(1, 0, (j % M) + 1)]; }]
       ], cfg.tilt, 81);
     }
 
@@ -730,15 +775,25 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
     var projXf = { bug: [0, 0.32, 0.12], loop: [0.25, 0, 1.1], planet: [0.08, 0, 0.36], ribbon: [0, 0.45, 0.2], globe: [0.22, 0, 0.38], clocks: [0, 0.28, -0.25] };
 
     var S = [];
-    S.push({ key: 'grid', xf: [0, 0, 0.42], lock: 0, push: 0.8, alpha: 1.15, bg: ['#0E4148', '#031A1F'], shape: genGrid() });
+    S.push({ key: 'grid', rotW: [0.6, 0.25], xf: [0, 0, 0.42], lock: 0, push: 1, alpha: 1.15, bg: ['#0E4148', '#031A1F'], shape: genGrid() });
     projects.forEach(function (el) {
       var k = el.getAttribute('data-shape');
-      S.push({ key: k, el: el, xf: projXf[k], lock: 0.22, push: 0, alpha: 1, bg: projBg[k], shape: gens[k]() });
+      S.push({ key: k, el: el, rotW: [1, 1], xf: projXf[k], lock: 0.22, push: 1, alpha: 1, bg: projBg[k], shape: gens[k]() });
     });
-    S.push({ key: 'stack', xf: [0, 0, 0], lock: 1, push: 0, alpha: 1, bg: ['#2B1639', '#110A1C'], shape: null });
-    S.push({ key: 'exp', xf: [0.22, 0, 0.1], lock: mobile ? 0 : 1, push: 0, alpha: 1, bg: ['#231B3E', '#0A1321'], shape: null });
-    S.push({ key: 'at', xf: [0, 0.3, 0], lock: 0, push: 1, alpha: 1, bg: ['#0B4245', '#031C1E'], shape: genAt() });
-    S.forEach(function (s) { s.bgA = hex(s.bg[0]); s.bgB = hex(s.bg[1]); s.off = [0, 0, 0]; s.scale = 1; s.anchor = 0; });
+    S.push({ key: 'stack', rotW: [0, 0], xf: [0, 0, 0], lock: 1, push: 0.8, alpha: 1, bg: ['#2B1639', '#110A1C'], shape: null });
+    S.push({ key: 'exp', rotW: [1, 0.15], xf: [0.22, 0, 0.1], lock: mobile ? 0 : 1, push: 0.8, alpha: 1, bg: ['#231B3E', '#0A1321'], shape: null });
+    S.push({ key: 'at', rotW: [1, 0.8], xf: [0, 0.3, 0], lock: 0, push: 1.3, alpha: 1, bg: ['#0B4245', '#031C1E'], shape: genAt() });
+    // visual half-extents of a shape (x, y) including its spin/wobble/tilt, used to size it to its slot
+    function extent(buf, xf) {
+      var ex = 0, ey = 0, c = Math.abs(Math.cos(xf[2])), sn = Math.abs(Math.sin(xf[2])), spin = xf[0] > 0, w = Math.min(xf[1], 1.2);
+      for (var q = 0; q < N; q++) {
+        var x = Math.abs(buf[q * 4]), y = Math.abs(buf[q * 4 + 1]), z = Math.abs(buf[q * 4 + 2]), rad = Math.hypot(x, z);
+        var hx = spin ? rad : x * Math.cos(w) + z * Math.sin(w), rz = spin ? rad : z + x * Math.sin(w);
+        ex = Math.max(ex, hx); ey = Math.max(ey, c * y + sn * rz);
+      }
+      return [ex, ey];
+    }
+    S.forEach(function (s) { s.bgA = hex(s.bg[0]); s.bgB = hex(s.bg[1]); s.off = [0, 0, 0]; s.scale = 1; s.anchor = 0; if (s.shape) s.ext = extent(s.shape, s.xf); });
     var LAST = S.length - 1, STACK = LAST - 2, EXP = LAST - 1;
 
     /* ---------- three ---------- */
@@ -785,19 +840,23 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
     var U = {
       uTime: { value: 0 }, uT: { value: 0 }, uScatter: { value: 1 },
-      uSize: { value: 30 }, uPR: { value: renderer.getPixelRatio() }, uPush: { value: 0 }, uAlpha: { value: 1 },
+      uSize: { value: 30 }, uPR: { value: renderer.getPixelRatio() }, uAlpha: { value: 1 },
+      uMouse: { value: new THREE.Vector3(99, 99, 0) }, uMouseVel: { value: new THREE.Vector2() }, uHover: { value: 0 }, uMouseAmt: { value: 1 },
+      uClickPos: { value: new THREE.Vector3(99, 99, 0) }, uClickTime: { value: -99 },
+      uRotA: { value: new THREE.Vector2() }, uRotB: { value: new THREE.Vector2() },
+      uFxA: { value: new THREE.Vector3() }, uFxB: { value: new THREE.Vector3() },
       uSA: { value: 1 }, uSB: { value: 1 },
       uXfA: { value: new THREE.Vector3() }, uXfB: { value: new THREE.Vector3() },
       uOA: { value: new THREE.Vector3() }, uOB: { value: new THREE.Vector3() },
-      uPointer: { value: new THREE.Vector3(99, 99, 0) },
       uColA: { value: new THREE.Vector3().fromArray(hex('#5ED8CB')) },
       uColB: { value: new THREE.Vector3().fromArray(hex('#FF8A6A')) },
       uColH: { value: new THREE.Vector3().fromArray(hex('#FFE8D4')) }
     };
 
     var vert = [
-      'uniform float uTime, uT, uScatter, uSize, uPR, uPush, uAlpha, uSA, uSB;',
-      'uniform vec3 uXfA, uXfB, uOA, uOB, uPointer, uColA, uColB, uColH;',
+      'uniform float uTime, uT, uScatter, uSize, uPR, uAlpha, uSA, uSB, uHover, uMouseAmt, uClickTime;',
+      'uniform vec3 uXfA, uXfB, uOA, uOB, uMouse, uClickPos, uColA, uColB, uColH, uFxA, uFxB;',
+      'uniform vec2 uMouseVel, uRotA, uRotB;',
       'attribute vec4 aFrom; attribute vec4 aTo; attribute vec4 aRand;',
       'varying vec3 vColor; varying float vAlpha;',
       'vec3 rotY(vec3 p, float a){ float c = cos(a), s = sin(a); return vec3(c*p.x + s*p.z, p.y, -s*p.x + c*p.z); }',
@@ -807,9 +866,10 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '              sin(p.z*1.5 + uTime*0.4) + sin(p.x*1.1 + 2.3),',
       '              sin(p.x*1.4 + uTime*0.45) + sin(p.y*1.2 + 0.4));',
       '}',
-      // flags: 0 plain, 1 highlight, 2 travelling pulse, 3 orbiting, 4 breathing terrain, 5 clock hand
-      'vec3 shape(vec4 d, vec3 xf, out float glow){',
-      '  vec3 p = d.xyz; float fl = floor(d.w); float ph = d.w - fl; glow = 0.0;',
+      // w packs group*8 + flag + phase. flags: 0 plain, 1 highlight, 2 travelling pulse, 3 orbiting,
+      // 4 breathing terrain, 5 clock hand, 6 bright pulse, 7 flickering candle
+      'vec3 shape(vec4 d, vec3 xf, vec3 fx, vec2 rot, out float glow, out float dim){',
+      '  vec3 p = d.xyz; float g = floor(d.w/8.0); float rem = d.w - g*8.0; float fl = floor(rem); float ph = rem - fl; glow = 0.0; dim = 1.0;',
       '  if (fl > 0.5 && fl < 1.5) { glow = 0.75; }',
       '  else if (fl > 1.5 && fl < 2.5) { float q = fract(ph - uTime*0.11); glow = 0.12 + smoothstep(0.84, 1.0, q)*1.5; }',
       '  else if (fl > 2.5 && fl < 3.5) { p = rotY(p, uTime*0.4); glow = step(0.9, ph); }',
@@ -826,15 +886,19 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '    p.xy = c + vec2(ca*r.x - sa*r.y, sa*r.x + ca*r.y);',
       '    glow = 0.35;',
       '  }',
-      '  else if (fl > 5.5) { float q = fract(ph - uTime*0.16); glow = 0.7 + smoothstep(0.8, 1.0, q)*1.8; }',
-      '  float ang = uTime*xf.x + sin(uTime*0.35)*xf.y;',
-      '  p = rotY(p, ang); p = rotX(p, xf.z);',
+      '  else if (fl > 5.5 && fl < 6.5) { float q = fract(ph - uTime*0.16); glow = 0.7 + smoothstep(0.8, 1.0, q)*1.8; }',
+      '  else if (fl > 6.5) { float up = step(0.5, ph); float fk = step(0.6, fract(sin(floor(uTime*2.5) + ph*97.0)*43758.5453)); glow = up*0.55 + fk*(0.25 + up*0.5); }',
+      '  p *= 1.0 + 0.02*sin(uTime*0.9);',
+      '  float ang = uTime*xf.x + sin(uTime*0.35)*xf.y + rot.x;',
+      '  p = rotY(p, ang); p = rotX(p, xf.z + rot.y);',
+      '  if (fx.x > 0.0) glow += fx.x*(0.3 + 1.2*pow(max(sin(length(p)*2.2 - uTime*4.0), 0.0), 6.0));',
+      '  if (fx.z > 0.0 && fx.y > 0.5) { if (abs(g - fx.y) < 0.5) glow += 1.2*fx.z; else dim = 1.0 - 0.62*fx.z; }',
       '  return p;',
       '}',
       'void main(){',
-      '  float gA, gB;',
-      '  vec3 a = shape(aFrom, uXfA, gA);',
-      '  vec3 b = shape(aTo, uXfB, gB);',
+      '  float gA, gB, dA, dB;',
+      '  vec3 a = shape(aFrom, uXfA, uFxA, uRotA, gA, dA);',
+      '  vec3 b = shape(aTo, uXfB, uFxB, uRotB, gB, dB);',
       '  float t = smoothstep(aRand.x, aRand.x + 0.58, uT);',
       '  float mid = sin(3.14159265*t);',
       '  vec3 la = mix(a, b, t);',
@@ -843,16 +907,29 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       '  float s = smoothstep(aRand.z*0.5, aRand.z*0.5 + 0.5, uScatter);',
       '  p = mix(p, position, s);',
       '  p += vec3(sin(uTime*0.7 + aRand.z*40.0), cos(uTime*0.6 + aRand.w*40.0), sin(uTime*0.5 + aRand.y*40.0))*0.025;',
-      '  vec2 dv = p.xy - uPointer.xy; float dl = length(dv);',
-      '  p.xy += dv/(dl + 1e-3) * uPush * 0.8 * exp(-dl*dl*0.8);',
+      // pointer field: push away with a smooth falloff, drag + swirl from cursor velocity (bounded)
+      '  vec2 dv = p.xy - uMouse.xy; float dl = length(dv); vec2 dir = dv/(dl + 1e-3);',
+      '  float fall = exp(-dl*dl*0.7) * uHover * uMouseAmt;',
+      '  float sp = min(length(uMouseVel), 4.0);',
+      '  p.xy += dir*fall*0.75 + uMouseVel*fall*0.1 + vec2(-dir.y, dir.x)*fall*sp*0.07;',
+      '  p.z += fall*0.45;',
+      // click shockwave: an expanding ring that shoves and lights points as it passes
+      '  float ct = uTime - uClickTime; float wave = 0.0;',
+      '  if (ct > 0.0 && ct < 3.0) {',
+      '    vec2 dc = p.xy - uClickPos.xy; float dcl = length(dc);',
+      '    wave = exp(-pow((dcl - ct*5.5)/0.5, 2.0)) * exp(-ct*1.0);',
+      '    p.xy += dc/(dcl + 1e-3)*wave*0.9; p.z += wave*0.6;',
+      '  }',
       '  vec4 mv = viewMatrix * vec4(p, 1.0);',
       '  gl_Position = projectionMatrix * mv;',
-      '  float glow = mix(gA, gB, t)*(1.0 - s);',
+      '  float tw = step(0.965, aRand.y)*pow(max(sin(uTime*1.3 + aRand.z*60.0), 0.0), 12.0)*1.4;',
+      '  float glow = mix(gA, gB, t)*(1.0 - s) + fall*0.5 + wave*1.6 + tw;',
+      '  float dim = mix(dA, dB, t);',
       '  float h = smoothstep(-2.1, 2.1, la.y + la.z*0.3);',
       '  vec3 col = mix(uColA, uColB, h);',
       '  col = mix(col, uColH, clamp(glow*0.45, 0.0, 0.75));',
       '  vColor = col;',
-      '  vAlpha = uAlpha*(0.5 + 0.5*aRand.y)*(1.0 + glow*0.6)*(1.0 - mid*0.25);',
+      '  vAlpha = uAlpha*dim*(0.5 + 0.5*aRand.y)*(1.0 + glow*0.6)*(1.0 - mid*0.25);',
       '  gl_PointSize = min(uSize*1.7*(0.55 + aRand.y*0.9)*(1.0 + glow*0.8)*uPR / max(-mv.z, 0.5), 56.0*uPR);',
       '}'].join('\n');
     var frag = [
@@ -870,8 +947,51 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       uniforms: U, vertexShader: vert, fragmentShader: frag,
       transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending
     }));
-    points.frustumCulled = false;
+    points.frustumCulled = false; points.renderOrder = 1;
     scene.add(points);
+
+    /* ---------- ambient layer: sparse dim dust through the whole viewport, in depth ---------- */
+    var NA = mobile ? 1200 : 2600, ar = rng(321), aPos = new Float32Array(NA * 3), aSeed = new Float32Array(NA * 4);
+    var spanX = 14 * Math.max(innerWidth / innerHeight, 0.6) / 1.6 + 2;
+    for (var q = 0; q < NA; q++) {
+      aPos[q * 3] = jit(ar, spanX); aPos[q * 3 + 1] = jit(ar, 9); aPos[q * 3 + 2] = -10 + ar() * 16;
+      aSeed[q * 4] = ar(); aSeed[q * 4 + 1] = ar(); aSeed[q * 4 + 2] = ar(); aSeed[q * 4 + 3] = ar();
+    }
+    var ageo = new THREE.BufferGeometry();
+    ageo.setAttribute('position', new THREE.BufferAttribute(aPos, 3));
+    ageo.setAttribute('aSeed', new THREE.BufferAttribute(aSeed, 4));
+    var AU = {
+      uTime: U.uTime, uPR: U.uPR, uHover: U.uHover, uColA: U.uColA, uColB: U.uColB,
+      uScroll: { value: 0 }, uCam: { value: new THREE.Vector3(0, 0, CAMZ) }, uRay: { value: new THREE.Vector3(0, 0, -1) },
+      uClickPos: U.uClickPos, uClickTime: U.uClickTime, uSize: { value: mobile ? 26 : 22 }
+    };
+    var ambient = new THREE.Points(ageo, new THREE.ShaderMaterial({
+      uniforms: AU, transparent: true, depthWrite: false, depthTest: false, blending: THREE.AdditiveBlending,
+      vertexShader: [
+        'uniform float uTime, uPR, uHover, uScroll, uSize, uClickTime; uniform vec3 uCam, uRay, uColA, uColB, uClickPos;',
+        'attribute vec4 aSeed; varying vec3 vC; varying float vA;',
+        'void main(){',
+        '  vec3 p = position; float depth = (p.z + 10.0)/16.0;',
+        '  p.x += sin(uTime*0.05 + aSeed.x*6.283)*0.7;',
+        '  p.y += cos(uTime*0.04 + aSeed.y*6.283)*0.6 + uScroll*(0.25 + depth*0.9);',
+        '  p.y = mod(p.y + 9.0, 18.0) - 9.0;',
+        '  vec2 m = uCam.xy + uRay.xy*((p.z - uCam.z)/uRay.z);',
+        '  vec2 dv = p.xy - m; float dl = length(dv);',
+        '  p.xy += dv/(dl + 1e-3)*exp(-dl*dl*0.45)*uHover*0.6;',
+        '  float ct = uTime - uClickTime;',
+        '  if (ct > 0.0 && ct < 3.0) { vec2 dc = p.xy - uClickPos.xy; float dcl = length(dc); float w = exp(-pow((dcl - ct*5.5)/0.6, 2.0))*exp(-ct); p.xy += dc/(dcl + 1e-3)*w*0.6; }',
+        '  vec4 mv = viewMatrix*vec4(p, 1.0); gl_Position = projectionMatrix*mv;',
+        '  float tw = 0.6 + 0.4*sin(uTime*(0.6 + aSeed.w) + aSeed.z*40.0);',
+        '  vC = mix(uColA, uColB, aSeed.x*0.8);',
+        '  vA = (0.2 + 0.34*aSeed.w)*tw;',
+        '  gl_PointSize = uSize*(0.35 + aSeed.z*0.65)*uPR / max(-mv.z, 1.0);',
+        '}'].join('\n'),
+      fragmentShader: [
+        'varying vec3 vC; varying float vA;',
+        'void main(){ float d = length(gl_PointCoord - 0.5); if (d > 0.5) discard; gl_FragColor = vec4(vC, smoothstep(0.5, 0.0, d)*vA); }'].join('\n')
+    }));
+    ambient.frustumCulled = false; ambient.renderOrder = 0;
+    scene.add(ambient);
 
     /* ---------- layout ---------- */
     var Wd = innerWidth, Hd = innerHeight, wpp = 1;
@@ -890,17 +1010,18 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
         if (k > 0 && s.anchor <= S[k - 1].anchor) s.anchor = S[k - 1].anchor + 1;
       });
       var qx = Wd * 0.25 * wpp, topY = Hd * 0.235 * wpp;
-      var visW = Wd * wpp;
+      var visW = Wd * wpp, visH = Hd * wpp;
       S.forEach(function (s, k) {
         if (k === 0) { s.off = mobile ? [0, 1.5, 0] : [0.6, -2.0, 0]; s.scale = mobile ? 0.48 : 1; }
         else if (s.el) {
           var right = s.el.getAttribute('data-side') === 'left';
           s.off = mobile ? [0, topY, 0] : [right ? qx : -qx, 0, 0];
-          s.scale = mobile ? Math.min(0.66, visW * 0.88 / 6.8) : clamp(visW * 0.5 * 0.82 / 6.8, 0.6, 1.1);
+          s.scale = mobile ? clamp(Math.min(visW * 0.88 / (2 * s.ext[0]), visH * 0.38 / (2 * s.ext[1])), 0.4, 1)
+                           : clamp(Math.min(visW * 0.5 * 0.8 / (2 * s.ext[0]), visH * 0.72 / (2 * s.ext[1])), 0.6, 1.5);
         }
         else if (k === STACK) { s.off = [0, 0, 0]; s.scale = 1; }
         else if (k === EXP) { s.off = mobile ? [0, topY, 0] : [qx, 0, 0]; s.scale = 1; s.alpha = mobile ? 0.7 : 1; }
-        else if (k === LAST) { s.off = mobile ? [0, Hd * 0.29 * wpp, 0] : [qx, 0.2, 0]; s.scale = mobile ? Math.min(0.54, visW * 0.8 / 5.4) : 0.95; }
+        else if (k === LAST) { s.off = mobile ? [0, Hd * 0.29 * wpp, 0] : [qx, 0.2, 0]; s.ext = extent(s.shape, s.xf); s.scale = mobile ? Math.min(0.54, visW * 0.8 / 5.4) : clamp(Math.min(visW * 0.5 * 0.8 / (2 * s.ext[0]), visH * 0.64 / (2 * s.ext[1])), 0.6, 1.3); }
       });
 
       // clusters next to their labels, measured at the moment the stack block is centred
@@ -963,14 +1084,72 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       camera.aspect = innerWidth / innerHeight; camera.updateProjectionMatrix();
     });
 
-    /* ---------- pointer ---------- */
-    var ptr = { x: 0, y: 0, sx: 0, sy: 0, active: false };
+    /* ---------- interaction: pointer field, drag-rotate with inertia, click/tap shockwave ---------- */
+    var ptr = { x: 0, y: 0, sx: 0, sy: 0, active: false, type: 'mouse', down: false, id: -1, x0: 0, y0: 0, lx: 0, ly: 0, t0: 0, moved: false, drag: false, canDrag: false };
+    var rot = { x: 0, y: 0, vx: 0, vy: 0 };
+    var tmp = new THREE.Vector3(), mouseT = new THREE.Vector3(99, 99, 0), mousePrev = new THREE.Vector3(99, 99, 0), velRaw = new THREE.Vector2();
+    var TEXTY = 'a,button,input,textarea,select,label,.nav,.tech-cube-slot,p,h1,h2,h3,li,dt,dd,span,svg';
+    var CONTROL = 'a,button,input,textarea,select,label,.nav,.tech-cube-slot';
+    function onEmpty(el) { return !(el && el.closest && el.closest(TEXTY)); }
+    function onControl(el) { return !!(el && el.closest && el.closest(CONTROL)); }
+    function ndc(e) { ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = -(e.clientY / innerHeight) * 2 + 1; }
+    function worldAt(nx, ny, out) {
+      tmp.set(nx, ny, 0.5).unproject(camera).sub(camera.position).normalize();
+      var d = -camera.position.z / tmp.z;
+      return out.set(camera.position.x + tmp.x * d, camera.position.y + tmp.y * d, 0);
+    }
+    function shock(cx, cy) {
+      worldAt(cx / innerWidth * 2 - 1, -(cy / innerHeight) * 2 + 1, U.uClickPos.value);
+      U.uClickTime.value = U.uTime.value;
+    }
+    window.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      ndc(e); ptr.active = true; ptr.type = e.pointerType;
+      ptr.down = true; ptr.id = e.pointerId; ptr.x0 = ptr.lx = e.clientX; ptr.y0 = ptr.ly = e.clientY; ptr.t0 = performance.now();
+      ptr.moved = false; ptr.drag = false;
+      ptr.canDrag = e.pointerType === 'mouse' ? onEmpty(e.target) : !onControl(e.target);
+      if (e.pointerType === 'mouse' && ptr.canDrag) e.preventDefault();
+    });
     window.addEventListener('pointermove', function (e) {
-      if (e.pointerType !== 'mouse') return;
-      ptr.x = e.clientX / innerWidth * 2 - 1; ptr.y = -(e.clientY / innerHeight) * 2 + 1; ptr.active = true;
+      if (e.pointerType === 'mouse' || (ptr.down && e.pointerId === ptr.id)) { ndc(e); ptr.active = true; ptr.type = e.pointerType; }
+      if (!ptr.down || e.pointerId !== ptr.id) return;
+      var dx = e.clientX - ptr.lx, dy = e.clientY - ptr.ly, tx = e.clientX - ptr.x0, ty = e.clientY - ptr.y0;
+      ptr.lx = e.clientX; ptr.ly = e.clientY;
+      if (!ptr.moved && Math.hypot(tx, ty) > 6) {
+        ptr.moved = true;
+        // touch: only horizontal-ish drags rotate, vertical ones stay native page scroll
+        if (ptr.canDrag && (ptr.type === 'mouse' || Math.abs(tx) > Math.abs(ty) * 1.3)) { ptr.drag = true; root.classList.add('dragging'); }
+      }
+      if (ptr.drag) {
+        rot.vx = dx * 0.006; rot.vy = dy * 0.004;
+        rot.x += rot.vx; rot.y = clamp(rot.y + rot.vy, -0.7, 0.7);
+      }
     }, { passive: true });
-    document.addEventListener('pointerleave', function () { ptr.active = false; });
-    var tmp = new THREE.Vector3();
+    function endPtr(e, cancelled) {
+      if (!ptr.down || e.pointerId !== ptr.id) return;
+      if (!cancelled && !ptr.moved && ptr.canDrag && performance.now() - ptr.t0 < 500) shock(e.clientX, e.clientY);
+      ptr.down = false; ptr.drag = false; root.classList.remove('dragging');
+      if (ptr.type !== 'mouse') ptr.active = false;
+    }
+    window.addEventListener('pointerup', function (e) { endPtr(e, false); });
+    window.addEventListener('pointercancel', function (e) { endPtr(e, true); });
+    document.documentElement.addEventListener('mouseleave', function () { ptr.active = false; });
+    window.addEventListener('blur', function () { ptr.active = false; });
+
+    // DOM coupling: project title/link pulses its shape; skill category lights its cluster; timeline entry lights its ring
+    var hov = { stage: -1, group: 0, pulse: 0, on: false, amt: 0 };
+    function bindHover(el, stage, group, pulse) {
+      if (!el) return;
+      function on() { hov.stage = stage; hov.group = group; hov.pulse = pulse; hov.on = true; }
+      function off() { hov.on = false; }
+      el.addEventListener('pointerenter', on); el.addEventListener('focusin', on);
+      el.addEventListener('pointerleave', off); el.addEventListener('focusout', off);
+    }
+    projects.forEach(function (el, pi) { bindHover(el.querySelector('h3'), pi + 1, 0, 1); bindHover(el.querySelector('.link'), pi + 1, 0, 1); });
+    Array.prototype.slice.call(document.querySelectorAll('.stack .group')).forEach(function (g, gi) { bindHover(g, STACK, gi + 1, 0); });
+    Array.prototype.slice.call(document.querySelectorAll('[data-marker]')).forEach(function (e, ei) { bindHover(e, EXP, ei + 1, 0); });
+    function fxFor(k, out) { if (k === hov.stage && hov.amt > 1e-3) out.set(hov.pulse * hov.amt, hov.group, hov.group ? hov.amt : 0); else out.set(0, 0, 0); }
+    var lastT = 0;
 
     gsap.to(U.uScatter, { value: 0, duration: 3.2, delay: 0.25, ease: 'power2.inOut' });
 
@@ -1026,7 +1205,17 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       var oa = offsetOf(A, sy), ob = offsetOf(B, sy);
       U.uOA.value.fromArray(oa); U.uOB.value.fromArray(ob);
       U.uSA.value = A.scale; U.uSB.value = B.scale;
-      U.uPush.value = mobile ? 0 : lerp(A.push, B.push, T);
+      U.uMouseAmt.value = lerp(A.push, B.push, T);
+      var dt = clamp(t - lastT, 1e-3, 0.05); lastT = t;
+      // drag rotation: inertia after release, then ease back to rest
+      if (!ptr.drag) {
+        rot.x += rot.vx; rot.y = clamp(rot.y + rot.vy, -0.7, 0.7); rot.vx *= 0.93; rot.vy *= 0.93;
+        if (Math.abs(rot.vx) + Math.abs(rot.vy) < 4e-3) { rot.x *= 0.96; rot.y *= 0.96; }
+      } else { rot.vx *= 0.7; rot.vy *= 0.7; }
+      U.uRotA.value.set(rot.x * A.rotW[0], rot.y * A.rotW[1]);
+      U.uRotB.value.set(rot.x * B.rotW[0], rot.y * B.rotW[1]);
+      hov.amt = lerp(hov.amt, hov.on ? 1 : 0, 0.12);
+      fxFor(i, U.uFxA.value); fxFor(i + 1, U.uFxB.value);
       U.uAlpha.value = lerp(A.alpha, B.alpha, T);
       for (var c = 0; c < 3; c++) {
         bgU.uTop.value.setComponent(c, lerp(A.bgA[c], B.bgA[c], T));
@@ -1038,7 +1227,8 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
 
       // pointer parallax (damped while the cloud is pinned to DOM labels)
       var lockW = lerp(A.lock, B.lock, T);
-      ptr.sx = lerp(ptr.sx, ptr.active ? ptr.x : 0, 0.05); ptr.sy = lerp(ptr.sy, ptr.active ? ptr.y : 0, 0.05);
+      var mo = ptr.active && ptr.type === 'mouse';
+      ptr.sx = lerp(ptr.sx, mo ? ptr.x : 0, 0.05); ptr.sy = lerp(ptr.sy, mo ? ptr.y : 0, 0.05);
       var par = 1 - lockW;
       // leaving the hero: the camera dives into the data grid while it re-forms
       var dive = i === 0 ? Math.sin(Math.PI * T) : 0;
@@ -1046,11 +1236,20 @@ html.static .spot{-webkit-mask:radial-gradient(closest-side,#000 55%,transparent
       if (dive > 0 || lastDive > 0) { camera.fov = FOV + dive * 16; camera.updateProjectionMatrix(); lastDive = dive; }
       camera.lookAt(0, -dive * 0.9, 0);
       lightCaptions(i, T, sy);
+      // pointer projected onto the cloud plane (z = 0), smoothed; velocity drives drag/swirl
+      U.uHover.value = lerp(U.uHover.value, ptr.active ? 1 : 0, 0.08);
       if (ptr.active) {
-        tmp.set(ptr.x, ptr.y, 0.5).unproject(camera).sub(camera.position).normalize();
-        var dist = -camera.position.z / tmp.z;
-        U.uPointer.value.set(camera.position.x + tmp.x * dist, camera.position.y + tmp.y * dist, 0);
-      } else U.uPointer.value.set(99, 99, 0);
+        worldAt(ptr.x, ptr.y, mouseT);
+        if (U.uMouse.value.x > 90) U.uMouse.value.copy(mouseT);
+        U.uMouse.value.lerp(mouseT, 0.3);
+        AU.uRay.value.copy(tmp); AU.uCam.value.copy(camera.position);
+      }
+      velRaw.set((U.uMouse.value.x - mousePrev.x) / dt, (U.uMouse.value.y - mousePrev.y) / dt);
+      if (mousePrev.x > 90 || velRaw.length() > 60) velRaw.set(0, 0);
+      mousePrev.copy(U.uMouse.value);
+      U.uMouseVel.value.lerp(velRaw, 0.15);
+      if (U.uMouseVel.value.length() > 4) U.uMouseVel.value.setLength(4);
+      AU.uScroll.value = sy * wpp * 0.35;
 
       if (mobile) {
         var sw = (i === STACK ? 1 - T : 0) + (i + 1 === STACK ? T : 0);
