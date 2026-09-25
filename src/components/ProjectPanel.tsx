@@ -46,6 +46,8 @@ function useCaptionFade(key: string) {
       if (vis !== last) {
         last = vis
         el.style.opacity = String(vis)
+        // faded out it may hang over the next panel: keep it from taking clicks there
+        el.style.visibility = vis === 0 ? 'hidden' : ''
       }
     }
     const onMq = () => apply(field.getProgress())
@@ -56,6 +58,7 @@ function useCaptionFade(key: string) {
       off()
       mq.removeEventListener('change', onMq)
       el.style.opacity = ''
+      el.style.visibility = ''
     }
   }, [field, key])
 
@@ -81,9 +84,9 @@ export default function ProjectPanel({ project: p, visuals, index, cubeProjects 
         bg: projectBg(index),
       })}
     >
-      <div className="copy">
+      <div className="copy" data-field-text>
         {visuals.caption && (
-          // desktop: the rail spans the shape's column, and the caption sticks under the shape while the panel is read
+          // desktop: the caption sticks under the shape (the field writes --shape-cx/--shape-bottom) while the panel is read
           <div className="cap-rail"><p className="caption" ref={captionRef}>{visuals.caption}</p></div>
         )}
         <p className="meta">{projectMeta(p).map((m, i) => <span key={i}>{m}</span>)}</p>

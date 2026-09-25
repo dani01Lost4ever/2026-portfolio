@@ -22,6 +22,11 @@
  * `--field-bg-a` / `--field-bg-b` on <html>; the page's CSS paints the body
  * gradient from those two variables.
  *
+ * Side stops (project panels) on desktop:
+ *   <div data-field-text>                   // the text column; the shape is centred in the space beside it
+ * and the driver writes the shape's rest box on the stop element as
+ * `--shape-cx` / `--shape-bottom` (viewport px) so the page can place a caption under it.
+ *
  * The driver maps scroll to a continuous progress p in [0, stops.length - 1]:
  * p is an integer while a stop's anchor is centred in the viewport and
  * fractional while travelling between stops.

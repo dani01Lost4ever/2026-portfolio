@@ -17,11 +17,22 @@ export const CAMZ = 14
 /** World units per CSS pixel on the z = 0 plane at rest. */
 export const worldPerPixel = (h: number): number => (2 * Math.tan(((FOV / 2) * Math.PI) / 180) * CAMZ) / h
 
+/** Where a side stop's shape sits at rest, in viewport px: its centre column and projected bottom edge. */
+export interface RestBox {
+  cx: number
+  bottom: number
+}
+
+/** Side stops sit a little above centre, leaving the band below the shape for its caption. */
+const SIDE_LIFT = 0.03
+/** Share of the viewport height a side shape may fill, measured on screen (perspective included). */
+const SIDE_FILL_H = 0.7
+
 interface RenderStop {
   key: string
   shape: ShapeId
   buf: Float32Array
-  ext: [number, number]
+  ext: [number, number, number]
   xf: Vec3
   rotW: [number, number]
   lock: number
@@ -35,6 +46,8 @@ interface RenderStop {
   bgA: RGB
   bgB: RGB
   anchor: number
+  /** Side stops on desktop: the rest box their caption is placed under. */
+  rest: RestBox | null
   /** Set on the snapshot of a previous page's stop while it morphs away (route change). */
   frozen: Vec3 | null
 }
@@ -81,7 +94,7 @@ export class FieldEngine {
   private ghost: RenderStop | null = null
   private morph: { t0: number; dur: number } | null = null
   private scatter: Tween = { from: 1, to: 1, t0: NaN, dur: 1, delay: 0 }
-  private cache = new Map<string, { buf: Float32Array; ext: [number, number] }>()
+  private cache = new Map<string, { buf: Float32Array; ext: [number, number, number] }>()
   private fontVer = 0
   private curA: Float32Array | null = null
   private curB: Float32Array | null = null
@@ -267,7 +280,7 @@ export class FieldEngine {
     this.curA = this.curB = null
   }
 
-  private cached(key: string, xf: Vec3, gen: () => Float32Array, used: Set<string>): { buf: Float32Array; ext: [number, number] } {
+  private cached(key: string, xf: Vec3, gen: () => Float32Array, used: Set<string>): { buf: Float32Array; ext: [number, number, number] } {
     used.add(key)
     let hit = this.cache.get(key)
     if (!hit) {
@@ -291,7 +304,7 @@ export class FieldEngine {
     const visW = Wd * wpp
     const visH = Hd * wpp
     const top = mobile || spec.side === 'top'
-    let entry: { buf: Float32Array; ext: [number, number] }
+    let entry: { buf: Float32Array; ext: [number, number, number] }
     let off: Vec3 = [0, 0, 0]
     let scale = 1
     let alpha = def.alpha
@@ -321,7 +334,17 @@ export class FieldEngine {
     const ext = entry.ext
     const fit = (w: number, h: number, lo: number, hi: number): number =>
       clamp(Math.min(w / (2 * Math.max(ext[0], 1e-3)), h / (2 * Math.max(ext[1], 1e-3))), lo, hi)
+    // like fit, but for the size on screen: points nearer the camera than z = 0 are drawn larger
+    // (the 1.02 covers the shader's breathing)
+    const ez = 1.02 * ext[2]
+    const onScreen = (e: number, s: number): number => (1.02 * e * s * CAMZ) / Math.max(CAMZ - ez * s, 1e-3)
+    const fitOnScreen = (w: number, h: number, lo: number, hi: number): number => {
+      const sx = ((w / 2) * CAMZ) / (1.02 * Math.max(ext[0], 1e-3) * CAMZ + (w / 2) * ez)
+      const sy = ((h / 2) * CAMZ) / (1.02 * Math.max(ext[1], 1e-3) * CAMZ + (h / 2) * ez)
+      return clamp(Math.min(sx, sy), lo, hi)
+    }
     const sideX = spec.side === 'left' ? -qx : spec.side === 'right' ? qx : 0
+    let rest: RestBox | null = null
 
     switch (def.layout) {
       case 'hero':
@@ -335,8 +358,15 @@ export class FieldEngine {
         } else if (spec.side === 'center') {
           scale = fit(visW * 0.8, visH * 0.72, 0.6, 1.5)
         } else {
-          off = [sideX, 0, 0]
-          scale = fit(visW * 0.5 * 0.8, visH * 0.72, 0.6, 1.5)
+          // centre the shape in the free space beside the text column (half the viewport when that
+          // space is unmeasured or too narrow), sized to that space as it appears on screen
+          const m = Math.max(24, Wd * 0.03)
+          let a = spec.side === 'left' ? m : Number.isFinite(g.textRight) ? g.textRight + m : Wd / 2
+          let b = spec.side === 'left' ? (Number.isFinite(g.textLeft) ? g.textLeft - m : Wd / 2) : Wd - m
+          if (b - a < Wd * 0.35) [a, b] = spec.side === 'left' ? [0, Wd / 2] : [Wd / 2, Wd]
+          off = [((a + b) / 2 - Wd / 2) * wpp, visH * SIDE_LIFT, 0]
+          scale = fitOnScreen((b - a) * wpp * 0.9, visH * SIDE_FILL_H, 0.6, 1.5)
+          rest = { cx: (a + b) / 2, bottom: Hd * (0.5 - SIDE_LIFT) + onScreen(ext[1], scale) / wpp }
         }
         break
       case 'at':
@@ -391,8 +421,14 @@ export class FieldEngine {
       bgA: spec.bg[0],
       bgB: spec.bg[1],
       anchor: g.anchor,
+      rest,
       frozen: null,
     }
+  }
+
+  /** Each current stop's rest box, in stop order (null for stops that have none). */
+  restBoxes(): (RestBox | null)[] {
+    return this.stops.map((s) => s.rest)
   }
 
   private offsetOf(s: RenderStop, sy: number): Vec3 {

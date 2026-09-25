@@ -37,7 +37,10 @@ export interface StopGeom {
   end: number
   /** clusters: one per cluster. */
   spots: SpotPx[]
-  /** helix: horizontal extent of the stop's text (viewport px), to place the helix beside it. */
+  /**
+   * helix and side (desktop): horizontal extent of the stop's text column (viewport px), to place
+   * the shape in the free space beside it. Not finite when there was nothing to measure.
+   */
   textLeft: number
   textRight: number
   /** helix: page-y centres of [data-field-ring] elements, by ring number (1-based). */
@@ -124,6 +127,16 @@ function textExtent(el: HTMLElement): [number, number] {
   return [left, right]
 }
 
+/** A stop's text column: its [data-field-text] box (captions placed outside it don't count), else its text. */
+function textColumn(el: HTMLElement): [number, number] {
+  const col = el.querySelector<HTMLElement>('[data-field-text]')
+  if (col && isRendered(col)) {
+    const r = col.getBoundingClientRect()
+    return [r.left, r.right]
+  }
+  return textExtent(el)
+}
+
 /** Measure anchors (and layout-driven geometry) for every stop. */
 export function measureStops(stops: StopSpec[], vp: ViewportInfo): StopGeom[] {
   const H = vp.h
@@ -137,7 +150,7 @@ export function measureStops(stops: StopSpec[], vp: ViewportInfo): StopGeom[] {
     const h = r.height
     let anchor = top + h / 2 - H / 2
     let end = anchor
-    const g: StopGeom = { anchor, end, spots: [], textLeft: 0, textRight: 0, rings: [] }
+    const g: StopGeom = { anchor, end, spots: [], textLeft: NaN, textRight: NaN, rings: [] }
     if (def.layout === 'helix') {
       let firstTop = Infinity
       s.el.querySelectorAll<HTMLElement>('[data-field-ring]').forEach((e) => {
@@ -163,6 +176,7 @@ export function measureStops(stops: StopSpec[], vp: ViewportInfo): StopGeom[] {
       anchor = top + 0.35 * H - H / 2
       end = top + h - 0.35 * H - H / 2
     }
+    if (def.layout === 'side' && !vp.mobile) [g.textLeft, g.textRight] = textColumn(s.el)
     anchor = clamp(anchor, 0, maxS)
     end = clamp(Math.max(end, anchor), anchor, maxS)
     const prev = geoms[k - 1]

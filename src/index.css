@@ -27,6 +27,9 @@ html {
   background: #051E24;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
+  /* type and text columns (sized in rem) grow past 1600px wide, up to +25% at 2240px, so large
+     screens aren't a thin column of small text beside an empty field */
+  font-size: clamp(100%, calc(100% + (100vw - 1600px) * .00625), 125%);
 }
 
 body {
@@ -34,7 +37,7 @@ body {
   min-height: 100vh;
   color: var(--ink);
   font-family: var(--body);
-  font-size: 17px;
+  font-size: 1.0625rem;
   line-height: 1.6;
   font-style: normal;
   overflow-x: clip;
@@ -207,7 +210,7 @@ h1, h2, h3, h4 {
   align-items: flex-start;
   padding: clamp(120px, 19vh, 190px) var(--gutter) 64px;
 }
-.hero-inner { max-width: 880px; }
+.hero-inner { max-width: 55rem; }
 .status { font-size: .9rem; color: var(--ink-2); margin: 0 0 26px; }
 .status .dot {
   display: inline-block;
@@ -220,7 +223,7 @@ h1, h2, h3, h4 {
 }
 .hero h1 { font-size: clamp(2.9rem, 7.4vw, 7.3rem); line-height: .96; font-weight: 330; }
 .hero h1 span { display: block; }
-.hero-sub { max-width: 520px; color: var(--ink-2); font-size: 1.08rem; margin: 30px 0 34px; }
+.hero-sub { max-width: 32.5rem; color: var(--ink-2); font-size: 1.08rem; margin: 30px 0 34px; }
 .cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .stats { display: flex; gap: clamp(24px, 4vw, 56px); margin: 48px 0 0; padding: 0; }
 .stats div { margin: 0; }
@@ -234,10 +237,10 @@ h1, h2, h3, h4 {
   flex-direction: column;
   justify-content: center;
   padding: 10vh var(--gutter);
-  max-width: 980px;
+  max-width: 61.25rem;
 }
 .work-intro h2, .about-intro h2, .exp h2 { font-size: clamp(2.2rem, 4.6vw, 4.3rem); line-height: 1.02; }
-.work-intro p:not(.kicker) { color: var(--ink-2); max-width: 520px; margin: 24px 0 0; font-size: 1.05rem; }
+.work-intro p:not(.kicker) { color: var(--ink-2); max-width: 32.5rem; margin: 24px 0 0; font-size: 1.05rem; }
 
 .project {
   position: relative;
@@ -248,7 +251,7 @@ h1, h2, h3, h4 {
   padding: 12vh var(--gutter);
 }
 .project.text-right { justify-content: flex-end; }
-.copy { width: min(42vw, 580px); }
+.copy { width: min(42vw, 36.25rem); }
 .meta { font-size: .84rem; color: var(--ink-3); margin: 0 0 16px; display: flex; gap: 10px; flex-wrap: wrap; }
 .meta span + span::before {
   content: "";
@@ -274,7 +277,7 @@ h1, h2, h3, h4 {
 .desc { color: var(--ink-2); margin: 0 0 8px; font-size: 1rem; }
 .foot {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) clamp(276px, 27vw, 350px);
+  grid-template-columns: minmax(0, 1fr) clamp(276px, 27vw, 21.875rem);
   gap: clamp(16px, 2vw, 32px);
   align-items: center;
 }
@@ -288,25 +291,27 @@ h1, h2, h3, h4 {
 .tech-cube-slot { width: 100%; aspect-ratio: 1; position: relative; }
 html:not(.js) .tech-cube-slot { visibility: hidden; }
 
-/* project captions sit under the shape: a rail down the shape's half of the panel, with the caption
-   sticky near the viewport bottom, so it stays with the (slowly drifting) shape instead of the text */
+/* project captions sit under the shape: the field writes the shape's centre column (--shape-cx) and
+   its bottom edge on screen (--shape-bottom) on the panel, and the caption sticks there while the
+   panel is read. The rail runs past the panel so the caption holds still while it fades out. */
 .project .cap-rail {
   position: absolute;
-  top: 38vh;
-  bottom: 6vh;
-  left: 50%;
-  width: 50%;
+  top: 0;
+  bottom: -40vh;
+  left: 0;
+  right: 0;
   pointer-events: none;
 }
-.project.text-right .cap-rail { left: 0; }
 .project .caption {
+  --cap-w: min(34ch, 40vw);
   position: sticky;
-  top: 85vh;
-  width: min(34ch, 40vw);
-  margin: 0 auto;
+  top: min(calc(var(--shape-bottom, 85vh) + 14px), calc(100vh - 4.6em));
+  width: var(--cap-w);
+  margin-left: calc(var(--shape-cx, 75%) - var(--cap-w) / 2);
   text-align: center;
   pointer-events: auto;
 }
+.project.text-right .caption { margin-left: calc(var(--shape-cx, 25%) - var(--cap-w) / 2); }
 
 /* ---------- about ---------- */
 .about-intro {
@@ -342,9 +347,9 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
 
 /* ---------- experience ---------- */
 .exp { padding: 18vh var(--gutter) 16vh; }
-.exp-head { max-width: 760px; margin-bottom: 6vh; }
+.exp-head { max-width: 47.5rem; margin-bottom: 6vh; }
 .exp-cap { margin-top: 22px; max-width: 44ch; }
-.exp-list { max-width: 560px; }
+.exp-list { max-width: 35rem; }
 .exp-group {
   font-family: var(--body);
   font-size: .78rem;
@@ -373,20 +378,20 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
   justify-content: center;
   padding: 20vh var(--gutter) 10vh;
 }
-.contact-inner { max-width: 640px; }
+.contact-inner { max-width: 40rem; }
 .contact h2 { font-size: clamp(2.6rem, 6vw, 5.6rem); line-height: .98; font-weight: 330; }
-.contact .avail { color: var(--ink-2); margin: 24px 0 34px; font-size: 1.05rem; max-width: 460px; }
+.contact .avail { color: var(--ink-2); margin: 24px 0 34px; font-size: 1.05rem; max-width: 28.75rem; }
 .mail { font-size: clamp(1rem, 1.6vw, 1.2rem); padding: 1.05em 1.4em; max-width: 100%; overflow-wrap: anywhere; line-height: 1.2; }
 .socials { display: flex; gap: 26px; margin: 30px 0 0; list-style: none; padding: 0; }
 .socials a { text-decoration: none; color: var(--ink-2); font-weight: 500; border-bottom: 1px solid var(--rule); padding-bottom: 2px; transition: color .2s, border-color .2s; }
 .socials a:hover { color: var(--ink); border-bottom-color: var(--ink-3); }
-.now { margin: 44px 0 0; padding: 0; display: grid; gap: 8px; max-width: 560px; }
+.now { margin: 44px 0 0; padding: 0; display: grid; gap: 8px; max-width: 35rem; }
 .now div { display: grid; grid-template-columns: 120px 1fr; gap: 12px; font-size: .88rem; }
 .now dt { color: var(--ink-3); }
 .now dd { margin: 0; color: var(--ink-2); }
 
 /* short-note form */
-.note { margin: 56px 0 0; max-width: 560px; }
+.note { margin: 56px 0 0; max-width: 35rem; }
 .note-title {
   font-family: var(--body);
   font-size: .78rem;
@@ -458,7 +463,7 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
   align-items: center;
   padding: clamp(110px, 16vh, 170px) var(--gutter) 10vh;
 }
-.pd-head { width: min(46vw, 620px); }
+.pd-head { width: min(46vw, 38.75rem); }
 .back {
   display: inline-flex;
   align-items: center;
@@ -487,14 +492,14 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
   text-align: center;
 }
 .pd-body { padding: 4vh var(--gutter) 12vh; overflow-x: clip; }
-.pd-section { max-width: 680px; margin: 0 0 12vh; }
+.pd-section { max-width: 42.5rem; margin: 0 0 12vh; }
 .pd-section h2 { font-size: clamp(1.9rem, 3.2vw, 2.9rem); line-height: 1.05; margin: 0 0 22px; }
 .pd-section > p { color: var(--ink-2); font-size: 1.08rem; line-height: 1.75; margin: 0; max-width: 64ch; }
 .pd-results { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 22px 32px; }
 .pd-results dt { font-size: clamp(1.5rem, 2.4vw, 2.1rem); }
 .pd-results dd { font-size: .84rem; }
 .pd-arch {
-  max-width: 1080px;
+  max-width: 67.5rem;
   display: grid;
   grid-template-columns: minmax(0, 1fr) clamp(280px, 30vw, 400px);
   gap: clamp(24px, 4vw, 64px);
@@ -519,7 +524,7 @@ html:not(.js) .tech-cube-slot { visibility: hidden; }
   gap: clamp(16px, 4vw, 64px);
   border-top: 1px solid var(--rule);
   padding-top: 5vh;
-  max-width: 1080px;
+  max-width: 67.5rem;
 }
 .pd-nav-link { display: flex; flex-direction: column; gap: 6px; text-decoration: none; }
 .pd-next { text-align: right; align-items: flex-end; }
@@ -582,7 +587,7 @@ html.static .spot {
 
 /* ---------- tablet & mobile (below 900px) ---------- */
 @media (max-width: 900px) {
-  body { font-size: 16px; }
+  body { font-size: 1rem; }
   .nav { padding: 14px 16px; }
   .nav ul { gap: 16px; }
   .nav li.hide-s { display: none; }

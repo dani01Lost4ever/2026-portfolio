@@ -136,9 +136,23 @@ stops plus how far between them it is, so `FieldEngine` can morph the point clou
 crossfade the background gradient, and drive the helix "current ring" / clusters "current group"
 effects.
 
-`FieldController` also GSAP-scrubs raw scroll into that eased position (a 0.7s `power3.out`
-catch-up on every scroll delta), which is what gives the shape its slight lag/settle instead of
-snapping to the scrollbar.
+`FieldController` follows the scroll position with a short exponential catch-up (`FOLLOW`, 0.08s)
+that only irons out wheel steps: Lenis already eases the page, and a longer lag leaves the shape
+behind the text it belongs to. The morph between two stops runs over 20%–75% of the scroll between
+them (`MORPH_FROM`/`MORPH_TO`): with alternating sides, the next section's text arrives where the
+current shape sits, so the shape has to leave before that text is read.
+
+### Side stops: placement and captions
+
+On desktop a project's shape is centred in the free space beside its text column (the
+`[data-field-text]` box, `.copy`), and sized so that, perspective included, it fills at most 70% of
+the viewport height, a little above centre. The controller writes each side stop's rest box on the
+stop element as `--shape-cx` (centre column) and `--shape-bottom` (bottom edge on screen), both in
+viewport px; the project caption sticks just below that. Without WebGL the variables are absent and
+the CSS falls back to 25%/75% and 85vh.
+
+Past 1600px wide the root font size grows (up to +25% at 2240px), and the text columns are sized in
+rem, so large screens get a proportionally larger column instead of a thin one beside empty space.
 
 ### Adding a new project shape
 
@@ -160,7 +174,7 @@ snapping to the scrollbar.
 
 ### The tech cube
 
-`src/field/techcube/techcube.ts` is a small, dependency-free (no three.js) DOM/CSS-transform
+`src/field/techcube/cubeScene.ts` is a small, dependency-free (no three.js) DOM/CSS-transform
 component: an isometric cube of 4 glass slabs that turn 90° in sequence, top first, to bring each
 project's 4 architecture layers (`CubeLayer[]`, from `visualsFor()`) onto the front face as the
 page scrolls past it. `TechCube.tsx` is the React wrapper: it computes a local progress for its own

@@ -66,11 +66,13 @@ export function resolveShape(s: string | null | undefined): ShapeId {
 }
 
 /**
- * Visual half-extents (x, y) of a shape including its spin/wobble/tilt, used to size it to its slot.
+ * Visual half-extents (x, y) of a shape including its spin/wobble/tilt, used to size it to its slot,
+ * plus how far it reaches toward the camera (z), which perspective turns into extra on-screen size.
  */
-export function extent(buf: Float32Array, xf: Vec3): [number, number] {
+export function extent(buf: Float32Array, xf: Vec3): [number, number, number] {
   let ex = 0
   let ey = 0
+  let ez = 0
   const c = Math.abs(Math.cos(xf[2]))
   const sn = Math.abs(Math.sin(xf[2]))
   const spin = xf[0] > 0
@@ -85,6 +87,7 @@ export function extent(buf: Float32Array, xf: Vec3): [number, number] {
     const rz = spin ? rad : z + x * Math.sin(w)
     ex = Math.max(ex, hx)
     ey = Math.max(ey, c * y + sn * rz)
+    ez = Math.max(ez, sn * y + c * rz)
   }
-  return [ex, ey]
+  return [ex, ey, ez]
 }

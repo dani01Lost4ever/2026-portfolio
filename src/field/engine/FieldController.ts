@@ -19,7 +19,7 @@ import type { FieldApi } from '../contract'
 import { createSmoothScroll, type SmoothScroll } from '../smoothScroll'
 import { BgVarWriter, mixRgb } from './colors'
 import { FieldEngine } from './FieldEngine'
-import { clamp, lerp, power3Out, smooth } from './math'
+import { clamp, lerp, smooth } from './math'
 import { SHAPES } from './shapes'
 import { locate, measureStops, readStops, readViewport, stopsSignature, type StopGeom, type StopSpec, type ViewportInfo } from './stops'
 
@@ -32,8 +32,19 @@ export interface FieldControllerOptions {
 
 const HOVER_SEL = '[data-field-hover], [data-field-cluster], [data-field-ring]'
 const WATCHED_ATTRS = ['data-field-stop', 'data-shape', 'data-side', 'data-tint', 'data-cluster-sizes', 'data-rings', 'data-bg', 'data-field-cluster', 'data-field-ring']
-/** GSAP-style scrub: each scroll change restarts a 0.7s power3.out catch-up. */
-const SCRUB = 0.7
+/**
+ * Time constant (s) of the field's catch-up to the scroll position. Lenis already eases the page,
+ * so this only irons out wheel steps; a longer one leaves the shape behind the text it belongs to.
+ */
+const FOLLOW = 0.08
+/**
+ * Stretch of the scroll between two stops (0..1) over which the shape morphs. The next section's
+ * text arrives where the current shape sits, so the shape has to leave before that text is read.
+ */
+const MORPH_FROM = 0.2
+const MORPH_TO = 0.75
+/** CSS variables written on side stops for their caption (see ProjectPanel). */
+const CAPTION_VARS = ['--shape-cx', '--shape-bottom'] as const
 
 function probeWebGL2(): boolean {
   try {
@@ -68,9 +79,7 @@ export class FieldController {
   private p = 0
   private emitted = NaN
   private sp = 0
-  private scrubFrom = 0
-  private scrubTo = 0
-  private scrubT0 = 0
+  private spT = 0
   private snap = true
   private raf = 0
   private hidden = false
@@ -207,6 +216,7 @@ export class FieldController {
     document.removeEventListener('focusin', this.onFocusIn)
     document.removeEventListener('focusout', this.onFocusOut)
     this.destroyEngine()
+    this.writeCaptionVars()
     this.smooth?.destroy()
     this.smooth = null
     this.bg?.clear()
@@ -231,6 +241,7 @@ export class FieldController {
       return
     }
     this.engine.setStops(this.specs, this.geoms, this.vp, false)
+    this.writeCaptionVars()
     this.snap = true
     this.requestTick()
   }
@@ -243,6 +254,7 @@ export class FieldController {
 
   private onContextLost = (): void => {
     this.destroyEngine(true)
+    this.writeCaptionVars()
     this.goStatic()
   }
 
@@ -305,7 +317,24 @@ export class FieldController {
     this.vp = readViewport()
     this.geoms = measureStops(this.specs, this.vp)
     this.engine?.setStops(this.specs, this.geoms, this.vp, pageChanged)
+    this.writeCaptionVars()
     this.requestTick()
+  }
+
+  /**
+   * Captions sit under their shape: each side stop gets its shape's rest box as CSS variables.
+   * Without the engine (static page) the variables are removed and the CSS defaults apply.
+   */
+  private writeCaptionVars(): void {
+    const boxes = this.engine?.restBoxes() ?? []
+    this.specs.forEach((s, k) => {
+      const b = boxes[k]
+      const st = s.el.style
+      if (b) {
+        st.setProperty('--shape-cx', `${b.cx.toFixed(1)}px`)
+        st.setProperty('--shape-bottom', `${b.bottom.toFixed(1)}px`)
+      } else for (const v of CAPTION_VARS) st.removeProperty(v)
+    })
   }
 
   /* ---------- scrolling ---------- */
@@ -319,18 +348,17 @@ export class FieldController {
     }
   }
 
+  /** Exponential follow of the scroll position, independent of the frame rate. */
   private scrub(target: number, t: number): number {
+    const dt = clamp(t - this.spT, 0, 0.1)
+    this.spT = t
     if (this.snap) {
       this.snap = false
-      this.sp = this.scrubFrom = this.scrubTo = target
+      this.sp = target
       return target
     }
-    if (target !== this.scrubTo) {
-      this.scrubFrom = this.sp
-      this.scrubTo = target
-      this.scrubT0 = t
-    }
-    this.sp = this.scrubFrom + (this.scrubTo - this.scrubFrom) * power3Out(clamp((t - this.scrubT0) / SCRUB, 0, 1))
+    this.sp += (target - this.sp) * (1 - Math.exp(-dt / FOLLOW))
+    if (Math.abs(target - this.sp) < 0.5) this.sp = target
     return this.sp
   }
 
@@ -373,7 +401,7 @@ export class FieldController {
         }
       }
     }
-    const T = smooth(0.15, 0.85, f)
+    const T = smooth(MORPH_FROM, MORPH_TO, f)
 
     /* page gradient variables */
     if (n && this.bg) {
