@@ -2,24 +2,27 @@
 
 ## Coolify (site + PocketBase)
 
-The production setup. `docker-compose.coolify.yml` runs two services in one stack:
+The production setup. `coolify/docker-compose.yaml` runs two services in one stack:
 
-| Service | Role | Domain |
+| Service | Role | Exposed as |
 |---|---|---|
-| `frontend` | nginx serving the built site; proxies `/api/` and `/_/` to PocketBase | `https://daniel.busetto.techdani.cc` |
+| `frontend` | nginx serving the built site; proxies `/api/` and `/_/` to PocketBase | host port `8810` (`FRONTEND_PORT`) |
 | `pocketbase` | PocketBase 0.36.7, data in the `pb_data` volume, migrations baked into the image | none (internal only) |
 
-No host ports are published: Coolify's proxy routes the domain to `frontend:80`, and nginx
-reaches `pocketbase:8090` over the stack's internal network. The site, the API and the admin UI
-share one domain, so there is no CORS to configure.
+The Coolify server runs without its own proxy (**Proxy: None**): Nginx Proxy Manager terminates
+TLS for `daniel.busetto.techdani.cc` and forwards it to the Coolify host on port `8810`. nginx in
+`frontend` reaches `pocketbase:8090` over the stack's internal network. The site, the API and the
+admin UI share one domain, so there is no CORS to configure.
 
 ### First deploy
 
 1. **New resource** → your server → **Docker Compose** → this GitHub repository and branch.
-2. Set **Docker Compose Location** to `/docker-compose.coolify.yml`.
-3. On the `frontend` service, set the domain to `https://daniel.busetto.techdani.cc`.
-   Leave `pocketbase` without a domain.
-4. Leave `PB_URL` empty (same origin). Deploy.
+2. Set **Base Directory** to `/coolify` and leave **Docker Compose Location** at its default,
+   `/docker-compose.yaml`. Build contexts in that file are relative to `coolify/`.
+3. Leave `pocketbase` without a domain. Leave `PB_URL` empty (same origin). Change
+   `FRONTEND_PORT` only if `8810` is taken on the host. Deploy.
+4. In Nginx Proxy Manager, add a proxy host for the domain pointing at the Coolify host, port
+   `8810`, with SSL.
 5. Open a terminal on the `pocketbase` container in Coolify and create a temporary admin:
    ```bash
    ./pocketbase superuser upsert you@example.com 'a-long-temporary-password' --dir=/pb/pb_data
@@ -43,8 +46,9 @@ form message saved.
 
 ### Switch the domain
 
-10. Point the DNS record for `daniel.busetto.techdani.cc` at the Coolify server (A/AAAA, or a
-    CNAME to the server's hostname). Coolify requests the TLS certificate once DNS resolves.
+10. The DNS record for `daniel.busetto.techdani.cc` already points at Nginx Proxy Manager. Switch
+    its proxy host from the old stack to the Coolify host, port `8810` (step 4 above, if you used a
+    temporary domain first).
 11. The old API domain (`daniel.api.techdani.cc`) is no longer used by the site. Keep the old
     stack running until the new one is verified, then retire it.
 

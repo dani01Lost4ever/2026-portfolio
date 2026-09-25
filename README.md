@@ -164,7 +164,7 @@ frontend:
 
 ## Deploying on Coolify
 
-See [docs/deployment.md](docs/deployment.md#coolify-site--pocketbase): one Docker Compose resource from `docker-compose.coolify.yml`, one domain on the `frontend` service.
+See [docs/deployment.md](docs/deployment.md#coolify-site--pocketbase): one Docker Compose resource from `coolify/docker-compose.yaml` (Base Directory `/coolify`), with the `frontend` service on host port 8810 behind Nginx Proxy Manager.
 
 ## Scripts
 

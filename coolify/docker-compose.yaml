@@ -1,17 +1,19 @@
 # Coolify stack: site + PocketBase on one domain.
 #
-# In Coolify, create a "Docker Compose" resource from this repository, set the
-# compose file location to /docker-compose.coolify.yml, and give the
-# `frontend` service the domain (e.g. https://daniel.busetto.techdani.cc).
+# In Coolify, create a "Docker Compose" resource from this repository with
+# Base Directory `/coolify` (Coolify then finds this file at its default
+# location, /docker-compose.yaml). Build contexts are relative to this folder.
+#
 # Leave `pocketbase` without a domain: nginx in `frontend` proxies /api/ and
 # /_/ (admin UI) to it over the stack's internal network.
 #
-# No host ports are published; Coolify's proxy routes traffic to frontend:80.
+# The Coolify server runs without its own proxy (Proxy: None); Nginx Proxy
+# Manager terminates TLS and forwards the domain to the host port below.
 
 services:
   pocketbase:
     build:
-      context: ./backend
+      context: ../backend
       dockerfile: Dockerfile
       args:
         PB_VERSION: "0.36.7"
@@ -29,10 +31,11 @@ services:
 
   frontend:
     build:
-      context: .
+      context: ..
       dockerfile: Dockerfile
-    expose:
-      - "80"
+    ports:
+      # Host port Nginx Proxy Manager forwards to
+      - "${FRONTEND_PORT:-8810}:80"
     environment:
       # Empty = same origin through the nginx proxy. Set a full URL only if
       # PocketBase is served from a separate domain.
