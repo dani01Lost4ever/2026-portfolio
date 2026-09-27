@@ -59,7 +59,7 @@ export default function ContactForm() {
 
   return (
     <div className="note">
-      <h3 className="note-title" id="note-title">Or write a short note</h3>
+      <h3 className="note-title" id="note-title">Write a short note</h3>
 
       {status === 'success' ? (
         <div className="note-done" ref={doneRef} tabIndex={-1} role="status">

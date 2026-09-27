@@ -1,4 +1,15 @@
-import type { ShapeId, CubeLayer } from '../field/contract'
+// ─── Project visuals ──────────────────────────────────────────────────────────
+
+/** Which poster a project gets in the film and on its page (see take/posters.ts). */
+export type ShapeId =
+  | 'bug' | 'loop' | 'orbit' | 'candles' | 'globe' | 'clocks' | 'coins'
+  | 'browser' | 'tictactoe' | 'battleship' | 'generic'
+
+/** One layer of a project's architecture, top to bottom. */
+export interface CubeLayer {
+  label: string
+  tech: string
+}
 
 // ─── Shared ──────────────────────────────────────────────────────────────────
 
@@ -60,11 +71,11 @@ export interface Project {
   link?: string
   order: number
   views?: number
-  /** Particle field shape (see field/contract.ts). Falls back to the registry/heuristics in lib/projectVisuals.ts. */
+  /** Poster shape. Falls back to the registry/heuristics in lib/projectVisuals.ts. */
   shape?: ShapeId
-  /** Tech cube layers, top to bottom (4 entries). Falls back to tag-derived layers when absent. */
+  /** Architecture layers, top to bottom (4 entries). Falls back to tag-derived layers when absent. */
   layers?: CubeLayer[]
-  /** Short line shown under the project's shape in the particle field. Falls back to `subtitle`. */
+  /** One-line summary used as the project's headline in the film. Falls back to `subtitle`. */
   caption?: string
 }
 
@@ -129,6 +140,18 @@ export interface ExperienceData {
   education: EducationEntry[]
 }
 
+// ─── Now ──────────────────────────────────────────────────────────────────────
+
+export interface NowItem {
+  label: string   // "Now building"
+  value: string
+}
+
+export interface NowData {
+  updated: string // "2026-05"
+  items: NowItem[]
+}
+
 // ─── Full content bundle (used by ContentContext) ─────────────────────────────
 
 export interface ContentBundle {
@@ -138,4 +161,5 @@ export interface ContentBundle {
   about: AboutData
   contact: ContactData
   experience: ExperienceData
+  now: NowData
 }

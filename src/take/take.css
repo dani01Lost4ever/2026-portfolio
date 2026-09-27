@@ -1,0 +1,244 @@
+/* ==========================================================================
+   One Take — the film, its sheets, and its reading page.
+   Everything under .take is placed by the engine every frame (transforms and
+   sizes written from t), so there are no transitions or animations here.
+   Tokens come from src/index.css.
+   ========================================================================== */
+
+.take { position: relative; }
+.take * { margin: 0; padding: 0; box-sizing: border-box; }
+.take #scroller { width: 1px; }
+.take #stage { position: fixed; inset: 0; overflow: hidden; background: var(--paper); z-index: 1; }
+.take .layer { position: absolute; inset: 0; pointer-events: none; }
+.take .abs, .take .a { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+.take .iris { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.take svg { display: block; }
+
+/* text that rises out of a mask line */
+.take .m { position: absolute; left: 0; top: 0; overflow: hidden; white-space: nowrap; line-height: 1.16; padding: 0 .05em .08em; }
+.take .m > span, .take .mf > span { display: block; }
+.take .mf { position: absolute; left: 0; top: 0; overflow: hidden; }
+.take .k-mono { font-family: var(--mono); font-weight: 500; letter-spacing: .03em; }
+.take .cw { color: #fff; }
+.take .muted { color: var(--muted); }
+
+/* wordmark */
+.take #wm { position: absolute; inset: 0; }
+.take .wl { position: absolute; left: 0; top: 0; transform-origin: 0 0; font-family: var(--wm); font-weight: 800; line-height: 1; white-space: nowrap; color: var(--ink); }
+
+/* tiles */
+.take .tile { background: var(--ink); overflow: hidden; color: #fff; }
+.take .tile .poster { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.take .tile .cap { position: absolute; left: 0; bottom: 0; right: 0; }
+.take .tile .cap .m { position: relative; display: block; }
+.take .cap .n { font: 500 var(--capn, 11px)/1.1 var(--mono); letter-spacing: .04em; opacity: .8; }
+.take .cap .t { font: 600 var(--capt, 18px)/1.1 var(--ui); letter-spacing: -.01em; }
+.take .cap .s { font: 400 var(--caps, 13px)/1.25 var(--ui); opacity: .82; }
+.take .pl { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); color: #fff; font-family: var(--ui); font-weight: 500; letter-spacing: -.01em; }
+.take .tile.clickable { pointer-events: auto; cursor: pointer; }
+.take .tile.clickable:hover { box-shadow: 0 0 0 3px var(--ink); }
+.take .tile:focus-visible { outline: 3px solid var(--hot); outline-offset: 3px; }
+.take .allbtn { all: unset; cursor: pointer; pointer-events: auto; font: 500 var(--capn, 11px)/1.2 var(--mono); letter-spacing: .04em; border-bottom: 1px solid currentColor; }
+.take .allbtn:focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; }
+
+/* liquid glass */
+.take .glass-gl { position: absolute; left: 0; top: 0; pointer-events: none; }
+.take .glass .gs { position: absolute; left: 0; top: 0; overflow: visible; }
+.take .glass .gc { position: absolute; inset: 0; overflow: hidden; border-radius: inherit; color: #fff; }
+.take .glass.rr { box-shadow: 0 12px 34px rgba(0, 0, 0, .2), 0 1px 2px rgba(0, 0, 0, .14); }
+.take .goo .glass { box-shadow: none !important; filter: none !important; }
+.take .ico { width: 100%; height: 100%; display: block; fill: none; stroke: #fff; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.take .ico.fill { fill: #fff; stroke: none; }
+
+/* case study */
+.take .tb-label { font: 600 var(--tbf, 20px/1.1) var(--ui); }
+.take .track-a { background: rgba(255, 255, 255, .35); }
+.take .track-b { background: #fff; }
+.take .knob { background: #fff; border-radius: 50%; box-shadow: 0 2px 8px rgba(0, 0, 0, .3); transform-origin: 50% 50%; }
+.take .info-h { letter-spacing: -.02em; }
+.take .info-p > span { white-space: normal; }
+.take .res-a { font-family: var(--wm); font-weight: 800; font-stretch: 125%; line-height: 1.05; }
+.take .res-b { opacity: .8; }
+.take .caselink { pointer-events: auto; color: #fff; text-decoration: none; border-bottom: 1px solid rgba(255, 255, 255, .6); }
+.take .caselink:hover { border-color: #fff; }
+.take .caselink:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+
+/* lock screen and phone */
+.take #lock { overflow: hidden; background: #1a1a40; }
+.take #lock .wp { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+.take #bezel { background: #0B0B0C; box-shadow: 0 0 0 1.5px #2c2c2e, 0 40px 90px rgba(20, 16, 10, .28); }
+.take .sbtn { background: #1c1c1e; border-radius: 2px; }
+.take .card-t { position: absolute; left: 0; top: 0; white-space: nowrap; }
+.take .gc .card-t.k-mono { color: rgba(255, 255, 255, .72); letter-spacing: .06em; }
+.take .gc .card-t:not(.k-mono) { font-family: var(--ui); font-weight: 500; line-height: 1.2; color: #fff; overflow: hidden; text-overflow: ellipsis; }
+.take .now-ic { width: 100%; height: 100%; border-radius: 22%; display: flex; align-items: center; justify-content: center; font: 500 var(--icf, 10px) var(--mono); color: #fff; }
+.take .p-art { width: 100%; height: 100%; border-radius: 18%; background: linear-gradient(135deg, #FFC66B, #E0632F 60%, #7A2E4E); }
+.take .p-bar-a { background: rgba(255, 255, 255, .3); }
+.take .p-bar-b { background: #fff; }
+.take .island { background: #000; }
+
+/* mac window */
+.take #win { background: var(--card); overflow: hidden; color: var(--ink); box-shadow: 0 50px 100px rgba(30, 24, 14, .22), 0 0 0 1px rgba(11, 11, 12, .08); }
+.take #blind { background: #0B0B0C; overflow: hidden; }
+.take #roller { position: absolute; left: 0; right: 0; bottom: 0; background: linear-gradient(#3a3a3c, #111); }
+.take .tl-dot { border-radius: 50%; }
+.take .tab-pill { background: #2B2B2D; border-radius: 8px; }
+.take .tab { color: #F2EEE6; font: 500 var(--tabf, 12px)/1 var(--ui); }
+.take .url { background: #1E1E20; border-radius: 8px; }
+.take .url-t { color: #B8B3A8; }
+.take .wm-small, .take .wm-h { font-family: var(--wm); font-weight: 800; font-stretch: 125%; }
+.take .wm-h.plain { font-stretch: 100%; }
+.take .win-nav { font-family: var(--ui); font-weight: 500; }
+.take .rule { height: 1px; background: var(--rule); }
+.take .row-a { font-family: var(--ui); font-weight: 600; }
+.take .bar { position: absolute; left: 0; top: 0; transform-origin: 0 50%; }
+.take .now-dot { border-radius: 50%; background: var(--hot); }
+.take .now-ring { border-radius: 50%; border: 2px solid var(--hot); }
+.take .p-about { background: var(--card); box-shadow: -20px 0 40px rgba(0, 0, 0, .08); }
+.take .ab-b { color: var(--ink-2); }
+.take .ab-b > span { white-space: normal; }
+.take .skills { font-family: var(--ui); }
+.take .sw { position: absolute; left: 0; top: 0; transform-origin: 0 0; border-radius: 50%; }
+.take .sw-ring { box-shadow: 0 0 0 1.5px var(--ink); background: transparent; }
+.take #seg { border-radius: 999px; box-shadow: inset 0 0 0 1px var(--ink); transform-origin: 0 50%; }
+.take .seg-pill { background: var(--ink); border-radius: 999px; }
+.take .seg-top { width: 100%; height: 100%; color: #F2EEE6; }
+.take .segt { position: absolute; top: 0; height: 100%; display: flex; align-items: center; justify-content: center; font: 500 var(--segf, 13px)/1 var(--ui); }
+
+/* framed print */
+.take #frame .mold, .take #frame .paint, .take #frame .mat, .take #frame .img { position: absolute; left: 0; top: 0; }
+.take #frame .mat { background: #FBF9F4; }
+.take #frame .img { overflow: hidden; }
+.take #frame .img svg { width: 100%; height: 100%; }
+
+/* the order shape */
+.take #cta { background: var(--ink); color: #F2EEE6; overflow: hidden; }
+.take #cta .pl { font-weight: 600; }
+.take .ck { color: #F2EEE6; }
+.take .ck-svg { width: 100%; height: 100%; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.take .rd-a { background: rgba(242, 238, 230, .25); }
+.take .rd-b { background: #F2EEE6; transform-origin: 0 50%; }
+.take .route { border-top: 2px dashed rgba(242, 238, 230, .5); }
+.take .plane-svg { width: 100%; height: 100%; fill: #F2EEE6; transform: rotate(45deg); }
+
+/* wall */
+.take #wall { background: radial-gradient(ellipse at 28% 18%, #F3ECE0 0%, #E6DCCD 52%, #D6C9B6 100%); }
+.take #wlight { position: absolute; left: -10%; top: -20%; width: 70%; height: 120%; background: linear-gradient(100deg, rgba(255, 250, 240, 0), rgba(255, 250, 240, .55) 40%, rgba(255, 250, 240, 0) 75%); transform: skewX(-18deg); filter: blur(40px); }
+.take #wshadow { background: transparent; box-shadow: 0 34px 60px rgba(50, 35, 15, .28), 0 6px 14px rgba(50, 35, 15, .2); }
+.take #wmat { background: #FBF9F4; box-shadow: inset 0 2px 8px rgba(0, 0, 0, .18); }
+.take #wprint { overflow: hidden; }
+.take #wprint > svg:first-child { width: 100%; height: 100%; }
+.take #leaves { position: absolute; inset: 0; width: 100%; height: 100%; mix-blend-mode: multiply; pointer-events: none; }
+.take #placard { background: #FBF9F5; color: var(--ink); font-family: var(--ui); pointer-events: auto; box-shadow: 0 2px 6px rgba(40, 30, 15, .14), 0 12px 30px rgba(40, 30, 15, .08); }
+.take #placard .mf { position: relative; }
+.take #placard .p1 { font-size: var(--p1); line-height: 1.3; }
+.take #placard .p2 { font-size: var(--p2); line-height: 1.45; }
+.take #placard .wrap > span { white-space: normal; }
+.take #placard .gap { margin-top: var(--pg); }
+.take #placard .strong { font-weight: 600; }
+.take #placard b { font-weight: 650; }
+.take #placard a { color: inherit; text-decoration: none; border-bottom: 1px solid var(--rule); }
+.take #placard a:hover { border-color: var(--ink); }
+.take .pl-btn { all: unset; cursor: pointer; display: inline-flex; align-items: center; padding: 9px 15px; border-radius: 999px; background: var(--ink); color: #F2EEE6; font: 600 12.5px/1 var(--ui); }
+.take .pl-btn:focus-visible, .take #placard a:focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; }
+
+/* cursor */
+.take #cursor { width: 26px; height: 26px; transform-origin: 5px 3px; }
+.take #ring { border-radius: 50%; border: 2px solid var(--ink); }
+
+/* chrome: the film's header and timeline */
+.take #chrome { position: absolute; inset: 0; pointer-events: none; color: var(--ink); font-family: var(--hud); }
+.take #chrome.dark { color: #F2EEE6; }
+.take #tk-top { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px var(--gutter); }
+.take .brand { pointer-events: auto; font: 500 11.5px/1.25 var(--hud); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; text-decoration: none; color: inherit; }
+.take .brand b { font-weight: 600; }
+.take .brand span { opacity: .55; }
+.take .brand .b-logo { display: none; }
+.take .brand .avail { opacity: 1; margin-left: 14px; display: inline-flex; align-items: center; gap: 6px; }
+.take .brand .avail::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2FB463; box-shadow: 0 0 0 3px rgba(47, 180, 99, .18); }
+@media (max-width: 1180px) { .take .brand .avail { display: none; } }
+@media (max-width: 520px) { .take .brand .b-full { display: none; } .take .brand .b-logo { display: inline; } }
+.take #tk-chap { display: flex; gap: 2px; pointer-events: auto; }
+.take #tk-chap button, .take #tk-projects { all: unset; cursor: pointer; padding: 7px 11px; border-radius: 999px; font: 500 11px/1 var(--hud); letter-spacing: .06em; text-transform: uppercase; opacity: .5; }
+.take #tk-chap button:hover, .take #tk-projects:hover { opacity: .85; }
+.take #tk-chap button.on { opacity: 1; box-shadow: inset 0 0 0 1px currentColor; }
+.take .top-r { display: flex; align-items: center; gap: 6px; pointer-events: auto; }
+.take #tk-projects { opacity: .85; }
+.take #tk-play { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 9px 15px; border-radius: 999px; box-shadow: inset 0 0 0 1px currentColor; font: 500 11px/1 var(--hud); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.take #tk-play svg { width: 10px; height: 10px; fill: currentColor; }
+.take #chrome button:focus-visible, .take .brand:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
+.take #tk-bot { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 var(--gutter) 14px; }
+.take #tk-tl { position: relative; height: 16px; pointer-events: auto; cursor: pointer; }
+.take .tick { position: absolute; bottom: 0; width: 1px; height: 5px; background: currentColor; opacity: .3; }
+.take .tick.ch { height: 11px; opacity: .85; }
+.take #tk-ph { position: absolute; bottom: 0; left: 0; width: 2px; height: 16px; background: var(--hot); }
+.take #tk-meta { display: flex; justify-content: space-between; gap: 12px; font: 400 10.5px/1 var(--hud); letter-spacing: .05em; text-transform: uppercase; margin-top: 9px; opacity: .7; white-space: nowrap; }
+@media (max-width: 820px) {
+  .take #tk-chap { display: none; }
+  .take .brand span { display: none; }
+  .take #tk-meta .hint { display: none; }
+}
+
+/* ==========================================================================
+   Sheets: grow out of the element that opened them, fold back on close.
+   ========================================================================== */
+.tk-sheets { position: fixed; inset: 0; z-index: 50; }
+.tk-sheets .vscrim { position: absolute; inset: 0; background: #0B0B0C; opacity: 0; }
+.tk-sheets .sheet { position: absolute; left: 0; top: 0; transform-origin: 0 0; background: var(--card); color: var(--ink); overflow: hidden; box-shadow: 0 40px 120px rgba(20, 14, 6, .35); }
+.tk-sheets .vcol { position: absolute; left: 0; top: 0; overflow: hidden; }
+.tk-sheets .vposter { position: absolute; left: 0; top: 0; overflow: hidden; background: var(--ink); }
+.tk-sheets .vposter svg { width: 100%; height: 100%; }
+.tk-sheets .vbody { position: absolute; left: 0; top: 0; overflow-y: auto; overscroll-behavior: contain; padding: 44px 48px 110px; }
+.tk-sheets .vl { overflow: hidden; }
+.tk-sheets .vl > div { padding-bottom: 2px; }
+.tk-sheets .vk { font: 500 11px/1.4 var(--hud); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.tk-sheets .vt { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: clamp(28px, 3.6vw, 52px); line-height: 1.02; letter-spacing: -.01em; margin: 14px 0 0; }
+.tk-sheets .vs { font: 500 18px/1.35 var(--ui); margin: 10px 0 0; }
+.tk-sheets .vd { font: 400 15.5px/1.6 var(--ui); color: var(--ink-2); margin: 18px 0 0; max-width: 58ch; }
+.tk-sheets .vres { display: flex; gap: 28px; margin: 26px 0 0; flex-wrap: wrap; }
+.tk-sheets .vres dt { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 28px; line-height: 1.05; }
+.tk-sheets .vres dd { margin: 0; font: 500 12px/1.3 var(--ui); color: var(--muted); }
+.tk-sheets .vtags { display: flex; flex-wrap: wrap; gap: 6px; margin: 24px 0 0; padding: 0; list-style: none; }
+.tk-sheets .vtags li { font: 500 11px/1 var(--mono); padding: 7px 10px; border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); }
+.tk-sheets .vacts { display: flex; gap: 10px; margin-top: 28px; flex-wrap: wrap; }
+.tk-sheets .vbtn { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 12px 18px; border-radius: 999px; font: 600 13px/1 var(--ui); background: var(--ink); color: #F2EEE6; }
+.tk-sheets .vbtn.o { background: transparent; color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); }
+.tk-sheets .vbtn.o:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+.tk-sheets .vclose { all: unset; cursor: pointer; position: absolute; top: 14px; right: 14px; width: 40px; height: 40px; border-radius: 50%; background: var(--card); display: grid; place-items: center; box-shadow: 0 2px 10px rgba(0, 0, 0, .14); }
+.tk-sheets .vclose svg { width: 16px; height: 16px; stroke: var(--ink); stroke-width: 2; fill: none; }
+.tk-sheets .vnavbar { position: absolute; bottom: 0; display: flex; justify-content: space-between; gap: 10px; padding: 18px 24px; background: linear-gradient(rgba(251, 250, 247, 0), var(--card) 45%); }
+.tk-sheets .vnav { all: unset; cursor: pointer; font: 500 11px/1.2 var(--hud); letter-spacing: .05em; text-transform: uppercase; padding: 11px 14px; border-radius: 999px; background: var(--card); box-shadow: inset 0 0 0 1px var(--rule); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 48%; }
+.tk-sheets .vnav:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+.tk-sheets .vbtn:focus-visible, .tk-sheets .vnav:focus-visible, .tk-sheets .vclose:focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; }
+.tk-sheets .cs-body { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; padding: 48px clamp(20px, 6vw, 80px) 40px; }
+.tk-sheets .cs-body > .vl { max-width: 640px; }
+@media (max-width: 760px) {
+  .tk-sheets .vbody { padding: 26px 20px 100px; }
+  .tk-sheets .vs { font-size: 16px; }
+  .tk-sheets .vd { font-size: 14.5px; }
+}
+
+/* ==========================================================================
+   Reading page: the film's content without the film (reduced motion).
+   ========================================================================== */
+.take-doc:not(.sr-only) { max-width: 60rem; margin: 0 auto; padding: 8vh var(--gutter) 12vh; }
+.take-doc:not(.sr-only) section { padding: 7vh 0; border-top: 1px solid var(--rule); scroll-margin-top: 72px; }
+.take-doc:not(.sr-only) .doc-open { border-top: 0; padding-top: 4vh; }
+.take-doc:not(.sr-only) h1 { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: clamp(44px, 9vw, 120px); line-height: .95; letter-spacing: -.02em; margin: 0; }
+.take-doc .doc-dot { display: inline-block; width: .2em; height: .2em; border-radius: 50%; background: var(--ink); margin-left: .04em; }
+.take-doc:not(.sr-only) h2 { font: 500 11.5px/1.3 var(--hud); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 22px; }
+.take-doc:not(.sr-only) h3 { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 22px; line-height: 1.1; margin: 4px 0 2px; }
+.take-doc:not(.sr-only) h3 a { text-decoration: none; }
+.take-doc:not(.sr-only) h3 a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.take-doc:not(.sr-only) p { max-width: 62ch; color: var(--ink-2); margin: 0 0 14px; }
+.take-doc .doc-lede { font-size: clamp(18px, 2vw, 22px); margin-top: 22px; }
+.take-doc .doc-big { font: 600 clamp(20px, 2.4vw, 28px)/1.25 var(--ui); color: var(--ink); letter-spacing: -.01em; }
+.take-doc .doc-n { font: 500 11px/1.3 var(--mono); color: var(--muted); letter-spacing: .03em; }
+.take-doc:not(.sr-only) ul { list-style: none; padding: 0; margin: 0; }
+.take-doc .doc-work { display: grid; grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr)); gap: 28px 32px; }
+.take-doc .doc-work p { margin: 0; }
+.take-doc .doc-list li { padding: 10px 0; border-bottom: 1px solid var(--rule); }
+.take-doc .doc-res, .take-doc .doc-stack { display: grid; grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr)); gap: 18px 28px; margin: 22px 0 0; }
+.take-doc .doc-res dt { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 28px; line-height: 1.05; }
+.take-doc .doc-res dd, .take-doc .doc-stack dd { margin: 0; color: var(--ink-2); }
+.take-doc .doc-stack dt { font: 500 11px/1.3 var(--mono); color: var(--muted); letter-spacing: .03em; margin-bottom: 4px; }

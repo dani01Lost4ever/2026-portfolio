@@ -1,28 +1,28 @@
 /**
- * ProjectDetail — a project's case study in the Field language.
+ * ProjectDetail — a project's case study in the One Take language.
  *
- * The header is a single field stop carrying the project's own shape and
- * tint, with the title beside it. Below: overview, challenge and solution
- * as long-form reading, the results, the architecture (tech cube + a plain
- * technology line), the link out, and previous/next project navigation.
+ * The hero sets the title and facts beside the project's poster. Below:
+ * overview, challenge and solution as long-form reading, the results, the
+ * architecture as ruled layer rows with the tags, and previous/next project
+ * cards.
  */
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, Navigate, useParams } from 'react-router-dom'
 import { Helmet } from 'react-helmet-async'
+import { useProjects } from '../context/content-hooks'
 import { incrementProjectViews } from '../lib/api'
-import { useField } from '../field/useField'
-import { TechCube } from '../field/techcube/TechCube'
+import { visualsFor } from '../lib/projectVisuals'
+import { Poster } from '../take/Poster'
 import { ArrowLeft, ArrowRight, ArrowUpRight } from '../components/Icons'
+import PageHeader from '../components/PageHeader'
 import SiteFooter from '../components/SiteFooter'
-import { projectBg, projectStopKey, stopAttrs } from '../components/fieldStops'
 import { linkLabel, projectMeta } from '../components/projectMeta'
-import { useOrderedProjects } from '../components/useOrderedProjects'
 
 export default function ProjectDetail() {
   const { slug } = useParams()
-  const { projects, visuals } = useOrderedProjects()
-  const field = useField()
+  const allProjects = useProjects()
+  const projects = useMemo(() => [...allProjects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), [allProjects])
 
   const index = projects.findIndex(p => p.slug === slug)
   const project = index >= 0 ? projects[index] : undefined
@@ -40,17 +40,13 @@ export default function ProjectDetail() {
     })
   }, [projectSlug])
 
-  useEffect(() => {
-    field?.refresh()
-  }, [field, projectSlug])
-
   if (!project) return <Navigate to="/" replace />
 
-  const v = visuals[index]
-  const key = projectStopKey(project)
+  const v = visualsFor(project)
   const prev = projects.length > 1 ? projects[(index - 1 + projects.length) % projects.length] : null
   const next = projects.length > 1 ? projects[(index + 1) % projects.length] : null
   const viewCount = views && views.slug === project.slug ? views.count : null
+  const meta = [project.id, ...projectMeta(project)].filter(Boolean)
 
   const facts = [
     { label: 'Role', value: project.role },
@@ -74,33 +70,33 @@ export default function ProjectDetail() {
         <meta property="og:description" content={project.description} />
       </Helmet>
 
+      <PageHeader />
+
       <main id="main" tabIndex={-1} className="pd">
-        <section
-          className="pd-hero"
-          id="top"
-          aria-labelledby="pd-title"
-          {...stopAttrs({ key, shape: v.shape, side: 'right', tint: v.tint, bg: projectBg(index) })}
-        >
-          <div className="copy pd-head">
-            <Link to={`/#work-${project.slug}`} className="back">
+        <section className="pd-hero" id="top" aria-labelledby="pd-title">
+          <div className="pd-head">
+            <Link to="/#work" className="pd-back">
               <ArrowLeft /> All work
             </Link>
-            <p className="meta">{projectMeta(project).map((m, i) => <span key={i}>{m}</span>)}</p>
-            <h1 id="pd-title" data-field-hover={key}>{project.title}</h1>
-            <p className="sub">{project.subtitle}</p>
-            <p className="desc">{project.description}</p>
+            <p className="pd-kicker">{meta.map((m, i) => <span key={i}>{m}</span>)}</p>
+            <h1 id="pd-title" className="pd-title">{project.title}</h1>
+            <p className="pd-sub">{project.subtitle}</p>
+            <p className="pd-desc">{project.description}</p>
             {facts.length > 0 && (
               <dl className="pd-facts">
                 {facts.map(f => <div key={f.label}><dt>{f.label}</dt><dd>{f.value}</dd></div>)}
               </dl>
             )}
             {project.link && (
-              <a className="btn btn-primary" href={project.link} target="_blank" rel="noopener noreferrer" data-field-hover={key}>
+              <a className="btn btn-primary" href={project.link} target="_blank" rel="noopener noreferrer">
                 {linkLabel(project.link)}<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight />
               </a>
             )}
           </div>
-          {v.caption && <p className="caption pd-cap">{v.caption}</p>}
+          <figure className="pd-poster">
+            <Poster shape={v.shape} className="pd-poster-art" />
+            {v.caption && <figcaption className="pd-caption">{v.caption}</figcaption>}
+          </figure>
         </section>
 
         <div className="pd-body">
@@ -114,45 +110,43 @@ export default function ProjectDetail() {
           {project.results.length > 0 && (
             <section className="pd-section" aria-labelledby="pd-results">
               <h2 id="pd-results">Results</h2>
-              <dl className="results pd-results">
+              <dl className="pd-results">
                 {project.results.map(r => <div key={r.label}><dt>{r.value}</dt><dd>{r.label}</dd></div>)}
               </dl>
             </section>
           )}
 
-          <section className="pd-section pd-arch" aria-labelledby="pd-arch">
-            <div className="pd-arch-text">
-              <h2 id="pd-arch">Architecture</h2>
-              <ul className="pd-layers">
-                {v.layers.map(l => (
-                  <li key={l.label}><span className="pd-layer-label">{l.label}</span>{l.tech}</li>
-                ))}
+          <section className="pd-section" aria-labelledby="pd-arch">
+            <h2 id="pd-arch">Architecture</h2>
+            <ul className="pd-layers">
+              {v.layers.map(l => (
+                <li key={l.label}><span className="pd-layer-label">{l.label}</span><span className="pd-layer-tech">{l.tech}</span></li>
+              ))}
+            </ul>
+            {project.tags.length > 0 && (
+              <ul className="pd-tags" aria-label="Technologies">
+                {project.tags.map(t => <li key={t}>{t}</li>)}
               </ul>
-              {project.tags.length > 0 && (
-                <p className="pd-stack"><span className="sr-only">Technologies: </span>{project.tags.join(' · ')}</p>
-              )}
-              {project.link && (
-                <a className="link" href={project.link} target="_blank" rel="noopener noreferrer" data-field-hover={key}>
-                  {linkLabel(project.link)}<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight />
-                </a>
-              )}
-            </div>
-            <div className="tech-cube-slot" data-field-hover={key}>
-              <TechCube projects={[{ name: project.title, layers: v.layers }]} index={0} stopKey={key} tint={v.tint} />
-            </div>
+            )}
           </section>
 
           {prev && next && (
             <nav className="pd-nav" aria-label="More projects">
-              <Link to={`/project/${prev.slug}`} className="pd-nav-link pd-prev" rel="prev">
-                <span className="pd-nav-dir"><ArrowLeft /> Previous project</span>
-                <span className="pd-nav-title">{prev.title}</span>
-                <span className="pd-nav-sub">{prev.subtitle}</span>
+              <Link to={`/project/${prev.slug}`} className="pd-card" rel="prev">
+                <Poster shape={visualsFor(prev).shape} className="pd-card-poster" />
+                <span className="pd-card-text">
+                  <span className="pd-card-dir"><ArrowLeft /> Previous project</span>
+                  <span className="pd-card-title">{prev.title}</span>
+                  <span className="pd-card-sub">{prev.subtitle}</span>
+                </span>
               </Link>
-              <Link to={`/project/${next.slug}`} className="pd-nav-link pd-next" rel="next">
-                <span className="pd-nav-dir">Next project <ArrowRight /></span>
-                <span className="pd-nav-title">{next.title}</span>
-                <span className="pd-nav-sub">{next.subtitle}</span>
+              <Link to={`/project/${next.slug}`} className="pd-card" rel="next">
+                <Poster shape={visualsFor(next).shape} className="pd-card-poster" />
+                <span className="pd-card-text">
+                  <span className="pd-card-dir">Next project <ArrowRight /></span>
+                  <span className="pd-card-title">{next.title}</span>
+                  <span className="pd-card-sub">{next.subtitle}</span>
+                </span>
               </Link>
             </nav>
           )}

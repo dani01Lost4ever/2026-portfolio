@@ -17,7 +17,7 @@
 
 import pb from './pb'
 import type {
-  SiteData, HeroData, Project, AboutData, ContactData, ExperienceData, ContentBundle,
+  SiteData, HeroData, Project, AboutData, ContactData, ExperienceData, ContentBundle, NowData,
 } from './types'
 import { isShapeId, isCubeLayerArray } from './projectVisuals'
 
@@ -27,6 +27,7 @@ import projectsJson   from '../data/projects.json'
 import aboutJson      from '../data/about.json'
 import contactJson    from '../data/contact.json'
 import experienceJson from '../data/experience.json'
+import nowJson        from '../data/now.json'
 
 // ─── helpers ──────────────────────────────────────────────────────────────────
 
@@ -261,6 +262,7 @@ export async function fetchAllContent(): Promise<ContentBundle> {
     fetchContact(),
     fetchExperience(),
   ])
-  return { site, hero, projects, about, contact, experience }
+  // "now" has no PocketBase collection yet: it always comes from the bundled JSON
+  return { site, hero, projects, about, contact, experience, now: nowJson as NowData }
 }
 

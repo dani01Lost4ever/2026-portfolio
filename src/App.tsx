@@ -1,29 +1,29 @@
-import { lazy, Suspense, useCallback, useEffect, useRef, useState, type MouseEvent } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState, type MouseEvent } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
 
 import { ContentProvider } from './context/ContentContext'
-import { FieldProvider } from './field/FieldProvider'
-import { FieldCanvas } from './field/FieldCanvas'
-import { useField } from './field/useField'
-import Nav from './components/Nav'
 import CommandPalette from './components/CommandPalette'
 import Home from './pages/Home'
+import { PosterDefs } from './take/Poster'
+import { TakeProvider } from './take/TakeProvider'
+import { useReducedMotion } from './take/useReducedMotion'
 
 const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
 const NotFound      = lazy(() => import('./pages/NotFound'))
 
-/** Top of the page on route change; a URL hash lands on its section once the page has rendered. */
+/**
+ * Top of the page on route change; a URL hash lands on its section once the page has rendered.
+ * The film owns the home page's scroll (and reads its own hash), unless motion is reduced.
+ */
 function ScrollManager() {
   const { pathname, hash } = useLocation()
-  const field = useField()
-  const fieldRef = useRef(field)
-  useEffect(() => { fieldRef.current = field }, [field])
+  const reduced = useReducedMotion()
+  const film = pathname === '/' && !reduced
 
   useEffect(() => {
-    const api = fieldRef.current
+    if (film) return
     if (!hash) {
       window.scrollTo(0, 0)
-      api?.scrollTo('#top', { duration: 0 })
       return
     }
     let id = ''
@@ -32,18 +32,12 @@ function ScrollManager() {
     let raf = 0
     const land = () => {
       const el = document.getElementById(id)
-      if (el) {
-        // native jump: right after a route change the smooth scroller may still hold the previous
-        // page's height and clamp to it; it re-syncs from the native scroll position
-        el.scrollIntoView({ block: 'start' })
-        fieldRef.current?.refresh()
-      } else if (tries++ < 60) {
-        raf = requestAnimationFrame(land) // lazy route still rendering
-      }
+      if (el) el.scrollIntoView({ block: 'start' })
+      else if (tries++ < 60) raf = requestAnimationFrame(land) // lazy route still rendering
     }
     raf = requestAnimationFrame(land)
     return () => cancelAnimationFrame(raf)
-  }, [pathname, hash])
+  }, [pathname, hash, film])
 
   return null
 }
@@ -79,7 +73,6 @@ function Shell() {
     <>
       <SkipLink />
       <ScrollManager />
-      <Nav />
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Suspense fallback={<main id="main" tabIndex={-1} className="page-loading" aria-busy="true" />}>
         <Routes>
@@ -95,11 +88,10 @@ function Shell() {
 export default function App() {
   return (
     <ContentProvider>
-      <FieldProvider>
-        <FieldCanvas />
-        <div className="scrim" aria-hidden="true" />
+      <TakeProvider>
+        <PosterDefs />
         <Shell />
-      </FieldProvider>
+      </TakeProvider>
     </ContentProvider>
   )
 }

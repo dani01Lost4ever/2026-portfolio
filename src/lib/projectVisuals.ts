@@ -1,57 +1,26 @@
 /**
- * projectVisuals.ts — resolves the particle-field visuals for a project.
+ * projectVisuals.ts — resolves a project's poster shape, architecture layers and caption.
  *
- * Each project needs a ShapeId, a 4-layer tech cube, a short caption, and a
- * two-colour tint. CMS content may supply these directly; most projects don't
- * (yet), so we fall back to a built-in registry keyed by slug (mirroring the
- * values baked into designs/field.html), and finally to heuristics derived
- * from the project's own tags/subtitle/gradient so a brand-new CMS project
- * never renders with nothing.
+ * CMS content may supply these directly; most projects don't (yet), so we fall
+ * back to a built-in registry keyed by slug, and finally to heuristics derived
+ * from the project's own tags/subtitle so a brand-new CMS project never renders
+ * with nothing.
  *
  * Resolution order per field: CMS value (if valid) → registry entry for the
  * slug → generic fallback.
  */
 
-import type { ShapeId, CubeLayer } from '../field/contract'
-import type { Project } from './types'
+import type { CubeLayer, Project, ShapeId } from './types'
 
-/**
- * Mirrors the `ShapeId` union in field/contract.ts. contract.ts only exports
- * a type (erased at runtime), and it belongs to the field driver's own
- * source tree, so this list is kept here and must be updated alongside it
- * if a shape is ever added or renamed.
- */
+/** Every poster shape in take/posters.ts; kept in step with the `ShapeId` union. */
 const SHAPE_IDS: readonly ShapeId[] = [
-  'grid', 'bug', 'loop', 'orbit', 'candles', 'globe', 'clocks', 'coins',
-  'browser', 'tictactoe', 'battleship', 'clusters', 'helix', 'at', 'constellation',
+  'bug', 'loop', 'orbit', 'candles', 'globe', 'clocks', 'coins', 'browser', 'tictactoe', 'battleship', 'generic',
 ]
 
 export interface ProjectVisuals {
   shape: ShapeId
   layers: CubeLayer[]
   caption: string
-  tint: [string, string]
-}
-
-// ─── colour helpers ─────────────────────────────────────────────────────────
-
-const HEX_RE = /#[0-9a-fA-F]{3,8}\b/g
-
-/** The design's fallback tint (aqua → peach) for gradients we can't parse. */
-const DEFAULT_TINT: [string, string] = ['#72E4D5', '#FFB88A']
-
-/**
- * Pulls the first and last hex colour out of a CSS `linear-gradient(...)`
- * string and returns them as a [top, bottom] tint pair. Falls back to the
- * field's aqua/peach pair when the gradient has fewer than two hex colours
- * (or isn't parseable at all).
- */
-export function parseGradientTint(gradient: string | undefined | null): [string, string] {
-  if (!gradient) return DEFAULT_TINT
-  const hexes = gradient.match(HEX_RE)
-  if (!hexes || hexes.length === 0) return DEFAULT_TINT
-  if (hexes.length === 1) return [hexes[0], hexes[0]]
-  return [hexes[0], hexes[hexes.length - 1]]
 }
 
 // ─── validation ───────────────────────────────────────────────────────────────
@@ -82,8 +51,6 @@ interface RegistryEntry {
   shape: ShapeId
   layers: CubeLayer[]
   caption: string
-  /** Explicit tint override — used when the gradient itself would mislead (e.g. The Loop is greyscale). */
-  tint?: [string, string]
 }
 
 const REGISTRY: Record<string, RegistryEntry> = {
@@ -107,8 +74,6 @@ const REGISTRY: Record<string, RegistryEntry> = {
     ],
     caption: 'One loop of dispatches, guides and labs, all self-hosted.',
     // The Loop's own gradient is greyscale (#0f0f0f → #525252); the design
-    // uses a soft pearl/silver tint instead so its shape still reads as a point cloud.
-    tint: ['#EEF0F4', '#A9B1C2'],
   },
   'stellar-freight-co': {
     shape: 'orbit',
@@ -119,7 +84,6 @@ const REGISTRY: Record<string, RegistryEntry> = {
       { label: 'Deploy', tech: 'Fly.io' },
     ],
     caption: 'Drones on orbit, driven by one fixed-tick clock.',
-    tint: ['#a78bfa', '#6366f1'],
   },
   auroratrader: {
     shape: 'candles',
@@ -212,10 +176,9 @@ function fallbackLayers(p: Project): CubeLayer[] {
 
 function fallbackVisuals(p: Project): ProjectVisuals {
   return {
-    shape: 'constellation',
+    shape: 'generic',
     layers: fallbackLayers(p),
     caption: p.subtitle || p.title,
-    tint: parseGradientTint(p.gradient),
   }
 }
 
@@ -228,7 +191,6 @@ export function visualsFor(p: Project): ProjectVisuals {
   const shape = isShapeId(p.shape) ? p.shape : entry?.shape ?? fallback.shape
   const layers = isCubeLayerArray(p.layers) ? p.layers : entry?.layers ?? fallback.layers
   const caption = (p.caption && p.caption.trim()) || entry?.caption || fallback.caption
-  const tint = entry?.tint ?? fallback.tint
 
-  return { shape, layers, caption, tint }
+  return { shape, layers, caption }
 }

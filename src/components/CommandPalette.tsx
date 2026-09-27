@@ -1,16 +1,15 @@
 /**
- * CommandPalette — ⌘K / Ctrl+K quick jump: projects, page sections, links.
+ * CommandPalette — ⌘K / Ctrl+K quick jump: projects, film chapters, links.
  *
- * A modal dialog around cmdk's list. In-page jumps go through the field's
- * smooth scroll (useSectionJump); the dialog locks page scroll while open,
+ * A modal dialog around cmdk's list. Section jumps glide the film to its
+ * chapter (useSectionJump); the dialog locks page scroll while open,
  * traps Tab inside itself and returns focus to where it was on close.
  */
 
-import { useEffect, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Command } from 'cmdk'
-import { useContact } from '../context/content-hooks'
-import { useOrderedProjects } from './useOrderedProjects'
+import { useContact, useProjects } from '../context/content-hooks'
 import { useSectionJump } from './useSectionJump'
 
 interface Props {
@@ -18,10 +17,13 @@ interface Props {
   onClose: () => void
 }
 
+/** The film's chapters, in the order they play. */
 const SECTIONS = [
   { id: 'work', label: 'Work' },
-  { id: 'about', label: 'About' },
+  { id: 'case', label: 'Case study' },
+  { id: 'now', label: 'Now' },
   { id: 'experience', label: 'Experience' },
+  { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
 ] as const
 
@@ -45,7 +47,8 @@ export default function CommandPalette({ open, onClose }: Props) {
 
 function PaletteDialog({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
-  const { projects } = useOrderedProjects()
+  const allProjects = useProjects()
+  const projects = useMemo(() => [...allProjects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), [allProjects])
   const contact = useContact()
   const { jump } = useSectionJump()
   const panelRef = useRef<HTMLDivElement>(null)
@@ -86,7 +89,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
   const socials = contact.socials.filter(s => s.href && s.href !== '#')
 
   return (
-    <div className="cmd" data-lenis-prevent onKeyDown={onKeyDown}>
+    <div className="cmd" data-take-prevent onKeyDown={onKeyDown}>
       <div className="cmd-backdrop" onClick={onClose} aria-hidden="true" />
       <div className="cmd-panel" ref={panelRef} role="dialog" aria-modal="true" aria-label="Quick navigation">
         <Command label="Quick navigation" loop filter={rank}>
@@ -116,7 +119,7 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
               ))}
             </Command.Group>
 
-            <Command.Group heading="Sections" className="cmd-group">
+            <Command.Group heading="Chapters" className="cmd-group">
               {SECTIONS.map(s => (
                 <Command.Item key={s.id} value={s.label} keywords={['section', 'go to']} className="cmd-item" onSelect={() => run(() => jump(s.id))}>
                   <span className="cmd-item-title">{s.label}</span>
