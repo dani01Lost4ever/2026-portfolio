@@ -35,6 +35,9 @@ It is **idempotent** — safe to run multiple times.
 
 All collections are treated as **singletons** (one record each) except `projects`.
 
+The home page's "Now" items have no collection: they always come from `src/data/now.json`
+(`fetchAllContent()` in `src/lib/api.ts`).
+
 ### `site_settings`
 
 | Field | Type | Description |
@@ -68,15 +71,23 @@ All collections are treated as **singletons** (one record each) except `projects
 | `challenge` | text | Challenge section |
 | `solution` | text | Solution section |
 | `tags` | json | Array of tech/tool strings |
-| `gradient` | text | CSS gradient string for cover |
+| `gradient` | text | CSS gradient string. Still read into `Project.gradient`, but no longer used by the film, the project page or the poster colours |
 | `results` | json | Array of `{ value, label }` metrics |
 | `role` | text | Your role e.g. `"Lead Engineer"` |
 | `timeline` | text | Duration e.g. `"6 months"` |
 | `link` | url | Live site URL (optional) |
 | `order` | number | Display order (ascending) |
-| `shape` | select | Particle-field shape for this project (one of the `ShapeId` values in `src/field/contract.ts`, e.g. `bug`, `loop`, `orbit`). Optional — leave unset and the frontend resolves one for you, see below. |
-| `layers` | json | Tech cube layers, top to bottom: an array of exactly 4 `{ label, tech }` objects, e.g. `{ "label": "API", "tech": "Express" }`. Optional, same fallback as `shape`. |
-| `caption` | text | Short line shown under the project's shape in the particle field. Optional — falls back to `subtitle`. |
+| `shape` | select | The project's poster, in the film, the sheets and the project page. Valid values are the `ShapeId` union in `src/lib/types.ts`: `bug`, `loop`, `orbit`, `candles`, `globe`, `clocks`, `coins`, `browser`, `tictactoe`, `battleship`, `generic`. Optional — leave unset and the frontend resolves one for you, see below. |
+| `layers` | json | Architecture layers, top to bottom, shown in the Architecture section of the project page: an array of `{ label, tech }` objects (4 expected), e.g. `{ "label": "API", "tech": "Express" }`. Optional, same fallback as `shape`. |
+| `caption` | text | The project's one-line headline in the film (the case study headline for the lead project). Optional — falls back to `subtitle`. |
+
+The `shape` select was added by `backend/pb_migrations/1790254698_updated_projects_visuals.js` with the
+previous design's shapes; `1790340000_updated_projects_shape_posters.js` sets its values to the `ShapeId`
+union above (`grid`, `clusters`, `helix`, `at` and `constellation` go, `generic` comes in) and first
+clears the shape of any record still on a removed value. Its down migration restores the old values
+and clears `generic`. The frontend still ignores any value outside `ShapeId` (`isShapeId()` in
+`src/lib/projectVisuals.ts`, applied when the record is mapped in `src/lib/api.ts`) and falls back to
+the registry, as if the field were empty.
 
 #### How `shape` / `layers` / `caption` are resolved
 
@@ -87,21 +98,16 @@ instead of reading `project.shape` etc. directly. For each field it resolves,
 in order:
 
 1. **The CMS value**, if present and valid (`shape` must be one of the known
-   `ShapeId`s; `layers` must be an array of 4 `{ label, tech }` objects) —
-   invalid values are ignored rather than crashing the page.
-2. **A built-in registry**, keyed by `slug`, matching the values baked into
-   `designs/field.html` for the ten shipped projects.
-3. **A generic fallback** for anything else: shape `constellation`, layers
-   derived by chunking the project's `tags` into 4 groups, and `subtitle` as
+   `ShapeId`s; `layers` must be a non-empty array of `{ label, tech }`
+   objects; `caption` must be non-blank) — invalid values are ignored rather
+   than crashing the page.
+2. **A built-in registry**, keyed by `slug`, for the ten shipped projects.
+3. **A generic fallback** for anything else: shape `generic`, 4 layers
+   derived by chunking the project's `tags`, and `subtitle` (or `title`) as
    the caption.
 
-`visualsFor` also returns a `tint: [top, bottom]` colour pair for the
-project's point cloud. It comes from the registry when the design specifies
-one explicitly (The Loop's own gradient is greyscale, so the registry gives
-it a soft pearl/silver tint instead), otherwise it's parsed from the
-project's `gradient` string via the exported `parseGradientTint()` — the
-first and last hex colours in the gradient, or the field's aqua/peach pair
-if the gradient has no parseable hex colours at all.
+A poster's colours come from the poster itself (`src/take/posters.ts`), not
+from `gradient`.
 
 ### `about_content`
 
