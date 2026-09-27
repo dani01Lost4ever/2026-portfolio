@@ -59,10 +59,10 @@ engine (`Take`) into an empty element and never touches its DOM.
   opacity from the beat alone, with closed-form springs (`math.ts`), so scrubbing backwards and
   forwards always gives the same frame. The take is 71.5 beats long (`T_END`), and frame `T_END` is
   frame 0, so it loops without a seam.
-- **Rest frames and snap.** `RESTS` in `timeline.ts` lists the finished, readable frames. When
-  input stops between two of them the film plays on to the next one, or rewinds to the previous
-  one if it had barely left it. Arrow keys and Page Up/Down jump rest to rest, Space plays the whole
-  take, Home/End go to the start and to Contact.
+- **Rest frames.** Scrolling is free: the film stays wherever the scroll leaves it. `RESTS` in
+  `timeline.ts` lists the finished, readable frames. Arrow keys and Page Up/Down jump rest to rest,
+  Space plays the take and holds on each rest long enough to read it, Home/End go to the start and
+  to Contact.
 - **Chapters and hashes.** `CHAPTERS` names seven beats: `top`, `work`, `case`, `now`,
   `experience`, `about`, `contact`. The chapter on screen is mirrored in the URL hash
   (`/#contact`), a reload or link with a hash starts the film there, and the command palette and

@@ -59,7 +59,7 @@ sheets, content mapping and the reduced-motion reading page).
 ├── src/
 │   ├── take/                 ← The One Take home page
 │   │   ├── engine/               ← The film engine (no React)
-│   │   │   ├── Take.ts               ← Class: input, smooth wheel, snap to rest frames, keys, loop, API
+│   │   │   ├── Take.ts               ← Class: input, smooth wheel, play with rest holds, keys, loop, API
 │   │   │   ├── timeline.ts           ← T_END, RESTS, CHAPTERS
 │   │   │   ├── scenes.ts             ← seek(t): every style as a function of the beat
 │   │   │   ├── build.ts              ← Creates the film's DOM once

@@ -40,8 +40,8 @@ section, except on `/` while the film runs (the film reads its own hash).
 
 | File | Notes |
 |------|-------|
-| `Take.ts` | The engine class: wheel/scroll/touch/keyboard input, smooth wheel, snap to rest frames, play, loop, public API |
-| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `CHAPTERS`, `BENTO_OPEN`, `CASE_BEAT` |
+| `Take.ts` | The engine class: wheel/scroll/touch/keyboard input, smooth wheel, play with rest holds, loop, public API |
+| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `restHolds`, `CHAPTERS`, `BENTO_OPEN`, `CASE_BEAT` |
 | `scenes.ts` | `seek(k, t)`: every style of the film as a function of the beat |
 | `build.ts` | Creates the film's DOM once from the content; marks decorative layers `aria-hidden` |
 | `layout.ts` | Every viewport-dependent size and position, computed on mount and on resize |
@@ -134,14 +134,19 @@ screen), 38–54 stage (phone, Dynamic Island → window with Experience and Abo
 black shape), 62–71.5 wall (contact card, back to the wordmark). Frame `T_END` equals frame 0, so
 the take loops.
 
-### Rest frames and snap
+### Scroll, rest frames and playback
 
-`RESTS` lists the finished, readable frames. When wheel or scroll input stops between two rests
-(170 ms after a wheel, 240 ms after native scroll, never while a finger is down), the film plays on
-to the next rest if it is at least 35% of the way there (`SNAP_FWD`), otherwise it rewinds to the
-previous one; the direction of the last input decides which way that threshold is measured.
-`seekFrame(b)` holds a single frame until the next input (for reviewing frames; in dev the engine
-is on `window.oneTake`).
+Scrolling is free: the film stays on whatever frame the scroll leaves it, between rests included.
+Wheel input moves a goal and the film catches up with it, in `WHEEL_TAU` (0.16 s) for a mouse
+wheel's notches and `FINE_TAU` (0.06 s) for a trackpad, whose small deltas already carry the
+system's inertia (a wheel event under 40 px marks the next 600 ms as trackpad). Native scroll
+(touch, the scrollbar) is followed in `FINE_TAU` too. Ctrl + wheel is left to the browser's zoom.
+
+`RESTS` lists the finished, readable frames. The arrow keys and Page Up/Down glide rest to rest.
+Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.9 s
+to land plus the words that frame shows at 4 words a second, between 1.2 and 7 s, so the holds
+follow the CMS text. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in
+dev the engine is on `window.oneTake`).
 
 ### Chapters and URL hashes
 
