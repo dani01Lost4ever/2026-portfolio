@@ -13,7 +13,7 @@ import { clamp, eio, lerp, lerpR, seg, smooth, SP, spr, track, type Rect } from 
 import { setIris } from './iris'
 import type { WordLetter } from './glassWordGL'
 import { UNFOLD } from './layout'
-import { BENTO_OPEN, CHAPTERS, T_END } from './timeline'
+import { BENTO_OPEN, chapterAt, CHAPTERS, T_END } from './timeline'
 import type { Take } from './Take'
 
 // ─── helpers shared by several scenes ───────────────────────────────────────────
@@ -622,17 +622,22 @@ function sceneCursor(k: Take, t: number) {
 
 const DARK: readonly [number, number][] = [[18.7, 38.35], [60.95, 62.45], [68.45, 68.8]]
 
-function sceneChrome(k: Take, t: number) {
+/** The timeline's playhead and the timecode, at beat t. */
+export function hudAt(k: Take, t: number) {
   const { E } = k
-  E.chrome.classList.toggle('dark', DARK.some(([a, b]) => t >= a && t < b))
   E.ph.style.left = `calc(${((t / T_END) * 100).toFixed(3)}% - 1px)`
   const secs = t * 0.5
   E.tc.textContent = `beat ${t.toFixed(1).padStart(4, '0')} / ${T_END} · ${String(Math.floor(secs / 60)).padStart(2, '0')}:${(secs % 60).toFixed(1).padStart(4, '0')}`
-  let on = 0
-  CHAPTERS.forEach((ch, i) => { if (t >= ch.beat - 0.5) on = i })
+}
+
+// the nav's lens and highlight follow k.chapter, or the chapter a jump is heading for (Take)
+function sceneChrome(k: Take, t: number) {
+  const { E } = k
+  E.chrome.classList.toggle('dark', DARK.some(([a, b]) => t >= a && t < b))
+  hudAt(k, t)
+  const on = chapterAt(t)
   if (on !== k.chapter) {
     k.chapter = on
-    E.chap.forEach((b, i) => { b.classList.toggle('on', i === on); if (i === on) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current') })
     k.opts.onChapter?.(CHAPTERS[on].id)
   }
 }

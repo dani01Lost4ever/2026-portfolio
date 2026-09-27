@@ -126,7 +126,8 @@ main { display: block; }
   justify-content: space-between;
   gap: 16px;
   padding: 16px var(--gutter);
-  background: var(--paper);
+  /* a scroll edge instead of a bar: paper behind the brand, fading where the page slides under */
+  background: linear-gradient(var(--paper) 60%, color-mix(in srgb, var(--paper) 0%, transparent));
 }
 .ph-brand {
   font: 500 11.5px/1.25 var(--hud);
@@ -139,9 +140,16 @@ main { display: block; }
 .ph-brand span { opacity: .55; }
 .ph-logo { display: none; }
 @media (max-width: 520px) { .ph-full { display: none; } .ph-logo { display: inline; } }
-.ph-nav { display: flex; align-items: center; gap: 4px; }
+/* the same glass capsule as the film's chapter nav, with its last item as the lens */
+.ph-nav {
+  display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px;
+  background: rgba(255, 255, 255, .24) linear-gradient(rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 55%);
+  -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
+  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .6), inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 28px -12px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .07);
+}
+@media (prefers-reduced-transparency: reduce) { .ph-nav { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); } }
 .ph-link {
-  padding: 9px 13px;
+  padding: 7px 12px;
   border-radius: 999px;
   font: 500 11px/1 var(--hud);
   letter-spacing: .06em;
@@ -151,8 +159,12 @@ main { display: block; }
   transition: box-shadow .12s;
 }
 .ph-link:hover { box-shadow: inset 0 0 0 1px var(--rule); }
-.ph-pill { box-shadow: inset 0 0 0 1px var(--ink); }
-.ph-pill:hover { box-shadow: inset 0 0 0 2px var(--ink); }
+.ph-pill {
+  background: rgba(255, 255, 255, .66) linear-gradient(rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 60%);
+  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .95), 0 3px 10px -3px rgba(0, 0, 0, .22), 0 0 0 .5px rgba(0, 0, 0, .05);
+}
+.ph-pill:hover { box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .95), 0 4px 14px -3px rgba(0, 0, 0, .28), 0 0 0 1px rgba(0, 0, 0, .12); }
+.ph-link:active { transform: scale(.97); }
 
 /* ---------- footer ---------- */
 .site-footer {

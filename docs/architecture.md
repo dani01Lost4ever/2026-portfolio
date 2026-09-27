@@ -67,6 +67,7 @@ sheets, content mapping and the reduced-motion reading page).
 │   │   │   ├── content.ts            ← ContentBundle → what the film shows
 │   │   │   ├── glass.ts              ← Liquid glass (cloned backdrop + feDisplacementMap)
 │   │   │   ├── glassWordGL.ts        ← The glass title on WebGL (SDF atlas, smooth-union melt)
+│   │   │   ├── navGlass.ts           ← glass chapter nav: spring lens, rim light
 │   │   │   ├── iris.ts, math.ts, dom.ts, icons.ts
 │   │   ├── TakeFilm.tsx          ← Mounts the engine, sheets, URL hash per chapter
 │   │   ├── ProjectSheet.tsx, ContactSheet.tsx, useSheetMotion.ts
