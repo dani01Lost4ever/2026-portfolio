@@ -49,6 +49,13 @@ export const CHAPTERS: readonly { id: ChapterId; label: string; beat: number }[]
   { id: 'contact', label: 'Contact', beat: 65.5 },
 ]
 
+/** The chapter on screen at beat b: each one starts half a beat before its beat. */
+export function chapterAt(b: number): number {
+  let on = 0
+  CHAPTERS.forEach((ch, i) => { if (b >= ch.beat - 0.5) on = i })
+  return on
+}
+
 /** Where the bento rests and its tiles can be opened. */
 export const BENTO_OPEN: readonly [number, number] = [14.9, 17.4]
 export const CASE_BEAT = 22.5

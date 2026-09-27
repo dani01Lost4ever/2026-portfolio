@@ -48,7 +48,8 @@ section, except on `/` while the film runs (the film reads its own hash).
 | `content.ts` | `takeContent(bundle)`: the CMS `ContentBundle` mapped to what the film shows |
 | `glass.ts` | Liquid glass: a cloned backdrop run through `feDisplacementMap`, with distance-field maps (analytic rounded-rect SDF, exact EDT for glyphs) |
 | `glassWordGL.ts` | The case study's glass title on one WebGL canvas: the letters' signed distance fields in one atlas, the poster rasterised once (fonts inlined) as the backdrop, the melt into the droplet as a smooth union. Used when WebGL is available and the title has at most 12 letters; the SVG glass letters are the fallback |
-| `iris.ts` | Six-blade iris aperture (SVG paths) |
+| `iris.ts` | Six-blade iris aperture (SVG paths), also the shutter of a chapter cut |
+| `navGlass.ts` | The chapter nav's glass: `NavLens` (the spring-driven lens on the chapter) and `setRim` (rim light for a glass capsule) |
 | `math.ts` | `clamp`/`lerp`/easing, closed-form spring step response, `spr`, `track`, `SPB` |
 | `dom.ts` | The small set of per-frame DOM writes (boxes, masked text lines) |
 | `icons.ts` | Inline SVG glyphs used inside the glass and black shapes |
@@ -166,6 +167,35 @@ A chapter is "on" from half a beat before its beat. `TakeFilm` writes the chapte
 hash with `history.replaceState` (`top` clears it), and on mount starts the film at the chapter
 named by the hash, so `/#contact` is shareable and a reload lands there.
 
+### Jumping to a chapter
+
+`goTo(b)` in `Take.ts` (the chapter nav, the timeline, Home/End, the brand, `goToChapter`) picks
+between two moves:
+
+- **Play there** when the target is at most `NEAR` (9) beats ahead, counting through the loop, or at
+  most `NEAR_BACK` (1.5) beats behind: the film runs to it in `350 + 170 × beats` ms, eased. Work →
+  Case, Now → Experience, Experience → About and Contact → Intro (through the wall and back to the
+  wordmark) play this way.
+- **Cut** for anything further or behind: the film's six-blade iris closes over the frame in
+  `CUT_CLOSE` (420 ms, easing in), the playhead and timecode cross the timeline meanwhile, the take
+  jumps once the iris is shut, and the iris opens on a critically damped spring (`CUT_OPEN`,
+  response 0.55 s). While it closes, wheel, scroll and keys are swallowed; a new jump retargets the
+  cut, or closes the iris again from where it is if it was already opening. The HUD turns light over
+  the shut iris (`#chrome.shut`).
+
+The nav's lens and its highlighted label move to the target chapter on the click, not on arrival
+(`heading` in `Take.ts`).
+
+### The chapter nav
+
+The chapter nav (`#tk-chap`) and the Play button are capsules of glass: `backdrop-filter`
+blur and saturation over the film, a translucent tint that turns dark over dark scenes, and the rim
+light of the film's glass as a background (`setRim`, from `rrMaps` in `glass.ts`). A lens of thicker
+glass (`NavLens` in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping
+0.78) carries it to the next one, and it stretches with its speed. Under
+`prefers-reduced-transparency` the capsules are solid. The page header's nav uses the same capsule
+in CSS, with its last item as the lens.
+
 ### The work grid
 
 The first nine projects become tiles; tile 0 is also the wordmark's period, the pill and the iris.
@@ -215,8 +245,8 @@ bracketed placeholders like `[City]`.
 
 `useSectionJump().jump(id)` works from anywhere:
 
-- on `/` with the film running and `id` a `ChapterId`: `useTake().goToChapter(id)` glides the film
-  there, and the hash is updated;
+- on `/` with the film running and `id` a `ChapterId`: `useTake().goToChapter(id)` plays the film
+  there or cuts to it (see "Jumping to a chapter"), and the hash is updated;
 - on `/` without the film (reduced motion): scrolls to the element with that id, updates the hash
   and moves focus to it;
 - on any other route: navigates to `/#id`, and the home page lands on it once rendered.

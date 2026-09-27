@@ -13,6 +13,7 @@ import { Glass } from './glass'
 import { GlassWordGL } from './glassWordGL'
 import { ICO } from './icons'
 import { makeIris, type Iris } from './iris'
+import { NavLens } from './navGlass'
 import type { Take } from './Take'
 import { CHAPTERS, T_END } from './timeline'
 
@@ -227,12 +228,16 @@ export function buildEls(k: Take) {
   const lpC = lp.querySelector('circle') as SVGCircleElement
   const cursor = mk('div', 'abs', curL, ICO.cursor); cursor.id = 'cursor'
 
+  // the shutter a far chapter jump closes over the film, below the chrome
+  const cutL = mk('div', 'abs', stage); cutL.id = 'tk-cut'
+  const cutIris = makeIris(cutL); hide(cutIris.s); cutIris.s.style.display = 'none'
+
   // chrome
   const chrome = mk('div', null, stage); chrome.id = 'chrome'
   chrome.innerHTML = `
     <div id="tk-top">
       <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.fullName)}</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b> <span>· ${esc(c.role.toLowerCase())}, ${esc(c.location)}</span></a>
-      <nav id="tk-chap" aria-label="Chapters"></nav>
+      <nav id="tk-chap" aria-label="Chapters"><span class="lens" aria-hidden="true"></span></nav>
       <div class="top-r">
         <button id="tk-projects" type="button">Projects</button>
         <button id="tk-play" type="button" aria-pressed="false"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg><span>Play the take</span></button>
@@ -242,7 +247,9 @@ export function buildEls(k: Take) {
       <div id="tk-tl" aria-hidden="true"><div id="tk-ph"></div></div>
       <div id="tk-meta" aria-hidden="true"><span>One take · ${T_END} beats · 120 bpm</span><span id="tk-tc">beat 00.0</span><span class="hint">scroll · arrows jump · space plays</span></div>
     </div>`
-  const chap = CHAPTERS.map(ch => { const b = mk('button', null, chrome.querySelector('#tk-chap')); b.type = 'button'; b.textContent = ch.label; return b })
+  const chapNav = chrome.querySelector('#tk-chap') as HTMLElement
+  const chap = CHAPTERS.map(ch => { const b = mk('button', null, chapNav); b.type = 'button'; b.textContent = ch.label; return b })
+  const navLens = new NavLens(chapNav, chapNav.querySelector('.lens') as HTMLElement, chap)
   const tl = chrome.querySelector('#tk-tl') as HTMLDivElement
   for (let b = 0; b <= Math.floor(T_END); b++) {
     const tk = mk('div', 'tick' + (CHAPTERS.some(ch => Math.abs(ch.beat - b) < 0.5) ? ' ch' : ''), tl)
@@ -260,8 +267,8 @@ export function buildEls(k: Take) {
     frame, fMold, fPaint, fMat, fImg,
     cta, ctaLb: ctaL2, ck1, ck2, rdBarA, rdBarB, route, plane,
     wshadow, wmat, wprint, wiris, wmold, placard, pl, plBtn, leaves, leafG,
-    ring, lp, lpC, cursor,
-    chrome, chap, tl, ph: chrome.querySelector('#tk-ph') as HTMLDivElement, tc: chrome.querySelector('#tk-tc') as HTMLSpanElement,
+    ring, lp, lpC, cursor, cutIris,
+    chrome, chap, navLens, tl, ph: chrome.querySelector('#tk-ph') as HTMLDivElement, tc: chrome.querySelector('#tk-tc') as HTMLSpanElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
   }
 }

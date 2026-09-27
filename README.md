@@ -65,8 +65,9 @@ engine (`Take`) into an empty element and never touches its DOM.
   to Contact.
 - **Chapters and hashes.** `CHAPTERS` names seven beats: `top`, `work`, `case`, `now`,
   `experience`, `about`, `contact`. The chapter on screen is mirrored in the URL hash
-  (`/#contact`), a reload or link with a hash starts the film there, and the command palette and
-  section links glide the film to a chapter.
+  (`/#contact`), a reload or link with a hash starts the film there. The chapter nav, the command
+  palette and section links play the film to a chapter a few beats ahead; a far or backward jump
+  is a cut behind the film's iris. The nav is a capsule of liquid glass with a lens on the chapter.
 - **Sheets.** Opening a project tile, the "All projects" / "Projects" buttons, or the contact
   card's "Write to me" grows a sheet out of that element (`ProjectSheet`, `ContactSheet`). The film
   pauses and page scroll locks until the sheet folds back.
