@@ -5,20 +5,26 @@
 ```
 ┌───────────────────────────────────────────────────────────┐
 │                     Browser (React)                       │
-│                                                            │
-│   ContentProvider (context)                                │
-│   ├── loads from local JSON instantly (no flicker)          │
-│   └── re-fetches from PocketBase in background               │
-│                                                            │
-│   FieldProvider + FieldCanvas (src/field/)                  │
-│   └── one fixed three.js canvas, driven by scroll progress    │
-│       shared by every section below                           │
-│                                                            │
-│   Components (each marks itself up as a field "stop")        │
-│   ├── Hero  ├── Work/ProjectPanel  ├── About  ├── Experience  │
-│   ├── Contact         ├── Nav             ├── ProjectDetail     │
-│   └── SiteFooter / CommandPalette                              │
-└────────────────────┬───────────────────────────────────────┘
+│                                                           │
+│   ContentProvider (context)                               │
+│   ├── loads from local JSON instantly (no flicker)        │
+│   └── re-fetches from PocketBase in background            │
+│                                                           │
+│   TakeProvider (src/take/)                                │
+│   └── exposes the film's goToChapter() to the palette     │
+│       and section links while the home page is mounted    │
+│                                                           │
+│   Routes                                                  │
+│   ├── /               Home                                │
+│   │   ├── TakeFilm → Take engine (own DOM, scroll clock)  │
+│   │   │   ├── ProjectSheet / ContactSheet                 │
+│   │   │   └── TakeDocument (visually hidden copy)         │
+│   │   └── reduced motion: PageHeader + TakeDocument       │
+│   │                       + SiteFooter                    │
+│   ├── /project/:slug  ProjectDetail                       │
+│   └── *               NotFound                            │
+│   CommandPalette, PosterDefs (SVG symbols, once)          │
+└────────────────────┬──────────────────────────────────────┘
                      │  PocketBase JS SDK (REST)
 ┌────────────────────▼────────────────────────────────┐
 │              PocketBase  :8090                      │
@@ -30,15 +36,15 @@
 └─────────────────────────────────────────────────────┘
 ```
 
-See `docs/frontend.md` for how the field drives the page (the stop contract, progress mapping,
-shapes, tech cube, smooth scroll, and the reduced-motion/no-WebGL fallback).
+See `docs/frontend.md` for how the film works (the scroll clock, beats, rest frames, chapters,
+sheets, content mapping and the reduced-motion reading page).
 
 ## Directory Structure
 
 ```
 2026-portfolio/
 │
-├── designs/                  ← Static HTML prototypes (field.html is the built design's reference)
+├── designs/                  ← Static HTML prototypes (take.html is the built design's reference)
 │
 ├── backend/                  ← PocketBase binary + data
 │   ├── pocketbase.exe
@@ -51,13 +57,25 @@ shapes, tech cube, smooth scroll, and the reduced-motion/no-WebGL fallback).
 │   └── seed.mjs              ← One-time bootstrap script
 │
 ├── src/
-│   ├── field/                 ← The particle field: contract, engine, shapes, tech cube
-│   │   ├── contract.ts            ← ShapeId union, FieldApi, data-attribute reference
-│   │   ├── FieldProvider.tsx, FieldCanvas.tsx, useField.ts
-│   │   ├── smoothScroll.ts        ← Lenis + GSAP ScrollTrigger
-│   │   ├── engine/                 ← FieldController (DOM driver) + FieldEngine (three.js)
-│   │   └── techcube/                ← Per-project isometric tech cube
-│   ├── components/           ← UI building blocks
+│   ├── take/                 ← The One Take home page
+│   │   ├── engine/               ← The film engine (no React)
+│   │   │   ├── Take.ts               ← Class: input, smooth wheel, snap to rest frames, keys, loop, API
+│   │   │   ├── timeline.ts           ← T_END, RESTS, CHAPTERS
+│   │   │   ├── scenes.ts             ← seek(t): every style as a function of the beat
+│   │   │   ├── build.ts              ← Creates the film's DOM once
+│   │   │   ├── layout.ts             ← Viewport-dependent sizes and positions
+│   │   │   ├── content.ts            ← ContentBundle → what the film shows
+│   │   │   ├── glass.ts              ← Liquid glass (cloned backdrop + feDisplacementMap)
+│   │   │   ├── glassWordGL.ts        ← The glass title on WebGL (SDF atlas, smooth-union melt)
+│   │   │   ├── iris.ts, math.ts, dom.ts, icons.ts
+│   │   ├── TakeFilm.tsx          ← Mounts the engine, sheets, URL hash per chapter
+│   │   ├── ProjectSheet.tsx, ContactSheet.tsx, useSheetMotion.ts
+│   │   ├── TakeDocument.tsx      ← Semantic copy of the film / reduced-motion page
+│   │   ├── TakeContext.ts, TakeProvider.tsx   ← ChapterId, useTake()
+│   │   ├── posters.ts, Poster.tsx             ← SVG poster symbols per ShapeId
+│   │   ├── useReducedMotion.ts
+│   │   └── take.css
+│   ├── components/           ← Shared UI (PageHeader, SiteFooter, CommandPalette, ContactForm, …)
 │   ├── context/
 │   │   ├── ContentContext.tsx  ← Provider component
 │   │   └── content-hooks.ts    ← Context, JSON defaults, useX() hooks
@@ -67,12 +85,13 @@ shapes, tech cube, smooth scroll, and the reduced-motion/no-WebGL fallback).
 │   │   ├── projects.json
 │   │   ├── about.json
 │   │   ├── contact.json
-│   │   └── experience.json
+│   │   ├── experience.json
+│   │   └── now.json            ← "Now" items; JSON only, no PocketBase collection
 │   ├── lib/
 │   │   ├── pb.ts               ← PocketBase singleton client
 │   │   ├── api.ts               ← Typed fetchers (one per collection)
-│   │   ├── projectVisuals.ts     ← Resolves each project's field shape / tech-cube layers / tint
-│   │   └── types.ts               ← Shared TypeScript interfaces
+│   │   ├── projectVisuals.ts     ← Resolves each project's poster shape / architecture layers / caption
+│   │   └── types.ts               ← Shared TypeScript interfaces (incl. ShapeId, CubeLayer)
 │   ├── pages/
 │   │   ├── Home.tsx
 │   │   ├── ProjectDetail.tsx
@@ -101,7 +120,9 @@ App boot
           ├─► fetchHero()    → pb.collection('hero_content')
           ├─► fetchProjects()→ pb.collection('projects')
           ├─► fetchAbout()   → pb.collection('about_content')
-          └─► fetchContact() → pb.collection('contact_content')
+          ├─► fetchContact() → pb.collection('contact_content')
+          ├─► fetchExperience() → pb.collection('work_experience'), pb.collection('education')
+          └─► now            → src/data/now.json (always; no collection)
                 │
                 ├─ success → setContent(liveData)  ← components re-render
                 └─ failure → keep JSON defaults (silent fallback)
@@ -115,9 +136,9 @@ App boot
 | Language | TypeScript | 5.9 |
 | Build tool | Vite | 8 |
 | Routing | React Router | 7 |
-| 3D / particle field | three.js (custom shaders, no R3F/drei) | 0.183 |
-| Scroll animation | GSAP + ScrollTrigger | 3.14 |
-| Smooth scroll | Lenis | 1.3 |
+| Home page film | Plain DOM + SVG filters, hand-written springs (no library) | — |
+| Command palette | cmdk | 1.1 |
+| Head tags | react-helmet-async | 3 |
 | Backend | PocketBase | 0.36 |
 | Database | SQLite (embedded) | — |
 | SDK | pocketbase JS | 0.26 |

@@ -1,13 +1,17 @@
-import { useEffect } from 'react'
+/**
+ * Home — the One Take film. With reduced motion the same content is a plain reading page
+ * (TakeDocument with links), under the regular page header and footer.
+ */
+
+import { useMemo } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useContent } from '../context/content-hooks'
-import { useField } from '../field/useField'
-import Hero from '../components/Hero'
-import Work from '../components/Work'
-import About from '../components/About'
-import Experience from '../components/Experience'
-import Contact from '../components/Contact'
+import PageHeader from '../components/PageHeader'
 import SiteFooter from '../components/SiteFooter'
+import TakeFilm from '../take/TakeFilm'
+import TakeDocument from '../take/TakeDocument'
+import { takeContent } from '../take/engine/content'
+import { useReducedMotion } from '../take/useReducedMotion'
 
 function HomeSeo() {
   const { hero } = useContent()
@@ -24,25 +28,28 @@ function HomeSeo() {
 }
 
 export default function Home() {
-  const field = useField()
-  const content = useContent()
+  const reduced = useReducedMotion()
+  const bundle = useContent()
+  const content = useMemo(() => takeContent(bundle), [bundle])
 
-  // Stops change when CMS content swaps in (project count, skill groups, roles).
-  useEffect(() => {
-    field?.refresh()
-  }, [field, content])
-
+  if (reduced) {
+    return (
+      <>
+        <HomeSeo />
+        <PageHeader />
+        <main id="main" tabIndex={-1}>
+          <TakeDocument c={content} interactive />
+        </main>
+        <SiteFooter />
+      </>
+    )
+  }
   return (
     <>
       <HomeSeo />
       <main id="main" tabIndex={-1}>
-        <Hero />
-        <Work />
-        <About />
-        <Experience />
-        <Contact />
+        <TakeFilm />
       </main>
-      <SiteFooter />
     </>
   )
 }

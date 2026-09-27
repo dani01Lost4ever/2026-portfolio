@@ -1,12 +1,22 @@
-import { useContact } from '../context/content-hooks'
-import SectionLink from './SectionLink'
+/** SiteFooter — copyright and a way back to the top of the page, under a hairline. */
 
-export default function SiteFooter({ topId = 'top' }: { topId?: string }) {
+import type { MouseEvent } from 'react'
+import { useContact } from '../context/content-hooks'
+
+export default function SiteFooter() {
   const contact = useContact()
+
+  function toTop(e: MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault()
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' })
+    document.getElementById('main')?.focus({ preventScroll: true })
+  }
+
   return (
     <footer className="site-footer">
       <span>{contact.copyright}</span>
-      <SectionLink to={topId}>Back to top</SectionLink>
+      <a href="#main" onClick={toTop}>Back to top</a>
     </footer>
   )
 }
