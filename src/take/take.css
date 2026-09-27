@@ -154,9 +154,6 @@
 .take .brand b { font-weight: 600; }
 .take .brand span { opacity: .55; }
 .take .brand .b-logo { display: none; }
-.take .brand .avail { opacity: 1; margin-left: 14px; display: inline-flex; align-items: center; gap: 6px; }
-.take .brand .avail::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2FB463; box-shadow: 0 0 0 3px rgba(47, 180, 99, .18); }
-@media (max-width: 1180px) { .take .brand .avail { display: none; } }
 @media (max-width: 520px) { .take .brand .b-full { display: none; } .take .brand .b-logo { display: inline; } }
 .take #tk-chap { display: flex; gap: 2px; pointer-events: auto; }
 .take #tk-chap button, .take #tk-projects { all: unset; cursor: pointer; padding: 7px 11px; border-radius: 999px; font: 500 11px/1 var(--hud); letter-spacing: .06em; text-transform: uppercase; opacity: .5; }

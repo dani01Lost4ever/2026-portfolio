@@ -231,7 +231,7 @@ export function buildEls(k: Take) {
   const chrome = mk('div', null, stage); chrome.id = 'chrome'
   chrome.innerHTML = `
     <div id="tk-top">
-      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.fullName)}</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b> <span>· ${esc(c.role.toLowerCase())}, ${esc(c.location)}</span>${c.available ? '<span class="avail">Available for work</span>' : ''}</a>
+      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.fullName)}</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b> <span>· ${esc(c.role.toLowerCase())}, ${esc(c.location)}</span></a>
       <nav id="tk-chap" aria-label="Chapters"></nav>
       <div class="top-r">
         <button id="tk-projects" type="button">Projects</button>

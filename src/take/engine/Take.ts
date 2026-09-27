@@ -1,10 +1,10 @@
 /**
  * Take — the film engine. React mounts it into an empty element and never touches its DOM.
  *
- * Scroll is the film's clock: 1 beat = BEAT_PX of page scroll. Wheel input moves a goal and
- * the film glides to it; when input stops between two rest frames the film plays on to the
- * end of that piece at film speed, or rewinds to its start if it had barely begun. Touch and
- * the scrollbar stay native. Space plays the whole take at 120 BPM; arrows jump rest to rest.
+ * Scroll is the film's clock: 1 beat = BEAT_PX of page scroll, and the film stays wherever
+ * the scroll leaves it. Wheel input moves a goal the film glides to: over a mouse wheel's
+ * notches, closely behind a trackpad's stream. Touch and the scrollbar stay native. Space
+ * plays the take at 120 BPM, holding on each rest frame to read it; arrows jump rest to rest.
  */
 
 import { buildEls, type Els } from './build'
@@ -12,15 +12,13 @@ import type { TakeContent } from './content'
 import { computeLayout, type Lay } from './layout'
 import { clamp, eio, lerp, SPB } from './math'
 import { seek, tile0Screen } from './scenes'
-import { CASE_BEAT, CHAPTERS, RESTS, T_END } from './timeline'
+import { CASE_BEAT, CHAPTERS, restHolds, RESTS, T_END } from './timeline'
 import type { ChapterId } from '../TakeContext'
 
 export interface TakeOptions {
   content: TakeContent
   /** Beat to open on (e.g. to keep the position when content reloads). */
   startBeat?: number
-  /** Hold that frame (no snap) until the first input: for a deep link that lands mid-piece. */
-  holdStart?: boolean
   /** Keep playing: the take was playing when the engine was rebuilt. */
   startPlaying?: boolean
   /** Start paused: a sheet is open over the film. */
@@ -33,7 +31,9 @@ export interface TakeOptions {
   onChapter?(id: ChapterId): void
 }
 
-const SNAP_FWD = 0.35, SNAP_RATE = 2.2, REWIND_RATE = 3.4, WHEEL_TAU = 0.2
+const SNAP_RATE = 2.2, REWIND_RATE = 3.4
+/** Seconds the film takes to catch up: a mouse wheel's notch, a trackpad or touch stream. */
+const WHEEL_TAU = 0.16, FINE_TAU = 0.06
 
 export class Take {
   readonly root: HTMLElement
@@ -50,12 +50,12 @@ export class Take {
   private tween: { from: number; to: number; t0: number; dur: number } | null = null
   private snap: { to: number } | null = null
   private src: 'virtual' | 'native' = 'virtual'
-  private hold = false
+  private tau = WHEEL_TAU
+  private fineUntil = 0
+  private holds: number[]
+  private holdUntil = 0
   private paused = false
   private last = performance.now()
-  private lastInput = 0
-  private lastDir = 1
-  private touching = false
   private ownY = -1
   private lastT = -1
   private raf = 0
@@ -74,10 +74,10 @@ export class Take {
     this.E = buildEls(this)
     if (!this.c.projects.length) this.E.projectsBtn.hidden = true
     this.L = computeLayout(this)
+    this.holds = restHolds(this.c)
     this.bind()
     if ('scrollRestoration' in history) history.scrollRestoration = 'manual'
     this.tT = this.goal = clamp(opts.startBeat ?? 0, 0, T_END - 0.001)
-    this.hold = !!opts.holdStart
     this.paused = !!opts.startPaused
     if (opts.startPlaying) this.setPlaying(true)
     this.writeScroll(true)
@@ -123,9 +123,9 @@ export class Take {
 
   playToCase() { this.snapTo(CASE_BEAT) }
 
-  /** For reviewing single frames: holds that frame until the next input. */
+  /** For reviewing single frames: jumps there and stops. */
   seekFrame(b: number) {
-    this.stopAuto(); this.hold = true
+    this.stopAuto()
     this.tT = this.goal = b
     this.writeScroll(true); seek(this, b); this.lastT = b
   }
@@ -156,14 +156,14 @@ export class Take {
   // ─── motion ─────────────────────────────────────────────────────────────────────
 
   private setPlaying(v: boolean) {
-    this.playing = v; this.tween = null; this.snap = null
+    this.playing = v; this.tween = null; this.snap = null; this.holdUntil = 0
     const b = this.E.play
     b.setAttribute('aria-pressed', String(v))
     ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : 'Play the take'
     b.querySelector('path')?.setAttribute('d', v ? 'M1 .5h3v9H1zM6 .5h3v9H6z' : 'M1 0.5v9l8-4.5z')
   }
 
-  private stopAuto() { if (this.playing) this.setPlaying(false); this.tween = null; this.snap = null; this.hold = false }
+  private stopAuto() { if (this.playing) this.setPlaying(false); this.tween = null; this.snap = null }
 
   private goTo(b: number) { this.stopAuto(); this.tween = { from: this.tT, to: b, t0: performance.now(), dur: 900 + Math.abs(b - this.tT) * 12 } }
 
@@ -173,17 +173,6 @@ export class Take {
     if (dir > 0) return RESTS.find(r => r > t + 0.02) ?? T_END
     for (let i = RESTS.length - 1; i >= 0; i--) if (RESTS[i] < t - 0.02) return RESTS[i]
     return 0
-  }
-
-  private snapTarget(t: number, dir: number): number | null {
-    for (let i = 0; i < RESTS.length - 1; i++) {
-      const a = RESTS[i], b = RESTS[i + 1]
-      if (t < a - 0.001 || t > b + 0.001) continue
-      if (t - a < 0.02 || b - t < 0.02) return null
-      const p = (t - a) / (b - a)
-      return dir >= 0 ? (p >= SNAP_FWD ? b : a) : (p <= 1 - SNAP_FWD ? a : b)
-    }
-    return null
   }
 
   private writeScroll(force = false) {
@@ -199,20 +188,21 @@ export class Take {
         const q = clamp((now - this.tween.t0) / this.tween.dur)
         this.tT = this.goal = lerp(this.tween.from, this.tween.to, eio(q))
         if (q >= 1) { this.tween = null; this.src = 'virtual' }
-      } else if (this.playing) this.tT = this.goal = this.tT + dt / SPB
-      else if (this.snap) {
+      } else if (this.playing) {
+        // play on at film speed, stopping on each rest frame long enough to read it
+        if (now >= this.holdUntil) {
+          const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
+          if (i < 0) this.tT = this.goal = next
+          else { this.tT = this.goal = RESTS[i]; this.holdUntil = now + this.holds[i] * 1000 }
+        }
+      } else if (this.snap) {
         const rem = this.snap.to - this.tT, dir = Math.sign(rem)
         const v = (dir > 0 ? SNAP_RATE : REWIND_RATE) * Math.min(1, 0.3 + Math.abs(rem) / 0.5)
         if (Math.abs(rem) <= v * dt) { this.tT = this.goal = this.snap.to; this.snap = null }
         else this.tT = this.goal = this.tT + dir * v * dt
       } else {
-        this.tT += (this.goal - this.tT) * (1 - Math.exp(-dt / (this.src === 'native' ? 0.06 : WHEEL_TAU)))
+        this.tT += (this.goal - this.tT) * (1 - Math.exp(-dt / this.tau))
         if (Math.abs(this.goal - this.tT) < 1e-4) this.tT = this.goal
-        const idle = now - this.lastInput > (this.src === 'native' ? 240 : 170)
-        if (!this.hold && !this.touching && idle && Math.abs(this.goal - this.tT) < 0.03) {
-          const to = this.snapTarget(this.tT, this.lastDir)
-          if (to != null) this.snap = { to }
-        }
       }
       // last frame = first frame, so the take loops without a seam
       if (this.tT >= T_END) {
@@ -238,22 +228,24 @@ export class Take {
   private bind() {
     const E = this.E
     this.on('wheel', e => {
-      if (this.paused || (e.target as Element | null)?.closest?.('[data-take-prevent]')) return
+      // ctrl + wheel is a pinch or a zoom: the browser's, not the film's
+      if (this.paused || e.ctrlKey || (e.target as Element | null)?.closest?.('[data-take-prevent]')) return
       e.preventDefault(); this.stopAuto()
       const d = clamp(e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? this.L.vh : 1), -400, 400)
       this.goal = clamp(this.goal + d / this.L.BEAT_PX, 0, T_END + 1.4)
-      if (d) this.lastDir = Math.sign(d)
-      this.lastInput = performance.now(); this.src = 'virtual'
+      // a trackpad streams small deltas that already carry the system's inertia, so the film
+      // follows it closely for the rest of the gesture; a wheel notch jumps ~100px and is glided over
+      const now = performance.now()
+      if (e.deltaMode === 0 && Math.abs(e.deltaY) < 40) this.fineUntil = now + 600
+      this.tau = now < this.fineUntil ? FINE_TAU : WHEEL_TAU
+      this.src = 'virtual'
     }, { passive: false })
     this.on('scroll', () => {
       if (this.paused || Math.abs(window.scrollY - this.ownY) < 2) return
       this.stopAuto()
-      const g = window.scrollY / this.L.BEAT_PX
-      if (g !== this.goal) this.lastDir = Math.sign(g - this.goal) || this.lastDir
-      this.goal = g; this.lastInput = performance.now(); this.src = 'native'
+      this.goal = window.scrollY / this.L.BEAT_PX; this.tau = FINE_TAU; this.src = 'native'
     }, { passive: true })
-    this.on('touchstart', () => { if (!this.paused) { this.touching = true; this.stopAuto() } }, { passive: true })
-    this.on('touchend', () => { this.touching = false; this.lastInput = performance.now() }, { passive: true })
+    this.on('touchstart', () => { if (!this.paused) this.stopAuto() }, { passive: true })
     this.on('keydown', e => {
       const el = e.target as HTMLElement | null
       if (this.paused || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
@@ -272,7 +264,7 @@ export class Take {
     })
 
     // controls inside the film
-    E.play.addEventListener('click', () => { this.hold = false; this.setPlaying(!this.playing) })
+    E.play.addEventListener('click', () => this.setPlaying(!this.playing))
     E.chap.forEach((b, i) => b.addEventListener('click', () => this.goTo(CHAPTERS[i].beat)))
     E.tl.addEventListener('click', e => { const r = E.tl.getBoundingClientRect(); this.goTo(clamp((e.clientX - r.left) / r.width) * T_END) })
     E.projectsBtn.addEventListener('click', () => this.opts.onOpenProject(0, E.projectsBtn.getBoundingClientRect()))

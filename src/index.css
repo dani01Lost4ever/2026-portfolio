@@ -138,9 +138,6 @@ main { display: block; }
 .ph-brand b { font-weight: 600; }
 .ph-brand span { opacity: .55; }
 .ph-logo { display: none; }
-.ph-avail { margin-left: 14px; display: inline-flex; align-items: center; gap: 6px; }
-.ph-avail::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: #2FB463; box-shadow: 0 0 0 3px rgba(47, 180, 99, .18); }
-@media (max-width: 1080px) { .ph-avail { display: none; } }
 @media (max-width: 520px) { .ph-full { display: none; } .ph-logo { display: inline; } }
 .ph-nav { display: flex; align-items: center; gap: 4px; }
 .ph-link {
