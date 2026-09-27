@@ -49,7 +49,7 @@ The home page's "Now" items have no collection: they always come from `src/data/
 
 | Field | Type | Description |
 |-------|------|-------------|
-| `available_for_work` | bool | Shows "Available for work" badge |
+| `available_for_work` | bool | Shows the contact's availability line |
 | `name` | text | Your name |
 | `location` | text | City / country |
 | `taglines` | json | Array of 3 heading lines |

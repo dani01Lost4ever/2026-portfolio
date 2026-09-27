@@ -70,7 +70,7 @@ project sheet and has its own page.
 - Admin UI: `hero_content` → toggle `available_for_work`
 - JSON: set `"availableForWork": false` in `src/data/hero.json`, then re-seed
 
-On: a green "Available for work" chip next to the name in the film's header and the page header, and the contact card, the contact sheet and the reading page show `contact_content.availability`. Off: no chip and no availability line.
+On: the contact card, the contact sheet and the reading page show `contact_content.availability`. Off: no availability line.
 
 ---
 

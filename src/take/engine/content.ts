@@ -54,8 +54,7 @@ export interface TakeContent {
   track: { title: string; artist: string } | null
   email: string
   github: string | null
-  /** The CMS's "available for work" switch; off hides the availability line and the chip. */
-  available: boolean
+  /** The contact's availability line; empty when the CMS's "available for work" switch is off. */
   availability: string
   /** Short brand for narrow screens (the CMS logo, e.g. "DB"). */
   logo: string
@@ -189,7 +188,6 @@ export function takeContent(b: ContentBundle, date = new Date()): TakeContent {
     track: listening && title ? { title, artist } : null,
     email: b.contact.email,
     github: githubProfile(b),
-    available: b.hero.availableForWork !== false,
     availability: b.hero.availableForWork !== false ? cmsText(b.contact.availability) : '',
     logo: cmsText(b.site.logo) || 'DB',
     placardLine: `${role}. ${skills.join(', ')}${skills.length ? '.' : ''}`,
