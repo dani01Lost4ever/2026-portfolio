@@ -201,8 +201,8 @@
   .take #chrome.dark :is(#tk-chap, #tk-play), .take #chrome.shut :is(#tk-chap, #tk-play) { background-color: #1B1B1C; }
 }
 /* The top bar keeps to one row: the brand's role goes first, then the chapter nav (the chapter
-   buttons' job falls to scroll, the keys and the timeline), then the chrome tightens on phones,
-   and on the narrowest ones the prototypes link gives way (the page header and ⌘K still reach it). */
+   buttons' job falls to scroll, the keys and the timeline), then the chrome tightens on phones.
+   Under 350 px there is no room for the Prototypes link, and Projects and Play get their room back. */
 @media (max-width: 1260px) {
   .take .brand span { display: none; }
 }
@@ -219,7 +219,17 @@
   .take #tk-play { padding: 10px 12px; }
 }
 @media (max-width: 371px) {
+  .take #tk-top { gap: 8px; }
+  .take .top-r { gap: 2px; }
+  .take #tk-projects, .take #tk-protos { padding: 7px 6px; }
+  .take #tk-play { padding: 10px; }
+}
+@media (max-width: 349px) {
   .take #tk-protos { display: none; }
+  .take #tk-top { gap: 16px; }
+  .take .top-r { gap: 6px; }
+  .take #tk-projects { padding: 7px 12px; }
+  .take #tk-play { padding: 10px 16px; }
 }
 
 /* ==========================================================================

@@ -98,7 +98,10 @@ The gallery at `/prototypes` is `src/data/prototypes.json` (JSON only: no Pocket
 re-seed needed, but a rebuild is). Cards show in the file's order.
 
 1. Put the prototype somewhere it can be opened:
-   - a static HTML page in `designs/` (e.g. `designs/aurora.html`), served at `/designs/aurora.html`;
+   - a static HTML page in `designs/` (e.g. `designs/aurora.html`), served at `/designs/aurora.html`.
+     These run sandboxed (see `docs/frontend.md#prototype-gallery`): scripts and forms work, but
+     `localStorage`, `sessionStorage` and cookies throw or stay empty, so don't rely on them.
+     `designs/index.html` itself is never published;
    - or any site with a full URL (`https://…`).
 2. Optionally add a 16:10 screenshot to `public/prototype-shots/` (1440×900 WebP is plenty).
    Without one the card draws a poster instead.

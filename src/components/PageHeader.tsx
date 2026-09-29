@@ -3,7 +3,7 @@
  * to the home page on the left (the CMS logo on narrow screens), the CMS nav
  * on the right, its last item as a pill. A film chapter (`/#work`) is a
  * section link, another page of the site (`/prototypes`) a router link,
- * marked as current on that page and the pages under it.
+ * marked as current on that page (and as part of the path on the pages under it).
  */
 
 import { Link, useLocation } from 'react-router-dom'
@@ -36,8 +36,9 @@ export default function PageHeader() {
           if (id) return <SectionLink key={n.href} to={id} className={cls}>{n.label}</SectionLink>
           const route = routePath(n.href)
           if (route !== null) {
-            const here = route ? pathname === route || pathname.startsWith(route + '/') : pathname === '/'
-            return <Link key={n.href} to={n.href} className={cls} aria-current={here ? 'page' : undefined}>{n.label}</Link>
+            // "page" on that page itself, "true" on the pages under it (a prototype under /prototypes)
+            const current = pathname.replace(/\/+$/, '') === route ? 'page' : route && pathname.startsWith(route + '/') ? 'true' : undefined
+            return <Link key={n.href} to={n.href} className={cls} aria-current={current}>{n.label}</Link>
           }
           return <a key={n.href} href={n.href} className={cls}>{n.label}</a>
         })}

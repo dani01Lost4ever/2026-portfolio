@@ -11,14 +11,25 @@ const TYPES: Record<string, string> = {
 }
 
 /**
+ * The prototypes run sandboxed, with an opaque origin: their third-party scripts (GSAP, three.js
+ * from CDNs) can't read this origin's storage, where the PocketBase admin keeps its session.
+ * nginx.conf sends the same header for /designs/.
+ */
+const DESIGNS_CSP = 'sandbox allow-scripts allow-popups allow-popups-to-escape-sandbox allow-forms allow-modals allow-downloads'
+
+/**
  * designs/ holds the static HTML prototypes the /prototypes gallery shows. This serves the
  * folder at /designs/ in dev (a missing file is a 404, never the app) and copies it into
- * the build, so dist/designs/take.html is /designs/take.html behind nginx too.
+ * the build, so dist/designs/take.html is /designs/take.html behind nginx too. The folder's
+ * own index.html (the old proposals page, which the gallery replaces) stays out of both.
  */
 function designs(): Plugin {
   const dir = fileURLToPath(new URL('./designs', import.meta.url))
+  const skip = (rel: string) => rel === 'index.html'
   const files = (): string[] =>
-    existsSync(dir) ? readdirSync(dir, { recursive: true, encoding: 'utf8' }).filter(f => statSync(join(dir, f)).isFile()) : []
+    existsSync(dir)
+      ? readdirSync(dir, { recursive: true, encoding: 'utf8' }).filter(f => !skip(f) && statSync(join(dir, f)).isFile())
+      : []
 
   return {
     name: 'portfolio-designs',
@@ -37,7 +48,7 @@ function designs(): Plugin {
         const file = resolve(dir, rel || 'index.html')
         const inside = file.startsWith(dir + sep) && !relative(dir, file).startsWith('..')
         const target = inside && existsSync(file) && statSync(file).isDirectory() ? join(file, 'index.html') : file
-        if (!inside || !existsSync(target) || !statSync(target).isFile()) {
+        if (!inside || skip(relative(dir, target)) || !existsSync(target) || !statSync(target).isFile()) {
           res.statusCode = 404
           res.setHeader('Content-Type', 'text/plain; charset=utf-8')
           res.end('Not found')
@@ -45,6 +56,8 @@ function designs(): Plugin {
         }
         res.setHeader('Content-Type', TYPES[extname(target).toLowerCase()] ?? 'application/octet-stream')
         res.setHeader('Cache-Control', 'no-cache')
+        res.setHeader('Content-Security-Policy', DESIGNS_CSP)
+        res.setHeader('X-Robots-Tag', 'noindex')
         res.end(readFileSync(target))
       })
     },

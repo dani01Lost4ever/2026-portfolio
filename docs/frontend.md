@@ -202,9 +202,10 @@ glass (`NavLens` in `navGlass.ts`) marks the chapter: a real-time spring (respon
 in CSS, with its last item as the lens, and so does the prototype viewer's device switch.
 
 The top bar stays on one row: under 1260 px the brand drops its role, under 1000 px the chapter
-nav goes (scroll, the keys and the timeline still move through the film), under 400 px the links
-and Play tighten, and under 372 px the Prototypes link goes too (the page header and ⌘K still
-reach the gallery).
+nav goes (scroll, the keys and the timeline still move through the film), under 820 px the
+timeline's hint goes, under 400 px and again under 372 px the links and Play tighten, and under
+350 px the Prototypes link goes, giving Projects and Play their usual sizes back (⌘K and the
+reduced-motion page's header still reach the gallery).
 
 ### The work grid
 
@@ -257,20 +258,26 @@ bracketed placeholders like `[City]`.
 `usePrototypes()`; `listPrototypes()` in `src/lib/prototypes.ts` keeps the entries with a slug and a
 title, in the file's order, and fills in missing fields. Each card shows the prototype's
 screenshot (`image`, 16:10) in a browser window, or its poster (`shape`, default `browser`) when
-it has none or the file fails to load, then its number, year, kind, `status` badge, title,
-description and stack. The whole card links to its page (the title link's `::after` covers the
+it has none or the file fails to load, with the `status` badge on the picture, then its number,
+year, kind, title, description and stack. The whole card links to its page (the title link's `::after` covers the
 card); "Open it" opens the prototype itself in a new tab.
 
 `/prototypes/:slug` (`src/pages/PrototypeViewer.tsx`) runs the prototype in an `<iframe>` at a
 real device width (Desktop 1440×900, Tablet 834×1112, Phone 390×844 CSS px), scaled down with a
 transform to fit the stage and the viewport's height, so the prototype's own breakpoints apply.
-The screenshot stays under the frame until it loads. With `embed: false`, or no `url`, the page
-shows the picture instead of a frame. An unknown slug redirects to `/prototypes`.
+The size you pick stays when you step to the previous or next prototype. Until the frame loads,
+Desktop shows the screenshot under it and the other sizes a loading line (a 16:10 screenshot
+would be cropped in a tall frame). With `embed: false`, or no `url`, the page shows the picture
+instead of a frame. An unknown slug redirects to `/prototypes`.
 
 Prototypes kept in the repository live in `designs/`: the `portfolio-designs` plugin in
 `vite.config.ts` serves that folder at `/designs/` in dev (a missing file is a 404) and copies it
-into `dist/designs/` on build; nginx serves it as files with `X-Robots-Tag: noindex`, never
-falling back to the app. See `docs/content.md#add-a-prototype`.
+into `dist/designs/` on build; nginx serves it as files, never falling back to the app. The
+folder's own `index.html` (the old proposals page) is left out of both. Both send
+`X-Robots-Tag: noindex` and a `Content-Security-Policy: sandbox …` header, so a prototype runs
+with an opaque origin: its scripts, CDN ones included, can't read this site's storage (where the
+PocketBase admin keeps its session) or cookies, whether it is framed or opened in its own tab.
+See `docs/content.md#add-a-prototype`.
 
 ## Section jumps and the command palette
 

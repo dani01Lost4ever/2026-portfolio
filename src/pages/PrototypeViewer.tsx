@@ -32,10 +32,14 @@ const BAR = 34
 /** Viewport height the frame leaves free: the sticky header and a margin around the stage. */
 const CHROME_Y = 132
 
+const defaultDevice = (): DeviceId => (window.innerWidth < 700 ? 'phone' : 'desktop')
+
 export default function PrototypeViewer() {
   const { slug } = useParams()
   const { items } = usePrototypes()
   const list = useMemo(() => listPrototypes(items), [items])
+  // kept here, not in the stage, so previous/next keeps the size you're comparing at
+  const [deviceId, setDeviceId] = useState<DeviceId>(defaultDevice)
 
   const index = list.findIndex(p => p.slug === slug)
   const p = index >= 0 ? list[index] : undefined
@@ -79,7 +83,7 @@ export default function PrototypeViewer() {
           </div>
         </section>
 
-        <PrototypeStage key={p.slug} p={p} />
+        <PrototypeStage key={p.slug} p={p} deviceId={deviceId} onDevice={setDeviceId} />
 
         {prev && next && (
           <nav className="pd-nav pv-nav" aria-label="More prototypes">
@@ -108,21 +112,27 @@ export default function PrototypeViewer() {
   )
 }
 
+interface StageProps {
+  p: Prototype
+  deviceId: DeviceId
+  onDevice(id: DeviceId): void
+}
+
 /** The live preview: device switch, the frame at that device's size, and the way out to the prototype itself. */
-function PrototypeStage({ p }: { p: Prototype }) {
+function PrototypeStage({ p, deviceId, onDevice }: StageProps) {
   const fitRef = useRef<HTMLDivElement>(null)
-  const [deviceId, setDeviceId] = useState<DeviceId>(() => (window.innerWidth < 700 ? 'phone' : 'desktop'))
   const [room, setRoom] = useState({ w: 0, h: 0 })
   const [ready, setReady] = useState(false)
   const device = DEVICES.find(d => d.id === deviceId) ?? DEVICES[0]
   const live = canEmbed(p)
 
   // the room the frame may take: the stage's width, and the viewport's height under the header
+  // (the small viewport's, so a phone's toolbar sliding away while you scroll doesn't rescale it)
   useLayoutEffect(() => {
     const el = fitRef.current
     if (!el) return
     const measure = () => {
-      const w = el.clientWidth, h = Math.max(320, window.innerHeight - CHROME_Y)
+      const w = el.clientWidth, h = Math.max(320, document.documentElement.clientHeight - CHROME_Y)
       setRoom(r => (r.w === w && r.h === h ? r : { w, h }))
     }
     measure()
@@ -144,20 +154,20 @@ function PrototypeStage({ p }: { p: Prototype }) {
         {live && (
           <div className="pv-seg" role="group" aria-label="Preview size">
             {DEVICES.map(d => (
-              <button key={d.id} type="button" aria-pressed={d.id === deviceId} onClick={() => setDeviceId(d.id)}>
+              <button key={d.id} type="button" aria-pressed={d.id === deviceId} onClick={() => onDevice(d.id)}>
                 {d.label}
               </button>
             ))}
           </div>
         )}
         {live && scale > 0 && (
-          <span className="pv-size" aria-live="polite">
+          <span className="pv-size">
             {device.w} × {device.h}{scale < 1 ? ` · ${Math.round(scale * 100)}%` : ''}
           </span>
         )}
         {p.url && (
           <a className="btn btn-ghost pv-out" href={p.url} target="_blank" rel="noopener noreferrer">
-            Open in a new tab<span className="sr-only"> (opens in a new tab)</span> <ArrowUpRight />
+            Open in a new tab <ArrowUpRight />
           </a>
         )}
       </div>
@@ -169,7 +179,9 @@ function PrototypeStage({ p }: { p: Prototype }) {
               <div className="pf pv-frame" style={{ width: Math.floor(device.w * scale) }}>
                 <BrowserBar url={url} />
                 <div className={'pv-view' + (ready ? ' ready' : '')} style={{ height: Math.floor(device.h * scale) }}>
-                  {!ready && <PrototypeShot p={p} className="pv-shot" />}
+                  {!ready && (device.id === 'desktop'
+                    ? <PrototypeShot p={p} className="pv-shot" />
+                    : <p className="pv-loading">Loading {p.title}…</p>)}
                   <iframe
                     src={p.url}
                     title={`${p.title}, live prototype`}

@@ -78,15 +78,13 @@ function PrototypeCard({ p, n }: { p: Prototype; n: string }) {
   const titleId = `pg-${p.slug}`
   return (
     <article className="pg-card" aria-labelledby={titleId}>
-      <div className="pf">
+      <div className="pf pg-pf">
         <BrowserBar url={displayUrl(p.url) || p.slug} />
         <PrototypeShot p={p} className="pg-shot" />
+        {p.status && <span className="pg-status pg-badge">{p.status}</span>}
       </div>
       <div className="pg-text">
-        <div className="pg-meta">
-          <p className="pd-kicker">{[n, p.year, p.kind].filter(Boolean).map((m, i) => <span key={i}>{m}</span>)}</p>
-          {p.status && <span className="pg-status">{p.status}</span>}
-        </div>
+        <p className="pd-kicker">{[n, p.year, p.kind].filter(Boolean).map((m, i) => <span key={i}>{m}</span>)}</p>
         <h2 className="pg-title" id={titleId}>
           <Link to={prototypePath(p)} className="pg-open">{p.title}</Link>
         </h2>
@@ -99,7 +97,7 @@ function PrototypeCard({ p, n }: { p: Prototype; n: string }) {
           )}
           {p.url && (
             <a className="link pg-ext" href={p.url} target="_blank" rel="noopener noreferrer">
-              Open it<span className="sr-only"> in a new tab</span> <ArrowUpRight />
+              Open it<span className="sr-only"> ({p.title}, in a new tab)</span> <ArrowUpRight />
             </a>
           )}
         </div>
