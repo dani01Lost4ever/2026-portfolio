@@ -22,6 +22,8 @@
 │   │   └── reduced motion: PageHeader + TakeDocument       │
 │   │                       + SiteFooter                    │
 │   ├── /project/:slug  ProjectDetail                       │
+│   ├── /prototypes     Prototypes (the gallery)            │
+│   ├── /prototypes/:slug  PrototypeViewer (live frame)     │
 │   └── *               NotFound                            │
 │   CommandPalette, PosterDefs (SVG symbols, once)          │
 └────────────────────┬──────────────────────────────────────┘
@@ -44,7 +46,9 @@ sheets, content mapping and the reduced-motion reading page).
 ```
 2026-portfolio/
 │
-├── designs/                  ← Static HTML prototypes (take.html is the built design's reference)
+├── designs/                  ← Static HTML prototypes, served at /designs/ (take.html is the built design's reference)
+│
+├── public/prototype-shots/   ← Screenshots for the prototype gallery's cards
 │
 ├── backend/                  ← PocketBase binary + data
 │   ├── pocketbase.exe
@@ -87,15 +91,19 @@ sheets, content mapping and the reduced-motion reading page).
 │   │   ├── about.json
 │   │   ├── contact.json
 │   │   ├── experience.json
-│   │   └── now.json            ← "Now" items; JSON only, no PocketBase collection
+│   │   ├── now.json            ← "Now" items; JSON only, no PocketBase collection
+│   │   └── prototypes.json     ← The prototype gallery; JSON only, no PocketBase collection
 │   ├── lib/
 │   │   ├── pb.ts               ← PocketBase singleton client
 │   │   ├── api.ts               ← Typed fetchers (one per collection)
 │   │   ├── projectVisuals.ts     ← Resolves each project's poster shape / architecture layers / caption
+│   │   ├── prototypes.ts         ← Prototype gallery helpers (list, poster fallback, frame address)
 │   │   └── types.ts               ← Shared TypeScript interfaces (incl. ShapeId, CubeLayer)
 │   ├── pages/
 │   │   ├── Home.tsx
 │   │   ├── ProjectDetail.tsx
+│   │   ├── Prototypes.tsx
+│   │   ├── PrototypeViewer.tsx
 │   │   └── NotFound.tsx
 │   ├── App.tsx
 │   ├── main.tsx
@@ -123,7 +131,8 @@ App boot
           ├─► fetchAbout()   → pb.collection('about_content')
           ├─► fetchContact() → pb.collection('contact_content')
           ├─► fetchExperience() → pb.collection('work_experience'), pb.collection('education')
-          └─► now            → src/data/now.json (always; no collection)
+          ├─► now            → src/data/now.json (always; no collection)
+          └─► prototypes     → src/data/prototypes.json (always; no collection)
                 │
                 ├─ success → setContent(liveData)  ← components re-render
                 └─ failure → keep JSON defaults (silent fallback)

@@ -1,0 +1,50 @@
+{
+  "intro": "Before a site gets built, I prototype it as one working page. These are the ones worth keeping: open any of them, try it at phone size, and scroll.",
+  "items": [
+    {
+      "slug": "one-take",
+      "title": "One Take",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "status": "Became this site",
+      "description": "A keynote film scrubbed by scroll, with no cuts: the wordmark squeezes into its period, an iris opens onto the work grid, liquid glass relights a case study, a lock screen becomes a phone and a Mac, and the contact card hangs on a wall before the take loops.",
+      "stack": ["DOM", "SVG filters", "Closed-form springs", "No libraries"],
+      "url": "/designs/take.html",
+      "image": "/prototype-shots/one-take.webp",
+      "shape": "loop"
+    },
+    {
+      "slug": "field",
+      "title": "Field",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "Ten thousand points behind the page morph from a data grid into one shape per project, then skill clusters, a helix timeline and an @ for contact.",
+      "stack": ["three.js", "Point cloud", "GSAP ScrollTrigger"],
+      "url": "/designs/field.html",
+      "image": "/prototype-shots/field.webp",
+      "shape": "orbit"
+    },
+    {
+      "slug": "signal",
+      "title": "Signal",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "A single request travels one amber route down the page: it draws a glyph for each project, splits into four skill lanes, merges into a git-graph career timeline and ends at the contact box as a 200 OK.",
+      "stack": ["SVG", "GSAP ScrollTrigger"],
+      "url": "/designs/signal.html",
+      "image": "/prototype-shots/signal.webp",
+      "shape": "globe"
+    },
+    {
+      "slug": "the-stack",
+      "title": "The Stack",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "A pinned 3D stack of four slabs (Interface, API, Queue, Database) reconfigures itself for every section: each project's real architecture, a skill grid, a career staircase, and finally a contact card, over colour-blocked backgrounds.",
+      "stack": ["CSS 3D", "GSAP ScrollTrigger"],
+      "url": "/designs/stack.html",
+      "image": "/prototype-shots/the-stack.webp",
+      "shape": "coins"
+    }
+  ]
+}

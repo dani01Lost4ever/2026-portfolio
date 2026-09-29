@@ -5,6 +5,7 @@
 
 import type { ContentBundle, Result, ShapeId } from '../../lib/types'
 import { visualsFor } from '../../lib/projectVisuals'
+import { listPrototypes } from '../../lib/prototypes'
 import { cmsText, taglineLines } from '../../components/content'
 import { posterFor } from '../posters'
 
@@ -58,6 +59,8 @@ export interface TakeContent {
   availability: string
   /** Short brand for narrow screens (the CMS logo, e.g. "DB"). */
   logo: string
+  /** How many prototypes the gallery at /prototypes shows; the chrome links to it when there are any. */
+  prototypes: number
   placardLine: string
   year: number
 }
@@ -190,6 +193,7 @@ export function takeContent(b: ContentBundle, date = new Date()): TakeContent {
     github: githubProfile(b),
     availability: b.hero.availableForWork !== false ? cmsText(b.contact.availability) : '',
     logo: cmsText(b.site.logo) || 'DB',
+    prototypes: listPrototypes(b.prototypes?.items).length,
     placardLine: `${role}. ${skills.join(', ')}${skills.length ? '.' : ''}`,
     year: date.getFullYear(),
   }

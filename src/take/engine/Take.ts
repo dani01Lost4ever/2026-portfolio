@@ -351,6 +351,10 @@ export class Take {
       e.preventDefault(); this.opts.onNavigate(E.caseA.getAttribute('href') ?? '/')
     })
     E.chrome.querySelector('.brand')?.addEventListener('click', e => { e.preventDefault(); this.goTo(0) })
+    E.protosLink?.addEventListener('click', e => {
+      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return
+      e.preventDefault(); this.opts.onNavigate(E.protosLink?.getAttribute('href') ?? '/prototypes')
+    })
   }
 }
 

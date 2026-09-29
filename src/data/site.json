@@ -2,6 +2,7 @@
   "logo": "DB",
   "nav": [
     { "label": "Work", "href": "/#work" },
+    { "label": "Prototypes", "href": "/prototypes" },
     { "label": "About", "href": "/#about" },
     { "label": "Contact", "href": "/#contact" }
   ]

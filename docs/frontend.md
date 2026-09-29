@@ -18,6 +18,8 @@ section, except on `/` while the film runs (the film reads its own hash).
 |-------|-----------|-------------|
 | `/` | `Home` | The One Take film (`TakeFilm`); with reduced motion, a reading page (`TakeDocument`) |
 | `/project/:slug` | `ProjectDetail` | Full case study: poster, overview/challenge/solution, results, architecture layers, previous/next |
+| `/prototypes` | `Prototypes` | The prototype gallery: a card per entry of `src/data/prototypes.json` |
+| `/prototypes/:slug` | `PrototypeViewer` | One prototype running live in a frame at desktop, tablet or phone width; previous/next |
 | `*` | `NotFound` | 404 |
 
 ## Modules
@@ -58,12 +60,13 @@ section, except on `/` while the film runs (the film reads its own hash).
 
 | Component | Notes |
 |-----------|-------|
-| `PageHeader` | Sticky header on every page except the film: brand to `/`, Work and Contact section links |
+| `PageHeader` | Sticky header on every page except the film: brand to `/`, the CMS nav (section links for `/#chapter`, router links for pages like `/prototypes`, `aria-current` on the page you're on) |
 | `SiteFooter` | Copyright and "Back to top" |
-| `CommandPalette` | ⌘K / Ctrl+K dialog (cmdk): projects, film chapters, email and socials |
+| `CommandPalette` | ⌘K / Ctrl+K dialog (cmdk): projects, film chapters, prototypes, email and socials |
 | `SectionLink` | A link to a home-page section that works from any route (uses `useSectionJump`) |
 | `useSectionJump` | `jump(id)`: glides the film to a chapter, scrolls the reading page, or navigates to `/#id` |
 | `ContactForm` | The short-note form, posts to PocketBase `messages` |
+| `PrototypeFrame` | `BrowserBar` (a browser window's bar with the address) and `PrototypeShot` (a prototype's screenshot, or its poster) |
 
 `content.ts` (CMS placeholder guards), `projectMeta.ts` and `Icons.tsx` are small helpers.
 
@@ -83,6 +86,7 @@ import {
   useContact,     // ContactData
   useExperience,  // ExperienceData
   useNow,         // NowData (always from src/data/now.json)
+  usePrototypes,  // PrototypesData (always from src/data/prototypes.json)
 } from '../context/content-hooks'
 ```
 
@@ -120,7 +124,8 @@ Time is in **beats**. The film is cut at 120 BPM (`SPB = 0.5` seconds per beat) 
 - **Keyboard**: arrows and Page Up/Down jump to the next or previous rest frame, Space plays the
   whole take at film speed, Home goes to the start and End to Contact. Keys are ignored in form
   fields and inside dialogs.
-- **Chrome**: chapter buttons, the timeline bar (click to seek), Play, and the brand (back to 0).
+- **Chrome**: chapter buttons, the timeline bar (click to seek), Play, the brand (back to 0), and
+  a Prototypes link to the gallery (shown when `prototypes.json` has entries).
 
 `scenes.ts` keeps no state between frames: `seek(k, t)` runs every scene with the current beat and
 writes transforms, sizes and opacities. Motion comes from closed-form springs (`stepResp`, `spr`)
@@ -194,7 +199,12 @@ light of the film's glass as a background (`setRim`, from `rrMaps` in `glass.ts`
 glass (`NavLens` in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping
 0.78) carries it to the next one, and it stretches with its speed. Under
 `prefers-reduced-transparency` the capsules are solid. The page header's nav uses the same capsule
-in CSS, with its last item as the lens.
+in CSS, with its last item as the lens, and so does the prototype viewer's device switch.
+
+The top bar stays on one row: under 1260 px the brand drops its role, under 1000 px the chapter
+nav goes (scroll, the keys and the timeline still move through the film), under 400 px the links
+and Play tighten, and under 372 px the Prototypes link goes too (the page header and ⌘K still
+reach the gallery).
 
 ### The work grid
 
@@ -240,6 +250,27 @@ The full name (`Daniel Busetto`) is a constant in `content.ts`, not CMS content.
 bracketed placeholders like `[City]`.
 
 ---
+
+## Prototype gallery
+
+`/prototypes` (`src/pages/Prototypes.tsx`) lists `src/data/prototypes.json` through
+`usePrototypes()`; `listPrototypes()` in `src/lib/prototypes.ts` keeps the entries with a slug and a
+title, in the file's order, and fills in missing fields. Each card shows the prototype's
+screenshot (`image`, 16:10) in a browser window, or its poster (`shape`, default `browser`) when
+it has none or the file fails to load, then its number, year, kind, `status` badge, title,
+description and stack. The whole card links to its page (the title link's `::after` covers the
+card); "Open it" opens the prototype itself in a new tab.
+
+`/prototypes/:slug` (`src/pages/PrototypeViewer.tsx`) runs the prototype in an `<iframe>` at a
+real device width (Desktop 1440×900, Tablet 834×1112, Phone 390×844 CSS px), scaled down with a
+transform to fit the stage and the viewport's height, so the prototype's own breakpoints apply.
+The screenshot stays under the frame until it loads. With `embed: false`, or no `url`, the page
+shows the picture instead of a frame. An unknown slug redirects to `/prototypes`.
+
+Prototypes kept in the repository live in `designs/`: the `portfolio-designs` plugin in
+`vite.config.ts` serves that folder at `/designs/` in dev (a missing file is a 404) and copies it
+into `dist/designs/` on build; nginx serves it as files with `X-Robots-Tag: noindex`, never
+falling back to the app. See `docs/content.md#add-a-prototype`.
 
 ## Section jumps and the command palette
 

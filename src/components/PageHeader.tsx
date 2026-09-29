@@ -1,16 +1,26 @@
 /**
  * PageHeader — the sticky header of every page but the film: the brand back
  * to the home page on the left (the CMS logo on narrow screens), the CMS nav
- * on the right, its last item as a pill.
+ * on the right, its last item as a pill. A film chapter (`/#work`) is a
+ * section link, another page of the site (`/prototypes`) a router link,
+ * marked as current on that page and the pages under it.
  */
 
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { useSite } from '../context/content-hooks'
 import { cmsText } from './content'
 import SectionLink from './SectionLink'
 
+/** The path of a link to another page of this app ("/prototypes/" → "/prototypes", "/" → ""), or null for anything else: other sites, files like /cv.pdf. */
+function routePath(href: string): string | null {
+  const path = href.match(/^(\/(?!\/)[^?#]*)/)?.[1]
+  if (path === undefined || /\.[a-z0-9]+$/i.test(path)) return null
+  return path.replace(/\/+$/, '')
+}
+
 export default function PageHeader() {
   const site = useSite()
+  const { pathname } = useLocation()
   const logo = cmsText(site.logo) || 'DB'
   const nav = site.nav.length ? site.nav : [{ label: 'Work', href: '/#work' }, { label: 'Contact', href: '/#contact' }]
 
@@ -23,9 +33,13 @@ export default function PageHeader() {
         {nav.map((n, i) => {
           const cls = 'ph-link' + (i === nav.length - 1 ? ' ph-pill' : '')
           const id = n.href.match(/^\/?#(.+)$/)?.[1]
-          return id
-            ? <SectionLink key={n.href} to={id} className={cls}>{n.label}</SectionLink>
-            : <a key={n.href} href={n.href} className={cls}>{n.label}</a>
+          if (id) return <SectionLink key={n.href} to={id} className={cls}>{n.label}</SectionLink>
+          const route = routePath(n.href)
+          if (route !== null) {
+            const here = route ? pathname === route || pathname.startsWith(route + '/') : pathname === '/'
+            return <Link key={n.href} to={n.href} className={cls} aria-current={here ? 'page' : undefined}>{n.label}</Link>
+          }
+          return <a key={n.href} href={n.href} className={cls}>{n.label}</a>
         })}
       </nav>
     </header>

@@ -83,8 +83,53 @@ On: the contact card, the contact sheet and the reading page show `contact_conte
 
 ### Change the short brand and the page header's links
 
-- Admin UI: `site_settings` → `logo` (the short brand, e.g. `DB`, shown instead of the full name on screens narrower than 520px) and `nav` (the links on the right of the page header on `/project/:slug` and the 404; an `href` like `/#work` jumps to that film chapter; the last link is drawn as a pill)
+- Admin UI: `site_settings` → `logo` (the short brand, e.g. `DB`, shown instead of the full name on screens narrower than 520px) and `nav` (the links on the right of the page header on `/project/:slug`, the prototype pages and the 404; an `href` like `/#work` jumps to that film chapter, one like `/prototypes` opens that page; the last link is drawn as a pill)
 - JSON: `src/data/site.json` → `"logo"` and `"nav"` keys
+
+When PocketBase has a `site_settings` record, its `nav` wins over `site.json`: to show the
+Prototypes link in the header there, add `{ "label": "Prototypes", "href": "/prototypes" }` to
+its `nav` (after Work), or re-seed.
+
+---
+
+### Add a prototype
+
+The gallery at `/prototypes` is `src/data/prototypes.json` (JSON only: no PocketBase collection, no
+re-seed needed, but a rebuild is). Cards show in the file's order.
+
+1. Put the prototype somewhere it can be opened:
+   - a static HTML page in `designs/` (e.g. `designs/aurora.html`), served at `/designs/aurora.html`;
+   - or any site with a full URL (`https://…`).
+2. Optionally add a 16:10 screenshot to `public/prototype-shots/` (1440×900 WebP is plenty).
+   Without one the card draws a poster instead.
+3. Add an entry to `items`:
+
+```json
+{
+  "slug": "aurora",
+  "title": "Aurora",
+  "year": "2026",
+  "kind": "Redesign",
+  "description": "One or two sentences on the idea the page is built around.",
+  "stack": ["Astro", "GSAP"],
+  "url": "/designs/aurora.html",
+  "image": "/prototype-shots/aurora.webp"
+}
+```
+
+| Field | |
+|-------|---|
+| `slug` | Required, unique: the page is `/prototypes/<slug>` |
+| `title` | Required |
+| `year`, `kind` | The card's meta line (`kind` like "Portfolio concept", "Redesign", "Experiment") |
+| `description`, `stack` | The card's text and tags |
+| `url` | Where it runs: a path on this site or a full URL. Without one, there is no live frame and no "Open it" |
+| `image` | Screenshot for the card and while the frame loads |
+| `shape` | Poster when there is no `image`: any `ShapeId` from `src/lib/types.ts` (default `browser`) |
+| `status` | A short badge, e.g. "Became this site" |
+| `embed` | `false` for a site that refuses to be framed (`X-Frame-Options`): its page shows the picture and a link instead |
+
+`intro` at the top of the file is the line under the gallery's title.
 
 ---
 
@@ -99,3 +144,4 @@ On: the contact card, the contact sheet and the reading page show `contact_conte
 | `src/data/contact.json` | Email, socials, footer copyright |
 | `src/data/experience.json` | Work roles and education |
 | `src/data/now.json` | The film's "Now" chapter (JSON only: no PocketBase collection, no re-seed needed, but a rebuild is) |
+| `src/data/prototypes.json` | The prototype gallery at `/prototypes` (JSON only, like `now.json`) |

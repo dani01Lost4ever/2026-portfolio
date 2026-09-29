@@ -8,8 +8,10 @@ import { PosterDefs } from './take/Poster'
 import { TakeProvider } from './take/TakeProvider'
 import { useReducedMotion } from './take/useReducedMotion'
 
-const ProjectDetail = lazy(() => import('./pages/ProjectDetail'))
-const NotFound      = lazy(() => import('./pages/NotFound'))
+const ProjectDetail   = lazy(() => import('./pages/ProjectDetail'))
+const Prototypes      = lazy(() => import('./pages/Prototypes'))
+const PrototypeViewer = lazy(() => import('./pages/PrototypeViewer'))
+const NotFound        = lazy(() => import('./pages/NotFound'))
 
 /**
  * Top of the page on route change; a URL hash lands on its section once the page has rendered.
@@ -76,9 +78,11 @@ function Shell() {
       <CommandPalette open={paletteOpen} onClose={closePalette} />
       <Suspense fallback={<main id="main" tabIndex={-1} className="page-loading" aria-busy="true" />}>
         <Routes>
-          <Route path="/"              element={<Home />} />
-          <Route path="/project/:slug" element={<ProjectDetail />} />
-          <Route path="*"              element={<NotFound />} />
+          <Route path="/"                 element={<Home />} />
+          <Route path="/project/:slug"    element={<ProjectDetail />} />
+          <Route path="/prototypes"       element={<Prototypes />} />
+          <Route path="/prototypes/:slug" element={<PrototypeViewer />} />
+          <Route path="*"                 element={<NotFound />} />
         </Routes>
       </Suspense>
     </>

@@ -1,5 +1,5 @@
 /**
- * CommandPalette — ⌘K / Ctrl+K quick jump: projects, film chapters, links.
+ * CommandPalette — ⌘K / Ctrl+K quick jump: projects, film chapters, prototypes, links.
  *
  * A modal dialog around cmdk's list. Section jumps glide the film to its
  * chapter (useSectionJump); the dialog locks page scroll while open,
@@ -9,7 +9,8 @@
 import { useEffect, useMemo, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Command } from 'cmdk'
-import { useContact, useProjects } from '../context/content-hooks'
+import { useContact, useProjects, usePrototypes } from '../context/content-hooks'
+import { listPrototypes, prototypePath } from '../lib/prototypes'
 import { useSectionJump } from './useSectionJump'
 
 interface Props {
@@ -49,6 +50,8 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
   const allProjects = useProjects()
   const projects = useMemo(() => [...allProjects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), [allProjects])
+  const { items } = usePrototypes()
+  const prototypes = useMemo(() => listPrototypes(items), [items])
   const contact = useContact()
   const { jump } = useSectionJump()
   const panelRef = useRef<HTMLDivElement>(null)
@@ -126,6 +129,32 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
                 </Command.Item>
               ))}
             </Command.Group>
+
+            {prototypes.length > 0 && (
+              <Command.Group heading="Prototypes" className="cmd-group">
+                <Command.Item
+                  value="All prototypes"
+                  keywords={['gallery', 'prototype', 'designs', 'concepts']}
+                  className="cmd-item"
+                  onSelect={() => run(() => navigate('/prototypes'))}
+                >
+                  <span className="cmd-item-title">All prototypes</span>
+                  <span className="cmd-item-sub">{prototypes.length === 1 ? '1 site' : `${prototypes.length} sites`}</span>
+                </Command.Item>
+                {prototypes.map(p => (
+                  <Command.Item
+                    key={p.slug}
+                    value={`${p.title} prototype`}
+                    keywords={[p.kind, ...p.stack]}
+                    className="cmd-item"
+                    onSelect={() => run(() => navigate(prototypePath(p)))}
+                  >
+                    <span className="cmd-item-title">{p.title}</span>
+                    <span className="cmd-item-sub">{p.kind || 'Prototype'}</span>
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            )}
 
             <Command.Group heading="Links" className="cmd-group">
               <Command.Item
