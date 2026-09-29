@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Lumen — Noor Hallin, photographs &amp; films</title>
-<meta name="description" content="Lumen is the working name of Noor Hallin, a landscape photographer and director. Seven series of fog, salt, dunes, rain and night skies.">
+<meta name="description" content="Lumen is the working name of Noor Hallin, a landscape photographer and director. Seven series of fog, salt, dunes, lagoon rain and night skies.">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -269,16 +269,16 @@ html:not(.fine) .ix-dock{display:block;width:100%;aspect-ratio:16/10;max-height:
   <div class="ab-scrim" data-close></div>
   <div class="ab-p">
     <div class="ab-top rv"><h2 id="abT">About</h2><button class="ab-x" id="abX" data-close><span>Close</span><i aria-hidden="true"></i></button></div>
-    <p class="ab-lead rv" style="--i:1">Lumen is the working name of <em>Noor Hallin</em>, a landscape photographer and director based between Bergen and Lisbon.</p>
+    <p class="ab-lead rv" style="--i:1">Lumen is the working name of <em>Noor Hallin</em>, a landscape photographer and director based between Bergen and Venice.</p>
     <p class="ab-txt rv" style="--i:2">She works slowly: medium-format film, long waits, the same valley revisited until it gives something back. The films are short and mostly wordless; the prints are large and quiet. Commissions are welcome where the weather gets the final say.</p>
     <div class="ab-g">
-      <div class="rv" style="--i:3"><h3>Selected commissions</h3><ul><li><b>Arvo Films</b> — The Coast Road, 2025</li><li><b>Northlight Quarterly</b> — six covers</li><li><b>Halden Outerwear</b> — FW26 campaign</li><li><b>Vesper Records</b> — album artwork</li></ul></div>
-      <div class="rv" style="--i:4"><h3>Exhibitions</h3><ul><li><b>Haar</b> — Galleri Tåke, Bergen, 2025</li><li><b>Salt &amp; Water</b> — Casa do Rio, Lisbon, 2024</li><li><b>Nightwatch</b> — group show, Tromsø, 2023</li><li><b>Open Horizon Film Prize</b> — shortlist</li></ul></div>
+      <div class="rv" style="--i:3"><h3>Selected commissions</h3><ul><li><b>Arvo Films</b> — The Coast Road, 2025</li><li><b>Northlight Quarterly</b> — six covers</li><li><b>Brennvik Outerwear</b> — FW26 campaign</li><li><b>Ostrela Dischi</b> — album artwork</li></ul></div>
+      <div class="rv" style="--i:4"><h3>Exhibitions</h3><ul><li><b>Haar</b> — Galleri Tåke, Bergen, 2025</li><li><b>Salt &amp; Water</b> — Galeria Vazante, Lisbon, 2024</li><li><b>Nightwatch</b> — group show, Tromsø, 2023</li><li><b>Open Horizon Film Prize</b> — shortlist</li></ul></div>
     </div>
     <div class="ab-c rv" style="--i:5">
       <h3>Commissions &amp; prints</h3>
       <a class="mail" href="mailto:noor@lumen.example">noor@lumen.example</a>
-      <p>Stills: Halden &amp; Rue, Oslo · Film: North Room Pictures, Lisbon<br>Studio in Bergen and Lisbon, travelling most of the year.</p>
+      <p>Stills: Brisa &amp; Nord, Oslo · Film: North Room Pictures, Lisbon<br>Studio in Bergen and Venice, travelling most of the year.</p>
     </div>
     <div class="ab-ft rv" style="--i:6"><span>© 2026 Lumen</span><span>Prototype by Daniel Busetto</span></div>
   </div>
@@ -298,7 +298,7 @@ const SER = [
   { sc:1, t:'Slipface', year:'2024', place:'Erg Chebbi, Morocco', coord:'31°09′N  3°58′W', fmt:'Short film · 35 mm', n:'6 min · Director, DoP', note:'Four evenings on one dune, waiting for the wind to redraw it.', alt:'A sharp dune crest at dusk, one face lit amber and rippled, the other in violet shadow, sand blowing off the ridge.', tc:17284 },
   { sc:3, t:'Nightwatch', year:'2023', place:'Lyngen Alps, Norway', coord:'69°35′N  20°13′E', fmt:'Film · 30 s exposures', n:'11 min · Director', note:'Twelve nights at 1,400 m. One tent, one lamp, a sky that kept turning.', alt:'A snow-covered ridge under a sky of stars and the Milky Way, one small lit tent on the ridge.', tc:25920 },
   { sc:5, t:'Mirror <em>Season</em>', year:'2022', place:'Salar de Uyuni, Bolivia', coord:'20°08′S  67°29′W', fmt:'Mamiya 7 · Portra 400', n:'12 photographs', note:'For three weeks a year the salt holds a centimetre of water, and the sky has somewhere to land.', alt:'A salt flat under a thin layer of water mirroring a pastel sky, a lone figure standing on the horizon.', tc:31417 },
-  { sc:4, t:'Night <em>Bus</em>', year:'2021', place:'Porto to Madrid, overnight', coord:'A-62 · km 212', fmt:'Short film · 16 mm', n:'4 min · Director', note:'Eight hours of rain, filmed through the same window.', alt:'Raindrops sliding down a bus window at night, city lights blurred into soft discs behind the glass.', tc:38808 },
+  { sc:4, t:'Linea <em>N</em>', year:'2021', place:'Fondamente Nove to Lido', coord:'45°26′N  12°21′E', fmt:'Short film · 16 mm', n:'5 min · Director', note:'The last boat out. Rain on one pane, the lagoon going by in the dark.', alt:'Rain blown sideways across a vaporetto window at night, warm lagoon lamps and their long reflections blurred behind the glass.', tc:38808 },
   { sc:6, t:'Understory', year:'2019', place:'Białowieża Forest, Poland', coord:'52°44′N  23°52′E', fmt:'Pentax 67 · Tri-X, toned', n:'16 photographs', note:'Old forest, older fog. Shafts of light that last about four minutes.', alt:'Tall trunks fading into fog, shafts of warm light falling between them.', tc:46152 }
 ];
 const N = SER.length;
@@ -363,9 +363,9 @@ precision mediump float;
 uniform vec2 uRes;uniform float uTime;
 float PX,ASP;
 float S(float a,float b,float x){float t=clamp((x-a)/(b-a),0.,1.);return t*t*(3.-2.*t);}
-float h11(float p){p=fract(p*.1031);p*=p+33.33;p*=p+p;return fract(p);}
-float h21(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
-vec2 h22(vec2 p){vec3 q=fract(vec3(p.xyx)*vec3(.1031,.1030,.0973));q+=dot(q,q.yzx+33.33);return fract((q.xx+q.yz)*q.zy);}
+float h11(float p){p=fract(p*.0613+.347);float s=p*(p+5.83)+.91;return fract(s*fract(s*7.37+.19)*39.7);}
+float h21(vec2 p){vec2 q=fract(p*vec2(.0487,.0761)+vec2(.613,.281));float s=q.x*(q.x+q.y*7.31+3.97)+q.y*(q.y+11.43);return fract(s*fract(s*5.17+.37)*43.1);}
+vec2 h22(vec2 p){return vec2(h21(p),h21(p.yx*1.13+vec2(57.31,19.13)));}
 float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}
 float vn1(float x){float i=floor(x),f=fract(x);f=f*f*(3.-2.*f);return mix(h11(i),h11(i+1.),f);}
 const mat2 M2=mat2(1.6,1.2,-1.2,1.6);
@@ -577,7 +577,7 @@ vec3 scene(vec2 p,float t){
  for(int i=0;i<2;i++){
   float fi=float(i);
   float sc=1.45+fi*1.1;
-  float mx=p.x*sc+4.2+fi*7.3;
+  float mx=p.x*sc+8.8+fi*7.3;
   float bs=-.08-fi*.09;
   float hm=bs+(.3-fi*.12)*pow(rid1(mx),2.2);
   float inM=S(hm+PX,hm-PX,p.y);
@@ -609,28 +609,65 @@ vec3 scene(vec2 p,float t){
  col=mix(col,tl2*(1.1-tp.y*18.),S(.0,-.08,st));
  return col;
 }`,
-/* 4 — Night Bus: rain on glass, city bokeh */
+/* 4 — Linea N: rain on a vaporetto window, lagoon lights */
 `float disc(vec2 d,float r,float s){float l=length(d);return S(r,r-s,l)*(.72+.28*S(r*.4,r,l));}
-vec3 city(vec2 q,float t,float f){
- float bl=mix(1.,.28,f);
- vec3 c=mix(vec3(.016,.022,.036),vec3(.05,.064,.095),S(-.5,.45,q.y));
- c+=vec3(.22,.1,.04)*exp(-pow((q.y+.2)*4.5,2.))*.6;
- c+=vec3(.02,.22,.24)*exp(-length((q-vec2(-.55+.03*sin(t*.07),.03))*vec2(.9,1.8))*4.)*.8;
- c+=vec3(.26,.05,.16)*exp(-length((q-vec2(.62,-.05))*vec2(1.,2.))*5.)*.7;
- for(int i=0;i<2;i++){float fi=float(i);float sp=.075+fi*.05;float x=q.x+t*(.02+fi*.015)+fi*3.;float id=floor(x/sp);
-  float on=step(.4,h11(id+fi*31.));
-  float cx=(id+.5)*sp+(h11(id+fi*5.)-.5)*sp*.4;
-  float cy=-.02+fi*.08+(h11(id*1.7+fi)-.5)*.07;
-  float r=(.03+.02*h11(id+9.))*bl+.003;
-  vec3 lc=mix(vec3(1.,.72,.42),vec3(.62,.82,1.),step(.72,h11(id+13.)));
-  c+=lc*disc(vec2(x-cx,q.y-cy),r,r*.35+.002)*(.24+.2*h11(id+2.))*on;}
- {float sp=.62;float x=q.x+t*.07;float id=floor(x/sp);float cx=(id+.5)*sp+(h11(id)-.5)*.15;
-  float r=.11*bl+.004;vec2 d=vec2(x-cx,q.y-.27-(h11(id+4.)-.5)*.04);
-  c+=vec3(1.,.6,.26)*disc(d,r,r*.25+.002)*.5*step(.15,h11(id+2.));}
- {float sp=.8;float x=q.x+t*.2;float id=floor(x/sp);float cx=(id+.5)*sp+(h11(id+7.)-.5)*.3;
-  vec3 lc=mix(vec3(1.,.88,.72),vec3(1.,.14,.08),step(.45,h11(id+3.)));
-  float r=.055*bl+.003;float on=step(.3,h11(id+5.));
-  c+=lc*(disc(vec2(x-cx-.06,q.y+.19),r,r*.3+.002)+disc(vec2(x-cx+.06,q.y+.19),r,r*.3+.002))*.55*on;}
+float refl(vec2 d,float w,float len,float t,float sd){
+ float dn=-d.y;
+ float sh=(vn(vec2(dn*34.+sd,t*.8+sd))-.5)*w*2.2;
+ float wv=w*(1.+dn*2.4);
+ float a=S(wv,wv*.2,abs(d.x+sh))*S(len,0.,dn)*step(0.,dn);
+ return a*(.5+.5*S(.3,.7,vn(vec2(d.x*18.+sd,dn*70.-t*1.1))));
+}
+vec3 lagoon(vec2 q,float t,float f){
+ float bl=mix(1.,.3,f);
+ float wl=-.01;
+ vec3 c=mix(vec3(.06,.064,.08),vec3(.012,.016,.03),S(-.02,.5,q.y));
+ c+=vec3(.3,.16,.07)*exp(-pow((q.y-wl-.045)*5.,2.))*.62;
+ c+=vec3(.05,.045,.05)*S(.45,.8,fbm3(vec2(q.x*1.6+t*.01,q.y*5.)))*S(.45,.08,q.y);
+ float hb=wl+.06+.035*(fbm1(q.x*2.2+t*.012+3.)-.5);
+ c=mix(c,vec3(.034,.03,.032),S(hb+.03*bl,hb-.03*bl,q.y)*S(wl-.01,wl+.01,q.y)*.75);
+ float inW=S(wl+.003*bl+PX,wl-.003*bl-PX,q.y);
+ float dw=max(wl-q.y,0.);
+ vec3 wc=mix(vec3(.04,.06,.068),vec3(.006,.014,.018),S(0.,.42,dw));
+ wc+=vec3(.22,.12,.05)*exp(-dw*14.)*.36;
+ float rp=vn(vec2(q.x*7.+t*.04,dw*85./(dw*5.+.25)));
+ wc+=vec3(.03,.05,.056)*S(.55,.9,rp)*S(.4,0.,dw);
+ c=mix(c,wc,inW);
+ for(int i=0;i<2;i++){float fi=float(i);
+  float sp=.13+fi*.1;float x=q.x+t*(.012+fi*.008)+fi*5.3;float id=floor(x/sp);
+  float on=step(.28,h11(id*1.3+fi*21.));
+  float cx=(id+.5)*sp+(h11(id+fi*7.)-.5)*sp*.5;
+  float ly=wl+.012+fi*.016+h11(id*2.9+fi)*.035*(1.-fi*.5);
+  float r=(.026+.02*h11(id+3.+fi))*bl*(1.-fi*.35)+.002;
+  vec3 lc=mix(vec3(1.,.6,.26),vec3(1.,.8,.52),h11(id+17.+fi));
+  float lb=(.4+.34*h11(id+5.))*(1.-fi*.35)*on;
+  vec2 d=vec2(x-cx,q.y-ly);
+  c+=lc*disc(d,r,r*.35+.002)*lb;
+  c+=lc*refl(vec2(d.x,q.y-wl),r*.4+.002,.2+.2*h11(id+9.)*(1.-fi*.4),t,id*3.1+fi)*lb*.75*inW;
+ }
+ {float sp=.047;float x=q.x+t*.006+9.;float id=floor(x/sp);float on=step(.62,h11(id+61.));
+  float cx=(id+.5)*sp+(h11(id+63.)-.5)*sp*.6;float ly=wl+.005+h11(id+67.)*.016;float r=(.005+.004*h11(id+73.))*bl+.0016;
+  vec3 lc=mix(vec3(1.,.86,.66),vec3(.8,.88,1.),step(.7,h11(id+71.)));
+  c+=lc*disc(vec2(x-cx,q.y-ly),r,r*.4+.001)*.34*on;
+  c+=lc*refl(vec2(x-cx,q.y-wl),r*.35+.001,.05,t,id)*.2*on*inW;
+ }
+ {float sp=1.9;float x=q.x-t*.028+.5;float id=floor(x/sp);float cx=(id+.5)*sp+(h11(id+31.)-.5)*.7;
+  float by=wl+.02+.004*sin(t*1.1+id*2.);float r=.026*bl+.003;
+  vec2 dr=vec2(x-cx+.03,q.y-by),dg=vec2(x-cx-.03,q.y-by);
+  vec3 RC=vec3(1.,.13,.08),GC=vec3(.12,1.,.5);
+  c+=RC*disc(dr,r,r*.3+.002)*.5+GC*disc(dg,r,r*.3+.002)*.36;
+  c+=vec3(1.,.94,.84)*disc(vec2(x-cx,q.y-by-.04),r*.75,r*.25+.002)*.32;
+  c+=(RC*refl(vec2(dr.x,q.y-wl),r*.4,.18,t,id*7.)*.36+GC*refl(vec2(dg.x,q.y-wl),r*.4,.18,t,id*9.)*.26)*inW;
+ }
+ {float sp=.58;float x=q.x+t*.045+2.;float id=floor(x/sp);float on=step(.3,h11(id+41.));
+  float cx=(id+.5)*sp+(h11(id+43.)-.5)*.22;float base=wl-.13-h11(id+47.)*.09;float top=wl+.035+h11(id+53.)*.03;
+  float b=.004*bl+PX;float pst=0.;
+  for(int k=0;k<3;k++){float fk=float(k)-1.;float px=x-cx-fk*.014-(q.y-base)*fk*.06;
+   pst=max(pst,S(.006+b,.006-b,abs(px))*S(base-b,base+b,q.y)*S(top+b,top-b,q.y-abs(fk)*.008));}
+  c=mix(c,vec3(.006,.008,.01),pst*on*.88);
+  float rd=base-q.y;float rx=x-cx+(vn(vec2(rd*40.,t*.7+id))-.5)*.012;
+  c*=1.-on*.5*S(.02+b,.01,abs(rx))*S(0.,.01,rd)*S((top-base)*.7,0.,rd);
+ }
  return c;
 }
 vec4 drops(vec2 q,float t){
@@ -643,25 +680,24 @@ vec4 drops(vec2 q,float t){
   float l=length(f-c)/max(r,.001);
   if(r>.01&&l<1.&&l<o.z){o.xy=(id+.5+c-fk*5.1)/sc;o.z=l;}
  }
+ const float SL=.55;
+ float qx=q.x-SL*q.y;
  for(int L=0;L<2;L++){float fl=float(L);float sc=mix(4.5,7.,fl);
-  float cx=q.x*sc+fl*7.3;float id=floor(cx);
+  float cx=qx*sc+fl*7.3;float id=floor(cx);
   float spd=.1+.12*h11(id+fl*11.);float cyc=t*spd+h11(id*2.3+fl);float k=fract(cyc);float ci=floor(cyc);
   float yd=.62-1.3*pow(k,1.3);
   float jx=(h11(id+ci*1.7+fl)-.5)*.45;
   float rr=(.016+.012*h11(id+ci*3.))*(1.-fl*.3);
-  float xq=(id+.5+jx+.07*sin(q.y*11.+id*3.+ci)+.03*sin(q.y*27.+id))/sc;
-  float xd=(id+.5+jx+.07*sin(yd*11.+id*3.+ci)+.03*sin(yd*27.+id))/sc;
-  vec2 v=(q-vec2(xd,yd))/vec2(rr,rr*1.25);
+  float xq=(id+.5+jx-fl*7.3+.05*sin(q.y*9.+id*3.+ci))/sc;
+  float xd=(id+.5+jx-fl*7.3+.05*sin(yd*9.+id*3.+ci))/sc;
+  vec2 v=vec2(qx-xd,q.y-yd)/vec2(rr*1.15,rr);
   float l=length(v);
-  if(l<1.&&l<o.z){o.xy=vec2(xd,yd);o.z=l;}
+  if(l<1.&&l<o.z){o.xy=vec2(xd+SL*yd,yd);o.z=l;}
   float up=q.y-yd;
-  float tlen=.28;
-  float tw=rr*.55*(1.-clamp(up/tlen,0.,1.));
-  float tr=S(tw,tw*.4,abs(q.x-xq))*step(0.,up)*S(tlen,0.,up);
+  float tlen=.24;
+  float tw=rr*.5*(1.-clamp(up/tlen,0.,1.));
+  float tr=S(tw,tw*.35,abs(qx-xq))*step(0.,up)*S(tlen,0.,up);
   o.w=max(o.w,tr);
-  float bead=length(vec2((q.x-xq)*1.,(fract(up*34.+id)-.5)/34.));
-  float br=rr*.28*S(tlen,0.,up)*step(.4,h11(floor(up*34.+id)+id));
-  if(up>.02&&bead<br&&tr>.1&&bead/br<o.z){o.xy=vec2(xq,q.y-(fract(up*34.+id)-.5)/34.);o.z=bead/br;}
  }
  return o;
 }
@@ -669,10 +705,11 @@ vec3 scene(vec2 p,float t){
  vec4 d=drops(p,t);
  float inD=step(d.z,1.);
  vec2 sq=inD>.5?d.xy-(p-d.xy)*3.:p;
- vec3 c=city(sq,t,inD);
- float fog=(1.-inD)*(1.-d.w);
+ vec3 c=lagoon(sq,t,inD);
+ float stk=vn(vec2((p.x-.55*p.y)*46.,p.y*2.2+t*.05));
+ float fog=(1.-inD)*(1.-d.w)*(.72+.42*stk);
  float spk=vn(p*260.);
- c=mix(c,c*.7+vec3(.045,.052,.066)+spk*.016,fog*.62);
+ c=mix(c,c*.7+vec3(.045,.052,.066)+spk*.016,clamp(fog,0.,1.)*.62);
  vec2 vv=normalize(p-d.xy+1e-5)*d.z;
  c*=1.+inD*(.35-.6*S(.75,1.,d.z));
  c+=inD*vec3(.85,.9,1.)*.2*S(.32,.0,length(vv-vec2(-.35,.42)));
@@ -757,7 +794,7 @@ vec3 scene(vec2 p,float t){
  for(int i=0;i<6;i++){
   float fi=float(i),z=fi/5.;
   float sc=mix(12.,1.9,pow(z,.8));
-  float x=p.x*sc+fi*11.3;
+  float x=p.x*sc+fi*5.3;
   float id=floor(x),fx=fract(x)-.5;
   float pres=step(.3,h11(id*1.31+fi*7.));
   float off=(h11(id+fi*3.)-.5)*.5;
@@ -799,7 +836,7 @@ uniform vec4 uIA,uIB,uRect;
 uniform float uRot,uRad,uMix,uDir,uT,uSeed,uGrain,uVig,uScrim,uDim,uZoom,uExpo,uFade;
 uniform vec3 uBg;
 float S(float a,float b,float x){float t=clamp((x-a)/(b-a),0.,1.);return t*t*(3.-2.*t);}
-float h21(vec2 p){vec3 q=fract(vec3(p.xyx)*.1031);q+=dot(q,q.yzx+33.33);return fract((q.x+q.y)*q.z);}
+float h21(vec2 p){vec2 q=fract(p*vec2(.0487,.0761)+vec2(.613,.281));float s=q.x*(q.x+q.y*7.31+3.97)+q.y*(q.y+11.43);return fract(s*fract(s*5.17+.37)*43.1);}
 float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}
 float fb(vec2 p){return vn(p)*.55+vn(p*2.1+3.)*.3+vn(p*4.3+7.)*.15;}
 vec3 tA(vec2 uv){uv=clamp(uv,.5/uIA.zw,1.-.5/uIA.zw);return texture2D(uA,uv*uIA.xy).rgb;}
@@ -973,7 +1010,11 @@ function buildFallback() {
     { bg: 'radial-gradient(ellipse 5% 32% at 53% 80%,rgba(255,206,150,.75),rgba(255,206,150,0)),radial-gradient(circle at 53% 53%,#fff4dc 0 1.4%,rgba(255,190,120,.6) 3%,rgba(255,160,100,0) 26%),linear-gradient(#34405a 0%,#7f7a8c 30%,#f2a980 52%,#ffb887 55%,#3b4658 55.2%,#141d27 100%)', svg: '' },
     { bg: 'radial-gradient(1px 1px at 50% 50%,#fff,transparent),' + dots(70, 3, (a, b, c) => `radial-gradient(circle at ${(a * 100).toFixed(1)}% ${(b * 55).toFixed(1)}%,rgba(235,240,255,${(.35 + c * .65).toFixed(2)}) 0 ${(.6 + c * 1.2).toFixed(1)}px,transparent ${(1.4 + c * 1.6).toFixed(1)}px)`) + ',linear-gradient(115deg,transparent 30%,rgba(190,180,200,.14) 45%,rgba(230,210,190,.2) 50%,rgba(190,180,200,.12) 55%,transparent 70%),linear-gradient(#03060e,#0b1322 60%,#101b2a)',
       svg: layerSVG([['#9aa6c0', '#0c1220', .56, .1, 3.2, .05], ['#05070c', '#020306', .82, .05, 2.4, .2]], '<circle cx="1000" cy="785" r="30" fill="rgba(255,150,70,.25)"/><path d="M986 792 L1000 776 L1014 792Z" fill="#ffb070"/>') },
-    { bg: dots(38, 7, (a, b, c, i) => `radial-gradient(circle at ${(a * 100).toFixed(1)}% ${(30 + b * 50).toFixed(1)}%,${['rgba(255,170,90,.5)', 'rgba(255,60,40,.45)', 'rgba(150,200,255,.35)', 'rgba(255,220,170,.4)'][i % 4]} 0 ${(18 + c * 40).toFixed(0)}px,transparent ${(22 + c * 44).toFixed(0)}px)`) + ',radial-gradient(ellipse at 20% 50%,rgba(20,120,130,.35),transparent 50%),linear-gradient(#070a12,#0e1320 60%,#1a1210)', svg: '' },
+    { bg: dots(46, 11, (a, b, c) => `radial-gradient(circle at ${(a * 100).toFixed(1)}% ${(b * 100).toFixed(1)}%,rgba(0,0,0,0) 0 ${(2 + c * 4).toFixed(1)}px,rgba(215,228,255,.2) ${(3 + c * 4).toFixed(1)}px,rgba(0,0,0,0) ${(4.5 + c * 4).toFixed(1)}px)`)
+        + ',radial-gradient(circle at 71% 55.5%,rgba(255,50,35,.6) 0 9px,transparent 12px),radial-gradient(circle at 73.5% 55.5%,rgba(40,255,130,.45) 0 9px,transparent 12px),radial-gradient(ellipse .45% 9% at 71% 63%,rgba(255,50,35,.3),transparent),radial-gradient(ellipse .45% 9% at 73.5% 63%,rgba(40,255,130,.22),transparent)'
+        + ',' + dots(11, 7, (a, b, c) => `radial-gradient(circle at ${(a * 100).toFixed(1)}% ${(50 + b * 4).toFixed(1)}%,rgba(255,${(165 + c * 50).toFixed(0)},${(80 + c * 50).toFixed(0)},.62) 0 ${(10 + c * 14).toFixed(0)}px,transparent ${(14 + c * 16).toFixed(0)}px)`)
+        + ',' + dots(11, 7, (a, b, c) => `radial-gradient(ellipse ${(.5 + c * .5).toFixed(2)}% ${(9 + c * 9).toFixed(1)}% at ${(a * 100).toFixed(1)}% ${(64 + c * 9).toFixed(1)}%,rgba(255,170,90,.34),transparent)`)
+        + ',radial-gradient(ellipse 70% 10% at 50% 54%,rgba(120,70,30,.35),transparent),linear-gradient(#060911 0%,#0c111c 44%,#15141a 52%,#0a1a1e 56%,#041013 72%,#02080a 100%)', svg: '' },
     { bg: 'radial-gradient(ellipse 60% 10% at 50% 57%,rgba(255,200,170,.6),rgba(255,200,170,0)),linear-gradient(#4f6392 0%,#9fa2c4 30%,#f0c8b8 55%,#f7d0bb 57%,#9a9cbd 72%,#4c5f8d 100%)',
       svg: '<svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice"><path d="' + ridge(.555, .02, 3, 4) + '" fill="rgba(90,80,120,.55)" transform="translate(0 0)"/><rect y="570" width="1600" height="430" fill="#8f94b8" opacity=".25"/><circle cx="660" cy="530" r="5" fill="#1a1820"/><rect x="655" y="534" width="10" height="36" rx="5" fill="#1a1820"/><rect x="655" y="571" width="10" height="36" rx="5" fill="#1a1820" opacity=".45"/></svg>' },
     { bg: 'repeating-conic-gradient(from 200deg at 72% -8%,rgba(255,238,200,.13) 0 1.6deg,rgba(255,238,200,0) 1.6deg 5deg),radial-gradient(circle at 72% 6%,rgba(255,232,185,.85),rgba(255,232,185,0) 55%),linear-gradient(#8e9a93,#5e6c66 65%,#26302c)',

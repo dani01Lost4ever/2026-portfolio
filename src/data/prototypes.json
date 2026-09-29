@@ -14,54 +14,54 @@
       "shape": "loop"
     },
     {
-      "slug": "inertia",
-      "title": "Inertia",
+      "slug": "abbrivio",
+      "title": "Abbrivio",
       "year": "2026",
       "kind": "Portfolio concept",
-      "description": "Ten shader-painted covers ride a WebGL rail you drag and fling: they bend and split RGB with speed, settle on a spring, and a click grows a cover into a full-screen case study you pull through to reach the next.",
+      "description": "Ten shader-painted covers ride a WebGL gallery you drag and fling like boats on the lagoon: a bow wave runs back along each one before it rocks to rest, titles rise out of a waterline, and each case study ends at a vaporetto stop where the next cover docks from the right.",
       "stack": ["WebGL", "GLSL", "Inertia scroller", "No libraries"],
-      "url": "/designs/inertia.html",
-      "image": "/prototype-shots/inertia.webp"
+      "url": "/designs/abbrivio.html",
+      "image": "/prototype-shots/abbrivio.webp"
     },
     {
       "slug": "lumen",
       "title": "Lumen",
       "year": "2026",
       "kind": "Photographer portfolio",
-      "description": "Seven landscapes drawn live by shaders (sea fog, a dune at dusk, a low sun on the Atlantic, rain on a bus window) replace each other through a liquid, noise-edged wipe while titles rise letter by letter and a timecode rolls. The index turns each series into a preview that trails the cursor.",
+      "description": "Seven landscapes drawn live by shaders (sea fog, a dune at dusk, a low sun on the Atlantic, rain on a night vaporetto window) replace each other through a liquid, noise-edged wipe while titles rise letter by letter and a timecode rolls. The index turns each series into a preview that trails the cursor.",
       "stack": ["WebGL", "GLSL scenes", "Liquid wipe shader", "No libraries"],
       "url": "/designs/lumen.html",
       "image": "/prototype-shots/lumen.webp"
     },
     {
-      "slug": "studio-nove",
-      "title": "Studio Nove",
+      "slug": "lungatavola",
+      "title": "Lungatavola",
       "year": "2026",
       "kind": "Agency site",
-      "description": "The cursor leaves a trail of project cards behind a line-masked headline. The work list floats a tilting preview, services turn on a scroll-driven 3D drum, client names can be thrown, and opening a project wipes into a case study in its own colours.",
-      "stack": ["Canvas 2D", "CSS 3D", "Magnetic cursor", "No libraries"],
-      "url": "/designs/studio-nove.html",
-      "image": "/prototype-shots/studio-nove.webp"
+      "description": "The cursor leaves a trail of project cards behind a line-masked headline. The work list floats a tilting preview, services flip past on a split-flap departures board as you scroll, client names can be thrown, and opening a project wipes into a case study in its own colours.",
+      "stack": ["Canvas 2D", "Split-flap board", "Magnetic cursor", "No libraries"],
+      "url": "/designs/lungatavola.html",
+      "image": "/prototype-shots/lungatavola.webp"
     },
     {
       "slug": "casa-ocra",
       "title": "Casa Ocra",
       "year": "2026",
       "kind": "Studio project page",
-      "description": "A generated room opens from a thin slit behind the title, then the page walks through it: images wipe in, scrolling runs one day from blue dawn to a glowing pendant at night, materials slide past on a pinned wall, and the floor plan draws itself.",
+      "description": "A Venetian study opens from a thin slit behind the title, then the page walks through it: images wipe in, scrolling runs one day as the canal's reflection ripples across the ceiling until a pendant takes over at night, materials slide past on a pinned wall, and the floor plan draws itself.",
       "stack": ["SVG", "Sticky scenes", "Custom smooth scroll", "No libraries"],
       "url": "/designs/casa-ocra.html",
       "image": "/prototype-shots/casa-ocra.webp"
     },
     {
-      "slug": "sorso",
-      "title": "Sorso",
+      "slug": "zampillo",
+      "title": "Zampillo",
       "year": "2026",
       "kind": "Brand site",
       "description": "A soda can drawn in WebGL, beaded with condensation, floats between the words of the headline, tilts toward your pointer and spins with scroll speed. Each flavour bursts a new colour out of the can and pours a new label up its side, then a crate fills with springy lids and a dot-matrix Italy lights up the stockists.",
       "stack": ["WebGL", "Canvas 2D", "Custom smooth scroll", "No libraries"],
-      "url": "/designs/sorso.html",
-      "image": "/prototype-shots/sorso.webp"
+      "url": "/designs/zampillo.html",
+      "image": "/prototype-shots/zampillo.webp"
     },
     {
       "slug": "pulse",
@@ -74,34 +74,34 @@
       "image": "/prototype-shots/pulse.webp"
     },
     {
-      "slug": "kiosk",
-      "title": "Kiosk",
+      "slug": "casotto",
+      "title": "Casotto",
       "year": "2026",
       "kind": "Studio site",
       "description": "Service stickers tumble into the hero under hand-written physics you can grab and throw, the page melts into a new colour every section, case cards tilt in 3D, process cards stack as you scroll and the wordmark steps out of your cursor's way.",
       "stack": ["Canvas 2D physics", "CSS 3D", "Custom smooth scroll", "No libraries"],
-      "url": "/designs/kiosk.html",
-      "image": "/prototype-shots/kiosk.webp"
+      "url": "/designs/casotto.html",
+      "image": "/prototype-shots/casotto.webp"
     },
     {
-      "slug": "ombra",
-      "title": "Ombra",
+      "slug": "tre-remi",
+      "title": "Ai Tre Remi",
       "year": "2026",
       "kind": "Restaurant site",
       "description": "A bàcaro in Cannaregio: the name rises out of a canal whose WebGL water mirrors the hand-drawn skyline and ripples under your cursor. The bar draws itself in ink, the cicchetti counter drags with inertia, and an open-now badge runs on Venice time.",
       "stack": ["WebGL", "SVG line drawing", "Canvas 2D", "No libraries"],
-      "url": "/designs/ombra.html",
-      "image": "/prototype-shots/ombra.webp"
+      "url": "/designs/tre-remi.html",
+      "image": "/prototype-shots/tre-remi.webp"
     },
     {
-      "slug": "tally",
-      "title": "Tally",
+      "slug": "tacca",
+      "title": "Tacca",
       "year": "2026",
       "kind": "Product landing",
       "description": "A live revenue dashboard leans back under the headline, ticking its KPIs and streaming its chart, then lands flat as you scroll. A pinned demo wires data sources into a hub, grows a chart and shares a report while a ghost cursor clicks through.",
       "stack": ["Canvas 2D", "CSS 3D", "Custom smooth scroll", "No libraries"],
-      "url": "/designs/tally.html",
-      "image": "/prototype-shots/tally.webp"
+      "url": "/designs/tacca.html",
+      "image": "/prototype-shots/tacca.webp"
     },
     {
       "slug": "field",

@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Inertia — Daniel Busetto, full-stack developer</title>
-<meta name="description" content="Daniel Busetto, full-stack developer in Venice. Ten projects on a raw-WebGL gallery you drag, scroll and fling, each cover a live shader composition.">
+<title>Abbrivio — Daniel Busetto, full-stack developer</title>
+<meta name="description" content="Daniel Busetto, full-stack developer in Venice. Ten projects on a raw-WebGL gallery you drag, scroll and fling like a boat on the lagoon, each cover a live shader composition.">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,7 +13,7 @@
 <style>
 :root{
   --bg:#0a0a0b;--bg2:#121214;--ink:#f3f1ec;--ink2:rgba(243,241,236,.68);--ink3:rgba(243,241,236,.46);--rule:rgba(243,241,236,.14);
-  --acc:#ff2e88;
+  --acc:#e4572e;--acc-ink:#0b0a0a;
   --display:"Funnel Display","Helvetica Neue",Arial,sans-serif;
   --sans:"Funnel Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -32,11 +32,11 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;margin:0;cu
 ul,ol,dl,dd{list-style:none;margin:0;padding:0}
 h1,h2,h3,p,blockquote{margin:0}
 em{font-style:normal}
-::selection{background:var(--acc);color:#fff}
+::selection{background:var(--acc);color:var(--acc-ink)}
 :focus-visible{outline:2px solid var(--acc);outline-offset:4px}
 [tabindex="-1"]:focus{outline:none}
 .mono{font-family:var(--mono);font-size:11px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;line-height:1.3}
-.skip{position:fixed;left:12px;top:-64px;z-index:130;background:var(--acc);color:#fff;padding:10px 14px;font:500 13px/1 var(--mono);transition:top .25s}
+.skip{position:fixed;left:12px;top:-64px;z-index:130;background:var(--acc);color:var(--acc-ink);padding:10px 14px;font:500 13px/1 var(--mono);transition:top .25s}
 .skip:focus{top:12px}
 
 /* canvas, grain, cursor */
@@ -52,9 +52,10 @@ html.nogl #gl{display:none}
 .has-cur .cursor{display:block}
 .cur-b{position:absolute;left:-52px;top:-52px;width:104px;height:104px;border-radius:50%;background:var(--acc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transform:scale(0);will-change:transform;transition:background-color .3s,box-shadow .3s}
 .cur-b.ring{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9)}
-.cur-l{font:600 15px/1 var(--display);letter-spacing:-.01em;color:#fff;opacity:0;transition:opacity .25s}
-.cur-s{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.85);opacity:0;transition:opacity .25s}
+.cur-l{font:600 15px/1 var(--display);letter-spacing:-.01em;color:var(--acc-ink);opacity:0;transition:opacity .25s}
+.cur-s{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(11,10,10,.8);opacity:0;transition:opacity .25s}
 .cur-b.lab .cur-l,.cur-b.lab .cur-s{opacity:1}
+.cur-b.ring .cur-l,.cur-b.ring .cur-s{color:#fff}
 .cur-b.ring .cur-l{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
 .has-cur .stage,.has-cur .stage *,.has-cur .ix-list,.has-cur .ix-list *{cursor:none}
 
@@ -117,8 +118,11 @@ html.pv-on .stage-ui,html.pv-on .covers{opacity:0;pointer-events:none;transition
 .nogl .cover{background:var(--cbg);background-size:cover}
 .titles{position:absolute;left:0;right:0;top:0;height:0;pointer-events:none}
 .ttl{position:absolute;left:50%;top:0;width:min(92vw,1180px);transform:translate(-50%,-50%);text-align:center;font:600 clamp(40px,7.4vw,132px)/.9 var(--display);letter-spacing:-.045em;visibility:hidden;text-wrap:balance}
-.ttl .w{display:inline-block;overflow:hidden;padding:.06em .03em .13em;margin:-.06em -.03em -.13em;vertical-align:top}
+.ttl .w{display:inline-block;overflow:hidden;padding:.12em .03em .13em;margin:-.12em -.03em -.13em;vertical-align:top}
 .ttl .ch{display:inline-block}
+/* waterline: letters surface from the line, a damped mirror sits under it */
+.ttl-wl{position:absolute;left:var(--wl-l,8%);width:var(--wl-w,84%);top:calc(100% + .04em);height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42) 18%,rgba(255,255,255,.42) 82%,transparent);transform-origin:50% 50%;will-change:transform}
+.ttl-r{position:absolute;left:0;right:0;top:0;transform-origin:50% calc(100% + .06em);transform:scaleY(-.62);opacity:.16;pointer-events:none;-webkit-mask-image:linear-gradient(to top,#000,transparent 85%);mask-image:linear-gradient(to top,#000,transparent 85%)}
 .rm .ttl{transition:opacity .4s}
 .hud{position:absolute;left:0;right:0;bottom:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:end;gap:20px;padding:0 var(--g) clamp(18px,3.6vh,36px)}
 .hud-l{display:flex;align-items:flex-end;gap:20px;min-width:0}
@@ -232,7 +236,7 @@ html.pv-full main,html.pv-full .ft{visibility:hidden}
 .pv-crumb i{font-style:normal;color:var(--acc);margin:0 .5em}
 .pv-num{color:rgba(255,255,255,.8)}
 .pv-close{display:inline-flex;align-items:center;gap:12px;padding:12px 16px 12px 18px;border-radius:999px;background:rgba(10,10,11,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);transition:background-color .3s,border-color .3s}
-.pv-close:hover{background:var(--acc);border-color:var(--acc)}
+.pv-close:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
 .pv-close .x{position:relative;width:12px;height:12px}
 .pv-close .x::before,.pv-close .x::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:1.5px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg);transition:transform .5s var(--ease)}
 .pv-close .x::after{transform:translate(-50%,-50%) rotate(-45deg)}
@@ -291,14 +295,26 @@ html.pv-full main,html.pv-full .ft{visibility:hidden}
 .pv-next-in{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .pv-scrim{position:absolute;inset:0;opacity:var(--p,0);pointer-events:none}
 .pv-scrim::before{bottom:0}
-.pv-next-top{position:absolute;left:var(--g);right:var(--g);top:clamp(76px,11vh,110px);display:flex;justify-content:space-between;align-items:flex-start;gap:20px;color:rgba(255,255,255,.8)}
+.pv-next-top{position:absolute;left:var(--g);right:var(--g);top:clamp(76px,11vh,110px);color:rgba(255,255,255,.8);text-shadow:0 1px 12px rgba(0,0,0,.35)}
+/* the route: one stop per project, this one filled, the next one calling */
+.route{position:relative;height:34px;margin-bottom:14px}
+.rt-base,.rt-fill{position:absolute;left:0;top:8px;height:1px}
+.rt-base{right:0;background:rgba(255,255,255,.22)}
+.rt-fill{width:var(--leg);background:var(--acc);transform:scaleX(0);transform-origin:0 50%}
+.rt-stop{position:absolute;top:8px;width:9px;height:9px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--bg);box-shadow:inset 0 0 0 1px rgba(255,255,255,.5)}
+.rt-stop.here{background:var(--acc);box-shadow:none}
+.rt-stop.next{box-shadow:inset 0 0 0 1.5px var(--acc)}
+.rt-stop.next::after{content:"";position:absolute;inset:-1px;border-radius:50%;border:1px solid var(--acc);animation:pulse 2s var(--ease) infinite}
+.rm .rt-stop.next::after{animation:none;opacity:0}
+.rt-n{position:absolute;top:22px;font:500 10px/1 var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.62);transform:translateX(-50%)}
+.rt-n:first-of-type{transform:none}
+.rt-row{display:flex;justify-content:space-between;align-items:center;gap:12px 20px;flex-wrap:wrap}
+.rt-row .it{font-style:normal;color:rgba(255,255,255,.5);margin-left:.8em}
 .pv-pull{display:flex;align-items:center;gap:14px}
-.pv-pt{display:block;width:clamp(80px,12vw,180px);height:1px;background:rgba(255,255,255,.25);overflow:hidden}
-.pv-pt i{display:block;height:100%;background:var(--acc);transform:scaleX(0);transform-origin:0 50%}
-.pv-go{padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:999px;transition:background-color .3s,color .3s}
-.pv-go:hover{background:#fff;color:#000}
-.pv-win{position:absolute;left:50%;top:45%;width:min(46vw,620px);aspect-ratio:16/10;transform:translate(-50%,-50%)}
-.nogl .pv-win{background:var(--cbg) center/cover;transform-origin:50% 50%}
+.pv-go{padding:10px 14px;border:1px solid rgba(255,255,255,.35);border-radius:999px;transition:background-color .3s,color .3s,border-color .3s}
+.pv-go:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
+.pv-win{position:absolute;inset:0;pointer-events:none}
+.nogl .pv-win{background:var(--cbg) center/cover;will-change:transform}
 .pv-next-txt{position:absolute;left:var(--g);right:var(--g);bottom:calc(14vh + clamp(26px,5vh,54px));bottom:calc(14svh + clamp(26px,5vh,54px))}
 .pv-ntitle{display:block}
 
@@ -356,7 +372,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
   .pv-top{padding-top:14px}
   .pv-num{display:none}
   .pv-crumb .c2{display:none}
-  .pv-next-top{flex-direction:column}
+  .rt-row .it{display:none}
   .pv-cue{display:none}
 }
 @media (max-width:380px){
@@ -370,7 +386,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
 <div class="grain" aria-hidden="true"></div>
 <div class="loader" id="loader" aria-hidden="true">
   <p class="ld-name">Daniel Busetto</p>
-  <p class="ld-note mono">Folio<br>2023 — 2026</p>
+  <p class="ld-note mono">Abbrivio · Folio<br>2023 — 2026</p>
   <div class="ld-count"><div class="ld-num" id="ldNum"></div><p class="ld-cap mono">Rendering ten covers in GLSL, no images, no libraries.</p></div>
   <div class="ld-bar"><i id="ldBar"></i></div>
 </div>
@@ -409,7 +425,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
             <div class="ruler" aria-hidden="true"><i id="ruler"></i></div>
           </div>
           <div class="hud-r">
-            <p class="vel mono" aria-hidden="true">Velocity <b id="vel">+0.00</b></p>
+            <p class="vel mono" aria-hidden="true">Headway <b id="vel">+0.00</b></p>
             <button type="button" class="btn-open" id="openBtn"><span class="t">Open project</span><span aria-hidden="true">↗</span></button>
           </div>
         </div>
@@ -471,7 +487,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
 
 <footer class="ft mono">
   <span>© 2026 Daniel Busetto</span>
-  <span>Inertia — a portfolio concept by Daniel Busetto. Raw WebGL, no libraries.</span>
+  <span>Abbrivio, the headway a boat keeps after the oars stop — a portfolio concept by Daniel Busetto. Raw WebGL, no libraries.</span>
   <span>Venice <time class="clock">--:--</time> · <a href="#work" data-nav>Back to top ↑</a></span>
 </footer>
 
@@ -531,8 +547,8 @@ P.forEach((p,i)=>{
   b.addEventListener('click',e=>{if(suppress){e.preventDefault();return}openProject(i,'gallery')});
   b.addEventListener('focus',()=>{if(mode==='gallery'&&!ptrDown)goTo(i)});
   li.appendChild(b);coversEl.appendChild(li);coverBtns.push(b);
-  const t=d.createElement('div');t.className='ttl';t.innerHTML=splitChars(p.title);titlesEl.appendChild(t);
-  const ch=$$('.ch',t);TT.push({el:t,ch,y:ch.map(()=>9),vis:false,op:-1});
+  const t=d.createElement('div');t.className='ttl';const tl=splitChars(p.title);t.innerHTML=tl+'<span class="ttl-wl"></span><span class="ttl-r">'+tl+'</span>';titlesEl.appendChild(t);
+  const all=$$('.ch',t),L=all.length/2,ch=all.slice(0,L);TT.push({el:t,ch,ws:$$(':scope>.w',t),rch:all.slice(L),wl:$('.ttl-wl',t),r:$('.ttl-r',t),y:ch.map(()=>9),ry:ch.map(()=>1),rs:ch.map(()=>9),vis:false,op:-1,w:-1,k:''});
   const k=d.createElement('button');k.type='button';k.className='tk';k.setAttribute('aria-label',p.n+' '+p.title);k.innerHTML='<i></i>';
   k.addEventListener('click',()=>goTo(i));ticksEl.appendChild(k);tickIs.push({b:k,i:k.firstChild,s:-1});
   const r=d.createElement('li');r.className='ix-row';
@@ -582,6 +598,7 @@ function measure(){
   track.style.height=G.trackH+'px';
   for(const b of coverBtns){b.style.width=w+'px';b.style.height=h+'px'}
   titlesEl.style.transform='translate3d(0,'+G.cy+'px,0)';
+  for(const T of TT){const r=T.el.getBoundingClientRect();let l=1e9,rr=-1e9;for(const w of T.ws){const b=w.getBoundingClientRect();if(b.width){l=Math.min(l,b.left);rr=Math.max(rr,b.right)}}if(rr>l){const o=Math.min(vw*.06,48);T.el.style.setProperty('--wl-l',(l-r.left-o).toFixed(1)+'px');T.el.style.setProperty('--wl-w',(rr-l+2*o).toFixed(1)+'px')}}
   const sy=window.scrollY;
   G.top=track.getBoundingClientRect().top+sy;
   const ix=$('#index').getBoundingClientRect();ixTop=ix.top+sy;ixH=ix.height;
@@ -600,8 +617,8 @@ function measure(){
 let mode='gallery',openIdx=-1,returnTo='gallery',tw=0,from=null,started=false;
 const GS={f:0,fd:0,fPrev:0,vel:0,active:-1,stY:0,hover:-1,visible:true,reset:true};
 class Spring{constructor(k,c){this.k=k;this.c=c;this.x=0;this.v=0}step(t,dt){let n=Math.ceil(dt*90);const h=dt/n;while(n--){this.v+=((t-this.x)*this.k-this.v*this.c)*h;this.x+=this.v*h}return Math.abs(this.v)>.002||Math.abs(t-this.x)>.002}}
-const bendG=new Spring(170,14),bendP=new Spring(150,15);
-let curveG=0,rgbG=0;
+const bendG=new Spring(170,14),bendP=new Spring(150,15),bendR=new Spring(140,11);
+let curveG=0;
 const hov=new Array(N).fill(0),hovM=Array.from({length:N},()=>[.5,.5]);
 const intro={t:REDUCE?1:-1,titles:REDUCE?1:0};
 let mx=-999,my=-999,pvx=0,pvy=0,pIn=false,inStage=false,inIx=false,pageVel=0,lastS=0;
@@ -611,6 +628,9 @@ let gl=null,LOWP=false,TS=1024;
 const R={comp:[],tex:[],ready:new Array(N).fill(false),readyT:new Array(N).fill(0),staticT:[2.4,3.0,6.0,4.0,2.4,5.0,1.2,4.0,5.4,3.2],queue:[]};
 const live={owner:-1,t:new Array(N).fill(0),dirty:true,frame:0};
 const VS_TRI='attribute vec2 aP;varying vec2 vUv;void main(){vUv=aP*.5+.5;gl_Position=vec4(aP,0.,1.);}';
+/* lattice hash, written for this folio: three folded axes (x, y, x+y) cross-multiplied, then folded again */
+const HASH='float h21(vec2 p){vec3 q=fract(vec3(p,p.x+p.y)*vec3(.0973,.1319,.0701)+.35);q*=q.yzx+vec3(17.3,29.1,11.7);return fract(q.x*q.z*.83+q.y*q.x*1.27+q.z);}';
+/* sdSeg / sdBox below: distance functions after Inigo Quilez's articles */
 const FS_HEAD=`#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -620,7 +640,7 @@ uniform vec4 uRect;uniform float uT;uniform float uPx;varying vec2 vUv;
 #define PI 3.14159265
 #define TAU 6.2831853
 float PX;
-float h21(vec2 p){p=fract(p*vec2(123.34,456.21));p+=dot(p,p+45.32);return fract(p.x*p.y);}
+${HASH}
 float vn(vec2 p){vec2 i=floor(p),f=fract(p);f=f*f*(3.-2.*f);return mix(mix(h21(i),h21(i+vec2(1.,0.)),f.x),mix(h21(i+vec2(0.,1.)),h21(i+vec2(1.,1.)),f.x),f.y);}
 float fbm(vec2 p){float s=0.,a=.5;for(int i=0;i<4;i++){s+=a*vn(p);p=p*2.03+vec2(1.7,9.2);a*=.5;}return s;}
 mat2 rot(float a){float c=cos(a),s=sin(a);return mat2(c,-s,s,c);}
@@ -680,7 +700,7 @@ c+=(vec3(.8,.75,1.)*exp(-de*de*42000.)*1.4+vec3(.55,.5,1.)*exp(-de*80.)*.12)*(1.
 return c;}`,
 /* 04 AuroraTrader: aurora over rising candles */
 `vec3 comp(vec2 p,float t){vec3 c=mix(vec3(0.,.02,.035),vec3(.01,.06,.09),p.y);
-float x=p.x+.14*(fbm(vec2(p.y*1.7,t*.06))-.5);float b=fbm(vec2(x*4.6,t*.05));
+float x=p.x+.14*(fbm(vec2(p.y*1.7,t*.06))-.5);float b=fbm(vec2(x*4.6+4.1,t*.05));
 float cu=ss(.4,.78,b)*ss(.4,.72,p.y)*(1.-ss(.84,1.,p.y));
 float ry=.55+.45*vn(vec2(x*150.,p.y*1.4-t*.25));
 vec3 au=mix(vec3(.02,.72,.84),vec3(.07,.75,.5),ss(.35,.95,p.y+.25*b));
@@ -802,7 +822,7 @@ c+=vec3(.25,.95,.8)*ln(r-.35,.0008)*.25*inG;
 vec2 sp=g-vec2(4.,6.5);float sb=sdBox(sp,vec2(1.9,.34),.32);
 c=mix(c,vec3(.12,.3,.42),ss(.03,-.03,sb)*.85);c+=vec3(.5,.9,1.)*ln(sb*.08,.0007)*.8;
 vec2 fc=f-.5;float ship=step(abs(ce.y-6.),.1)*step(2.,ce.x)*step(ce.x,5.);
-float rh=h21(ce+11.);
+float rh=h21(ce+7.);
 float hit=ship*step(ce.x,4.)+(1.-ship)*step(rh,.03);
 float miss=(1.-ship)*step(.03,rh)*step(rh,.13);
 float xd=min(sdSeg(fc,vec2(-.2),vec2(.2)),sdSeg(fc,vec2(-.2,.2),vec2(.2,-.2)))*.08;
@@ -812,14 +832,22 @@ c+=vec3(.75,.85,1.)*ss(.1,.06,length(fc))*miss*inG*.5;
 return c;}`
 ];
 const VS_PLANE=`attribute vec2 aP;
-uniform vec2 uVp;uniform vec4 uBox;uniform float uBend,uAxis,uCurve,uRot,uHov,uT;uniform vec2 uM;
-varying vec2 vUv;varying float vZ;
+uniform vec2 uVp;uniform vec4 uBox;uniform vec2 uBend;uniform float uAxis,uCurve,uRot,uHov,uT;uniform vec2 uM;
+varying vec2 vUv;varying float vZ,vS;
+/* hull on the lagoon: b is the signed headway along one axis, u runs along the travel, v across it.
+   Chevron crests start at the bow and run aft, the bow rides up on its own push. */
+float hull(float b,float u,float v,float t,out float sl){
+float bow=mix(1.-u,u,step(b,0.));
+float ph=(bow+abs(v-.5)*.75)*11.-t*8.;
+float env=abs(b)*exp(-bow*3.);
+sl=cos(ph)*env;
+return sin(ph)*env*30.+abs(b)*exp(-bow*7.)*18.;}
 void main(){vUv=aP;vec2 l=(aP-.5)*uBox.zw;
-float sy=sin(aP.y*3.14159),sx=sin(aP.x*3.14159);
-l.x-=uBend*(1.-uAxis)*sy*uBox.w*.075;l.y-=uBend*uAxis*sx*uBox.z*.075;
+float s1,s2;float z=hull(uBend.x,aP.x,aP.y,uT,s1)+hull(uBend.y,aP.y,aP.x,uT+1.7,s2);vS=s1+s2;
+l.y-=uBend.x*(aP.x-.5)*uBox.w*.07;l.x-=uBend.y*(aP.y-.5)*uBox.z*.05;
 float c=cos(uRot),s=sin(uRot);l=vec2(c*l.x-s*l.y,s*l.x+c*l.y);
 vec2 w=uBox.xy+l;vec2 nd=w/uVp*2.-1.;
-float e=mix(nd.x,nd.y,uAxis);float z=-uCurve*e*e*150.;
+float e=mix(nd.x,nd.y,uAxis);z-=uCurve*e*e*150.;
 float dl=length((aP-uM)*vec2(uBox.z/uBox.w,1.));
 z+=uHov*sin(dl*16.-uT*5.)*exp(-dl*3.5)*14.;
 vZ=z;gl_Position=vec4(nd.x,-nd.y,0.,1.-z/1400.);}`;
@@ -828,20 +856,21 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform sampler2D uTex;uniform vec4 uRect,uBox;uniform vec2 uRGB,uM,uRes;uniform float uA,uDim,uRev,uHov,uT,uGrain,uVig;
-varying vec2 vUv;varying float vZ;
-float hh(vec2 p){vec3 p3=fract(vec3(p.xyx)*.1031);p3+=dot(p3,p3.yzx+33.33);return fract((p3.x+p3.y)*p3.z);}
+uniform sampler2D uTex;uniform vec4 uRect,uBox;uniform vec2 uM,uRes;uniform float uA,uDim,uRev,uHov,uT,uGrain,uVig;
+varying vec2 vUv;varying float vZ,vS;
+${HASH}
 void main(){vec2 uv=vUv;float ed=1.-uv.y;if(ed>uRev)discard;
 vec2 dm=(uv-uM)*vec2(uBox.z/uBox.w,1.);float dl=length(dm)+1e-4;
 float rp=sin(dl*30.-uT*6.)*exp(-dl*4.5)*uHov;
 uv+=dm/dl*rp*.014*vec2(uBox.w/uBox.z,1.);
-vec2 tuv=uRect.xy+vec2(uv.x,1.-uv.y)*uRect.zw;vec2 o=uRGB*uRect.zw;
-vec3 c=vec3(texture2D(uTex,tuv+o).r,texture2D(uTex,tuv).g,texture2D(uTex,tuv-o).b);
+vec2 tuv=uRect.xy+vec2(uv.x,1.-uv.y)*uRect.zw;
+vec3 c=texture2D(uTex,tuv).rgb;
 c*=1.+uHov*.05+vZ*.0028;
-c+=(hh(gl_FragCoord.xy+uGrain)-.5)*.05;
+c+=vec3(1.,.96,.9)*smoothstep(.1,.55,vS)*.16;
+c+=(h21(gl_FragCoord.xy+uGrain)-.5)*.05;
 c*=1.-uDim;
 if(uVig>0.){float sy=gl_FragCoord.y/uRes.y;c*=mix(1.,mix(.22,1.,smoothstep(.02,.24,sy)*(1.-.75*smoothstep(.9,1.,sy))),uVig);}
-if(uRev<1.&&ed>uRev-.008)c=vec3(1.,.18,.53);
+if(uRev<1.&&ed>uRev-.008)c=vec3(.894,.341,.18);
 float a=uA;
 #ifdef AA
 vec2 fw=max(fwidth(vUv),vec2(1e-5));a*=clamp(min(min(vUv.x,1.-vUv.x)/fw.x,min(vUv.y,1.-vUv.y)/fw.y),0.,1.);
@@ -858,7 +887,7 @@ function initGL(){
   try{const dbg=gl.getExtension('WEBGL_debug_renderer_info');const rn=dbg?String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)):'';LOWP=/swiftshader|llvmpipe|software|basic render/i.test(rn)}catch(e){}
   TS=LOWP?512:1024;if(gl.getParameter(gl.MAX_TEXTURE_SIZE)<TS)TS=512;if(LOWP)html.classList.add('lowp');
   const DER=!!gl.getExtension('OES_standard_derivatives');
-  R.plane=prog(VS_PLANE,(DER?'#extension GL_OES_standard_derivatives : enable\n#define AA 1\n':'')+FS_PLANE,['uVp','uBox','uBend','uAxis','uCurve','uRot','uHov','uT','uM','uTex','uRect','uRGB','uA','uDim','uRev','uGrain','uRes','uVig']);
+  R.plane=prog(VS_PLANE,(DER?'#extension GL_OES_standard_derivatives : enable\n#define AA 1\n':'')+FS_PLANE,['uVp','uBox','uBend','uAxis','uCurve','uRot','uHov','uT','uM','uTex','uRect','uA','uDim','uRev','uGrain','uRes','uVig']);
   if(!R.plane){gl=null;return false}
   R.tri=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,R.tri);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   const S=32,v=[],ix=[];for(let y=0;y<=S;y++)for(let x=0;x<=S;x++)v.push(x/S,y/S);
@@ -896,7 +925,7 @@ function crop(w,h,zoom,px,py,o){const A=w/h;let cw,chh;if(A<1){cw=A;chh=1}else{c
 
 /* ---------- draw list ---------- */
 const DL=[];let dlN=0;
-function draw(){if(dlN>=DL.length)DL.push({rect:[0,0,1,1]});const o=DL[dlN++];o.k=-1;o.live=false;o.a=1;o.dim=0;o.rev=1;o.hov=0;o.mx=.5;o.my=.5;o.bend=0;o.axis=0;o.curve=0;o.rot=0;o.rgbx=0;o.rgby=0;o.zoom=1.14;o.px=0;o.py=0;o.vig=0;return o}
+function draw(){if(dlN>=DL.length)DL.push({rect:[0,0,1,1]});const o=DL[dlN++];o.k=-1;o.live=false;o.a=1;o.dim=0;o.rev=1;o.hov=0;o.mx=.5;o.my=.5;o.bx=0;o.by=0;o.axis=0;o.curve=0;o.rot=0;o.zoom=1.14;o.px=0;o.py=0;o.vig=0;return o}
 function galleryRect(i,fd,o){
   const dd=i-fd,ad=Math.abs(dd),sc=1-.14*Math.min(ad,1);
   let x,y;if(G.vertical){x=vw/2;y=GS.stY+G.cy+dd*G.pitch}else{x=vw/2+dd*G.pitch;y=GS.stY+G.cy}
@@ -905,10 +934,14 @@ function galleryRect(i,fd,o){
 const tmpR={};
 function lerpRect(o,a,b,e){o.x=lerp(a.x,b.x,e);o.y=lerp(a.y,b.y,e);o.w=lerp(a.w,b.w,e);o.h=lerp(a.h,b.h,e)}
 function heroRect(o,s){o.x=vw/2;o.y=vh/2-s*.5;o.w=vw;o.h=vh;o.zoom=1+clamp(s/vh,0,1.2)*.12;o.dim=clamp(s/vh,0,1)*.5;o.px=0;o.py=0;return o}
-const RW={ok:false,top:0,h:0,vh:0,wx:0,wy:0,ww:0,wh:0,p:0,st:9999};
+const RW={ok:false,top:0,h:0,vh:0,p:0,st:9999,lx:null};
+/* next stop: the next cover comes alongside from the right edge, full height, and slows into its berth */
 function runwayRect(o,s){
   const top=RW.top-s,run=Math.max(1,RW.h-RW.vh);const st=Math.max(top,0);const p=clamp(-top/run,0,1);RW.p=p;RW.st=st;
-  const e=eIO3(p);o.x=lerp(RW.wx,vw/2,e);o.y=lerp(st+RW.wy,vh/2,e);o.w=lerp(RW.ww,vw,e);o.h=lerp(RW.wh,vh,e);o.zoom=lerp(1.12,1,e);o.dim=0;o.px=0;o.py=0;return o;
+  const e=1-Math.pow(1-p,2.2),w0=vw*.62,peek=Math.max(56,vw*.12);
+  o.y=st+vh/2;o.h=vh;o.px=0;o.py=0;o.a=1;
+  if(REDUCE){o.x=vw/2;o.w=vw;o.zoom=1;o.dim=0;o.a=clamp(p*1.4,0,1);return o}
+  o.w=lerp(w0,vw,e);o.x=lerp(vw-peek+w0/2,vw/2,e);o.zoom=lerp(1.12,1,e);o.dim=lerp(.28,0,e);return o;
 }
 function rowBand(i,s,o){const r=IXR[i]||{top:ixTop,h:80};o.x=vw/2;o.y=r.top+r.h/2-s;o.w=Math.min(vw-2*gutter(),1400);o.h=r.h;o.zoom=1.1;o.px=0;o.py=0;o.dim=0;return o}
 const gutter=()=>clamp(vw*.032,16,48);
@@ -1028,12 +1061,17 @@ function pvHTML(i,instant){
    '<blockquote class="pv-quote rvf"><p>'+esc(p.caption)+'</p></blockquote>'+
    '<ul class="pv-tags rvf" aria-label="Stack">'+p.tags.map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul>'+
   '</article>'+
-  '<section class="pv-next" aria-label="Next project: '+esc(nx.title)+'"><div class="pv-next-in" style="--cbg:'+bgOf(nx)+'"><div class="pv-scrim"></div>'+
-   '<div class="pv-win" id="pvWin"></div>'+
-   '<div class="pv-next-top"><p class="mono">Next project</p><div class="pv-pull"><span class="mono">Keep scrolling</span><span class="pv-pt"><i id="pvPull"></i></span><button type="button" class="pv-go mono" id="pvGo">Open next</button></div></div>'+
+  '<section class="pv-next" aria-label="Next stop: '+nx.n+' '+esc(nx.title)+'"><div class="pv-next-in" style="--cbg:'+bgOf(nx)+'"><div class="pv-scrim"></div>'+
+   '<div class="pv-win" id="pvWin"'+(REDUCE?' style="opacity:0"':' style="transform:translate3d(88vw,0,0)"')+'></div>'+
+   '<div class="pv-next-top"><div class="route" aria-hidden="true" style="--leg:'+LEG+'%"><i class="rt-base"></i><i class="rt-fill" id="pvPull"></i>'+
+    Array.from({length:N},(_,k)=>'<i class="rt-stop'+(k===0?' here':k===1?' next':'')+'" style="left:'+stopAt(k)+'%"></i>').join('')+
+    '<span class="rt-n" style="left:0">'+p.n+'</span><span class="rt-n" style="left:'+LEG+'%">'+nx.n+'</span></div>'+
+   '<div class="rt-row"><p class="mono">Next stop<em class="it">Prossima fermata</em></p><div class="pv-pull"><span class="mono">Keep scrolling to dock</span><button type="button" class="pv-go mono" id="pvGo" aria-label="Dock now at '+nx.n+' '+esc(nx.title)+'">Dock now</button></div></div></div>'+
    '<div class="pv-next-txt pv-txt">'+kick(nx)+'<p class="pv-title" aria-hidden="true">'+wordsHTML(nx.title)+'</p><p class="pv-sub">'+esc(nx.sub)+'</p></div>'+
   '</div></section>';
 }
+/* route diagram: this stop at 0, the leg to the next stop is long, later stops bunch up toward the terminus */
+const LEG=56,stopAt=k=>k===0?0:k===1?LEG:+(LEG+(k-1)/(N-2)*(100-LEG)).toFixed(2);
 let pvRevIO=null,pvRev=[];
 function fillPV(i,instant){
   pvBody.innerHTML=pvHTML(i,instant);
@@ -1047,9 +1085,7 @@ function fillPV(i,instant){
 }
 function pvMeasure(){
   pvS.measure();const nx=$('.pv-next',pvBody);if(!nx){RW.ok=false;return}
-  RW.top=nx.offsetTop;RW.h=nx.offsetHeight;RW.vh=pvScrollEl.clientHeight;
-  const inr=$('.pv-next-in',pvBody).getBoundingClientRect(),w=$('#pvWin').getBoundingClientRect();
-  RW.wx=w.left-inr.left+w.width/2;RW.wy=w.top-inr.top+w.height/2;RW.ww=w.width;RW.wh=w.height;RW.ok=true;
+  RW.top=nx.offsetTop;RW.h=nx.offsetHeight;RW.vh=pvScrollEl.clientHeight;RW.ok=true;RW.lx=null;
 }
 function curRectOf(i,src){
   const o={};const s=winS.pos();
@@ -1064,7 +1100,7 @@ function openProject(i,src){
   openIdx=i;returnTo=src==='index'?'index':'gallery';
   from=curRectOf(i,src);from.a=src==='index'&&IX.a[i]<.2?0:1;
   winS.anim=false;drag=null;
-  mode='opening';tw=0;
+  mode='opening';tw=0;bendR.x=bendR.v=0;
   fillPV(i,false);pv.hidden=false;pv.classList.remove('pv-in','pv-out');
   html.classList.add('is-trans','pv-on');
   mainEl.inert=true;hd.inert=true;ft.inert=true;
@@ -1103,6 +1139,7 @@ function handoff(){
   const ni=(openIdx+1)%N;openIdx=ni;
   if(gl&&live.owner!==ni)setOwner(ni);
   fillPV(ni,true);pvS.jump(0);pvMeasure();
+  if(!REDUCE)bendR.v+=2.4;
   requestAnimationFrame(()=>requestAnimationFrame(()=>{const pn=$('.pv-panel',pvBody);if(pn)pn.classList.remove('enter')}));
 }
 pvClose.addEventListener('click',closeProject);
@@ -1131,8 +1168,7 @@ function updGallery(dt,s){
   if(!REDUCE){
     if(bendG.step(clamp(-GS.vel*.2,-1,1),dt))busy=true;
     curveG=lerp(curveG,Math.min(Math.abs(GS.vel)*.14,1),damp(.12,dt));
-    rgbG=lerp(rgbG,clamp(GS.vel*.0045,-.02,.02),damp(.2,dt));
-    if(Math.abs(curveG)>.001||Math.abs(rgbG)>1e-4)busy=true;
+    if(Math.abs(curveG)>.001)busy=true;
   }
   if(Math.abs(GS.vel)>.001)busy=true;
   GS.stY=s<G.top?G.top-s:Math.min(0,G.top+G.trackH-G.sh-s);
@@ -1150,16 +1186,23 @@ function updGallery(dt,s){
   for(let i=0;i<N;i++){
     const T=TT[i],dd=i-ft,ad=Math.abs(dd);
     if(REDUCE){const op=Math.round(ft)===i?1:0;if(T.op!==op){T.op=op;T.el.style.visibility='visible';T.el.style.opacity=op}continue}
-    if(ad>=.995&&!(i===0&&intro.titles<1)){if(T.vis){T.vis=false;T.el.style.visibility='hidden'}continue}
+    if(ad>=.995&&!(i===0&&intro.titles<1)){if(T.vis){T.vis=false;T.el.style.visibility='hidden';T.ry.fill(1)}continue}
     if(!T.vis){T.vis=true;T.el.style.visibility='visible'}
-    const L=T.ch.length,S=.45,dz=Math.max(0,ad-.1)/.9;
+    /* waterline: letters surface through the line (with a small buoyant bob) and sink back through it; the mirror trails them */
+    const L=T.ch.length,S=.45,dz=Math.max(0,ad-.1)/.9,kr=damp(.16,dt);
     for(let j=0;j<L;j++){
       const q=L>1?j/(L-1):0;let y;
-      if(dd>=0)y=clamp((dz-(1-S)*(1-q))/S,0,1);else y=-clamp((dz-(1-S)*q)/S,0,1);
-      if(i===0&&intro.titles<1){const iy=clamp(1-(intro.titles*1.7-q*.7),0,1);y=Math.max(y,eIO3(iy)*1)}
-      y=Math.round(y*1000)/1000;
-      if(T.y[j]!==y){T.y[j]=y;T.ch[j].style.transform=y?'translate3d(0,'+(y*122).toFixed(1)+'%,0) rotate('+(y*7).toFixed(2)+'deg)':'none'}
+      if(dd>=0)y=clamp((dz-(1-S)*(1-q))/S,0,1);else y=clamp((dz-(1-S)*q)/S,0,1);
+      if(i===0&&intro.titles<1){const iy=clamp(1-(intro.titles*1.7-q*.7),0,1);y=Math.max(y,eIO3(iy))}
+      y=Math.round(y*(1.5*y-.5)*1000)/1000;
+      if(T.y[j]!==y){T.y[j]=y;T.ch[j].style.transform=y?'translate3d(0,'+(y*118).toFixed(1)+'%,0)':'none'}
+      let r=T.ry[j];r+=(y-r)*kr;if(Math.abs(y-r)<.002)r=y;else busy=true;T.ry[j]=r;
+      const rr=Math.round(r*1000)/1000;
+      if(T.rs[j]!==rr){T.rs[j]=rr;T.rch[j].style.transform=rr?'translate3d(0,'+(rr*118).toFixed(1)+'%,0)':'none'}
     }
+    const wl=Math.round(clamp(1-ad*1.35,0,1)*1000)/1000*(i===0&&intro.titles<1?eIO3(intro.titles):1);
+    if(T.w!==wl){T.w=wl;T.wl.style.transform='scaleX('+wl.toFixed(3)+')'}
+    const rk='scaleY(-.62) skewX('+clamp(bendG.x*9,-9,9).toFixed(1)+'deg)';if(T.k!==rk){T.k=rk;T.r.style.transform=rk}
   }
   /* counter, ticks, ruler, sub */
   setOdo(odoC,REDUCE?Math.round(f)+1:f+1);
@@ -1263,11 +1306,15 @@ function updModes(dt){
     const s=pvS.pos();const v=(s-pvPrev)/dt;pvPrev=s;pvVel=lerp(pvVel,v,damp(.3,dt));
     if(!REDUCE&&bendP.step(clamp(-pvVel/3500,-.8,.8),dt))busy=true;
     if(Math.abs(pvVel)>.5)busy=true;
+    let hw=0;
     if(RW.ok){runwayRect(dN,s);
+      if(RW.st<vh&&RW.lx!==null)hw=clamp((dN.x-RW.lx)/dt/2200,-.9,.9);
+      RW.lx=RW.st<vh?dN.x:null;
       if(PVE.pull)PVE.pull.style.transform='scaleX('+RW.p.toFixed(3)+')';
       if(PVE.inner)PVE.inner.style.setProperty('--p',eIO3(RW.p).toFixed(3));
-      if(!gl&&PVE.win){const sx=dN.w/RW.ww,sy=dN.h/RW.wh;PVE.win.style.transform='translate(-50%,-50%) translate('+(dN.x-RW.wx).toFixed(1)+'px,'+(dN.y-RW.st-RW.wy).toFixed(1)+'px) scale('+sx.toFixed(3)+','+sy.toFixed(3)+')'}
+      if(!gl&&PVE.win){if(REDUCE)PVE.win.style.opacity=dN.a.toFixed(3);else PVE.win.style.transform='translate3d('+(dN.x-dN.w/2).toFixed(1)+'px,0,0)'}
       if(RW.p>=.995){handoff();busy=true}}
+    if(!REDUCE&&bendR.step(hw,dt))busy=true;
     if(gl&&live.owner>=0)busy=true;
   }
   return busy;
@@ -1289,26 +1336,26 @@ function buildDraws(dt,s){
       if(tr>0){const sg=i<openIdx?-1:1;if(G.vertical)o.y+=sg*tr*vh*.4;else o.x+=sg*tr*vw*.35;o.a=1-tr}
       if(o.a<=.001){dlN--;continue}
       if(o.x+o.w<-50||o.x-o.w>vw+50||o.y+o.h<-50||o.y-o.h>vh+50){dlN--;continue}
-      o.bend=bendG.x;o.axis=G.vertical?1:0;o.curve=curveG;o.rgbx=G.vertical?0:rgbG;o.rgby=G.vertical?rgbG:0;
+      if(G.vertical)o.by=bendG.x;else o.bx=bendG.x;o.axis=G.vertical?1:0;o.curve=curveG;
       o.hov=hov[i];o.mx=hovM[i][0];o.my=hovM[i][1];o.dim=o.dim*(1-hov[i]*.5);o.vig=G.vertical?1-tr:0;
     }
   }
   /* index previews */
   if(mode==='gallery'&&IX.vis&&CUR){
     const ord=[];for(let i=0;i<N;i++)if(IX.a[i]>0&&R.ready[i])ord.push(i);ord.sort((a,b)=>IX.st[a]-IX.st[b]);
-    for(const i of ord){const o=draw();const e=eOut(IX.a[i]),k=.6+.4*e;o.k=i;o.x=IX.x;o.y=IX.y;o.w=IX.w*k;o.h=IX.h*k;o.a=Math.min(1,IX.a[i]*1.6);o.rev=eIO3(IX.rev[i]);o.rot=IX.rot;o.zoom=1.12;o.dim=0;o.bend=clamp(IX.rv*.4,-.5,.5);o.axis=0}
+    for(const i of ord){const o=draw();const e=eOut(IX.a[i]),k=.6+.4*e;o.k=i;o.x=IX.x;o.y=IX.y;o.w=IX.w*k;o.h=IX.h*k;o.a=Math.min(1,IX.a[i]*1.6);o.rev=eIO3(IX.rev[i]);o.rot=IX.rot;o.zoom=1.12;o.dim=0;o.bx=clamp(IX.rv*.4,-.5,.5);o.axis=0}
   }
   /* open plane (+ next) */
   if(mode!=='gallery'&&openIdx>=0){
     const s2=pvS.pos();
     if(mode==='opening'){
       const e=REDUCE?1:eIO(tw);const o=draw();o.k=openIdx;heroRect(tA,0);lerpRect(o,from,tA,e);o.zoom=lerp(from.zoom||1.14,1,e);o.px=lerp(from.px||0,0,e);o.py=lerp(from.py||0,0,e);o.dim=lerp(from.dim||0,0,e);
-      o.a=REDUCE?tw:(from.a===0?Math.min(1,tw*3):1);o.bend=bendG.x*(1-e);o.axis=G.vertical?1:0;o.rgbx=rgbG*(1-e);o.live=true;
+      o.a=REDUCE?tw:(from.a===0?Math.min(1,tw*3):1);if(G.vertical)o.by=bendG.x*(1-e);else o.bx=bendG.x*(1-e);o.axis=G.vertical?1:0;o.live=true;
     }else if(mode==='open'){
-      if(s2<vh*1.05){const o=draw();o.k=openIdx;heroRect(o,s2);o.live=true;o.bend=bendP.x;o.axis=1;o.rgby=clamp(pvVel/-90000,-.012,.012);
+      if(s2<vh*1.05){const o=draw();o.k=openIdx;heroRect(o,s2);o.live=true;o.by=bendP.x;o.bx=bendR.x;o.axis=1;
         if(CUR&&pIn&&my>70&&my<vh*.86-s2){o.hov=1;o.mx=clamp(mx/vw,0,1);o.my=clamp((my-(o.y-o.h/2))/o.h,0,1)}}
       if(RW.ok)runwayRect(dN,s2);
-      if(RW.ok&&RW.st<vh){const ni=(openIdx+1)%N;if(R.ready[ni]){const o=draw();o.k=ni;Object.assign(tA,dN);o.x=tA.x;o.y=tA.y;o.w=tA.w;o.h=tA.h;o.zoom=tA.zoom;o.live=s2>=vh*1.05;o.axis=1;o.bend=bendP.x*(1-RW.p);o.rgby=clamp(pvVel/-90000,-.012,.012)*(1-RW.p)}}
+      if(RW.ok&&RW.st<vh){const ni=(openIdx+1)%N;if(R.ready[ni]){const o=draw();o.k=ni;Object.assign(tA,dN);o.x=tA.x;o.y=tA.y;o.w=tA.w;o.h=tA.h;o.zoom=tA.zoom;o.dim=tA.dim;o.a=tA.a;o.live=s2>=vh*1.05;o.axis=0;o.bx=bendR.x;o.by=bendP.x*(1-RW.p)}}
     }else if(mode==='closing'){
       const e=REDUCE?1:eIO(tw);let tgt;
       if(returnTo==='gallery'){tgt=galleryRect(openIdx,GS.fd,{})}else{tgt=rowBand(openIdx,s,{})}
@@ -1344,8 +1391,8 @@ function render(dt,s){
     gl.bindTexture(gl.TEXTURE_2D,live2?R.hero:R.tex[o.k]);
     gl.uniform4f(U.uBox,o.x,o.y,o.w,o.h);
     if(live2)gl.uniform4f(U.uRect,0,0,1,1);else gl.uniform4f(U.uRect,o.rect[0],o.rect[1],o.rect[2],o.rect[3]);
-    gl.uniform1f(U.uBend,REDUCE?0:o.bend);gl.uniform1f(U.uAxis,o.axis);gl.uniform1f(U.uCurve,REDUCE?0:o.curve);gl.uniform1f(U.uRot,o.rot);
-    gl.uniform1f(U.uHov,REDUCE?0:o.hov);gl.uniform2f(U.uM,o.mx,o.my);gl.uniform2f(U.uRGB,REDUCE?0:o.rgbx,REDUCE?0:o.rgby);
+    gl.uniform2f(U.uBend,REDUCE?0:o.bx,REDUCE?0:o.by);gl.uniform1f(U.uAxis,o.axis);gl.uniform1f(U.uCurve,REDUCE?0:o.curve);gl.uniform1f(U.uRot,o.rot);
+    gl.uniform1f(U.uHov,REDUCE?0:o.hov);gl.uniform2f(U.uM,o.mx,o.my);
     gl.uniform1f(U.uA,o.a);gl.uniform1f(U.uDim,o.dim);gl.uniform1f(U.uRev,o.rev);gl.uniform1f(U.uVig,o.vig);
     gl.drawElements(gl.TRIANGLES,R.nIdx,gl.UNSIGNED_SHORT,0);
     o.useLive=false;

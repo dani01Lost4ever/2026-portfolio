@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Studio Nove — Independent design studio, Turin</title>
-<meta name="description" content="Studio Nove is a nine-person design studio in Turin making identities, websites and spaces for companies with something to say.">
+<title>Lungatavola — Independent design studio, Turin</title>
+<meta name="description" content="Lungatavola is a nine-person design studio in Turin, working around one long table on identities, websites and spaces for companies with something to say.">
 <meta name="theme-color" content="#0E0D0C">
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -48,10 +48,12 @@ em{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.0
 .hdr>*{pointer-events:auto}
 .hdr :focus-visible{outline-color:#fff}
 .logo{display:inline-flex;align-items:center;gap:10px;font-weight:600;font-size:18px;letter-spacing:-.03em;padding:6px 2px;line-height:1}
-.logo svg{width:17px;height:17px;transition:transform .9s var(--ease)}
-.logo:hover svg{transform:rotate(90deg)}
+.logo svg{width:30px;height:16px;overflow:visible}
+.logo svg g g{transition:transform .9s var(--ease)}
+.logo:hover .lg-t{transform:translateY(1.2px)}
+.logo:hover .lg-b{transform:translateY(-1.2px)}
 .nav{margin-left:auto;display:flex;gap:2px}
-.nav a,.hbtn{padding:9px 12px;font-size:15px;font-weight:500;line-height:1;display:inline-flex;align-items:center;gap:8px}
+.nav a,.hbtn{padding:9px 12px;font-size:15px;font-weight:500;line-height:1;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
 .clock{font-family:var(--mono);font-size:12px;letter-spacing:.06em;text-transform:uppercase;margin-left:12px;white-space:nowrap}
 .clock b{font-weight:500;animation:blink 2s steps(1) infinite}
 @keyframes blink{50%{opacity:.2}}
@@ -67,6 +69,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .case-open .cnum{display:block;margin-left:18px}
 .back svg{width:15px;height:15px}
 @media (max-width:899px){.nav,.clock{display:none}.mbtn{display:inline-flex;margin-left:auto}}
+@media (max-width:380px){.case-open .cnum{display:none}}
 
 /* menu (small screens) */
 .menu{position:fixed;inset:0;z-index:48;background:#0E0D0C;color:#ECE6DC;display:flex;flex-direction:column;justify-content:flex-end;padding:90px var(--g) var(--g);clip-path:circle(0 at var(--mx,90%) var(--my,40px));visibility:hidden;transition:clip-path .9s var(--io),visibility 0s .9s}
@@ -93,9 +96,10 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .cov-a,.cov-b{position:absolute;inset:0;clip-path:inset(100% 0 0 0)}
 .cov-a{background:var(--accent)}
 .cov-b{display:flex;flex-direction:column;justify-content:flex-end;padding:var(--g);overflow:hidden}
-.cov-t{font-size:clamp(56px,15vw,240px);font-weight:600;letter-spacing:-.06em;line-height:.86;white-space:nowrap}
+.cov-t{font-size:clamp(48px,15vw,240px);font-weight:600;letter-spacing:-.06em;line-height:.86}
 .cov-k{margin-bottom:22px;opacity:0}
-.ch{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em}
+.wd{display:inline-block;white-space:nowrap}
+.ch{display:inline-block;overflow:hidden;vertical-align:top;padding-bottom:.2em;margin-bottom:-.2em}
 .ch>span{display:inline-block}
 
 /* cursor */
@@ -251,25 +255,35 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .clients-foot p{max-width:40ch;font-size:clamp(16px,1.2vw,18px);opacity:.75}
 .clients-foot .mono{opacity:.55}
 
-/* services drum */
+/* services: departures board */
 .svc{position:relative;height:430vh}
 .svc-pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:minmax(0,4.2fr) minmax(0,7.8fr);gap:var(--g);padding:calc(var(--g) + 64px) var(--g) var(--g);overflow:hidden;align-items:center}
 .svc-side{align-self:stretch;display:flex;flex-direction:column;min-width:0}
 .svc-h{font-size:clamp(30px,3.3vw,54px);font-weight:500;letter-spacing:-.045em;line-height:1.02;margin-top:22px;max-width:12em}
 .svc-detail{margin-top:auto;padding-top:28px;min-height:13rem}
-.svc-n{display:flex;justify-content:space-between;opacity:.6}
+.svc-n{display:flex;justify-content:space-between;gap:12px;opacity:.6}
 .svc-d{font-size:clamp(18px,1.55vw,24px);line-height:1.3;letter-spacing:-.015em;margin-top:18px;max-width:24em}
 .svc-t{margin-top:14px;opacity:.55}
 .svc-bar{height:1px;background:color-mix(in srgb,currentColor 17%,transparent);margin-top:22px;position:relative}
 .svc-bar i{position:absolute;inset:0;background:var(--accent);transform-origin:left;transform:scaleX(0)}
-.drum-wrap{perspective:1500px;height:100%;display:flex;align-items:center;min-width:0;position:relative}
-.drum-wrap::before,.drum-wrap::after{content:"";position:absolute;left:0;right:0;height:1px;background:currentColor;opacity:.25;top:calc(50% - var(--rh)/2)}
-.drum-wrap::after{top:calc(50% + var(--rh)/2)}
-.drum{position:relative;width:100%;height:var(--rh);transform-style:preserve-3d;will-change:transform}
-.d-row{position:absolute;left:0;top:0;width:100%;height:var(--rh);display:flex;align-items:center;gap:.35em;font-size:var(--fs);font-weight:500;letter-spacing:-.05em;line-height:1;white-space:nowrap;backface-visibility:hidden;-webkit-backface-visibility:hidden;will-change:transform,opacity;transition:color .5s}
-.d-row .d-n{font-size:12px;letter-spacing:.06em;align-self:flex-start;margin-top:.9em;opacity:.55;width:2.2em;flex:none}
-.d-row.on{color:var(--accent)}
-.svc{--fs:clamp(34px,5.4vw,92px);--rh:calc(var(--fs)*1.18)}
+.board-wrap{min-width:0;display:flex;align-items:center;height:100%}
+.board{--tw:26px;--tg:3px;--th:calc(var(--tw)*1.42);--gg:calc(var(--tw)*.62);width:100%;padding:clamp(12px,1.7vw,24px);border-radius:10px;background:linear-gradient(#171512,#11100E);box-shadow:inset 0 0 0 1px rgba(236,230,220,.09),0 50px 100px -30px rgba(0,0,0,.6);color:#ECE6DC}
+.b-top{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding-bottom:14px;border-bottom:1px solid rgba(236,230,220,.12)}
+.b-title{font-size:clamp(20px,2vw,32px);font-weight:600;letter-spacing:-.04em;line-height:1}
+.b-title em{opacity:.55;margin-left:.3em}
+.b-clock{font:500 clamp(13px,1.1vw,16px)/1 var(--mono);letter-spacing:.06em;color:var(--accent);font-variant-numeric:tabular-nums}
+.b-head{display:flex;gap:var(--gg);align-items:center;padding:14px 0 10px;font:500 11px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;opacity:.5}
+.g-time{width:calc(5*var(--tw) + 4*var(--tg))}
+.g-name{width:calc(18*var(--tw) + 17*var(--tg))}
+.g-bin{width:calc(2*var(--tw) + var(--tg))}
+.b-rows{position:relative}
+.b-rows canvas{display:block;width:100%}
+.b-lamp{position:absolute;left:calc(var(--tw)*-.46);top:calc(var(--th)/2 - var(--tw)*.14);width:calc(var(--tw)*.28);height:calc(var(--tw)*.28);border-radius:50%;background:var(--accent);animation:blink 1.6s steps(1) infinite}
+.b-list li{display:grid;grid-template-columns:calc(5*var(--tw) + 4*var(--tg)) minmax(0,1fr) auto;column-gap:var(--gg);align-items:baseline;padding:10px 0;border-bottom:1px solid rgba(236,230,220,.1)}
+.b-list b{font-weight:500;font-size:clamp(20px,2.2vw,32px);letter-spacing:-.035em;line-height:1.1}
+.rm .b-rows,.rm .b-head{display:none}
+.rm .b-list{margin-top:6px}
+.b-note{display:flex;justify-content:space-between;gap:8px 20px;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid rgba(236,230,220,.12);font:500 11px/1.4 var(--mono);letter-spacing:.06em;text-transform:uppercase;opacity:.5}
 
 /* footer / contact */
 .foot{position:relative;padding:clamp(96px,16vh,190px) var(--g) 0;overflow:hidden}
@@ -286,7 +300,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .foot-cols a,.foot-cols p{display:block;font-size:16px;line-height:1.55}
 .foot-cols a{width:fit-content}
 .foot-cols a:hover{color:var(--accent)}
-.wm{margin-top:clamp(56px,10vh,120px);white-space:nowrap;font-weight:600;letter-spacing:-.065em;line-height:.8;font-size:17vw;overflow:hidden;padding:.04em 0 .035em}
+.wm{margin-top:clamp(56px,10vh,120px);white-space:nowrap;font-weight:600;letter-spacing:-.065em;line-height:.8;font-size:17vw;overflow:hidden;padding:.04em 0 .22em}
 .wm-in{display:inline-flex}
 .wm-in>span{display:inline-block;will-change:transform}
 .wm-in>span.sp{width:.24em}
@@ -298,7 +312,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .case{padding:clamp(120px,19vh,210px) var(--g) 0}
 .c-kick{display:flex;flex-wrap:wrap;gap:8px 26px;margin-bottom:26px}
 .c-kick span:first-child{color:var(--accent)}
-.c-title{font-size:clamp(64px,17.5vw,290px);font-weight:600;letter-spacing:-.065em;line-height:.84;margin-left:-.05em;white-space:nowrap}
+.c-title{font-size:clamp(40px,17.5vw,290px);font-weight:600;letter-spacing:-.065em;line-height:.84;margin-left:-.05em}
 .c-title .ch>span{transition:transform 1.3s var(--ease);transition-delay:calc(var(--i)*38ms)}
 .js .c-title .ch>span{transform:translateY(106%)}
 .c-title.in .ch>span{transform:none}
@@ -345,9 +359,8 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
   .svc-pin{grid-template-columns:minmax(0,1fr);grid-template-rows:auto 1fr auto;align-items:stretch;padding-top:calc(var(--g) + 58px)}
   .svc-side{display:contents}
   .svc-detail{order:3;min-height:0;margin-top:0;padding-top:0}
-  .drum-wrap{order:2}
+  .board-wrap{order:2}
   .svc-h{max-width:14em}
-  .svc{--fs:clamp(28px,11vw,64px)}
   .foot-cols{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:34px}
   .c-meta{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}
   .c-cols{grid-template-columns:minmax(0,1fr)}
@@ -372,6 +385,10 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
   .kick span:nth-child(3){display:none}
   .h1{font-size:13.6vw}
   .h-pill{width:1.08em}
+  .b-head{justify-content:space-between}
+  .b-list li{grid-template-columns:auto minmax(0,1fr) auto;column-gap:14px}
+  .b-head .g-name{display:none}
+  .b-head .g-bin{width:auto}
 }
 
 /* reduced motion */
@@ -382,10 +399,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 .rm .ln>span{transition:none}
 .rm .svc{height:auto}
 .rm .svc-pin{position:static;height:auto;display:block}
-.rm .drum-wrap{perspective:none;height:auto;display:block;margin-top:40px}
-.rm .drum-wrap::before,.rm .drum-wrap::after{display:none}
-.rm .drum{height:auto;transform:none!important}
-.rm .d-row{position:relative;transform:none!important;opacity:1!important;height:auto;padding:.14em 0;white-space:normal}
+.rm .board-wrap{height:auto;display:block;margin-top:40px}
 .rm .svc-detail{display:none}
 .rm .hint i{animation:none;transform:none}
 .rm .clock b{animation:none}
@@ -397,7 +411,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 <a class="skip" href="#main">Skip to content</a>
 
 <div class="loader" aria-hidden="true">
-  <div class="ld-top mono"><span>Studio Nove</span><span>Turin — since 2014</span></div>
+  <div class="ld-top mono"><span>Lungatavola</span><span>Turin — since 2014</span></div>
   <div>
     <div class="ld-top"><span class="mono" style="align-self:flex-end;opacity:.6">Setting the table</span><span class="ld-num">000</span></div>
     <div class="ld-bar"><i></i></div>
@@ -405,9 +419,9 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
 </div>
 
 <header class="hdr" id="hdr">
-  <a class="logo" href="#top" data-magnetic=".4" aria-label="Studio Nove, home">
-    <svg viewBox="0 0 18 18" aria-hidden="true"><g fill="currentColor"><circle cx="3" cy="3" r="2"/><circle cx="9" cy="3" r="2"/><circle cx="15" cy="3" r="2"/><circle cx="3" cy="9" r="2"/><circle cx="9" cy="9" r="2"/><circle cx="15" cy="9" r="2"/><circle cx="3" cy="15" r="2"/><circle cx="9" cy="15" r="2"/><circle cx="15" cy="15" r="2"/></g></svg>
-    <span>Studio Nove</span>
+  <a class="logo" href="#top" data-magnetic=".4" aria-label="Lungatavola, home">
+    <svg viewBox="0 0 30 16" aria-hidden="true"><g fill="currentColor"><rect x="6" y="6.6" width="23" height="2.8" rx="1.4"/><circle cx="2.2" cy="8" r="1.8"/><g class="lg-t"><circle cx="9" cy="2.2" r="1.8"/><circle cx="14.5" cy="2.2" r="1.8"/><circle cx="20" cy="2.2" r="1.8"/><circle cx="25.5" cy="2.2" r="1.8"/></g><g class="lg-b"><circle cx="9" cy="13.8" r="1.8"/><circle cx="14.5" cy="13.8" r="1.8"/><circle cx="20" cy="13.8" r="1.8"/><circle cx="25.5" cy="13.8" r="1.8"/></g></g></svg>
+    <span>Lungatavola</span>
   </a>
   <nav class="nav" aria-label="Primary">
     <a href="#work" aria-label="Work" data-magnetic><span class="roll"><span data-t="Work">Work</span></span></a>
@@ -428,7 +442,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
     <li><a href="#services"><span class="mono">03</span>Services</a></li>
     <li><a href="#contact"><span class="mono">04</span>Contact</a></li>
   </ol>
-  <div class="menu-foot mono"><span>hello@studionove.example</span><span>Turin, IT</span></div>
+  <div class="menu-foot mono"><span>hello@lungatavola.example</span><span>Turin, IT</span></div>
 </div>
 
 <main id="main" tabindex="-1">
@@ -448,7 +462,7 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
           <p class="hint mono"><i></i>Move the cursor. Leave a trail.</p>
         </div>
         <div class="fadein" style="--d:.9s"><a class="badge" href="#studio" data-magnetic=".45" data-round aria-label="Scroll to the studio">
-          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="bp" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text><textPath href="#bp" textLength="292">STUDIO NOVE · TURIN · EST. 2014 · SCROLL · </textPath></text></svg>
+          <svg class="ring" viewBox="0 0 120 120" aria-hidden="true"><defs><path id="bp" d="M60,60 m-47,0 a47,47 0 1,1 94,0 a47,47 0 1,1 -94,0"/></defs><text><textPath href="#bp" textLength="292">LUNGATAVOLA · TURIN · EST. 2014 · SCROLL · </textPath></text></svg>
           <svg class="arr" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v17M5 13l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>
         </a></div>
       </div>
@@ -495,16 +509,24 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
       <div class="svc-side">
         <div>
           <div class="sec-head mono rv" style="margin-bottom:0"><span class="n">(04)</span><span>Services</span><span class="r">12 disciplines</span></div>
-          <h2 class="svc-h rv" id="svc-h" data-split>Twelve things we do, <em>one way</em> of doing them.</h2>
+          <h2 class="svc-h rv" id="svc-h" data-split>Twelve services, <em>all departing</em> from the same table.</h2>
         </div>
         <div class="svc-detail" aria-hidden="true">
-          <p class="svc-n mono"><span class="svc-i">01 / 12</span><span>Scroll</span></p>
+          <p class="svc-n mono"><span class="svc-i">01 / 12</span><span class="svc-b">Binario 1 · 09:05</span></p>
           <p class="svc-d"></p>
           <p class="svc-t mono"></p>
           <div class="svc-bar"><i></i></div>
         </div>
       </div>
-      <div class="drum-wrap"><ol class="drum" id="drum"></ol></div>
+      <div class="board-wrap">
+        <div class="board" id="board">
+          <div class="b-top" aria-hidden="true"><p class="b-title">Partenze<em>Departures</em></p><p class="b-clock">00:00:00</p></div>
+          <div class="b-head" aria-hidden="true"><span class="g-time">Ora</span><span class="g-name">Destinazione</span><span class="g-bin">Bin.</span></div>
+          <ol class="b-list" id="svc-list"></ol>
+          <div class="b-rows" id="b-rows" aria-hidden="true"><canvas></canvas><i class="b-lamp"></i></div>
+          <p class="b-note" aria-hidden="true"><span>Every service leaves from the same table</span><span>Nessun ritardo previsto</span></p>
+        </div>
+      </div>
     </div>
   </section>
 </div>
@@ -519,16 +541,16 @@ a:hover .roll>span,button:hover .roll>span{transform:translateY(-100%)}
       <h2 class="foot-h rv" id="foot-h" data-split>Got something <em>worth saying?</em></h2>
       <p class="foot-sub rv fade">Tell us what you are making and when it needs to exist. We answer every email, usually with questions.</p>
     </div>
-    <a class="cta" href="mailto:hello@studionove.example" data-magnetic=".35" data-round><span>Start a<br>project</span></a>
+    <a class="cta" href="mailto:hello@lungatavola.example" data-magnetic=".35" data-round><span>Start a<br>project</span></a>
   </div>
   <div class="foot-cols rv fade">
-    <div><h3 class="mono">New business</h3><a href="mailto:hello@studionove.example">hello@studionove.example</a><p>+39 011 000 0909</p></div>
-    <div><h3 class="mono">Studio</h3><p>Via Nove 9<br>10123 Turin, Italy</p></div>
-    <div><h3 class="mono">Join us</h3><a href="mailto:join@studionove.example">join@studionove.example</a><p>Two seats open, both in design</p></div>
+    <div><h3 class="mono">New business</h3><a href="mailto:hello@lungatavola.example">hello@lungatavola.example</a><p>Studio visits on Thursdays</p></div>
+    <div><h3 class="mono">Studio</h3><p>San Salvario<br>Turin, Italy</p></div>
+    <div><h3 class="mono">Join us</h3><a href="mailto:join@lungatavola.example">join@lungatavola.example</a><p>Two seats open, both in design</p></div>
     <div><h3 class="mono">Local time</h3><p class="clock2">—</p><p>Mon–Fri, 9:30 to 18:30</p></div>
   </div>
   <div class="wm" aria-hidden="true"></div>
-  <div class="foot-bar mono"><span>© 2026 Studio Nove, a fictional studio</span><span>Prototype by Daniel Busetto</span><a href="#top">Back to top ↑</a></div>
+  <div class="foot-bar mono"><span>© 2026 Lungatavola, a fictional studio</span><span>Prototype by Daniel Busetto</span><a href="#top">Back to top ↑</a></div>
 </footer>
 
 <div class="pv" aria-hidden="true"><div class="pv-in"><div class="pv-strip"></div></div></div>
@@ -561,51 +583,51 @@ const ARROW = '<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 13 13 3M5
 
 /* content */
 const P = [
-  { name: 'Solenne', tags: 'Naming, Identity, Packaging', year: '2026', sector: 'Skincare, Milan', team: '5 people, 14 weeks',
+  { name: 'Primalbe', tags: 'Naming, Identity, Packaging', year: '2026', sector: 'Skincare, Milan', team: '5 people, 14 weeks',
     lede: 'A skincare brand that starts at sunrise. We named it, drew it and put it in glass.',
-    brief: 'Solenne arrived with three formulas, a lab in Brianza and no name. The founders wanted a brand that felt like morning light, not like a pharmacy shelf.',
-    made: 'We named it after the sun and built everything around warmth: a soft serif wordmark, a palette mixed from skin tones at seven in the morning, bottles that throw long shadows and a shop that loads like a slow sunrise.',
-    quote: 'They gave us a brand we never have to explain. People pick up the bottle and simply get it.', who: 'Co-founder, Solenne',
+    brief: 'Primalbe arrived with three formulas, a lab in Brianza and no name. The founders wanted a brand that felt like morning light, not like a pharmacy shelf.',
+    made: 'We named it after the first light of the day and built everything around warmth: a soft serif wordmark, a palette mixed from skin tones at seven in the morning, bottles that throw long shadows and a shop that loads like a slow sunrise.',
+    quote: 'They gave us a brand we never have to explain. People pick up the bottle and simply get it.', who: 'Co-founder, Primalbe',
     res: [['3.4×', 'First-year revenue target'], ['41%', 'Customers who reorder'], ['12', 'Retail partners in nine months']],
     cap: ['The 50 ml bottle: glass, cap and a long shadow.', 'Light studies for the launch campaign.'],
     pal: { bg: '#F2DCCB', fg: '#2B170F', ac: '#C4502A' }, sw: ['#F0C6A9', '#C9704B'] },
-  { name: 'Marea', tags: 'Identity, Interiors, Menus', year: '2025', sector: 'Restaurant, Genoa', team: '4 people, 5 months',
-    lede: 'A harbour kitchen with a new poster for every catch of the season.',
+  { name: 'Pescanotte', tags: 'Identity, Interiors, Menus', year: '2025', sector: 'Restaurant, Genoa', team: '4 people, 5 months',
+    lede: 'A harbour kitchen named after the night boats, with a new poster for every catch.',
     brief: 'A third-generation fishmonger opened a restaurant by the old port. The fish was the best in the city; the room felt like a waiting area.',
     made: 'We drew a sun that sets into the sea and let it change colour with the menu. Blue-glazed tiles, a counter rescued from the old market and menus printed every morning on newsprint.',
-    quote: 'Guests photograph the menu before they order. Then they take it home.', who: 'Owner, Marea',
+    quote: 'Guests photograph the menu before they order. Then they take it home.', who: 'Owner, Pescanotte',
     res: [['6 wks', 'Booked out in advance'], ['+62%', 'Average covers per night'], ['2', 'Design awards in year one']],
     cap: ['A scale pattern for tiles, wrapping and uniforms.', 'Plates, glaze and the Tuesday special.'],
     pal: { bg: '#0F2A48', fg: '#F3E6CF', ac: '#FF6A42' }, sw: ['#1F4FD1', '#0E2744'] },
-  { name: 'Vesper', tags: 'Product site, Motion, 3D', year: '2025', sector: 'Audio hardware, Bologna', team: '6 people, 4 months',
+  { name: 'Fonoterra', tags: 'Product site, Motion, 3D', year: '2025', sector: 'Audio hardware, Bologna', team: '6 people, 4 months',
     lede: 'Speakers that look good switched off, and a launch that sounds like them.',
     brief: 'A small team of acoustic engineers built a speaker that outperforms units four times its size. It needed a launch that sounded as good as it looked.',
     made: 'A dark, quiet product site where sound becomes shape: grille patterns that ripple as you scroll, a real-time configurator and a ninety-second film cut to the speaker’s own frequency response.',
-    quote: 'Our first run sold out before the reviews came in. The site did the reviewing.', who: 'Head of product, Vesper',
+    quote: 'Our first run sold out before the reviews came in. The site did the reviewing.', who: 'Head of product, Fonoterra',
     res: [['11 days', 'To sell out the first run'], ['4:12', 'Average time on site'], ['28%', 'Configurator conversion']],
     cap: ['Frequency response, drawn as a landscape.', 'The volume knob, machined in anodised aluminium.'],
     pal: { bg: '#121011', fg: '#EDE6DD', ac: '#FF6A1A' }, sw: ['#3a2a20', '#0C0B0D'] },
-  { name: 'Ottone', tags: 'Campaign, Art direction, CGI', year: '2024', sector: 'Brass tapware, Valsesia', team: '5 people, 6 months',
+  { name: 'Vallesorga', tags: 'Campaign, Art direction, CGI', year: '2024', sector: 'Brass tapware, Valsesia', team: '5 people, 6 months',
     lede: 'Brass, water and patience: a foundry that finally told its story.',
     brief: 'A family foundry that has made taps since 1961 and never told anyone. Architects specified them by word of mouth.',
     made: 'We lit brass like jewellery and water like glass. A CGI campaign built from the foundry’s own CAD files, a 212-page catalogue and a showroom kit that ships flat.',
-    quote: 'Architects now ask for us by name, and they spell it right.', who: 'Third-generation owner, Ottone',
+    quote: 'Architects now ask for us by name, and they spell it right.', who: 'Third-generation owner, Vallesorga',
     res: [['+35%', 'Architect enquiries'], ['31', 'Countries requesting the catalogue'], ['1st', 'Profitable export year']],
     cap: ['Spout curve, rendered from the original tooling.', 'A single drop, forty hours of lighting.'],
     pal: { bg: '#173129', fg: '#EFE3C6', ac: '#E3B45F' }, sw: ['#B8893B', '#10251F'] },
-  { name: 'Brisa', tags: 'Digital product, Brand', year: '2024', sector: 'E-bike subscription, Turin', team: '7 people, 8 months',
+  { name: 'Pedalanza', tags: 'Digital product, Brand', year: '2024', sector: 'E-bike subscription, Turin', team: '7 people, 8 months',
     lede: 'A bike, a battery and a monthly fee, redesigned around the ride.',
-    brief: 'Brisa rents electric bikes by the month in three cities. Its app looked like a parking meter and churn was climbing every quarter.',
+    brief: 'Pedalanza rents electric bikes by the month in three cities. Its app looked like a parking meter and churn was climbing every quarter.',
     made: 'A friendlier brand and an app rebuilt around the ride, not the invoice: live range in kilometres, a route planner that knows the hills and battery swaps booked in two taps.',
-    quote: 'Riders stopped cancelling in the winter. That had never happened.', who: 'COO, Brisa',
+    quote: 'Riders stopped cancelling in the winter. That had never happened.', who: 'COO, Pedalanza',
     res: [['−24%', 'Monthly churn'], ['4.8', 'App store rating'], ['2', 'New cities in a year']],
     cap: ['Route planning with the hills drawn in.', 'The home screen: range first, invoices never.'],
     pal: { bg: '#CFF3DD', fg: '#0F3D2E', ac: '#1B7A4E' }, sw: ['#C8F1D8', '#0F3D2E'] },
-  { name: 'Archivio Lume', tags: 'Website, Wayfinding', year: '2023', sector: 'Photography archive, Turin', team: '4 people, 10 months',
+  { name: 'Archivio Alogeno', tags: 'Website, Wayfinding', year: '2023', sector: 'Photography archive, Turin', team: '4 people, 10 months',
     lede: 'Seventy years of photographs, finally findable by anyone.',
     brief: 'A foundation holding 400,000 negatives from a city newspaper, catalogued on index cards and seen by almost nobody.',
     made: 'An archive site that behaves like a contact sheet: browse by year, by street or by the quality of the light. In the building, signage printed like film edges leads from the reading room to the vault.',
-    quote: 'Schools use it for history lessons now. So do the photographers’ grandchildren.', who: 'Director, Archivio Lume',
+    quote: 'Schools use it for history lessons now. So do the photographers’ grandchildren.', who: 'Director, Archivio Alogeno',
     res: [['180k', 'Images online'], ['3×', 'Reading-room visitors'], ['14', 'Schools using the archive']],
     cap: ['A frame from roll 23, restored.', 'The index cards that started it all.'],
     pal: { bg: '#E7E2D7', fg: '#1A1918', ac: '#D6452E' }, sw: ['#9a968e', '#1A1918'] },
@@ -624,7 +646,8 @@ const SV = [
   ['Campaigns', 'Launch ideas and the assets to run them for a year, not a week.', 'Concept · Copy · Media assets'],
   ['Creative direction', 'A senior eye across all of the above, on retainer.', 'Retainers · Reviews · Hiring'],
 ];
-const CLIENTS = ['Solenne', 'Marea', 'Vesper Audio', 'Ottone', 'Brisa', 'Archivio Lume', 'Fondazione Remo', 'Caffè Sottile', 'Hotel Aurelio', 'Museo del Vento', 'Atelier Brume', 'Vela Club'];
+const SVT = [['09:05', '1'], ['09:40', '3'], ['10:15', '2'], ['10:50', '5'], ['11:25', '4'], ['12:00', '7'], ['14:10', '6'], ['14:45', '8'], ['15:20', '3'], ['16:05', '2'], ['16:40', '1'], ['17:30', '9']];
+const CLIENTS = ['Primalbe', 'Pescanotte', 'Fonoterra Audio', 'Vallesorga', 'Pedalanza', 'Archivio Alogeno', 'Fondazione Mezzaluce', 'Caffè Contrappeso', 'Albergo Scalanera', 'Museo delle Ore Piccole', 'Stamperia Virgola Lunga', 'Canottieri Sponda Lenta'];
 const WORDS = ['Identity', 'Websites', 'Motion', 'Packaging', 'Spaces', 'Campaigns', 'Type', 'Products'];
 
 /* generated imagery (Canvas 2D) */
@@ -672,7 +695,7 @@ function photo(x, X, Y, W, H, r) {
 }
 
 const ART = [
-  // 0 Solenne — warm still lifes
+  // 0 Primalbe — warm still lifes
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -699,8 +722,8 @@ const ART = [
     x.save(); x.shadowColor = 'rgba(110,45,20,.3)'; x.shadowBlur = s * .05; x.shadowOffsetX = s * .03; x.shadowOffsetY = s * .015;
     rr(x, bx, by + bh * .2, bw, bh * .8, bw * .16); x.fillStyle = Lg(x, bx, 0, bx + bw, 0, [[0, '#E4A283'], [.14, '#FBE4D4'], [.3, '#F4C9AD'], [.66, '#DF9774'], [.86, '#F6D3BD'], [1, '#CF815F']]); x.fill(); x.restore();
     x.fillStyle = 'rgba(251,242,233,.93)'; x.fillRect(bx + bw * .12, by + bh * .46, bw * .76, bh * .3);
-    txt(x, 'SOLENNE', cx, by + bh * .575, s * .028, '#4A2517', { a: 'center', ls: s * .006 });
-    txt(x, 'crème du matin', cx, by + bh * .665, s * .025, '#8A4A30', { a: 'center', f: 'italic 400 ', fam: 'Georgia, serif' });
+    txt(x, 'PRIMALBE', cx, by + bh * .575, s * .028, '#4A2517', { a: 'center', ls: s * .006 });
+    txt(x, 'crema dell’alba', cx, by + bh * .665, s * .025, '#8A4A30', { a: 'center', f: 'italic 400 ', fam: 'Georgia, serif' });
     x.fillStyle = 'rgba(74,37,23,.45)'; x.fillRect(cx - bw * .2, by + bh * .71, bw * .4, L1(s * .002));
     x.fillStyle = Lg(x, cx - bw * .18, 0, cx + bw * .18, 0, [[0, '#E8B597'], [.5, '#FBE6D8'], [1, '#D99273']]); x.fillRect(cx - bw * .16, by + bh * .12, bw * .32, bh * .1);
     rr(x, cx - bw * .3, by, bw * .6, bh * .14, s * .008); x.fillStyle = Lg(x, cx - bw * .3, 0, cx + bw * .3, 0, [[0, '#2A150E'], [.35, '#6B3C29'], [.5, '#8C5640'], [.7, '#3C2016'], [1, '#1E0F09']]); x.fill();
@@ -720,7 +743,7 @@ const ART = [
     x.restore();
   }
   },
-  // 1 Marea — posters, pattern, plate
+  // 1 Pescanotte — posters, pattern, plate
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -740,7 +763,7 @@ const ART = [
     }
     for (let k = 0; k < 22; k++) { const t = k / 22, yy = hz + s * .01 + (h - hz) * .8 * Math.pow(t, 1.3), ww = R * 1.7 * (1 - t * .7) * (.55 + .45 * Math.sin(k * 2.3)); x.fillStyle = `rgba(255,110,64,${.85 * (1 - t)})`; x.fillRect(cx - ww / 2 + Math.sin(k * 1.7) * s * .012, yy, ww, Math.max(1.5, s * .006 * (1 + t))); }
     const m = s * .045; x.strokeStyle = 'rgba(244,233,214,.65)'; x.lineWidth = L1(s * .0028); x.strokeRect(m, m, w - 2 * m, h - 2 * m);
-    txt(x, 'MAREA', m * 1.8, m * 1.8 + s * .075, s * .09, '#12294A', { f: '700 ', ls: -s * .002 });
+    txt(x, 'PESCANOTTE', m * 1.8, m * 1.8 + s * .075, s * .075, '#12294A', { f: '700 ', ls: -s * .002 });
     txt(x, 'CUCINA DI MARE · GENOVA', m * 1.8, m * 1.8 + s * .115, s * .021, '#12294A', { f: '500 ', ls: s * .004 });
     txt(x, 'N° 07', w - m * 1.8, h - m * 1.8, s * .022, 'rgba(244,233,214,.8)', { a: 'right', f: '500 ', fam: MF });
   } else if (v === 1) {
@@ -783,7 +806,7 @@ const ART = [
     x.fillStyle = '#3F7F4E'; for (let k = 0; k < 7; k++) { x.save(); x.translate(cx - pr * .35 + r() * pr * .5, py - pr * .05 + r() * pr * .3); x.rotate(r() * 6); x.beginPath(); x.ellipse(0, 0, s * .018, s * .007, 0, 0, TAU); x.fill(); x.restore(); }
   }
   },
-  // 2 Vesper — grille, ridgelines, knob
+  // 2 Fonoterra — grille, ridgelines, knob
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -802,7 +825,7 @@ const ART = [
     }
     circ(x, cx, cy, R * .11); x.fillStyle = Rg(x, cx - R * .03, cy - R * .03, 0, cx, cy, R * .11, [[0, '#3A322D'], [1, '#141110']]); x.fill();
     circ(x, cx, cy, R * .025); x.fillStyle = '#FF6A1A'; x.fill();
-    txt(x, 'VESPER ONE', s * .06, s * .09, s * .028, 'rgba(237,230,221,.85)', { f: '500 ', fam: MF, ls: s * .004 });
+    txt(x, 'FONOTERRA UNO', s * .06, s * .09, s * .028, 'rgba(237,230,221,.85)', { f: '500 ', fam: MF, ls: s * .004 });
     txt(x, '2 × 38 W · 42 Hz – 22 kHz', s * .06, s * .125, s * .02, 'rgba(237,230,221,.45)', { f: '400 ', fam: MF });
   } else if (v === 1) {
     x.fillStyle = '#0C0B0D'; x.fillRect(0, 0, w, h);
@@ -843,7 +866,7 @@ const ART = [
     blob(x, ix, iy, s * .07, '#FF6A1A', .6, 'screen'); circ(x, ix, iy, s * .016); x.fillStyle = '#FF7A2A'; x.fill();
   }
   },
-  // 3 Ottone — brass and water
+  // 3 Vallesorga — brass and water
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -891,7 +914,7 @@ const ART = [
     x.fillStyle = 'rgba(255,255,255,.9)'; x.beginPath(); x.ellipse(cx - R * .42, cb - R * .3, R * .1, R * .2, .5, 0, TAU); x.fill();
   }
   },
-  // 4 Brisa — wheel, map, app
+  // 4 Pedalanza — wheel, map, app
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -905,7 +928,7 @@ const ART = [
     x.lineWidth = L1(s * .0035); x.strokeStyle = '#0F3D2E';
     for (let k = 0; k < 28; k++) { const a = k / 28 * TAU, o = k % 2 ? .2 : -.2; x.beginPath(); x.moveTo(wx + Math.cos(a + o) * R * .09, wy + Math.sin(a + o) * R * .09); x.lineTo(wx + Math.cos(a) * R * .88, wy + Math.sin(a) * R * .88); x.stroke(); }
     circ(x, wx, wy, R * .13); x.fillStyle = '#0F3D2E'; x.fill(); circ(x, wx, wy, R * .07); x.fillStyle = '#DDFF45'; x.fill();
-    txt(x, 'brisa', s * .06, h - s * .08, s * .06, '#0F3D2E', { f: '700 ', ls: -s * .002 });
+    txt(x, 'pedalanza', s * .06, h - s * .08, s * .06, '#0F3D2E', { f: '700 ', ls: -s * .002 });
     txt(x, '42 KM RANGE · €39 / MONTH', s * .06, h - s * .045, s * .018, '#0F3D2E', M5);
   } else if (v === 1) {
     x.fillStyle = '#0F3D2E'; x.fillRect(0, 0, w, h);
@@ -950,7 +973,7 @@ const ART = [
     txt(x, 'Start ride', cx, py + ph * .887, pw * .055, '#DDFF45', { a: 'center', f: '600 ' });
   }
   },
-  // 5 Archivio Lume — film and paper
+  // 5 Archivio Alogeno — film and paper
   (x, w, h, v, r) => {
   const s = Math.min(w, h), cx = w / 2;
   if (v === 0) {
@@ -992,7 +1015,7 @@ const ART = [
     x.fillStyle = 'rgba(20,20,20,.95)'; x.fillRect(X + W * .3, Y + H * .66, W * .012, H * .05); circ(x, X + W * .306, Y + H * .655, W * .01); x.fill();
     x.restore();
     x.save(); x.translate(port ? w - e * .12 : X, port ? Y : h - e * .1); if (port) x.rotate(Math.PI / 2);
-    txt(x, 'LUME 400   ▸ 23   ▸ 23A', 0, 0, e * .24, '#E8A33A', M5); x.restore();
+    txt(x, 'ALOGENO 400   ▸ 23   ▸ 23A', 0, 0, e * .24, '#E8A33A', M5); x.restore();
     blob(x, w, 0, s * .55, '#FF5A1F', .5, 'screen');
   } else {
     x.fillStyle = '#2A2826'; x.fillRect(0, 0, w, h);
@@ -1064,8 +1087,9 @@ $('#client-list').innerHTML = CLIENTS.map(c => `<li>${c}</li>`).join('');
 const STAR = '<svg class="mq-star" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0c.6 5.2 4.8 9.4 10 10-5.2.6-9.4 4.8-10 10-.6-5.2-4.8-9.4-10-10C5.2 9.4 9.4 5.2 10 0Z" fill="currentColor"/></svg>';
 $('#mq1 .mq-track').innerHTML = `<div class="mq-set">${CLIENTS.map((c, i) => `<span class="mq-it"><span class="mq-n">${c}</span><span class="mq-d art" style="--p1:${P[i % 6].sw[0]};--p2:${P[i % 6].sw[1]}"><img alt="" data-art="${i % 6}-${Math.floor(i / 6) % 3}"></span></span>`).join('')}</div>`;
 $('#mq2 .mq-track').innerHTML = `<div class="mq-set">${WORDS.map(c => `<span class="mq-it"><span class="mq-n">${c}</span>${STAR}</span>`).join('')}</div>`;
-$('#drum').innerHTML = SV.map((s, i) => `<li class="d-row"><span class="d-n mono">${pad(i + 1)}</span><span class="d-t">${s[0]}</span><span class="sr">: ${s[1]}</span></li>`).join('');
-const WM = 'Studio Nove';
+$('#svc-list').innerHTML = SV.map((s, i) => `<li><span class="mono">${SVT[i][0]}</span><b>${s[0]}</b><span class="mono">Bin. ${SVT[i][1]}</span><span class="sr">: ${s[1]}</span></li>`).join('');
+if (!REDUCE) $('#svc-list').classList.add('sr');
+const WM = 'Lungatavola';
 $('.wm').innerHTML = '<span class="wm-in">' + [...WM].map(c => c === ' ' ? '<span class="sp"></span>' : `<span>${c}</span>`).join('') + '</span>';
 
 /* text splitting */
@@ -1089,7 +1113,7 @@ function splitWords(el, cls) {
   };
   walk(el); return out;
 }
-function charsHTML(t) { return `<span class="sr">${t}</span>` + [...t].map((c, i) => `<span class="ch" aria-hidden="true"><span style="--i:${i}">${c === ' ' ? '&nbsp;' : c}</span></span>`).join(''); }
+function charsHTML(t) { let i = 0; return `<span class="sr">${t}</span>` + t.split(' ').map(w => `<span class="wd" aria-hidden="true">${[...w].map(c => `<span class="ch"><span style="--i:${i++}">${c}</span></span>`).join('')}</span>`).join(' '); }
 
 /* smooth scroll (wheel, fine pointers only) */
 const S = { y: scrollY, target: scrollY, max: 0, running: false, anim: null, lock: false, smooth: FX };
@@ -1318,32 +1342,115 @@ function Mq(el, dir, base) {
 }
 const MQ = [Mq($('#mq1'), -1, 1.1), Mq($('#mq2'), 1, .8)];
 
-/* services drum */
-const drumEl = $('#drum'), dRows = $$('.d-row', drumEl), svcEl = $('#services');
-const Dr = { a: 0, act: -1, top: 0, h: 1, R: 100, vis: false, tilt: 0, step: 360 / SV.length, n: SV.length, bar: $('.svc-bar i'), d: $('.svc-d'), t: $('.svc-t'), i: $('.svc-i'), ops: [] };
-function drumActive(k) {
-  if (k === Dr.act) return; const prev = Dr.act; Dr.act = k;
-  dRows.forEach((r, i) => r.classList.toggle('on', i === k));
-  Dr.i.textContent = `${pad(k + 1)} / ${pad(Dr.n)}`; Dr.d.textContent = SV[k][1]; Dr.t.textContent = SV[k][2];
-  if (prev > -1 && !REDUCE) { const dirn = k > prev ? 1 : -1; [Dr.d, Dr.t].forEach((el, j) => el.animate([{ opacity: 0, transform: `translateY(${dirn * 18}px)` }, { opacity: 1, transform: 'none' }], { duration: 700, delay: j * 60, easing: EASE, fill: 'backwards' })); }
+/* services: split-flap departures board (Canvas 2D, only flipping tiles are redrawn) */
+const svcEl = $('#services'), boardEl = $('#board'), bRowsEl = $('#b-rows'), bCv = $('#b-rows canvas'), bx = bCv.getContext('2d');
+const FLAPS = ' ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789&:.-/';
+const Bd = { k: -1, act: -1, top: 0, h: 1, vis: false, booted: false, rows: [], live: new Set(), n: SV.length, R: 6, FD: 96,
+  L: { tw: 20, th: 28, tg: 3, W: 0, narrow: false, rows: 6, fs: 16, dpr: 1 }, fg: '#ECE6DC', ac: '#FF5A24',
+  bar: $('.svc-bar i'), d: $('.svc-d'), t: $('.svc-t'), i: $('.svc-i'), b: $('.svc-b'), clock: $('.b-clock'), ct: 0, fmt: null };
+try { Bd.fmt = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/Rome', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }); } catch (e) {}
+const rowStr = k => SVT[k][0] + SV[k][0].toUpperCase().padEnd(18) + SVT[k][1].padStart(2);
+for (let r = 0; r < Bd.R; r++) { const tiles = []; for (let j = 0; j < 25; j++) tiles.push({ r, j, x: 0, y: 0, cur: ' ', tgt: ' ', nx: '', at: 0, t0: -1, e: 0, mx: 3 + Math.floor(Math.random() * 3) }); Bd.rows.push(tiles); }
+// one step toward the target along the flap sequence; long runs skip ahead so a tile needs at most a few flips
+function nextFlap(t) {
+  const N = FLAPS.length, a = FLAPS.indexOf(t.cur), b = FLAPS.indexOf(t.tgt);
+  if (a < 0 || b < 0) return t.tgt;
+  const d = (b - a + N) % N;
+  if (d <= 1) return t.tgt;
+  if (d > t.mx) return FLAPS[(b - t.mx + 1 + N) % N];
+  return FLAPS[(a + 1) % N];
 }
-function updDrum(f, y) {
-  if (REDUCE || !Dr.vis) return;
-  const p = clamp((y - Dr.top) / Math.max(1, Dr.h - vh), 0, 1), raw = p * (Dr.n - 1), i0 = Math.min(Dr.n - 2, Math.floor(raw)), fr = clamp((raw - i0 - .22) / .56, 0, 1);
-  const target = i0 + fr * fr * (3 - 2 * fr);
-  Dr.a = damp(Dr.a, target, .16, f);
-  if (FX) Dr.tilt = damp(Dr.tilt, (Cur.px / vw - .5) * 8, .05, f);
-  Dr.bar.style.transform = `scaleX(${p.toFixed(4)})`;
-  const key = Dr.a.toFixed(4) + '|' + Dr.tilt.toFixed(2); if (key === Dr.key) return; Dr.key = key;
-  drumEl.style.transform = `translateZ(${(-Dr.R).toFixed(1)}px) rotateY(${Dr.tilt.toFixed(2)}deg)`;
-  for (let i = 0; i < Dr.n; i++) {
-    const ang = (i - Dr.a) * Dr.step, row = dRows[i];
-    if (Math.abs(ang) > 96) { if (Dr.ops[i] !== 0) { row.style.opacity = '0'; Dr.ops[i] = 0; } continue; }
-    const op = Math.pow(Math.max(0, Math.cos(ang * Math.PI / 180)), 1.7);
-    row.style.transform = `rotateX(${(-ang).toFixed(2)}deg) translateZ(${Dr.R.toFixed(1)}px)`;
-    const o = +op.toFixed(3); if (Dr.ops[i] !== o) { row.style.opacity = o; Dr.ops[i] = o; }
+// every flap face is pre-drawn once into an atlas (two colours × the flap sequence), so a frame is only a few drawImage calls
+const ATL = document.createElement('canvas'), atx = ATL.getContext('2d');
+function buildAtlas() {
+  const L = Bd.L, d = L.dpr, cw = L.tw + 2, ch = L.th + 2, rad = Math.min(3, L.tw * .14);
+  ATL.width = Math.ceil(FLAPS.length * cw * d); ATL.height = Math.ceil(2 * ch * d);
+  atx.setTransform(d, 0, 0, d, 0, 0); atx.clearRect(0, 0, ATL.width, ATL.height);
+  atx.font = `600 ${L.fs.toFixed(1)}px "Inter Tight", "Helvetica Neue", Helvetica, Arial, sans-serif`; atx.textAlign = 'center'; atx.textBaseline = 'alphabetic';
+  [Bd.fg, Bd.ac].forEach((col, ci) => [...FLAPS].forEach((c, i) => {
+    const x = i * cw, y = ci * ch, mid = y + L.th / 2;
+    atx.fillStyle = '#1C1A17'; rr(atx, x, y, L.tw, L.th, rad); atx.fill();
+    atx.save(); atx.beginPath(); atx.rect(x, y, L.tw, L.th / 2); atx.clip(); atx.fillStyle = '#26221F'; rr(atx, x, y, L.tw, L.th, rad); atx.fill(); atx.restore();
+    if (c !== ' ') { atx.fillStyle = col; atx.fillText(c, x + L.tw / 2, mid + L.fs * .36); }
+    atx.fillStyle = 'rgba(0,0,0,.72)'; atx.fillRect(x, mid - .5, L.tw, 1);
+  }));
+  L.cw = cw; L.ch = ch;
+}
+function drawTile(t) {
+  const L = Bd.L; if (t.r >= L.rows) return;
+  const d = L.dpr, x = t.x, y = t.y, w = L.tw, hh = L.th / 2, mid = y + hh, sy = (t.r === 0 ? L.ch : 0) * d, sw = w * d, sh = hh * d;
+  const sx = c => Math.max(0, FLAPS.indexOf(c)) * L.cw * d;
+  bx.clearRect(x - 1, y - 1, w + 2, L.th + 2);
+  if (t.t0 < 0) { bx.drawImage(ATL, sx(t.cur), sy, sw, sh * 2, x, y, w, L.th); return; }
+  const e = t.e, k = Math.max(.02, Math.abs(Math.cos(Math.PI * e)));
+  bx.drawImage(ATL, sx(t.nx), sy, sw, sh, x, y, w, hh);
+  bx.drawImage(ATL, sx(t.cur), sy + sh, sw, sh, x, mid, w, hh);
+  if (e < .5) { bx.drawImage(ATL, sx(t.cur), sy, sw, sh, x, mid - hh * k, w, hh * k); bx.fillStyle = `rgba(0,0,0,${(e * .9).toFixed(3)})`; bx.fillRect(x, mid - hh * k, w, hh * k); }
+  else { bx.drawImage(ATL, sx(t.nx), sy + sh, sw, sh, x, mid, w, hh * k); bx.fillStyle = `rgba(0,0,0,${((1 - e) * .7).toFixed(3)})`; bx.fillRect(x, mid, w, hh * k); }
+  bx.fillStyle = 'rgba(0,0,0,.72)'; bx.fillRect(x, mid - .5, w, 1);
+}
+function drawBoard() { const L = Bd.L; bx.clearRect(0, 0, L.W, bCv.height / L.dpr); for (const row of Bd.rows) for (const t of row) drawTile(t); }
+function boardTo(k, now) {
+  for (let r = 0; r < Bd.R; r++) {
+    const str = rowStr((k + r) % Bd.n);
+    Bd.rows[r].forEach((t, j) => { const ch = str[j]; if (t.tgt === ch) return; t.tgt = ch; if (t.t0 < 0) t.at = now + r * 60 + j * 12; Bd.live.add(t); });
   }
-  drumActive(clamp(Math.round(Dr.a), 0, Dr.n - 1));
+}
+function flipStep(now) {
+  for (const t of Bd.live) {
+    if (t.t0 < 0) {
+      if (now < t.at) continue;
+      if (t.cur === t.tgt) { Bd.live.delete(t); continue; }
+      t.nx = nextFlap(t); t.t0 = now;
+    }
+    const p = clamp((now - t.t0) / Bd.FD, 0, 1);
+    t.e = p < .5 ? 2 * p * p : 1 - 2 * (1 - p) * (1 - p);
+    if (p >= 1) { t.cur = t.nx; t.t0 = -1; t.at = now; }
+    drawTile(t);
+  }
+}
+function svcActive(k) {
+  if (k === Bd.act) return; const prev = Bd.act; Bd.act = k;
+  Bd.i.textContent = `${pad(k + 1)} / ${pad(Bd.n)}`; Bd.b.textContent = `Binario ${SVT[k][1]} · ${SVT[k][0]}`; Bd.d.textContent = SV[k][1]; Bd.t.textContent = SV[k][2];
+  if (prev > -1 && !REDUCE) { const dirn = k > prev ? 1 : -1; [Bd.d, Bd.t].forEach((el, j) => el.animate([{ opacity: 0, transform: `translateY(${dirn * 18}px)` }, { opacity: 1, transform: 'none' }], { duration: 700, delay: j * 60, easing: EASE, fill: 'backwards' })); }
+}
+function boardClock(now) {
+  if (now - Bd.ct < 250) return; Bd.ct = now;
+  let t; try { t = Bd.fmt ? Bd.fmt.format(new Date()) : null; } catch (e) { t = null; }
+  if (!t) { const d = new Date(); t = `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`; }
+  if (Bd.clock.textContent !== t) Bd.clock.textContent = t;
+}
+function updBoard(y, now) {
+  if (!Bd.vis) return;
+  boardClock(now);
+  if (REDUCE) return;
+  const p = clamp((y - Bd.top) / Math.max(1, Bd.h - vh), 0, 1), k = Math.min(Bd.n - 1, Math.floor(p * Bd.n));
+  Bd.bar.style.transform = `scaleX(${p.toFixed(4)})`;
+  if (k !== Bd.k || !Bd.booted) { Bd.k = k; Bd.booted = true; boardTo(k, now); svcActive(k); }
+  if (Bd.live.size) flipStep(now);
+}
+function sizeBoard() {
+  const W = bRowsEl.clientWidth || boardEl.clientWidth; if (!W) return;
+  const L = Bd.L, narrow = innerWidth <= 600, tg = W < 420 ? 2 : 3;
+  const tw = clamp(Math.floor((narrow ? (W - 17 * tg) / 18 : (W - 22 * tg) / (25 + 2 * .62)) * 10) / 10, 9, 36);
+  boardEl.style.setProperty('--tg', tg + 'px'); boardEl.style.setProperty('--tw', tw + 'px');
+  if (REDUCE) return;
+  const th = Math.round(tw * 1.42), gg = tw * .62, rows = narrow ? 4 : 6, rowH = narrow ? th * 2 + tg : th, gap = Math.round(tw * (narrow ? .75 : .3));
+  Object.assign(L, { tw, th, tg, W, narrow, rows, fs: th * .6, dpr: Math.min(devicePixelRatio || 1, 2) });
+  const H = rows * rowH + (rows - 1) * gap, step = tw + tg;
+  Bd.rows.forEach((row, r) => row.forEach(t => {
+    const oy = r * (rowH + gap), j = t.j;
+    if (!narrow) { t.y = oy; t.x = j < 5 ? j * step : j < 23 ? 5 * tw + 4 * tg + gg + (j - 5) * step : 23 * tw + 21 * tg + 2 * gg + (j - 23) * step; }
+    else if (j < 5) { t.x = j * step; t.y = oy; }
+    else if (j >= 23) { t.x = W - 2 * tw - tg + (j - 23) * step; t.y = oy; }
+    else { t.x = (j - 5) * step; t.y = oy + th + tg; }
+  }));
+  const cw = Math.round(W * L.dpr), ch = Math.round(H * L.dpr);
+  if (bCv.width !== cw || bCv.height !== ch) { bCv.width = cw; bCv.height = ch; }
+  bCv.style.height = H + 'px';
+  bx.setTransform(L.dpr, 0, 0, L.dpr, 0, 0);
+  Bd.ac = getComputedStyle(doc).getPropertyValue('--accent').trim() || '#FF5A24';
+  buildAtlas(); drawBoard();
 }
 
 /* scroll-scrubbed text fill */
@@ -1386,7 +1493,7 @@ const wm = $('.wm'), wmIn = $('.wm-in'), wmL = $$('.wm-in span:not(.sp)'); let w
 const heroIO = new IntersectionObserver(es => { Tr.vis = es[0].isIntersecting; }); heroIO.observe(hero);
 const mqIO = new IntersectionObserver(es => { for (const e of es) { const m = MQ.find(q => q.el === e.target); if (m) m.vis = e.isIntersecting; } });
 MQ.forEach(m => mqIO.observe(m.el));
-const svcIO = new IntersectionObserver(es => { Dr.vis = es[0].isIntersecting; }); svcIO.observe(svcEl);
+const svcIO = new IntersectionObserver(es => { Bd.vis = es[0].isIntersecting; }); svcIO.observe(svcEl);
 
 /* caching */
 const docTop = el => el.getBoundingClientRect().top + scrollY;
@@ -1403,7 +1510,7 @@ function recache() {
       Tr.zone = b - t < 24 || r <= l ? 0 : { t, b, l, r, gap: clamp((r - l) * .12, 48, 90) };
     }
   }
-  if (!inCase) { Dr.top = docTop(svcEl); Dr.h = svcEl.offsetHeight; const rh = dRows[0].offsetHeight || 80; Dr.R = rh / 2 / Math.tan(Dr.step / 2 * Math.PI / 180); }
+  if (!inCase) { sizeBoard(); Bd.top = docTop(svcEl); Bd.h = svcEl.offsetHeight; } else fitTitle();
   for (const it of Fl.items) { if (it.el.isConnected && it.el.offsetParent) { it.top = docTop(it.el); it.h = it.el.offsetHeight; } else it.h = 0; }
   for (const it of Px.items) { if (it.fig.isConnected && it.fig.offsetParent) { it.top = docTop(it.fig); it.h = it.fig.offsetHeight; } else it.h = 0; }
   wmTop = docTop(wm);
@@ -1441,6 +1548,11 @@ function caseHTML(i) {
 <figure class="c-fig c-wide rv rv-clip"><div class="sc art" style="${sw}"><img class="px" data-sp=".08" alt="Generated wide visual for ${p.name}" data-land="${i}-1"></div></figure>
 <a class="c-next" href="#case-${n}" data-next="${n}" data-cursor="open"><span class="mono">Next case — ${pad(n + 1)} / ${pad(P.length)}</span><span class="c-next-t">${q.name}</span><span class="c-next-img art" style="--p1:${q.sw[0]};--p2:${q.sw[1]}"><img alt="" data-art="${n}-0"></span></a>`;
 }
+function fitTitle() {
+  const t = $('#case-title'); if (!t || !t.offsetParent) return;
+  t.style.fontSize = ''; const cw = t.clientWidth; let mw = 0; $$('.wd', t).forEach(w => { mw = Math.max(mw, w.offsetWidth); });
+  if (mw > cw) t.style.fontSize = (parseFloat(getComputedStyle(t).fontSize) * cw / mw * .98).toFixed(1) + 'px';
+}
 function buildCase(i) {
   Fl.items = Fl.items.filter(it => it.el.isConnected && !caseEl.contains(it.el));
   caseEl.innerHTML = caseHTML(i); Rv.prune();
@@ -1450,7 +1562,7 @@ function buildCase(i) {
   const jobs = [];
   $$('img[data-art]', caseEl).forEach(im => { const [a, b] = im.dataset.art.split('-').map(Number); jobs.push(art(a, b).then(u => setImg(im, u))); });
   $$('img[data-land]', caseEl).forEach(im => { const [a, b] = im.dataset.land.split('-').map(Number); jobs.push(art(a, b, true).then(u => { setImg(im, u); return im.decode ? im.decode().catch(() => {}) : 0; })); });
-  $('.cnum').textContent = `${pad(i + 1)} / ${pad(P.length)}`;
+  $('.cnum').textContent = `${pad(i + 1)} / ${pad(P.length)}`; fitTitle();
   return Promise.all(jobs);
 }
 const cov = $('.cov'), covA = $('.cov-a'), covB = $('.cov-b'), covT = $('.cov-t'), covK = $('.cov-k');
@@ -1582,11 +1694,11 @@ function frame(now) {
   }
   if (!inCase && Tr.vis) { updTrail(dt, f, now, Math.min(.25, rdt)); updPill(dt); }
   updFill(y); updPx(y);
-  if (!inCase) { updDrum(f, y); for (const m of MQ) m.update(f, vel); }
+  if (!inCase) { updBoard(y, now); for (const m of MQ) m.update(f, vel); }
   // footer wordmark
   if (!REDUCE) {
     const st = wmTop - vh, p = +clamp((y - st) / Math.max(1, S.max - st), 0, 1).toFixed(4);
-    if (p !== wmP) { wmP = p; wmL.forEach((l, j) => { const q = clamp(p * 1.45 - j * .045, 0, 1); l.style.transform = `translate3d(0,${((1 - eOut(q)) * 105).toFixed(2)}%,0)`; }); }
+    if (p !== wmP) { wmP = p; wmL.forEach((l, j) => { const q = clamp(p * 1.45 - j * .045, 0, 1); l.style.transform = `translate3d(0,${((1 - eOut(q)) * 135).toFixed(2)}%,0)`; }); }
   }
   // counters
   for (let i = counters.length - 1; i >= 0; i--) { const c = counters[i], t = clamp((now - c.t0) / c.d, 0, 1), v = Math.round(c.to * eOut(t)); if (v !== c.last) { c.last = v; c.b.textContent = v + (t >= 1 ? c.suf : ''); } if (t >= 1) counters.splice(i, 1); }
@@ -1599,7 +1711,7 @@ function init() {
   $$('.rv').forEach(el => Rv.add(el));
   $$('.fill').forEach(addFill);
   MQ.forEach(m => m.measure()); fitWordmark(); recache();
-  if (REDUCE) drumActive(0); else { Dr.a = 0; drumActive(0); }
+  svcActive(0);
   pump(); pump();
   requestAnimationFrame(frame);
   const L = $('.loader'), num = $('.ld-num'), bar = $('.ld-bar i');
@@ -1614,6 +1726,7 @@ function init() {
   };
   requestAnimationFrame(step);
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { fitWordmark(); recache(); MQ.forEach(m => m.measure()); });
+  if (document.fonts && document.fonts.addEventListener) document.fonts.addEventListener('loadingdone', () => { if (!inCase) sizeBoard(); });
 }
 try { init(); } catch (err) { doc.classList.add('fail'); console.warn(err); }
 })();

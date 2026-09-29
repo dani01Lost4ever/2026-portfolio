@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Ombra — Bàcaro in Cannaregio, Venezia</title>
-<meta name="description" content="Ombra is a small bàcaro on the Fondamenta dei Tre Remi in Cannaregio, Venice: cicchetti on the counter, wine by the ombra, spritz and a bench over the canal.">
+<title>Ai Tre Remi — Bàcaro in Cannaregio, Venezia</title>
+<meta name="description" content="Ai Tre Remi is a small bàcaro in Cannaregio, Venice, with three oars over the door: cicchetti on the counter, wine by the ombra, spritz and a bench over the canal.">
 <link rel="icon" href="data:,">
 <script>document.documentElement.classList.add('js')</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,8 @@ button,input,select,textarea{font:inherit;color:inherit}
 .hdr::before{content:"";position:absolute;inset:0;background:var(--cream);box-shadow:0 1px 0 var(--rule);opacity:0;transform:translateY(-100%);transition:opacity .5s var(--ease),transform .5s var(--ease)}
 .hdr.solid::before{opacity:.96;transform:none}
 .hdr>*{position:relative}
-.logo{font:400 28px/1 var(--disp);letter-spacing:-.02em;text-decoration:none;color:var(--wine);display:flex;align-items:baseline;gap:8px}
+.logo{font:400 28px/1 var(--disp);letter-spacing:-.02em;text-decoration:none;color:var(--wine);display:flex;align-items:baseline;gap:8px;white-space:nowrap}
+.logo .ai{font-size:.6em;margin-right:-3px;color:var(--brick)}
 .logo small{font:600 10px/1 var(--text);letter-spacing:.18em;text-transform:uppercase;color:var(--muted)}
 .nav{display:flex;gap:clamp(14px,2vw,30px);margin-left:auto}
 .nav a{text-decoration:none;font-weight:500;font-size:15px;position:relative;padding:6px 0}
@@ -64,8 +65,9 @@ button,input,select,textarea{font:inherit;color:inherit}
 .sky{position:absolute;left:0;right:0;top:0;height:var(--wl);background:radial-gradient(120% 90% at 70% 0%,#F7EFDF 0%,var(--cream) 55%,#EDE0C8 100%)}
 .skyline{position:absolute;left:0;right:0;bottom:0;width:100%;height:78%;display:block;overflow:visible}
 .skyline path{fill:none;stroke-linecap:round;stroke-linejoin:round}
-.name{position:absolute;left:0;right:0;bottom:0;text-align:center;font:400 clamp(86px,26vw,430px)/.9 var(--disp);letter-spacing:-.045em;color:var(--wine);white-space:nowrap;margin:0;z-index:2}
+.name{position:absolute;left:0;right:0;bottom:0;text-align:center;font:400 clamp(56px,19.5vw,330px)/.9 var(--disp);letter-spacing:-.045em;color:var(--wine);white-space:nowrap;margin:0;z-index:2}
 .name .ch{display:inline-block}
+.name .sp{display:inline-block;width:.2em}
 .name .bl{display:inline-block;width:0;height:0;vertical-align:baseline}
 .quay{position:absolute;left:0;right:0;bottom:0;height:clamp(7px,.9vw,13px);z-index:3;background:linear-gradient(#E6DFD1,#CFC6B4);box-shadow:0 -1px 0 rgba(34,28,21,.25)}
 .canal{position:absolute;left:0;right:0;top:var(--wl);bottom:0;z-index:4;background:linear-gradient(#4A7060,#1A3527 60%,#10251A);overflow:hidden;cursor:crosshair;touch-action:pan-y}
@@ -297,6 +299,12 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
   .dish h4 i{display:block;margin:4px 0 0}
   .card{width:78vw}
 }
+@media (max-width:380px){
+  .hdr{gap:10px}
+  .logo{font-size:22px}
+  .sip{display:none}
+  .hdr .badge{font-size:11px;padding:7px 9px;gap:6px}
+}
 @media (prefers-reduced-motion:reduce){
   .js .name .ch{transform:none}
   .js .hero-top>*,.js .hero-low>*,.js .hdr>*{opacity:1;transform:none}
@@ -314,7 +322,7 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
 <div class="cur" id="cur" aria-hidden="true"><b></b></div>
 
 <header class="hdr" id="hdr">
-  <a class="logo" href="#top" style="--i:0">Ombra <small>Bàcaro · Cannaregio</small></a>
+  <a class="logo" href="#top" style="--i:0"><span class="ai">Ai</span>Tre Remi <small>Bàcaro · Cannaregio</small></a>
   <svg class="sip" viewBox="0 0 24 34" aria-hidden="true" style="--i:0"><defs><clipPath id="bowl"><path d="M3.2 2C2.4 12 6 18 12 18S21.6 12 20.8 2Z"/></clipPath></defs><g clip-path="url(#bowl)"><g id="wine"><path d="M-14 6Q12 4.5 38 6V40H-14Z" fill="#7E1F2D"/></g></g><path d="M3.2 2C2.4 12 6 18 12 18S21.6 12 20.8 2M12 18V30M7 32Q12 30 17 32" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
   <nav class="nav" aria-label="Main" style="--i:1">
     <a href="#story">The bàcaro</a><a href="#banco">Counter</a><a href="#menu">Menu</a><a href="#visit">Visit</a>
@@ -324,18 +332,18 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
 </header>
 
 <main id="main">
-<section class="hero" id="top" aria-label="Ombra, a bàcaro in Cannaregio">
+<section class="hero" id="top" aria-label="Ai Tre Remi, a bàcaro in Cannaregio">
   <div class="sky" id="sky">
     <svg class="skyline" id="skyline" aria-hidden="true" preserveAspectRatio="xMidYMax slice"></svg>
-    <h1 class="name" id="name"><span class="sr">Ombra</span><span class="ch" aria-hidden="true">O</span><span class="ch" aria-hidden="true">m</span><span class="ch" aria-hidden="true">b</span><span class="ch" aria-hidden="true">r</span><span class="ch" aria-hidden="true">a</span><span class="bl"></span></h1>
+    <h1 class="name" id="name"><span class="sr">Ai Tre Remi</span><span class="ch" aria-hidden="true">T</span><span class="ch" aria-hidden="true">r</span><span class="ch" aria-hidden="true">e</span><span class="sp" aria-hidden="true"></span><span class="ch" aria-hidden="true">R</span><span class="ch" aria-hidden="true">e</span><span class="ch" aria-hidden="true">m</span><span class="ch" aria-hidden="true">i</span><span class="bl"></span></h1>
     <div class="quay" id="quay"></div>
   </div>
   <div class="hero-top">
-    <p class="kick" style="--i:0">Bàcaro · Cicchetti · Ombre de vin<br>Fondamenta dei Tre Remi, Cannaregio 3187</p>
-    <p class="hand" style="--i:1">standing room only,<br>since 2009</p>
+    <p class="kick" style="--i:0">Bàcaro · Cicchetti · Ombre de vin<br>Fondamenta dei Tre Remi, Cannaregio</p>
+    <p class="hand" style="--i:1">three oars over the door,<br>standing room since 2009</p>
   </div>
   <div class="canal" id="canal">
-    <canvas id="water" role="img" aria-label="A green Venetian canal reflecting the word Ombra and the houses above it. Touching the water makes ripples."></canvas>
+    <canvas id="water" role="img" aria-label="A green Venetian canal reflecting the name Tre Remi and the houses above it. Touching the water makes ripples."></canvas>
     <div class="gondola" id="gondola" aria-hidden="true">
       <svg viewBox="0 0 260 96"><g id="gdl">
         <path d="M59 30 L96 94" stroke="#2A2118" stroke-width="2.6" stroke-linecap="round"/>
@@ -362,10 +370,10 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
 <section class="story" id="story" aria-labelledby="story-h">
   <div class="story-pin">
     <div>
-      <p class="eyebrow kick">Why “ombra”</p>
+      <p class="eyebrow kick">Why an “ombra”</p>
       <h2 class="sr" id="story-h">The shade of the campanile</h2>
       <p class="mani" id="mani">In Venice a glass of wine is called an <em>ombra</em>, a <em>shade</em>. The old wine sellers of the piazza chased the shadow of the campanile to keep their bottles cool. We don't chase anything. We pour small glasses, fry sardines at eleven, argue about football at seven, and keep a <em>bench by the water</em> for whoever gets there first.</p>
-      <p class="mani-foot"><span class="hand">— Nane &amp; Bepi</span> hosts, pourers, dishwashers</p>
+      <p class="mani-foot"><span class="hand">— Nane &amp; Marieta</span> hosts, pourers, dishwashers</p>
     </div>
     <div class="scene" id="scene" aria-hidden="true">
       <div class="ly" data-depth="18"><div class="frame"></div></div>
@@ -384,7 +392,7 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
       <p class="eyebrow kick">On the counter today</p>
       <h2 class="h2" id="banco-h"><span class="lm"><span>Point at it.</span></span><span class="lm" style="--i:1"><span><em>We'll</em> plate it.</span></span></h2>
     </div>
-    <p class="fu">No menus at the banco. Cicchetti sit under the glass from eleven, and when a tray is gone, it's gone. Drag the counter to see what Bepi made this morning.</p>
+    <p class="fu">No menus at the banco. Cicchetti sit under the glass from eleven, and when a tray is gone, it's gone. Drag the counter to see what Marieta made this morning.</p>
   </div>
   <div class="strip" id="strip" role="region" aria-label="Cicchetti on the counter. Drag, or use the arrow buttons." tabindex="0">
     <ul class="track" id="track">
@@ -488,10 +496,10 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
       <li data-d="6"><span>Saturday</span><span>10:30–15:00 · 17:30–22:30</span></li>
       <li data-d="0"><span>Sunday</span><span>11:00–16:00</span></li>
     </ul>
-    <p class="addr fu"><strong>Fondamenta dei Tre Remi, Cannaregio 3187</strong>30121 Venezia. Twelve minutes on foot from the station: cross the big bridge with the four spires, turn left along the water, stop when you hear glasses.</p>
+    <p class="addr fu"><strong>Fondamenta dei Tre Remi, Cannaregio</strong>30121 Venezia. Twelve minutes on foot from the station: cross the big bridge with the four spires, turn left along the water, stop when you hear glasses.</p>
   </div>
   <figure class="map fu">
-    <svg class="art" data-art="map" viewBox="0 0 520 440" role="img" aria-label="Hand-drawn map: from the station, along the Cannaregio canal, over a bridge, to Ombra on the Fondamenta dei Tre Remi."></svg>
+    <svg class="art" data-art="map" viewBox="0 0 520 440" role="img" aria-label="Hand-drawn map: from the station, along the Cannaregio canal, over a bridge, to Ai Tre Remi on its fondamenta."></svg>
     <figcaption>not to scale. nothing in Venice is.</figcaption>
   </figure>
 </section>
@@ -549,11 +557,11 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
   <p class="cin" aria-hidden="true">Cin <em>cin.</em></p>
   <svg class="art foot-art" data-art="ponte" viewBox="0 0 420 200" aria-hidden="true"></svg>
   <div class="foot-grid">
-    <div><h3>Find us</h3><p>Fondamenta dei Tre Remi<br>Cannaregio 3187, 30121 Venezia<br>Vaporetto: Guglie, or walk</p></div>
+    <div><h3>Find us</h3><p>Fondamenta dei Tre Remi<br>Cannaregio · 30121 Venezia<br>Vaporetto: Guglie, or walk</p></div>
     <div><h3>Pouring</h3><p>Tue–Sat 10:30–15:00 · 17:30–22:30<br>Sunday 11:00–16:00<br>Monday the fish rests, and so do we</p></div>
-    <div><h3>Say ciao</h3><p><a href="#book">Ask for the bench</a><br>ciao@ombra-venezia.example<br>or just shout from the bridge</p></div>
+    <div><h3>Say ciao</h3><p><a href="#book">Ask for the bench</a><br>ciao@aitreremi.example<br>or just shout from the bridge</p></div>
   </div>
-  <div class="credit"><span>© 2026 Ombra, a fictional bàcaro. No sardines were harmed in the making of this site.</span><span>Prototype by Daniel Busetto</span></div>
+  <div class="credit"><span>© 2026 Ai Tre Remi, a fictional bàcaro on a fictional fondamenta. No sardines were harmed in the making of this site.</span><span>Prototype by Daniel Busetto</span></div>
 </footer>
 
 <script>
@@ -564,6 +572,7 @@ select.inp{appearance:none;-webkit-appearance:none;cursor:pointer;background:url
    ========================================================= */
 const INK='#221C15',WINE='#7E1F2D',GREEN='#1F3D2E',BRICK='#B4583C',OCHRE='#D69E43',CREAM='#F3EAD8',PAPER='#FBF5EA',STONE='#DCD4C4';
 let seed=11;
+/* mulberry32 PRNG, public domain */
 const rnd=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
 const r2=v=>Math.round(v*10)/10;
 const pt=p=>r2(p[0])+' '+r2(p[1]);
@@ -693,7 +702,7 @@ map(){let o='';
   o+=S(pl([[142,300],[132,252]],0,.6))+S(pl([[160,296],[150,248]],0,.6))+[[132,252],[150,248],[142,300],[160,296]].map(([x,y])=>F(ell(x,y,3.4,3.4),INK)).join('');
   o+=S('M96 356C110 330 136 316 146 300S150 262 152 240C200 222 290 190 352 162S386 128 394 96L380 62','w" style="stroke-width:3');
   o+=F(ell(380,58,16,16),WINE)+'<path class="f" d="M373 50h14c0 7-3 10-7 10s-7-3-7-10zM380 60v5m-4 0h8" fill="none" style="stroke:#FBF5EA;stroke-width:1.6;stroke-linecap:round"/>';
-  o+=T(96,364,24,'Ferrovia',INK)+T(60,426,20,'Canal Grande','#40685A','start')+T(300,238,22,'Canale di Cannaregio','#40685A','middle',-24)+T(96,270,20,'Guglie bridge',INK,'end')+T(338,52,30,'Ombra!',WINE,'end')+T(250,176,20,'12 min, give or take a spritz',BRICK,'middle',-24);
+  o+=T(96,364,24,'Ferrovia',INK)+T(60,426,20,'Canal Grande','#40685A','start')+T(300,238,22,'Canale di Cannaregio','#40685A','middle',-24)+T(96,270,20,'Guglie bridge',INK,'end')+T(338,52,30,'Ai Tre Remi!',WINE,'end')+T(250,176,20,'12 min, give or take a spritz',BRICK,'middle',-24);
   o+=S('M470 400V360m-7 12 7-12 7 12')+T(470,424,20,'N',INK);
   for(let i=0;i<3;i++)o+=S('M'+(456+i*16)+' '+(124+i*9)+'q4-5 8 0t8 0','g t');
   return o}
@@ -1017,16 +1026,17 @@ const hm=m=>String(Math.floor(m/60)%24).padStart(2,'0')+':'+String(m%60).padStar
 function romeNow(d){const o={};new Intl.DateTimeFormat('en-GB',{timeZone:'Europe/Rome',weekday:'short',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).formatToParts(d||new Date()).forEach(p=>o[p.type]=p.value);
   return{day:WD[o.weekday],min:(+o.hour%24)*60+(+o.minute),hh:o.hour,mm:o.minute}}
 function openState(){const r=romeNow(),sl=HOURS[r.day];
-  for(const[a,b]of sl){if(r.min>=a&&r.min<b){return b-r.min<=30?{open:true,txt:'Last call · closes '+hm(b)}:{open:true,txt:'Open now · pouring till '+hm(b)}}}
-  for(const[a]of sl)if(a>r.min)return{open:false,txt:'Closed · back at '+hm(a)};
-  for(let k=1;k<=7;k++){const d=(r.day+k)%7;if(HOURS[d].length)return{open:false,txt:'Closed · opens '+(k===1?'tomorrow':DAYN[d].slice(0,3))+' '+hm(HOURS[d][0][0])}}
-  return{open:false,txt:'Closed'}}
-const badges=$$('[data-open]'),clockEl=$('#clock');
+  for(const[a,b]of sl){if(r.min>=a&&r.min<b){return b-r.min<=30?{open:true,txt:'Last call · closes '+hm(b),sh:'Last call · '+hm(b)}:{open:true,txt:'Open now · pouring till '+hm(b),sh:'Open · till '+hm(b)}}}
+  for(const[a]of sl)if(a>r.min)return{open:false,txt:'Closed · back at '+hm(a),sh:'Closed · back '+hm(a)};
+  for(let k=1;k<=7;k++){const d=(r.day+k)%7;if(HOURS[d].length){const w=(k===1?'tomorrow':DAYN[d].slice(0,3))+' '+hm(HOURS[d][0][0]);return{open:false,txt:'Closed · opens '+w,sh:'Closed · '+w}}}
+  return{open:false,txt:'Closed',sh:'Closed'}}
+const badges=$$('[data-open]'),clockEl=$('#clock'),NARROW=matchMedia('(max-width:760px)');
 function tickHours(){const s=openState(),r=romeNow();
-  badges.forEach(b=>{b.classList.toggle('open',s.open);b.classList.toggle('closed',!s.open);b.lastElementChild.textContent=s.txt});
+  badges.forEach(b=>{b.classList.toggle('open',s.open);b.classList.toggle('closed',!s.open);b.lastElementChild.textContent=NARROW.matches&&b.closest('.hdr')?s.sh:s.txt});
   clockEl.textContent=r.hh+':'+r.mm;
   $$('#hours li').forEach(li=>li.classList.toggle('today',+li.dataset.d===r.day))}
 tickHours();setInterval(tickHours,20000);
+if(NARROW.addEventListener)NARROW.addEventListener('change',tickHours);
 
 /* =========================================================
    The bench: a booking form with no backend and a toast
