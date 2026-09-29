@@ -14,6 +14,96 @@
       "shape": "loop"
     },
     {
+      "slug": "inertia",
+      "title": "Inertia",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "Ten shader-painted covers ride a WebGL rail you drag and fling: they bend and split RGB with speed, settle on a spring, and a click grows a cover into a full-screen case study you pull through to reach the next.",
+      "stack": ["WebGL", "GLSL", "Inertia scroller", "No libraries"],
+      "url": "/designs/inertia.html",
+      "image": "/prototype-shots/inertia.webp"
+    },
+    {
+      "slug": "lumen",
+      "title": "Lumen",
+      "year": "2026",
+      "kind": "Photographer portfolio",
+      "description": "Seven landscapes drawn live by shaders (sea fog, a dune at dusk, a low sun on the Atlantic, rain on a bus window) replace each other through a liquid, noise-edged wipe while titles rise letter by letter and a timecode rolls. The index turns each series into a preview that trails the cursor.",
+      "stack": ["WebGL", "GLSL scenes", "Liquid wipe shader", "No libraries"],
+      "url": "/designs/lumen.html",
+      "image": "/prototype-shots/lumen.webp"
+    },
+    {
+      "slug": "studio-nove",
+      "title": "Studio Nove",
+      "year": "2026",
+      "kind": "Agency site",
+      "description": "The cursor leaves a trail of project cards behind a line-masked headline. The work list floats a tilting preview, services turn on a scroll-driven 3D drum, client names can be thrown, and opening a project wipes into a case study in its own colours.",
+      "stack": ["Canvas 2D", "CSS 3D", "Magnetic cursor", "No libraries"],
+      "url": "/designs/studio-nove.html",
+      "image": "/prototype-shots/studio-nove.webp"
+    },
+    {
+      "slug": "casa-ocra",
+      "title": "Casa Ocra",
+      "year": "2026",
+      "kind": "Studio project page",
+      "description": "A generated room opens from a thin slit behind the title, then the page walks through it: images wipe in, scrolling runs one day from blue dawn to a glowing pendant at night, materials slide past on a pinned wall, and the floor plan draws itself.",
+      "stack": ["SVG", "Sticky scenes", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/casa-ocra.html",
+      "image": "/prototype-shots/casa-ocra.webp"
+    },
+    {
+      "slug": "sorso",
+      "title": "Sorso",
+      "year": "2026",
+      "kind": "Brand site",
+      "description": "A soda can drawn in WebGL, beaded with condensation, floats between the words of the headline, tilts toward your pointer and spins with scroll speed. Each flavour bursts a new colour out of the can and pours a new label up its side, then a crate fills with springy lids and a dot-matrix Italy lights up the stockists.",
+      "stack": ["WebGL", "Canvas 2D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/sorso.html",
+      "image": "/prototype-shots/sorso.webp"
+    },
+    {
+      "slug": "pulse",
+      "title": "Pulse",
+      "year": "2026",
+      "kind": "Event site",
+      "description": "Contour lines behind a giant PULSE breathe until you press Play; then a synth loop made in the browser starts and every kick sends a shockwave through them. Headliners stretch under the cursor, a gooey blob slides the timetable between days and a ferry route draws itself on the map.",
+      "stack": ["WebGL", "Web Audio", "Canvas 2D", "No libraries"],
+      "url": "/designs/pulse.html",
+      "image": "/prototype-shots/pulse.webp"
+    },
+    {
+      "slug": "kiosk",
+      "title": "Kiosk",
+      "year": "2026",
+      "kind": "Studio site",
+      "description": "Service stickers tumble into the hero under hand-written physics you can grab and throw, the page melts into a new colour every section, case cards tilt in 3D, process cards stack as you scroll and the wordmark steps out of your cursor's way.",
+      "stack": ["Canvas 2D physics", "CSS 3D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/kiosk.html",
+      "image": "/prototype-shots/kiosk.webp"
+    },
+    {
+      "slug": "ombra",
+      "title": "Ombra",
+      "year": "2026",
+      "kind": "Restaurant site",
+      "description": "A bàcaro in Cannaregio: the name rises out of a canal whose WebGL water mirrors the hand-drawn skyline and ripples under your cursor. The bar draws itself in ink, the cicchetti counter drags with inertia, and an open-now badge runs on Venice time.",
+      "stack": ["WebGL", "SVG line drawing", "Canvas 2D", "No libraries"],
+      "url": "/designs/ombra.html",
+      "image": "/prototype-shots/ombra.webp"
+    },
+    {
+      "slug": "tally",
+      "title": "Tally",
+      "year": "2026",
+      "kind": "Product landing",
+      "description": "A live revenue dashboard leans back under the headline, ticking its KPIs and streaming its chart, then lands flat as you scroll. A pinned demo wires data sources into a hub, grows a chart and shares a report while a ghost cursor clicks through.",
+      "stack": ["Canvas 2D", "CSS 3D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/tally.html",
+      "image": "/prototype-shots/tally.webp"
+    },
+    {
       "slug": "field",
       "title": "Field",
       "year": "2026",
