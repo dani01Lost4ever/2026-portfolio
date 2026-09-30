@@ -12,9 +12,10 @@
 <script>document.documentElement.classList.add('js');try{if(matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('rm')}catch(e){}</script>
 <style>
 :root{
-  --bg:#0a0a0b;--bg2:#121214;--ink:#f3f1ec;--ink2:rgba(243,241,236,.68);--ink3:rgba(243,241,236,.46);--rule:rgba(243,241,236,.14);
-  --acc:#e4572e;--acc-ink:#0b0a0a;
-  --display:"Funnel Display","Helvetica Neue",Arial,sans-serif;
+  /* laguna di notte (ground), pietra d'Istria (type), rosso veneziano (accent) */
+  --bg:#0b1618;--bg2:#11201f;--ink:#eee7da;--ink2:rgba(238,231,218,.68);--ink3:rgba(238,231,218,.46);--rule:rgba(238,231,218,.14);
+  --acc:#e4572e;--acc-ink:#170a05;
+  --display:"Funnel Display",system-ui,-apple-system,"Segoe UI",Arial,sans-serif;
   --sans:"Funnel Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
   --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
   --g:clamp(16px,3.2vw,48px);
@@ -23,8 +24,8 @@
 *,*::before,*::after{box-sizing:border-box}
 html{background:var(--bg);color:var(--ink);-webkit-text-size-adjust:100%;scrollbar-gutter:stable}
 html.pv-on{overflow:hidden}
-html{scrollbar-color:rgba(243,241,236,.22) var(--bg)}
-.hd-fade{position:fixed;left:0;right:0;top:0;height:clamp(64px,10vh,96px);z-index:49;pointer-events:none;background:linear-gradient(rgba(10,10,11,.9),rgba(10,10,11,.55) 55%,rgba(10,10,11,0));transition:opacity .45s}
+html{scrollbar-color:rgba(238,231,218,.22) var(--bg)}
+.hd-fade{position:fixed;left:0;right:0;top:0;height:clamp(64px,10vh,96px);z-index:49;pointer-events:none;background:linear-gradient(rgba(11,22,24,.9),rgba(11,22,24,.55) 55%,rgba(11,22,24,0));transition:opacity .45s}
 html.pv-on .hd-fade{opacity:0}
 body{margin:0;background:var(--bg);font:400 16px/1.55 var(--sans);overflow-x:clip;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 a{color:inherit;text-decoration:none}
@@ -39,21 +40,16 @@ em{font-style:normal}
 .skip{position:fixed;left:12px;top:-64px;z-index:130;background:var(--acc);color:var(--acc-ink);padding:10px 14px;font:500 13px/1 var(--mono);transition:top .25s}
 .skip:focus{top:12px}
 
-/* canvas, grain, cursor */
+/* canvas, cursor */
 #gl{position:fixed;inset:0;width:100%;height:100%;display:block;z-index:0;pointer-events:none}
 html.is-trans #gl{z-index:55}
 html.nogl #gl{display:none}
-.grain{position:fixed;inset:-60px;z-index:95;pointer-events:none;opacity:.075;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1.4 -.25'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
-  animation:grain 1.2s steps(6) infinite}
-@keyframes grain{0%{transform:translate(0,0)}17%{transform:translate(-22px,14px)}33%{transform:translate(18px,-26px)}50%{transform:translate(-12px,-8px)}67%{transform:translate(26px,20px)}83%{transform:translate(-30px,4px)}100%{transform:translate(0,0)}}
-.rm .grain,.lowp .grain{animation:none}
 .cursor{position:fixed;left:0;top:0;z-index:92;pointer-events:none;display:none}
 .has-cur .cursor{display:block}
 .cur-b{position:absolute;left:-52px;top:-52px;width:104px;height:104px;border-radius:50%;background:var(--acc);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;transform:scale(0);will-change:transform;transition:background-color .3s,box-shadow .3s}
 .cur-b.ring{background:transparent;box-shadow:inset 0 0 0 1.5px rgba(255,255,255,.9)}
 .cur-l{font:600 15px/1 var(--display);letter-spacing:-.01em;color:var(--acc-ink);opacity:0;transition:opacity .25s}
-.cur-s{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(11,10,10,.8);opacity:0;transition:opacity .25s}
+.cur-s{font:500 9px/1 var(--mono);letter-spacing:.14em;text-transform:uppercase;color:rgba(23,10,5,.8);opacity:0;transition:opacity .25s}
 .cur-b.lab .cur-l,.cur-b.lab .cur-s{opacity:1}
 .cur-b.ring .cur-l,.cur-b.ring .cur-s{color:#fff}
 .cur-b.ring .cur-l{font-size:11px;font-family:var(--mono);letter-spacing:.12em;text-transform:uppercase}
@@ -118,9 +114,9 @@ html.pv-on .stage-ui,html.pv-on .covers{opacity:0;pointer-events:none;transition
 .nogl .cover{background:var(--cbg);background-size:cover}
 .titles{position:absolute;left:0;right:0;top:0;height:0;pointer-events:none}
 .ttl{position:absolute;left:50%;top:0;width:min(92vw,1180px);transform:translate(-50%,-50%);text-align:center;font:600 clamp(40px,7.4vw,132px)/.9 var(--display);letter-spacing:-.045em;visibility:hidden;text-wrap:balance}
-.ttl .w{display:inline-block;overflow:hidden;padding:.12em .03em .13em;margin:-.12em -.03em -.13em;vertical-align:top}
-.ttl .ch{display:inline-block}
-/* waterline: letters surface from the line, a damped mirror sits under it */
+.ttl .w{display:inline-block;overflow:visible;white-space:nowrap;padding:0;margin:0;vertical-align:top}
+.ttl .ch{display:inline-block;will-change:transform}
+/* waterline under each title; a damped, stretched mirror of the letters trails beneath it */
 .ttl-wl{position:absolute;left:var(--wl-l,8%);width:var(--wl-w,84%);top:calc(100% + .04em);height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.42) 18%,rgba(255,255,255,.42) 82%,transparent);transform-origin:50% 50%;will-change:transform}
 .ttl-r{position:absolute;left:0;right:0;top:0;transform-origin:50% calc(100% + .06em);transform:scaleY(-.62);opacity:.16;pointer-events:none;-webkit-mask-image:linear-gradient(to top,#000,transparent 85%);mask-image:linear-gradient(to top,#000,transparent 85%)}
 .rm .ttl{transition:opacity .4s}
@@ -186,10 +182,10 @@ html.pv-on .stage-ui,html.pv-on .covers{opacity:0;pointer-events:none;transition
 .ab-body{grid-column:2/3;color:var(--ink2)}
 .ab-side{grid-column:3/4;color:var(--ink2)}
 .ab-side b{display:block;font:600 clamp(40px,4.6vw,72px)/1 var(--display);letter-spacing:-.04em;color:var(--ink)}
-.mq{overflow:hidden;margin:0 calc(var(--g)*-1) clamp(64px,12vh,140px);padding:.1em 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+.mq{overflow:hidden;margin:0 calc(var(--g)*-1) clamp(64px,12vh,140px);padding:.14em 0;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
 .mq-t{display:flex;width:max-content;will-change:transform;white-space:nowrap}
 .mq-i{font:600 clamp(52px,8.6vw,150px)/1.08 var(--display);letter-spacing:-.045em;padding:0 .12em}
-.mq-i:nth-child(4n+3){color:transparent;-webkit-text-stroke:1.2px rgba(243,241,236,.55)}
+.mq-i:nth-child(4n+3){color:transparent;-webkit-text-stroke:1.2px rgba(238,231,218,.55)}
 .mq-s{font:600 clamp(28px,4vw,64px)/1 var(--display);color:var(--acc);align-self:center;padding:0 .3em}
 .ab-cols{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(20px,3vw,48px);margin-bottom:clamp(64px,12vh,140px)}
 .skill h3{margin-bottom:16px;color:var(--ink3)}
@@ -235,7 +231,7 @@ html.pv-full main,html.pv-full .ft{visibility:hidden}
 .pv-crumb{color:rgba(255,255,255,.8);text-shadow:0 1px 12px rgba(0,0,0,.35)}
 .pv-crumb i{font-style:normal;color:var(--acc);margin:0 .5em}
 .pv-num{color:rgba(255,255,255,.8)}
-.pv-close{display:inline-flex;align-items:center;gap:12px;padding:12px 16px 12px 18px;border-radius:999px;background:rgba(10,10,11,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);transition:background-color .3s,border-color .3s}
+.pv-close{display:inline-flex;align-items:center;gap:12px;padding:12px 16px 12px 18px;border-radius:999px;background:rgba(11,22,24,.55);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,.18);transition:background-color .3s,border-color .3s}
 .pv-close:hover{background:var(--acc);border-color:var(--acc);color:var(--acc-ink)}
 .pv-close .x{position:relative;width:12px;height:12px}
 .pv-close .x::before,.pv-close .x::after{content:"";position:absolute;left:50%;top:50%;width:14px;height:1.5px;background:currentColor;transform:translate(-50%,-50%) rotate(45deg);transition:transform .5s var(--ease)}
@@ -243,7 +239,7 @@ html.pv-full main,html.pv-full .ft{visibility:hidden}
 .pv-close:hover .x::before{transform:translate(-50%,-50%) rotate(135deg)}
 .pv-close:hover .x::after{transform:translate(-50%,-50%) rotate(45deg)}
 .pv-hero{position:relative;height:86vh;height:86svh;display:flex;flex-direction:column;justify-content:flex-end;padding:0 var(--g) clamp(26px,5vh,54px)}
-.pv-hero::before,.pv-scrim::before{content:"";position:absolute;left:0;right:0;bottom:-14vh;bottom:-14svh;height:78.5vh;height:78.5svh;background:linear-gradient(to top,rgba(10,10,11,.7),rgba(10,10,11,.7) 17.8%,rgba(10,10,11,.25) 63%,rgba(10,10,11,0));pointer-events:none}
+.pv-hero::before,.pv-scrim::before{content:"";position:absolute;left:0;right:0;bottom:-14vh;bottom:-14svh;height:78.5vh;height:78.5svh;background:linear-gradient(to top,rgba(11,22,24,.7),rgba(11,22,24,.7) 17.8%,rgba(11,22,24,.25) 63%,rgba(11,22,24,0));pointer-events:none}
 .nogl .pv-hero{background:var(--cbg) center/cover}
 .pv-txt{position:relative}
 .pv-kick{display:flex;flex-wrap:wrap;gap:6px 22px;color:rgba(255,255,255,.82);margin-bottom:14px}
@@ -383,10 +379,9 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
 </head>
 <body>
 <canvas id="gl" aria-hidden="true"></canvas>
-<div class="grain" aria-hidden="true"></div>
 <div class="loader" id="loader" aria-hidden="true">
   <p class="ld-name">Daniel Busetto</p>
-  <p class="ld-note mono">Abbrivio · Folio<br>2023 — 2026</p>
+  <p class="ld-note mono">Abbrivio · Logbook<br>2023 — 2026</p>
   <div class="ld-count"><div class="ld-num" id="ldNum"></div><p class="ld-cap mono">Rendering ten covers in GLSL, no images, no libraries.</p></div>
   <div class="ld-bar"><i id="ldBar"></i></div>
 </div>
@@ -412,7 +407,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
       <div class="stage" id="stage">
         <div class="stage-bg stage-ui" aria-hidden="true"></div>
         <h1 class="intro stage-ui" id="introTitle"><b>Daniel Busetto</b> is a full-stack developer in Venice, building from database to interface. Selected work, 2023 — 2026.</h1>
-        <p class="hint mono stage-ui" aria-hidden="true">Drag, scroll or <kbd>←</kbd><kbd>→</kbd></p>
+        <p class="hint mono stage-ui" aria-hidden="true">Drag to row, or <kbd>←</kbd><kbd>→</kbd></p>
         <ol class="covers" id="covers" aria-label="Projects"></ol>
         <div class="titles stage-ui" id="titles" aria-hidden="true"></div>
         <div class="hud stage-ui">
@@ -500,7 +495,7 @@ html:not(.js) .intro{position:static;margin-bottom:40px}
   </div>
 </div>
 
-<div class="cursor" id="cursor" aria-hidden="true"><div class="cur-b" id="curB"><span class="cur-l" id="curL">Open</span><span class="cur-s" id="curS">‹ drag ›</span></div></div>
+<div class="cursor" id="cursor" aria-hidden="true"><div class="cur-b" id="curB"><span class="cur-l" id="curL">Board</span><span class="cur-s" id="curS">‹ row ›</span></div></div>
 
 <script>
 (()=>{
@@ -548,7 +543,7 @@ P.forEach((p,i)=>{
   b.addEventListener('focus',()=>{if(mode==='gallery'&&!ptrDown)goTo(i)});
   li.appendChild(b);coversEl.appendChild(li);coverBtns.push(b);
   const t=d.createElement('div');t.className='ttl';const tl=splitChars(p.title);t.innerHTML=tl+'<span class="ttl-wl"></span><span class="ttl-r">'+tl+'</span>';titlesEl.appendChild(t);
-  const all=$$('.ch',t),L=all.length/2,ch=all.slice(0,L);TT.push({el:t,ch,ws:$$(':scope>.w',t),rch:all.slice(L),wl:$('.ttl-wl',t),r:$('.ttl-r',t),y:ch.map(()=>9),ry:ch.map(()=>1),rs:ch.map(()=>9),vis:false,op:-1,w:-1,k:''});
+  const all=$$('.ch',t),L=all.length/2,ch=all.slice(0,L);TT.push({el:t,ch,ws:$$(':scope>.w',t),rch:all.slice(L),wl:$('.ttl-wl',t),r:$('.ttl-r',t),x:ch.map(()=>0),v:ch.map(()=>0),d:ch.map(()=>9),rx:ch.map(()=>0),rd:ch.map(()=>9),pa:0,dir:-1,g:'',vis:false,op:-1,w:-1,k:''});
   const k=d.createElement('button');k.type='button';k.className='tk';k.setAttribute('aria-label',p.n+' '+p.title);k.innerHTML='<i></i>';
   k.addEventListener('click',()=>goTo(i));ticksEl.appendChild(k);tickIs.push({b:k,i:k.firstChild,s:-1});
   const r=d.createElement('li');r.className='ix-row';
@@ -564,6 +559,7 @@ $$('.rv').forEach(splitWords);
 const mqEl=$('#mq');
 {const words=['Angular','React','Next.js','TypeScript','Node.js','Express','.NET','MongoDB','SQL Server','PostgreSQL','Docker','Vite'];
 const one=words.map(w=>'<span class="mq-i">'+w+'</span><span class="mq-s">✳</span>').join('');mqEl.innerHTML=one+one;}
+const mqItems=[...mqEl.children].map(e=>({e,c:0,y:9}));let mqA=0;
 /* email letters */
 const mail=$('#mail');const EMAIL='daniel.busetto.db@gmail.com';
 {let k=0;mail.innerHTML=['daniel.busetto.db','@gmail.com'].map(s=>'<span class="ml" aria-hidden="true">'+[...s].map(c=>'<span class="mc"><span class="mi" style="--i:'+(k++)+'" data-c="'+c+'">'+c+'</span></span>').join('')+'</span>').join('');}
@@ -605,7 +601,7 @@ function measure(){
   IXR.length=0;for(const b of ixBtns){const r=b.getBoundingClientRect();IXR.push({top:r.top+sy,h:r.height,l:r.left,w:r.width})}
   const ab=$('#about').getBoundingClientRect();abTop=ab.top+sy;abH=ab.height;
   const ct=$('#contact').getBoundingClientRect();ctTop=ct.top+sy;ctH=ct.height;
-  mqHalf=mqEl.scrollWidth/2||1;
+  mqHalf=mqEl.scrollWidth/2||1;for(const m of mqItems)m.c=m.e.offsetLeft+m.e.offsetWidth/2;
   const mr=mail.getBoundingClientRect();mailRect={x:mr.left,y:mr.top+sy,w:mr.width,h:mr.height};
   for(const m of mcs){const r=m.e.getBoundingClientRect();m.x=r.left+r.width/2;m.y=r.top+sy+r.height/2}
   winS.measure();
@@ -856,7 +852,7 @@ precision highp float;
 #else
 precision mediump float;
 #endif
-uniform sampler2D uTex;uniform vec4 uRect,uBox;uniform vec2 uM,uRes;uniform float uA,uDim,uRev,uHov,uT,uGrain,uVig;
+uniform sampler2D uTex;uniform vec4 uRect,uBox;uniform vec2 uM,uRes;uniform float uA,uDim,uRev,uHov,uT,uVig;
 varying vec2 vUv;varying float vZ,vS;
 ${HASH}
 void main(){vec2 uv=vUv;float ed=1.-uv.y;if(ed>uRev)discard;
@@ -867,7 +863,7 @@ vec2 tuv=uRect.xy+vec2(uv.x,1.-uv.y)*uRect.zw;
 vec3 c=texture2D(uTex,tuv).rgb;
 c*=1.+uHov*.05+vZ*.0028;
 c+=vec3(1.,.96,.9)*smoothstep(.1,.55,vS)*.16;
-c+=(h21(gl_FragCoord.xy+uGrain)-.5)*.05;
+c+=(h21(gl_FragCoord.xy)-.5)*.006; /* static sub-LSB dither against banding, not a moving grain */
 c*=1.-uDim;
 if(uVig>0.){float sy=gl_FragCoord.y/uRes.y;c*=mix(1.,mix(.22,1.,smoothstep(.02,.24,sy)*(1.-.75*smoothstep(.9,1.,sy))),uVig);}
 if(uRev<1.&&ed>uRev-.008)c=vec3(.894,.341,.18);
@@ -887,7 +883,7 @@ function initGL(){
   try{const dbg=gl.getExtension('WEBGL_debug_renderer_info');const rn=dbg?String(gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL)):'';LOWP=/swiftshader|llvmpipe|software|basic render/i.test(rn)}catch(e){}
   TS=LOWP?512:1024;if(gl.getParameter(gl.MAX_TEXTURE_SIZE)<TS)TS=512;if(LOWP)html.classList.add('lowp');
   const DER=!!gl.getExtension('OES_standard_derivatives');
-  R.plane=prog(VS_PLANE,(DER?'#extension GL_OES_standard_derivatives : enable\n#define AA 1\n':'')+FS_PLANE,['uVp','uBox','uBend','uAxis','uCurve','uRot','uHov','uT','uM','uTex','uRect','uA','uDim','uRev','uGrain','uRes','uVig']);
+  R.plane=prog(VS_PLANE,(DER?'#extension GL_OES_standard_derivatives : enable\n#define AA 1\n':'')+FS_PLANE,['uVp','uBox','uBend','uAxis','uCurve','uRot','uHov','uT','uM','uTex','uRect','uA','uDim','uRev','uRes','uVig']);
   if(!R.plane){gl=null;return false}
   R.tri=gl.createBuffer();gl.bindBuffer(gl.ARRAY_BUFFER,R.tri);gl.bufferData(gl.ARRAY_BUFFER,new Float32Array([-1,-1,3,-1,-1,3]),gl.STATIC_DRAW);
   const S=32,v=[],ix=[];for(let y=0;y<=S;y++)for(let x=0;x<=S;x++)v.push(x/S,y/S);
@@ -926,10 +922,21 @@ function crop(w,h,zoom,px,py,o){const A=w/h;let cw,chh;if(A<1){cw=A;chh=1}else{c
 /* ---------- draw list ---------- */
 const DL=[];let dlN=0;
 function draw(){if(dlN>=DL.length)DL.push({rect:[0,0,1,1]});const o=DL[dlN++];o.k=-1;o.live=false;o.a=1;o.dim=0;o.rev=1;o.hov=0;o.mx=.5;o.my=.5;o.bx=0;o.by=0;o.axis=0;o.curve=0;o.rot=0;o.zoom=1.14;o.px=0;o.py=0;o.vig=0;return o}
+/* the strip is a canal, not a ruler: covers ride a slow meander (the reversed S of the Canal Grande, repeated)
+   and turn to its tangent. The cover in the centre is berthed, so it straightens out as it arrives.
+   dd is the distance from the centre in covers; returns stage coordinates + heading. */
+const MEA=.62;
+function canal(dd,o){
+  const ad=Math.min(Math.abs(dd),1),st=ad*ad*(3-2*ad);
+  if(G.vertical){const A=Math.min(vw*.05,24);o.x=vw/2+A*Math.sin(dd*MEA);o.y=G.cy+dd*G.pitch;o.rot=-Math.atan(A*MEA*Math.cos(dd*MEA)/G.pitch)*st}
+  else{const A=G.sh*.07;o.x=vw/2+dd*G.pitch;o.y=G.cy+A*Math.sin(dd*MEA);o.rot=Math.atan(A*MEA*Math.cos(dd*MEA)/G.pitch)*st}
+  return o;
+}
+const tmpC={};
 function galleryRect(i,fd,o){
   const dd=i-fd,ad=Math.abs(dd),sc=1-.14*Math.min(ad,1);
-  let x,y;if(G.vertical){x=vw/2;y=GS.stY+G.cy+dd*G.pitch}else{x=vw/2+dd*G.pitch;y=GS.stY+G.cy}
-  o.x=x;o.y=y;o.w=G.cw*sc;o.h=G.ch*sc;o.dim=Math.min(ad,1.3)*.42;o.px=G.vertical?0:clamp(dd*.8,-1,1);o.py=G.vertical?clamp(-dd*.8,-1,1):0;o.zoom=1.16;return o;
+  canal(dd,o);o.y+=GS.stY;
+  o.w=G.cw*sc;o.h=G.ch*sc;o.dim=Math.min(ad,1.3)*.42;o.px=G.vertical?0:clamp(dd*.8,-1,1);o.py=G.vertical?clamp(-dd*.8,-1,1):0;o.zoom=1.16;return o;
 }
 const tmpR={};
 function lerpRect(o,a,b,e){o.x=lerp(a.x,b.x,e);o.y=lerp(a.y,b.y,e);o.w=lerp(a.w,b.w,e);o.h=lerp(a.h,b.h,e)}
@@ -1177,32 +1184,45 @@ function updGallery(dt,s){
   /* covers */
   const cw=G.cw,chh=G.ch;
   for(let i=0;i<N;i++){
-    const dd=i-fd,sc=1-.14*Math.min(Math.abs(dd),1);
-    let x,y;if(G.vertical){x=vw/2;y=G.cy+dd*G.pitch}else{x=vw/2+dd*G.pitch;y=G.cy}
-    coverBtns[i].style.transform='translate3d('+(x-cw/2).toFixed(1)+'px,'+(y-chh/2).toFixed(1)+'px,0) scale('+sc.toFixed(3)+')'+(gl?'':' skewX('+(bendG.x*-6).toFixed(2)+'deg)');
+    const dd=i-fd,sc=1-.14*Math.min(Math.abs(dd),1);canal(dd,tmpC);
+    coverBtns[i].style.transform='translate3d('+(tmpC.x-cw/2).toFixed(1)+'px,'+(tmpC.y-chh/2).toFixed(1)+'px,0) rotate('+(tmpC.rot+(gl?0:bendG.x*-.035)).toFixed(4)+'rad) scale('+sc.toFixed(3)+')';
   }
-  /* titles */
-  const ft=f;
+  /* titles: each one rides along the canal with its cover, a little slower than the boats. Every letter is a small
+     hull on its own spring, stiff at the bow and loose at the stern, so on a push the word stretches out behind its
+     first letter and, when the strip stops, the tail letters coast in late and settle (the abbrivio). */
+  const K=G.pitch*.62,VX=!G.vertical,ft=f,sub=Math.ceil(dt*120),hs=dt/sub;
+  const rs='scaleY('+(-(.62+Math.min(.3,Math.abs(bendG.x)*.45))).toFixed(3)+')';
   for(let i=0;i<N;i++){
     const T=TT[i],dd=i-ft,ad=Math.abs(dd);
     if(REDUCE){const op=Math.round(ft)===i?1:0;if(T.op!==op){T.op=op;T.el.style.visibility='visible';T.el.style.opacity=op}continue}
-    if(ad>=.995&&!(i===0&&intro.titles<1)){if(T.vis){T.vis=false;T.el.style.visibility='hidden';T.ry.fill(1)}continue}
-    if(!T.vis){T.vis=true;T.el.style.visibility='visible'}
-    /* waterline: letters surface through the line (with a small buoyant bob) and sink back through it; the mirror trails them */
-    const L=T.ch.length,S=.45,dz=Math.max(0,ad-.1)/.9,kr=damp(.16,dt);
+    const intr=i===0&&intro.titles<1,ie=intr?eIO3(intro.titles):1;
+    const op=Math.round(clamp(1-ad*2.4,0,1)*ie*1000)/1000;
+    if(op<=0&&!intr){if(T.vis){T.vis=false;T.el.style.visibility='hidden'}continue}
+    canal(dd*.62,tmpC);
+    const ga=dd*K,gc=VX?tmpC.y-G.cy:tmpC.x-vw/2;
+    const L=T.ch.length;
+    if(!T.vis){T.vis=true;T.el.style.visibility='visible';for(let j=0;j<L;j++){T.x[j]=ga;T.v[j]=0;T.rx[j]=0}T.pa=ga}
+    if(Math.abs(ga-T.pa)>.01)T.dir=ga<T.pa?-1:1;T.pa=ga;
+    const g='translate(-50%,-50%) translate3d('+(VX?ga:gc).toFixed(1)+'px,'+(VX?gc:ga).toFixed(1)+'px,0)';
+    if(T.g!==g){T.g=g;T.el.style.transform=g}
+    if(T.op!==op){T.op=op;T.el.style.opacity=op}
+    const kr=damp(.18,dt);
     for(let j=0;j<L;j++){
-      const q=L>1?j/(L-1):0;let y;
-      if(dd>=0)y=clamp((dz-(1-S)*(1-q))/S,0,1);else y=clamp((dz-(1-S)*q)/S,0,1);
-      if(i===0&&intro.titles<1){const iy=clamp(1-(intro.titles*1.7-q*.7),0,1);y=Math.max(y,eIO3(iy))}
-      y=Math.round(y*(1.5*y-.5)*1000)/1000;
-      if(T.y[j]!==y){T.y[j]=y;T.ch[j].style.transform=y?'translate3d(0,'+(y*118).toFixed(1)+'%,0)':'none'}
-      let r=T.ry[j];r+=(y-r)*kr;if(Math.abs(y-r)<.002)r=y;else busy=true;T.ry[j]=r;
-      const rr=Math.round(r*1000)/1000;
-      if(T.rs[j]!==rr){T.rs[j]=rr;T.rch[j].style.transform=rr?'translate3d(0,'+(rr*118).toFixed(1)+'%,0)':'none'}
+      const q=L>1?j/(L-1):0,rank=VX?(T.dir<0?q:1-q):q;
+      let x=T.x[j],v=T.v[j];
+      if(intr){x=ga+(1-eIO3(clamp(intro.titles*1.7-q*.7,0,1)))*K*.9;v=0}
+      else{const k=400*Math.pow(.125,rank),c=2*.58*Math.sqrt(k);for(let n=0;n<sub;n++){v+=((ga-x)*k-v*c)*hs;x+=v*hs}
+        if(Math.abs(v)<.5&&Math.abs(ga-x)<.2){x=ga;v=0}else busy=true}
+      T.x[j]=x;T.v[j]=v;
+      const dv=Math.round((x-ga)*10)/10;
+      if(T.d[j]!==dv){T.d[j]=dv;T.ch[j].style.transform=dv?(VX?'translate3d('+dv+'px,0,0)':'translate3d(0,'+dv+'px,0)'):'none'}
+      let r=T.rx[j];r+=(dv-r)*kr;if(Math.abs(dv-r)<.2)r=dv;else busy=true;T.rx[j]=r;
+      const rd=Math.round(r*10)/10;
+      if(T.rd[j]!==rd){T.rd[j]=rd;T.rch[j].style.transform=rd?(VX?'translate3d('+rd+'px,0,0)':'translate3d(0,'+rd+'px,0)'):'none'}
     }
-    const wl=Math.round(clamp(1-ad*1.35,0,1)*1000)/1000*(i===0&&intro.titles<1?eIO3(intro.titles):1);
+    const wl=Math.round(clamp(1-ad*1.6,0,1)*ie*1000)/1000;
     if(T.w!==wl){T.w=wl;T.wl.style.transform='scaleX('+wl.toFixed(3)+')'}
-    const rk='scaleY(-.62) skewX('+clamp(bendG.x*9,-9,9).toFixed(1)+'deg)';if(T.k!==rk){T.k=rk;T.r.style.transform=rk}
+    if(T.k!==rs){T.k=rs;T.r.style.transform=rs}
   }
   /* counter, ticks, ruler, sub */
   setOdo(odoC,REDUCE?Math.round(f)+1:f+1);
@@ -1240,10 +1260,10 @@ function updCursor(dt){
   if(!CUR)return false;
   let target=0,lab='',small='',ring=false;
   if(mode==='gallery'&&pIn){
-    if(drag&&drag.moved){target=.62;lab='Drag'}
-    else if(inStage&&GS.hover>=0){target=1;lab='Open';small='‹ drag ›'}
-    else if(inStage){target=.62;lab='Drag';ring=true}
-    else if(inIx&&IX.hover>=0){target=.82;lab='View'}
+    if(drag&&drag.moved){target=.62;lab='Rowing'}
+    else if(inStage&&GS.hover>=0){target=1;lab='Board';small='‹ row ›'}
+    else if(inStage){target=.62;lab='Row';ring=true}
+    else if(inIx&&IX.hover>=0){target=.82;lab='Board'}
   }
   const k=damp(.28,dt);const px=CS.x,py=CS.y;
   CS.x=lerp(CS.x,mx,k);CS.y=lerp(CS.y,my,k);
@@ -1283,7 +1303,11 @@ function updMarquee(dt,s){
   const inV=s+vh>abTop&&s<abTop+abH;if(!inV||REDUCE)return false;
   const v=clamp(pageVel,-4000,4000);const dir=v<-5?-1:1;
   mqX-=(40*dir+v*.35)*dt;mqX%=mqHalf;if(mqX>0)mqX-=mqHalf;
-  mqEl.style.transform='translate3d('+mqX.toFixed(1)+'px,0,0) skewX('+clamp(-v*.004,-10,10).toFixed(2)+'deg)';
+  mqEl.style.transform='translate3d('+mqX.toFixed(1)+'px,0,0)';
+  /* a scroll push sends a wake through the band: the words lift and dip on a wave that runs with the push, then go flat */
+  mqA=lerp(mqA,Math.min(Math.abs(v)*.012,14),damp(.08,dt));if(mqA<.05)mqA=0;
+  const ph=T*(v<0?-4:4);
+  for(const m of mqItems){const y=mqA?Math.round(Math.sin((m.c+mqX)/170-ph)*mqA*10)/10:0;if(m.y!==y){m.y=y;m.e.style.transform=y?'translate3d(0,'+y+'px,0)':''}}
   return true;
 }
 function updMail(dt,s){
@@ -1349,7 +1373,7 @@ function buildDraws(dt,s){
   if(mode!=='gallery'&&openIdx>=0){
     const s2=pvS.pos();
     if(mode==='opening'){
-      const e=REDUCE?1:eIO(tw);const o=draw();o.k=openIdx;heroRect(tA,0);lerpRect(o,from,tA,e);o.zoom=lerp(from.zoom||1.14,1,e);o.px=lerp(from.px||0,0,e);o.py=lerp(from.py||0,0,e);o.dim=lerp(from.dim||0,0,e);
+      const e=REDUCE?1:eIO(tw);const o=draw();o.k=openIdx;heroRect(tA,0);lerpRect(o,from,tA,e);o.rot=lerp(from.rot||0,0,e);o.zoom=lerp(from.zoom||1.14,1,e);o.px=lerp(from.px||0,0,e);o.py=lerp(from.py||0,0,e);o.dim=lerp(from.dim||0,0,e);
       o.a=REDUCE?tw:(from.a===0?Math.min(1,tw*3):1);if(G.vertical)o.by=bendG.x*(1-e);else o.bx=bendG.x*(1-e);o.axis=G.vertical?1:0;o.live=true;
     }else if(mode==='open'){
       if(s2<vh*1.05){const o=draw();o.k=openIdx;heroRect(o,s2);o.live=true;o.by=bendP.x;o.bx=bendR.x;o.axis=1;
@@ -1360,7 +1384,7 @@ function buildDraws(dt,s){
       const e=REDUCE?1:eIO(tw);let tgt;
       if(returnTo==='gallery'){tgt=galleryRect(openIdx,GS.fd,{})}else{tgt=rowBand(openIdx,s,{})}
       if(from.fromNext){const o=draw();o.k=(openIdx+1)%N;const fn=from.fromNext;o.x=fn.x;o.y=fn.y;o.w=fn.w;o.h=fn.h;o.zoom=fn.zoom;o.a=Math.max(0,1-tw*3);if(o.a<=0)dlN--}
-      const o=draw();o.k=openIdx;lerpRect(o,from,tgt,e);o.zoom=lerp(from.zoom||1,tgt.zoom,e);o.px=lerp(0,tgt.px,e);o.py=lerp(0,tgt.py,e);o.dim=lerp(from.dim||0,tgt.dim,e);o.live=true;o.axis=G.vertical?1:0;
+      const o=draw();o.k=openIdx;lerpRect(o,from,tgt,e);o.rot=lerp(0,tgt.rot||0,e);o.zoom=lerp(from.zoom||1,tgt.zoom,e);o.px=lerp(0,tgt.px,e);o.py=lerp(0,tgt.py,e);o.dim=lerp(from.dim||0,tgt.dim,e);o.live=true;o.axis=G.vertical?1:0;
       if(REDUCE)o.a=1-tw;else if(returnTo==='index')o.a=1-clamp((tw-.55)/.45,0,1);
       if(o.a<=0)dlN--;
     }
@@ -1385,7 +1409,7 @@ function render(dt,s){
   if(!dlN)return;
   const U=R.plane;gl.useProgram(U.p);gl.enable(gl.BLEND);gl.blendFunc(gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.bindBuffer(gl.ARRAY_BUFFER,R.grid);gl.vertexAttribPointer(0,2,gl.FLOAT,false,0,0);gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER,R.idx);
-  gl.uniform2f(U.uVp,vw,vh);gl.uniform1f(U.uT,T);gl.uniform1f(U.uGrain,(Math.floor(T*24)%64)*13.7);gl.uniform2f(U.uRes,canvas.width,canvas.height);gl.uniform1i(U.uTex,0);gl.activeTexture(gl.TEXTURE0);
+  gl.uniform2f(U.uVp,vw,vh);gl.uniform1f(U.uT,T);gl.uniform2f(U.uRes,canvas.width,canvas.height);gl.uniform1i(U.uTex,0);gl.activeTexture(gl.TEXTURE0);
   for(let j=0;j<dlN;j++){
     const o=DL[j];const live2=o.useLive&&o===liveDraw;
     gl.bindTexture(gl.TEXTURE_2D,live2?R.hero:R.tex[o.k]);

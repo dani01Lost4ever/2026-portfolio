@@ -104,6 +104,8 @@ ul{padding:0;list-style:none}
 .stk-burst .bb{position:relative;display:grid;place-items:center}
 .stk-burst svg{width:100%;height:auto}
 .stk-burst span{position:absolute;inset:0;display:grid;place-content:center;text-align:center;font:400 clamp(26px,2.6vw,40px)/.9 var(--disp);color:var(--ink);transform:rotate(-8deg)}
+.stk-burst b{font-weight:inherit;white-space:nowrap}
+.stk-burst sup{font-size:.5em;vertical-align:.95em;margin-left:1px;line-height:0}
 .stk-burst small{display:block;font:700 11px/1 var(--sans);letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
 .stk-tag{left:calc(50% + min(70vh,50vw) / 2.2 * .42);top:73%}
 .stk-tag>div{background:var(--ink);color:var(--cream);font:600 13px/1 var(--sans);letter-spacing:.06em;padding:10px 14px 10px 12px;border-radius:999px;display:flex;align-items:center;gap:8px;transform:rotate(6deg);box-shadow:0 8px 20px rgba(42,11,8,.18)}
@@ -366,9 +368,9 @@ ul{padding:0;list-style:none}
   <button class="cart" type="button" aria-label="Basket, 0 cans">Basket <b class="cart-n" aria-hidden="true">0</b></button>
 </header>
 
-<canvas id="can" role="img" aria-label="A Zampillo can floating above the page. It tilts toward your pointer and spins as you scroll."></canvas>
+<canvas id="can" role="img" aria-label="A Zampillo can floating above the page. It tilts toward your pointer, spins as you scroll and fizzes harder when you flick it."></canvas>
 <div class="canhit" aria-hidden="true"></div>
-<div class="hint" aria-hidden="true">Drag to spin</div>
+<div class="hint" aria-hidden="true">Flick it to fizz</div>
 <div class="front" aria-hidden="true"><div class="orbit-front"></div><div class="st-sticker"><svg viewBox="-60 -60 120 120"><path class="sts-sh" fill="#2A0B08" opacity=".18" transform="translate(4 8)"/><path class="sts-p"/></svg><span class="sts-t"></span></div></div>
 
 <main id="main">
@@ -392,7 +394,7 @@ ul{padding:0;list-style:none}
       <p class="cue fade-in" style="--d:1.3s" aria-hidden="true"><i></i>Scroll to pour</p>
     </div>
     <div class="stk stk-badge" aria-hidden="true"><div style="--d:1.25s"><svg viewBox="0 0 200 200"><defs><path id="bc" d="M100 100m-70 0a70 70 0 1 1 140 0a70 70 0 1 1-140 0"/></defs><circle cx="100" cy="100" r="98" fill="#F6D83B"/><circle cx="100" cy="100" r="91" fill="none" stroke="#2A0B08" stroke-width="2" stroke-dasharray="2 6" stroke-linecap="round"/><text font-family="DM Sans,system-ui,sans-serif" font-weight="700" font-size="19" letter-spacing="3.1" fill="#2A0B08"><textPath href="#bc">REAL FRUIT ✦ REAL FIZZ ✦ MADE IN ITALY ✦</textPath></text><path d="M100 64c4 22 14 32 36 36-22 4-32 14-36 36-4-22-14-32-36-36 22-4 32-14 36-36z" fill="#E3321D"/></svg></div></div>
-    <div class="stk stk-burst" aria-hidden="true"><div class="bb" style="--d:1.4s"><svg viewBox="-50 -50 100 100"><path id="burst" fill="#FF9DB4"/></svg><span>38<small>kcal</small></span></div></div>
+    <div class="stk stk-burst" aria-hidden="true"><div class="bb" style="--d:1.4s"><svg viewBox="-50 -50 100 100"><path id="burst" fill="#FF9DB4"/></svg><span><b>14<sup>%</sup></b><small>juice</small></span></div></div>
     <div class="stk stk-tag" aria-hidden="true"><div style="--d:1.55s"><b>NEW</b>Pompelmo Rosa</div></div>
   </section>
 
@@ -419,7 +421,7 @@ ul{padding:0;list-style:none}
           <article class="panel" data-i="1">
             <p class="idx">02 / 04</p>
             <h3>Lemon &amp; Basil <em>Limone &amp; Basilico</em></h3>
-            <p class="d">Amalfi-coast lemons shaken up with a fistful of garden basil. Tastes like a terrace lunch that runs long.</p>
+            <p class="d">Amalfi-coast lemons shaken up with a fistful of garden basil. Made for terrace lunches that drift into the afternoon.</p>
             <ul class="notes" aria-label="Tasting notes"><li>Amalfi lemon</li><li>Genovese basil</li><li>Cane sugar</li></ul>
           </article>
           <article class="panel" data-i="2">
@@ -446,11 +448,11 @@ ul{padding:0;list-style:none}
 
   <section class="why" id="why" aria-labelledby="why-h">
     <h2 class="eyebrow rv" id="why-h">Why Zampillo</h2>
-    <p class="statement">We grew up on bitter chinotto from the kiosk on the Lido and blood oranges in January. <span class="ic" data-ic="orange"></span> Zampillo is that feeling in a can: fruit from small Italian growers, garden herbs <span class="ic" data-ic="leaf"></span> and a gentle fizz, <span class="ic" data-ic="bubbles"></span> with half the sugar of a regular soda. <em>Nothing syrupy, nothing fake,</em> nothing you’d need to look up.</p>
+    <p class="statement">We grew up on bitter chinotto from the kiosk on the Lido and blood oranges in January. <span class="ic" data-ic="orange"></span> Zampillo is that feeling in a can: fruit from small Italian growers, garden herbs <span class="ic" data-ic="leaf"></span> and a gentle fizz. <span class="ic" data-ic="bubbles"></span> Everything on the label grew on a branch, in a garden <em>or on somebody’s windowsill.</em></p>
     <ul class="stats">
-      <li class="stat rv" style="--c:#FF7A2F;--r:-2deg"><b data-n="38">38</b><span>kcal in a can of Arancia Rossa</span></li>
-      <li class="stat rv" style="--c:#F6D83B;--r:1.5deg"><b data-n="14" data-s="%">14<sup>%</sup></b><span>pressed Italian fruit, not concentrate</span></li>
-      <li class="stat rv" style="--c:#FF9DB4;--r:-1deg"><b data-n="0">0</b><span>sweeteners, colourings or syrups</span></li>
+      <li class="stat rv" style="--c:#FF7A2F;--r:-2deg"><b data-n="11">11</b><span>family growers, from Sicily up to Liguria</span></li>
+      <li class="stat rv" style="--c:#F6D83B;--r:1.5deg"><b data-n="14" data-s="%">14<sup>%</sup></b><span>pressed Italian fruit juice in every can</span></li>
+      <li class="stat rv" style="--c:#FF9DB4;--r:-1deg"><b data-n="4">4</b><span>days from the branch to the can</span></li>
       <li class="stat rv" style="--c:#1E4A2B;--k:#FFF1E0;--r:2deg"><b data-n="100" data-s="%">100<sup>%</sup></b><span>recyclable aluminium, again and again</span></li>
     </ul>
     <p class="toy-hint" aria-hidden="true">Go on, move the stickers around.</p>
@@ -704,8 +706,9 @@ $('#burst').setAttribute('d', burstPath(14, 48, 40));
 // marquee
 {
   const words = ['Arancia Rossa', 'Limone & Basilico', 'Pompelmo Rosa', 'Ciliegia & Chinotto'];
-  const words2 = ['Serve ice cold', 'Half the sugar', 'Real Italian fruit', 'Made to share'];
-  const mk = (list, ic) => { let h = ''; list.forEach((w, i) => { h += `<span>${w}</span>` + svgOf(ic ? SMALL_ICON[i] : sparkle('currentColor'), '-60 -64 124 124'); }); return `<div class="run">${h}${h}</div>`; };
+  const words2 = ['After the swim', 'Cards on the beach', 'On the ferry deck', 'Under the pergola'];
+  const lidIc = f => `<svg viewBox="-4 -4 108 108" aria-hidden="true" focusable="false" style="color:${f.deep};--tab:${f.tab}"><use href="#lidS" width="100" height="100"/></svg>`;
+  const mk = (list, ic) => { let h = ''; list.forEach((w, i) => { h += `<span>${w}</span>` + (ic ? lidIc(FL[i]) : svgOf(bubbles(), '-50 -50 100 100')); }); return `<div class="run">${h}${h}</div>`; };
   const t1 = $('.b1 .track'), t2 = $('.b2 .track');
   t1.innerHTML = mk(words, true) + mk(words, true);
   t2.innerHTML = mk(words2, false) + mk(words2, false);
@@ -767,7 +770,7 @@ const TOY_DEF = [
   { html: `<svg viewBox="-60 -60 120 120"><path d="${burstPath(12, 56, 46)}" fill="#2A0B08" opacity=".16" transform="translate(4 8)"/><path d="${burstPath(12, 56, 46)}" fill="#E3321D"/><text x="0" y="9" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="28" fill="#FFF1E0" transform="rotate(-10)">CIAO!</text></svg>`, w: 130, x: .83, y: .02, r: 12 },
   { html: `<svg viewBox="-70 -34 140 68"><rect x="-64" y="-24" width="136" height="64" rx="32" fill="#2A0B08" opacity=".16"/><rect x="-68" y="-32" width="136" height="64" rx="32" fill="#2A0B08"/><text x="0" y="11" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="32" letter-spacing="1" fill="#F6D83B">FRIZZ!</text></svg>`, w: 150, x: .74, y: .97, r: -8 },
   { html: svgOf(slice(COL.lemonS), undefined, .16), w: 120, x: .9, y: .36, r: 0 },
-  { html: `<svg viewBox="-60 -60 120 120"><path d="${wobblePath(8, 54, 4)}" fill="#2A0B08" opacity=".16" transform="translate(4 8)"/><path d="${wobblePath(8, 54, 4)}" fill="#FF9DB4"/><text x="0" y="-4" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" fill="#4F0E2A">ICE</text><text x="0" y="24" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" fill="#4F0E2A">COLD</text></svg>`, w: 118, x: .12, y: .96, r: 8 },
+  { html: `<svg viewBox="-60 -60 120 120"><path d="${wobblePath(8, 54, 4)}" fill="#2A0B08" opacity=".16" transform="translate(4 8)"/><path d="${wobblePath(8, 54, 4)}" fill="#FF9DB4"/><text x="0" y="-4" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" fill="#4F0E2A">CIN</text><text x="0" y="24" text-anchor="middle" font-family="Anton,Impact,sans-serif" font-size="26" fill="#4F0E2A">CIN!</text></svg>`, w: 118, x: .12, y: .96, r: 8 },
   { html: svgOf(cherries(COL.cherry), undefined, .16), w: 110, x: .5, y: .01, r: -6 }
 ];
 const TOYS = TOY_DEF.map(d => { const el = document.createElement('div'); el.className = 'toy'; el.innerHTML = d.html; toysEl.appendChild(el); return { el, d, x: 0, y: 0, vx: 0, vy: 0, a: d.r, va: 0, w: d.w, h: d.w, drag: false, placed: false }; });
@@ -968,7 +971,7 @@ function drawLabel(f, fi, cv) {
     for (const w of words) { const t = line ? line + ' ' + w : w; if (x.measureText(t).width > 430 && line) { x.fillText(line, bx - 215, ly); ly += 34; line = w; } else line = t; }
     x.fillText(line, bx - 215, ly); ly += 58;
     x.font = `500 22px ${SANSF}`;
-    ['Best served ice cold, straight from the can.', 'Canned in Italy for Zampillo Bibite.', 'Recycle me. I come back as another can.'].forEach(t => { x.fillText(t, bx - 215, ly); ly += 32; });
+    ['Open it somewhere you can hear the sea.', 'Canned in Italy for Zampillo Bibite.', 'Recycle me. I come back as another can.'].forEach(t => { x.fillText(t, bx - 215, ly); ly += 32; });
     x.globalAlpha = 1;
     // barcode
     x.fillStyle = '#FFFFFF'; x.fillRect(bx - 215, 770, 250, 150);
@@ -1005,6 +1008,7 @@ const VS_CAN = `attribute vec3 aP;attribute vec3 aN;attribute vec2 aU;
 uniform mat4 uProj;uniform mat4 uModel;uniform mat3 uRot;
 varying vec3 vN;varying vec3 vP;varying vec3 vO;varying vec3 vT;varying vec2 vUV;
 void main(){vec4 wp=uModel*vec4(aP,1.0);vP=wp.xyz;vO=aP;vUV=aU;vN=uRot*aN;vT=uRot*vec3(aN.z,0.0,-aN.x);gl_Position=uProj*wp;}`;
+// textbook pieces in FS_CAN: h22 is the widely shared sin-fract hash, sdBox is the rounded-box distance from Inigo Quilez's 2D distance-function notes
 const FS_CAN = `#ifdef GL_FRAGMENT_PRECISION_HIGH
 precision highp float;
 #else
@@ -1156,7 +1160,7 @@ function rotM(ax, ay, az) { // Rz * Rx * Ry, row-major 3x3
 const CAN = {
   rx: new Spring(.1, 110, 12), rz: new Spring(0, 110, 12), face: new Spring(0, 90, 12),
   spin: new Spring(0, 34, 9.5), drop: { x: -1.15 }, introSpin: 0,
-  free: 0, lastScroll: -1, dir: 1, coast: 0, drag: false, cx: 0, cy: 0, h: 0, vis: false, started: false
+  free: 0, lastScroll: -1, dir: 1, coast: 0, fizz: 0, drag: false, cx: 0, cy: 0, h: 0, vis: false, started: false
 };
 function renderGL(t) {
   const gl = R.gl; if (!gl || R.lost) return;
@@ -1258,7 +1262,7 @@ function updateLabel(dt) {
   if (R.tabT) for (let k = 0; k < 3; k++) R.tab[k] = lerp(R.tab[k], R.tabT[k], damp(.06, dt));
 }
 
-/* can drag to spin */
+/* can: drag or flick it to spin; a hard flick also shakes up the fizz */
 let dragX = 0, dragT = 0, dragV = 0;
 hit.addEventListener('pointerdown', e => { CAN.drag = true; dragX = e.clientX; dragT = performance.now(); dragV = 0; hit.classList.add('drag'); hit.setPointerCapture(e.pointerId); });
 hit.addEventListener('pointermove', e => {
@@ -1266,7 +1270,7 @@ hit.addEventListener('pointermove', e => {
   const now = performance.now(), dx = e.clientX - dragX, dts = Math.max(1, now - dragT) / 1000;
   CAN.free += dx * .012; dragV = lerp(dragV, dx * .012 / dts, .5); dragX = e.clientX; dragT = now; CAN.dir = Math.sign(dx) || CAN.dir;
 });
-const endDrag = () => { if (!CAN.drag) return; CAN.drag = false; hit.classList.remove('drag'); CAN.coast = clamp(dragV, -30, 30); };
+const endDrag = () => { if (!CAN.drag) return; CAN.drag = false; hit.classList.remove('drag'); CAN.coast = clamp(dragV, -30, 30); dragV = 0; };
 hit.addEventListener('pointerup', endDrag); hit.addEventListener('pointercancel', endDrag); hit.addEventListener('lostpointercapture', endDrag);
 hit.addEventListener('pointerenter', () => { CAN.hover = true; }); hit.addEventListener('pointerleave', () => { CAN.hover = false; });
 
@@ -1524,6 +1528,7 @@ const ITALY = [
 const PJ = ([lo, la]) => [(lo - 6.3) * .743, 47.35 - la]; // projected: x 0..9.2, y 0..10.8
 const PW = 9.25, PH = 10.8;
 const polys = ITALY.map(p => p.map(PJ));
+// even-odd ray-crossing point-in-polygon test (the classic PNPOLY method, W. R. Franklin)
 const inPoly = (x, y, P) => { let c = false; for (let i = 0, j = P.length - 1; i < P.length; j = i++) { const [xi, yi] = P[i], [xj, yj] = P[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
 const mapCv = $('.map canvas'), mctx = mapCv.getContext('2d');
 const MAP = { dots: [], w: 0, h: 0, sel: 0, selT: -1e5, mx: -1e4, my: -1e4, hovK: 0, hovOn: false, dpr: 1, dirty: true };
@@ -1664,10 +1669,13 @@ function frame(ts) {
   CAN.cy += (reduced ? 0 : (CAN.lift - .5) * -12) + CAN.drop.x * H;
   CAN.vis = CAN.cy + CAN.h * .6 > 0 && CAN.cy - CAN.h * .6 < H;
   CAN.shadowA = 1 - sstep(L.pinEnd, L.pinEnd + H * .4, sy);
-  // bubbles
-  R.bubT += dt * (reduced ? 0 : (1 + Math.min(6, Math.abs(vel) / 600)));
+  // bubbles: scrolling stirs them, and a hard flick of the can shakes the soda up for a few seconds
+  if (CAN.drag && performance.now() - dragT > 60) dragV *= Math.exp(-dt * 8); // holding still calms it down
+  const shake = clamp(Math.max(CAN.drag ? Math.abs(dragV) : 0, Math.abs(CAN.coast)) / 14, 0, 1);
+  CAN.fizz = Math.max(shake, CAN.fizz * Math.exp(-dt * .9));
+  R.bubT += dt * (reduced ? 0 : (1 + Math.min(6, Math.abs(vel) / 600) + CAN.fizz * 6));
   const inStage = sy > L.flavTop - H * .6 && sy < L.pinEnd + H * .5;
-  R.alpha = lerp(R.alpha, CAN.vis ? (inStage ? .95 : .5) : 0, damp(.06, dt));
+  R.alpha = lerp(R.alpha, CAN.vis ? (inStage ? .95 : .5 + CAN.fizz * .5) : 0, damp(.06, dt));
   for (let i = 0; i < 3; i++) R.bg[i] = lerp(R.bg[i], R.bgT[i], damp(.05, dt));
   R.bgT = sy > L.flavTop - H * .5 && sy < L.pinEnd + H * .5 ? BGH[stageIdx] : CREAMH;
   updateLabel(dt);

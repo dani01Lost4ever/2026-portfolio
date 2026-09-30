@@ -199,11 +199,13 @@ const $ = (s, r = document) => r.querySelector(s);
 const clamp = (x, a = 0, b = 1) => x < a ? a : x > b ? b : x;
 const lerp = (a, b, p) => a + (b - a) * p;
 const seg = (t, a, b) => clamp((t - a) / (b - a));
+// cubic ease-in-out, from Robert Penner's easing equations (BSD licence)
 const eio = p => p < .5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
 const smooth = p => p * p * (3 - 2 * p);
 const SPB = 0.5; // seconds per beat
 
-// Closed-form spring step response (0 before tau=0, settles at 1).
+// Closed-form spring step response (0 before tau=0, settles at 1): the textbook
+// damped harmonic oscillator, with resp = undamped period in seconds and damp = damping ratio.
 function stepResp(tau, resp, damp) {
   if (tau <= 0) return 0;
   const w = 2 * Math.PI / resp;
@@ -319,9 +321,12 @@ function symbols() {
   for (let i = 0; i < 26; i++) { const x = (i * 467) % 1200, y = 30 + (i * 211) % 300; stars += `<circle cx="${x}" cy="${y}" r="${(i % 3) * .5 + .8}" fill="#fff" fill-opacity="${(.35 + (i % 4) * .12).toFixed(2)}"/>`; }
   const mono = 'font-family="Geist Mono, monospace"';
   return `
+  <!-- Blur-and-threshold metaballs: shapes that touch melt into one edge. The SVG form of
+       this old trick was popularised by Lucas Bebber's "gooey" demo (Codrops, 2015); here a
+       steep alpha ramp does the thresholding and the sharp source is kept only inside it. -->
   <filter id="goo" x="-10%" y="-10%" width="120%" height="120%" color-interpolation-filters="sRGB">
     <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="b"/>
-    <feColorMatrix in="b" type="matrix" values="1 0 0 0 0  0 1 0 0 0  0 0 1 0 0  0 0 0 20 -8" result="g"/>
+    <feComponentTransfer in="b" result="g"><feFuncA type="linear" slope="22" intercept="-9"/></feComponentTransfer>
     <feComposite in="SourceGraphic" in2="g" operator="atop"/>
   </filter>
   <clipPath id="wipe" clipPathUnits="userSpaceOnUse"><rect id="wipeRect" x="-10" y="-10" width="0" height="420"/></clipPath>
@@ -442,9 +447,11 @@ function symbols() {
 /* ---------------- liquid glass ----------------
    Each glass element holds its own clone of the scene behind it (a <use>
    of the same symbol, aligned in screen space) and runs it through three
-   feDisplacementMaps at slightly different scales, one per channel. The
-   maps are distance fields drawn on a canvas: analytic for rounded rects,
-   an exact EDT for glyphs. backdrop-filter:url() is not used on purpose. */
+   feDisplacementMaps at slightly different scales, one per channel, and adds
+   the three channels back together (a plain dispersion effect: red bends a
+   little more than blue). The maps are distance fields drawn on a canvas:
+   analytic for rounded rects, an exact EDT for glyphs. backdrop-filter:url()
+   is not used on purpose. */
 const LD = (() => { const x = -.55, y = -.83, l = Math.hypot(x, y); return [x / l, y / l]; })();
 function px(M, H, i, d, nx, ny, B, ex, ey) {
   const e = d < B ? 1 - Math.max(d, 0) / B : 0, m = e * e;
@@ -481,6 +488,8 @@ function rrMaps(w, h, r, bevel, lens = 0) {
   if (mapCache.size > 400) mapCache.clear();
   mapCache.set(key, m); return m;
 }
+// Exact squared Euclidean distance transform, one axis at a time: the lower-envelope-of-parabolas
+// algorithm of Felzenszwalb & Huttenlocher, "Distance Transforms of Sampled Functions" (2004/2012).
 function dt1(f, n, d, v, z) {
   let k = 0; v[0] = 0; z[0] = -1e20; z[1] = 1e20;
   for (let q = 1; q < n; q++) {
@@ -536,11 +545,11 @@ class Glass {
           <feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="G" result="d1"/>
           <feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="G" result="d2"/>
           <feDisplacementMap in="SourceGraphic" in2="map" xChannelSelector="R" yChannelSelector="G" result="d3"/>
-          <feColorMatrix in="d1" type="matrix" values="1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0" result="c1"/>
-          <feColorMatrix in="d2" type="matrix" values="0 0 0 0 0 0 1 0 0 0 0 0 0 0 0 0 0 0 1 0" result="c2"/>
-          <feColorMatrix in="d3" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 1 0 0 0 0 0 1 0" result="c3"/>
-          <feBlend in="c1" in2="c2" mode="screen" result="c12"/>
-          <feBlend in="c12" in2="c3" mode="screen" result="rgb"/>
+          <feComponentTransfer in="d1" result="c1"><feFuncG type="linear" slope="0"/><feFuncB type="linear" slope="0"/></feComponentTransfer>
+          <feComponentTransfer in="d2" result="c2"><feFuncR type="linear" slope="0"/><feFuncB type="linear" slope="0"/></feComponentTransfer>
+          <feComponentTransfer in="d3" result="c3"><feFuncR type="linear" slope="0"/><feFuncG type="linear" slope="0"/></feComponentTransfer>
+          <feComposite in="c1" in2="c2" operator="arithmetic" k2="1" k3="1" result="c12"/>
+          <feComposite in="c12" in2="c3" operator="arithmetic" k2="1" k3="1" result="rgb"/>
           <feColorMatrix in="rgb" type="saturate" values="${o.sat ?? 1.3}"/>
         </filter>
         ${o.glyph ? `<mask id="gm${id}" maskUnits="userSpaceOnUse" style="mask-type:alpha"><image class="gmask" preserveAspectRatio="none"/></mask>`
@@ -1244,7 +1253,7 @@ function sceneStage(t) {
   const vis = t >= 38.7 && t < 61.3;
   show(E.gooL, vis); show($('#winL'), vis && t >= 40.9); show($('#titleL'), vis && t >= 41.8); if (!vis) return;
   const R = lockRect(t), W = L.win, wu = L.wu;
-  // Dynamic Island: stretches like liquid, pinches off, flies over and becomes the window's blind
+  // the camera pill: stretches like liquid, pinches off, flies over and becomes the window's blind
   const iw = .3 * R.w, ih = .088 * R.w, il = R.x + R.w / 2 - iw / 2, icy = R.y + .042 * R.w + ih / 2;
   const ip = spr(t, 38.75, SP.pop), iwS = iw * (1 + (spr(t, 39.25, SP.liq) - spr(t, 39.75, SP.liq)));
   show(E.island, ip > .01);
@@ -1669,7 +1678,8 @@ window.oneTake = {
 };
 
 let rz = 0;
-addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { layout(); goal = tT; writeScroll(); seek(tT); }, 120); });
+// (a resize can land before the fonts have loaded and build() has run: nothing to lay out yet)
+addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (!E.letters) return; layout(); goal = tT; writeScroll(); seek(tT); }, 120); });
 Promise.all([
   document.fonts.load('800 100px Archivo'), document.fonts.load('expanded 800 100px Archivo'),
   document.fonts.load('500 20px Geist'), document.fonts.load('600 20px Geist'), document.fonts.load('500 20px "Geist Mono"'), document.fonts.load('500 12px "Chivo Mono"'),
