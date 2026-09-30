@@ -7,7 +7,7 @@
       "year": "2026",
       "kind": "Portfolio concept",
       "status": "Became this site",
-      "description": "A keynote film scrubbed by scroll, with no cuts: the wordmark squeezes into its period, an iris opens onto the work grid, liquid glass relights a case study, a lock screen becomes a phone and a Mac, and the contact card hangs on a wall before the take loops.",
+      "description": "A keynote film scrubbed by scroll, with no cuts: the wordmark squeezes into its period, an iris opens onto the work grid, refractive glass relights a case study, a lock screen becomes a phone and a Mac, and the contact card hangs on a wall before the take loops.",
       "stack": ["DOM", "SVG filters", "Closed-form springs", "No libraries"],
       "url": "/designs/take.html",
       "image": "/prototype-shots/one-take.webp",
@@ -18,7 +18,7 @@
       "title": "Abbrivio",
       "year": "2026",
       "kind": "Portfolio concept",
-      "description": "Ten shader-painted covers ride a WebGL gallery you drag and fling like boats on the lagoon: a bow wave runs back along each one before it rocks to rest, titles rise out of a waterline, and each case study ends at a vaporetto stop where the next cover docks from the right.",
+      "description": "Ten shader-painted covers ride a WebGL strip that bends like a canal. Drag and fling it: a bow wave runs back along each cover before it rocks to rest, and the titles follow with their letters strung out behind the first and coasting in late. Each case study ends at a vaporetto stop where the next cover docks from the right.",
       "stack": ["WebGL", "GLSL", "Inertia scroller", "No libraries"],
       "url": "/designs/abbrivio.html",
       "image": "/prototype-shots/abbrivio.webp"
@@ -38,27 +38,27 @@
       "title": "Lungatavola",
       "year": "2026",
       "kind": "Agency site",
-      "description": "The cursor leaves a trail of project cards behind a line-masked headline. The work list floats a tilting preview, services flip past on a split-flap departures board as you scroll, client names can be thrown, and opening a project wipes into a case study in its own colours.",
+      "description": "A Turin studio site that opens by setting its own table: nine chairs are pulled up to a long bar, then the table shrinks into the logo. The cursor leaves a trail of project cards, the work list floats a tilting preview, services flip past on a split-flap departures board as you scroll, and each case study arrives under a tablecloth thrown over the page and whipped off again.",
       "stack": ["Canvas 2D", "Split-flap board", "Magnetic cursor", "No libraries"],
       "url": "/designs/lungatavola.html",
       "image": "/prototype-shots/lungatavola.webp"
     },
     {
-      "slug": "casa-ocra",
-      "title": "Casa Ocra",
+      "slug": "tremolio",
+      "title": "Tremolio",
       "year": "2026",
       "kind": "Studio project page",
-      "description": "A Venetian study opens from a thin slit behind the title, then the page walks through it: images wipe in, scrolling runs one day as the canal's reflection ripples across the ceiling until a pendant takes over at night, materials slide past on a pinned wall, and the floor plan draws itself.",
+      "description": "A Venetian study, drawn in perspective in lime and lagoon green, opens from a thin slit behind the title. Scrolling runs one day as the canal throws its trembling light onto the ceiling between larch beams, until a linen pendant takes over at night; materials slide past on a pinned wall and the floor plan draws itself.",
       "stack": ["SVG", "Sticky scenes", "Custom smooth scroll", "No libraries"],
-      "url": "/designs/casa-ocra.html",
-      "image": "/prototype-shots/casa-ocra.webp"
+      "url": "/designs/tremolio.html",
+      "image": "/prototype-shots/tremolio.webp"
     },
     {
       "slug": "zampillo",
       "title": "Zampillo",
       "year": "2026",
       "kind": "Brand site",
-      "description": "A soda can drawn in WebGL, beaded with condensation, floats between the words of the headline, tilts toward your pointer and spins with scroll speed. Each flavour bursts a new colour out of the can and pours a new label up its side, then a crate fills with springy lids and a dot-matrix Italy lights up the stockists.",
+      "description": "A soda can drawn in WebGL, beaded with condensation, floats between the words of the headline, tilts toward your pointer and spins with scroll speed; flick it and the soda fizzes up. Each flavour bursts a new colour out of the can and pours a new label up its side, then a crate fills with springy lids and a dot-matrix Italy lights up the stockists.",
       "stack": ["WebGL", "Canvas 2D", "Custom smooth scroll", "No libraries"],
       "url": "/designs/zampillo.html",
       "image": "/prototype-shots/zampillo.webp"
