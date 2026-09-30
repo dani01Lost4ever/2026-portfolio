@@ -152,6 +152,32 @@ export interface NowData {
   items: NowItem[]
 }
 
+// ─── Prototypes ───────────────────────────────────────────────────────────────
+
+export interface Prototype {
+  slug: string
+  title: string
+  year: string
+  kind: string      // "Portfolio concept", "Redesign", "Experiment"
+  description: string
+  stack: string[]
+  /** Where it lives: a path on this site (a file in designs/ is served at /designs/) or a full URL. */
+  url?: string
+  /** Screenshot for the card, 16:10 (e.g. "/prototype-shots/one-take.webp"). Falls back to the poster. */
+  image?: string
+  /** Poster drawn when there is no image. Defaults to "browser". */
+  shape?: ShapeId
+  /** A short badge on the card and the page, e.g. "Became this site". */
+  status?: string
+  /** Show it live on its page. Default true; false for sites that refuse to be framed. */
+  embed?: boolean
+}
+
+export interface PrototypesData {
+  intro: string
+  items: Prototype[]
+}
+
 // ─── Full content bundle (used by ContentContext) ─────────────────────────────
 
 export interface ContentBundle {
@@ -162,4 +188,5 @@ export interface ContentBundle {
   contact: ContactData
   experience: ExperienceData
   now: NowData
+  prototypes: PrototypesData
 }

@@ -1,15 +1,16 @@
 /**
- * CommandPalette — ⌘K / Ctrl+K quick jump: projects, film chapters, links.
+ * CommandPalette — ⌘K / Ctrl+K quick jump: projects, film chapters, prototypes, links.
  *
  * A modal dialog around cmdk's list. Section jumps glide the film to its
  * chapter (useSectionJump); the dialog locks page scroll while open,
  * traps Tab inside itself and returns focus to where it was on close.
  */
 
-import { useEffect, useMemo, useRef, type KeyboardEvent as ReactKeyboardEvent } from 'react'
+import { useEffect, useMemo, useRef, useState, type KeyboardEvent as ReactKeyboardEvent } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { Command } from 'cmdk'
-import { useContact, useProjects } from '../context/content-hooks'
+import { useContact, useProjects, usePrototypes } from '../context/content-hooks'
+import { listPrototypes, prototypePath } from '../lib/prototypes'
 import { useSectionJump } from './useSectionJump'
 
 interface Props {
@@ -26,6 +27,20 @@ const SECTIONS = [
   { id: 'about', label: 'About' },
   { id: 'contact', label: 'Contact' },
 ] as const
+
+interface Entry {
+  key: string
+  value: string
+  keywords?: string[]
+  title: string
+  sub?: string
+  run: () => void
+}
+
+interface Group {
+  heading: string
+  items: Entry[]
+}
 
 /** Title matches first (word starts beat substrings), then keyword matches; no loose fuzzy hits. */
 function rank(value: string, search: string, keywords?: string[]): number {
@@ -49,9 +64,12 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
   const navigate = useNavigate()
   const allProjects = useProjects()
   const projects = useMemo(() => [...allProjects].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)), [allProjects])
+  const { items } = usePrototypes()
+  const prototypes = useMemo(() => listPrototypes(items), [items])
   const contact = useContact()
   const { jump } = useSectionJump()
   const panelRef = useRef<HTMLDivElement>(null)
+  const [search, setSearch] = useState('')
 
   // Lock page scroll and restore focus on close.
   useEffect(() => {
@@ -88,6 +106,50 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
 
   const socials = contact.socials.filter(s => s.href && s.href !== '#')
 
+  const groups: Group[] = [
+    {
+      heading: 'Projects',
+      items: projects.map(p => ({
+        key: p.slug, value: p.title, keywords: [p.subtitle], title: p.title, sub: p.subtitle,
+        run: () => navigate(`/project/${p.slug}`),
+      })),
+    },
+    {
+      heading: 'Chapters',
+      items: SECTIONS.map(s => ({ key: s.id, value: s.label, keywords: ['section', 'go to'], title: s.label, run: () => jump(s.id) })),
+    },
+    {
+      heading: 'Prototypes',
+      items: prototypes.length === 0 ? [] : [
+        {
+          key: 'all', value: 'All prototypes', keywords: ['gallery', 'prototype', 'designs', 'concepts'], title: 'All prototypes',
+          sub: prototypes.length === 1 ? '1 site' : `${prototypes.length} sites`,
+          run: () => navigate('/prototypes'),
+        },
+        ...prototypes.map(p => ({
+          key: p.slug, value: `${p.title} prototype`, keywords: [p.kind, ...p.stack], title: p.title, sub: p.kind || 'Prototype',
+          run: () => navigate(prototypePath(p)),
+        })),
+      ],
+    },
+    {
+      heading: 'Links',
+      items: [
+        {
+          key: 'email', value: 'Send an email', keywords: ['mail', 'contact', contact.email], title: 'Send an email', sub: contact.email,
+          run: () => window.location.assign(`mailto:${contact.email}`),
+        },
+        ...socials.map(s => ({ key: s.label, value: s.label, title: s.label, run: () => { window.open(s.href, '_blank', 'noopener,noreferrer') } })),
+      ],
+    },
+  ]
+  // cmdk sorts the items inside a group but leaves the groups in document order, so the group
+  // with the best match goes first (a prototype's title beats a project's subtitle); ties keep this order
+  const ordered = groups
+    .map((g, i) => ({ ...g, i, best: Math.max(0, ...g.items.map(it => rank(it.value, search, it.keywords))) }))
+    .filter(g => g.items.length > 0)
+    .sort((a, b) => b.best - a.best || a.i - b.i)
+
   return (
     <div className="cmd" data-take-prevent onKeyDown={onKeyDown}>
       <div className="cmd-backdrop" onClick={onClose} aria-hidden="true" />
@@ -97,57 +159,23 @@ function PaletteDialog({ onClose }: { onClose: () => void }) {
             <svg className="cmd-search" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true">
               <circle cx="7" cy="7" r="4.5" /><path d="m10.5 10.5 3.5 3.5" />
             </svg>
-            <Command.Input className="cmd-input" placeholder="Search projects or jump to a section" autoFocus />
+            <Command.Input className="cmd-input" placeholder="Search projects or jump to a section" autoFocus value={search} onValueChange={setSearch} />
             <button type="button" className="cmd-close" onClick={onClose}>Close</button>
           </div>
 
           <Command.List className="cmd-list">
             <Command.Empty className="cmd-empty">Nothing matches that.</Command.Empty>
 
-            <Command.Group heading="Projects" className="cmd-group">
-              {projects.map(p => (
-                <Command.Item
-                  key={p.slug}
-                  value={p.title}
-                  keywords={[p.subtitle]}
-                  className="cmd-item"
-                  onSelect={() => run(() => navigate(`/project/${p.slug}`))}
-                >
-                  <span className="cmd-item-title">{p.title}</span>
-                  <span className="cmd-item-sub">{p.subtitle}</span>
-                </Command.Item>
-              ))}
-            </Command.Group>
-
-            <Command.Group heading="Chapters" className="cmd-group">
-              {SECTIONS.map(s => (
-                <Command.Item key={s.id} value={s.label} keywords={['section', 'go to']} className="cmd-item" onSelect={() => run(() => jump(s.id))}>
-                  <span className="cmd-item-title">{s.label}</span>
-                </Command.Item>
-              ))}
-            </Command.Group>
-
-            <Command.Group heading="Links" className="cmd-group">
-              <Command.Item
-                value="Send an email"
-                keywords={['mail', 'contact', contact.email]}
-                className="cmd-item"
-                onSelect={() => run(() => { window.location.href = `mailto:${contact.email}` })}
-              >
-                <span className="cmd-item-title">Send an email</span>
-                <span className="cmd-item-sub">{contact.email}</span>
-              </Command.Item>
-              {socials.map(s => (
-                <Command.Item
-                  key={s.label}
-                  value={s.label}
-                  className="cmd-item"
-                  onSelect={() => run(() => { window.open(s.href, '_blank', 'noopener,noreferrer') })}
-                >
-                  <span className="cmd-item-title">{s.label}</span>
-                </Command.Item>
-              ))}
-            </Command.Group>
+            {ordered.map(g => (
+              <Command.Group key={g.heading} heading={g.heading} className="cmd-group">
+                {g.items.map(it => (
+                  <Command.Item key={it.key} value={it.value} keywords={it.keywords} className="cmd-item" onSelect={() => run(it.run)}>
+                    <span className="cmd-item-title">{it.title}</span>
+                    {it.sub && <span className="cmd-item-sub">{it.sub}</span>}
+                  </Command.Item>
+                ))}
+              </Command.Group>
+            ))}
           </Command.List>
 
           <p className="cmd-footer">

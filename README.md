@@ -19,7 +19,8 @@ scroll-scrubbed film drawn with plain DOM, SVG and SVG filters. PocketBase is th
 
 ```
 portfolio/
-├── designs/               # Static HTML prototypes (take.html is the reference for the built design)
+├── designs/               # Static HTML prototypes, served at /designs/ and shown in the /prototypes gallery
+│                          #   (take.html is the reference for the built design)
 ├── src/
 │   ├── take/              # The One Take home page
 │   │   ├── engine/            # The film engine: clock, timeline, scenes, layout, liquid glass
@@ -28,11 +29,12 @@ portfolio/
 │   │   ├── TakeDocument.tsx   # The same content as a plain document (hidden, or the reduced-motion page)
 │   │   └── posters.ts, Poster.tsx               # SVG poster per project shape
 │   ├── components/        # Shared UI (PageHeader, SiteFooter, CommandPalette, ContactForm, SectionLink)
-│   ├── pages/             # Route-level pages (Home, ProjectDetail, NotFound)
-│   ├── data/              # Static JSON seed data
+│   ├── pages/             # Route-level pages (Home, ProjectDetail, Prototypes, PrototypeViewer, NotFound)
+│   ├── data/              # Static JSON seed data (prototypes.json is the gallery)
 │   ├── lib/
 │   │   ├── pb.ts              # PocketBase client (runtime + build-time URL resolution)
-│   │   └── projectVisuals.ts  # Resolves each project's poster shape / architecture layers / caption
+│   │   ├── projectVisuals.ts  # Resolves each project's poster shape / architecture layers / caption
+│   │   └── prototypes.ts      # Helpers for the prototype gallery
 │   └── main.tsx
 ├── backend/
 │   ├── Dockerfile        # PocketBase Docker image
@@ -81,6 +83,17 @@ engine (`Take`) into an empty element and never touches its DOM.
 
 See `docs/frontend.md` for the modules, and `designs/take.html` for the prototype the
 implementation follows.
+
+## Prototype gallery
+
+`/prototypes` is a gallery of site prototypes, in the same language as the rest of the site: a
+card per prototype with its screenshot in a browser window, and a page per prototype
+(`/prototypes/:slug`) that runs it live in a frame at a real desktop, tablet or phone width,
+scaled to fit. It is linked from the film's top bar, the page header and the ⌘K palette.
+
+The list is `src/data/prototypes.json` (JSON only, like `now.json`). To add one, put its HTML in
+`designs/` (served at `/designs/`) or use a full URL, add a 16:10 screenshot to
+`public/prototype-shots/`, and add an entry; see `docs/content.md#add-a-prototype`.
 
 ## Local Development
 

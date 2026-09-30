@@ -1,0 +1,140 @@
+{
+  "intro": "Before a site gets built, I prototype it as one working page. These are the ones worth keeping: open any of them, try it at phone size, and scroll.",
+  "items": [
+    {
+      "slug": "one-take",
+      "title": "One Take",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "status": "Became this site",
+      "description": "A keynote film scrubbed by scroll, with no cuts: the wordmark squeezes into its period, an iris opens onto the work grid, refractive glass relights a case study, a lock screen becomes a phone and a Mac, and the contact card hangs on a wall before the take loops.",
+      "stack": ["DOM", "SVG filters", "Closed-form springs", "No libraries"],
+      "url": "/designs/take.html",
+      "image": "/prototype-shots/one-take.webp",
+      "shape": "loop"
+    },
+    {
+      "slug": "abbrivio",
+      "title": "Abbrivio",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "Ten shader-painted covers ride a WebGL strip that bends like a canal. Drag and fling it: a bow wave runs back along each cover before it rocks to rest, and the titles follow with their letters strung out behind the first and coasting in late. Each case study ends at a vaporetto stop where the next cover docks from the right.",
+      "stack": ["WebGL", "GLSL", "Inertia scroller", "No libraries"],
+      "url": "/designs/abbrivio.html",
+      "image": "/prototype-shots/abbrivio.webp"
+    },
+    {
+      "slug": "lumen",
+      "title": "Lumen",
+      "year": "2026",
+      "kind": "Photographer portfolio",
+      "description": "Seven landscapes drawn live by shaders (sea fog, a dune at dusk, a low sun on the Atlantic, rain on a night vaporetto window) replace each other through a liquid, noise-edged wipe while titles rise letter by letter and a timecode rolls. The index turns each series into a preview that trails the cursor.",
+      "stack": ["WebGL", "GLSL scenes", "Liquid wipe shader", "No libraries"],
+      "url": "/designs/lumen.html",
+      "image": "/prototype-shots/lumen.webp"
+    },
+    {
+      "slug": "lungatavola",
+      "title": "Lungatavola",
+      "year": "2026",
+      "kind": "Agency site",
+      "description": "A Turin studio site that opens by setting its own table: nine chairs are pulled up to a long bar, then the table shrinks into the logo. The cursor leaves a trail of project cards, the work list floats a tilting preview, services flip past on a split-flap departures board as you scroll, and each case study arrives under a tablecloth thrown over the page and whipped off again.",
+      "stack": ["Canvas 2D", "Split-flap board", "Magnetic cursor", "No libraries"],
+      "url": "/designs/lungatavola.html",
+      "image": "/prototype-shots/lungatavola.webp"
+    },
+    {
+      "slug": "tremolio",
+      "title": "Tremolio",
+      "year": "2026",
+      "kind": "Studio project page",
+      "description": "A Venetian study, drawn in perspective in lime and lagoon green, opens from a thin slit behind the title. Scrolling runs one day as the canal throws its trembling light onto the ceiling between larch beams, until a linen pendant takes over at night; materials slide past on a pinned wall and the floor plan draws itself.",
+      "stack": ["SVG", "Sticky scenes", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/tremolio.html",
+      "image": "/prototype-shots/tremolio.webp"
+    },
+    {
+      "slug": "zampillo",
+      "title": "Zampillo",
+      "year": "2026",
+      "kind": "Brand site",
+      "description": "A soda can drawn in WebGL, beaded with condensation, floats between the words of the headline, tilts toward your pointer and spins with scroll speed; flick it and the soda fizzes up. Each flavour bursts a new colour out of the can and pours a new label up its side, then a crate fills with springy lids and a dot-matrix Italy lights up the stockists.",
+      "stack": ["WebGL", "Canvas 2D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/zampillo.html",
+      "image": "/prototype-shots/zampillo.webp"
+    },
+    {
+      "slug": "pulse",
+      "title": "Pulse",
+      "year": "2026",
+      "kind": "Event site",
+      "description": "Contour lines behind a giant PULSE breathe until you press Play; then a synth loop made in the browser starts and every kick sends a shockwave through them. Headliners stretch under the cursor, a gooey blob slides the timetable between days and a ferry route draws itself on the map.",
+      "stack": ["WebGL", "Web Audio", "Canvas 2D", "No libraries"],
+      "url": "/designs/pulse.html",
+      "image": "/prototype-shots/pulse.webp"
+    },
+    {
+      "slug": "casotto",
+      "title": "Casotto",
+      "year": "2026",
+      "kind": "Studio site",
+      "description": "Service stickers tumble into the hero under hand-written physics you can grab and throw, the page melts into a new colour every section, case cards tilt in 3D, process cards stack as you scroll and the wordmark steps out of your cursor's way.",
+      "stack": ["Canvas 2D physics", "CSS 3D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/casotto.html",
+      "image": "/prototype-shots/casotto.webp"
+    },
+    {
+      "slug": "tre-remi",
+      "title": "Ai Tre Remi",
+      "year": "2026",
+      "kind": "Restaurant site",
+      "description": "A bàcaro in Cannaregio: the name rises out of a canal whose WebGL water mirrors the hand-drawn skyline and ripples under your cursor. The bar draws itself in ink, the cicchetti counter drags with inertia, and an open-now badge runs on Venice time.",
+      "stack": ["WebGL", "SVG line drawing", "Canvas 2D", "No libraries"],
+      "url": "/designs/tre-remi.html",
+      "image": "/prototype-shots/tre-remi.webp"
+    },
+    {
+      "slug": "tacca",
+      "title": "Tacca",
+      "year": "2026",
+      "kind": "Product landing",
+      "description": "A live revenue dashboard leans back under the headline, ticking its KPIs and streaming its chart, then lands flat as you scroll. A pinned demo wires data sources into a hub, grows a chart and shares a report while a ghost cursor clicks through.",
+      "stack": ["Canvas 2D", "CSS 3D", "Custom smooth scroll", "No libraries"],
+      "url": "/designs/tacca.html",
+      "image": "/prototype-shots/tacca.webp"
+    },
+    {
+      "slug": "field",
+      "title": "Field",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "Ten thousand points behind the page morph from a data grid into one shape per project, then skill clusters, a helix timeline and an @ for contact.",
+      "stack": ["three.js", "Point cloud", "GSAP ScrollTrigger"],
+      "url": "/designs/field.html",
+      "image": "/prototype-shots/field.webp",
+      "shape": "orbit"
+    },
+    {
+      "slug": "signal",
+      "title": "Signal",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "A single request travels one amber route down the page: it draws a glyph for each project, splits into four skill lanes, merges into a git-graph career timeline and ends at the contact box as a 200 OK.",
+      "stack": ["SVG", "GSAP ScrollTrigger"],
+      "url": "/designs/signal.html",
+      "image": "/prototype-shots/signal.webp",
+      "shape": "globe"
+    },
+    {
+      "slug": "the-stack",
+      "title": "The Stack",
+      "year": "2026",
+      "kind": "Portfolio concept",
+      "description": "A pinned 3D stack of four slabs (Interface, API, Queue, Database) reconfigures itself for every section: each project's real architecture, a skill grid, a career staircase, and finally a contact card, over colour-blocked backgrounds.",
+      "stack": ["CSS 3D", "GSAP ScrollTrigger"],
+      "url": "/designs/stack.html",
+      "image": "/prototype-shots/the-stack.webp",
+      "shape": "coins"
+    }
+  ]
+}

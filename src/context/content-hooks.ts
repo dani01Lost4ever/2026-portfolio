@@ -8,7 +8,8 @@
  * hooks are plain functions, not components.
  *
  * Public hook API is unchanged: `useContent`, `useSite`, `useHero`,
- * `useProjects`, `useAbout`, `useContact`, `useExperience`, `useNow`.
+ * `useProjects`, `useAbout`, `useContact`, `useExperience`, `useNow`,
+ * `usePrototypes`.
  */
 
 import { createContext, useContext } from 'react'
@@ -23,6 +24,7 @@ import aboutJson      from '../data/about.json'
 import contactJson    from '../data/contact.json'
 import experienceJson from '../data/experience.json'
 import nowJson        from '../data/now.json'
+import prototypesJson from '../data/prototypes.json'
 
 export const defaultContent: ContentBundle = {
   site:       siteJson       as ContentBundle['site'],
@@ -32,6 +34,7 @@ export const defaultContent: ContentBundle = {
   contact:    contactJson    as ContentBundle['contact'],
   experience: experienceJson as ContentBundle['experience'],
   now:        nowJson        as ContentBundle['now'],
+  prototypes: prototypesJson as ContentBundle['prototypes'],
 }
 
 export const ContentContext = createContext<ContentBundle>(defaultContent)
@@ -48,3 +51,4 @@ export const useAbout      = () => useContent().about
 export const useContact    = () => useContent().contact
 export const useExperience = () => useContent().experience
 export const useNow        = () => useContent().now
+export const usePrototypes = () => useContent().prototypes

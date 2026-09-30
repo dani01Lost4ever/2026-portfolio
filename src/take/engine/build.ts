@@ -4,8 +4,8 @@
  *
  * Accessibility: the moving layers are decorative (the page carries the same content in a
  * visually hidden document, see TakeDocument.tsx) and are aria-hidden. What stays reachable
- * is interactive: the chrome, the project tiles while the bento rests, the "all projects"
- * button, the case link and the contact card.
+ * is interactive: the chrome (with the link to the prototype gallery), the project tiles
+ * while the bento rests, the "all projects" button, the case link and the contact card.
  */
 
 import { mk, mline, type MLine } from './dom'
@@ -239,6 +239,7 @@ export function buildEls(k: Take) {
       <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.fullName)}</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b> <span>· ${esc(c.role.toLowerCase())}, ${esc(c.location)}</span></a>
       <nav id="tk-chap" aria-label="Chapters"><span class="lens" aria-hidden="true"></span></nav>
       <div class="top-r">
+        ${c.prototypes ? '<a id="tk-protos" href="/prototypes">Prototypes</a>' : ''}
         <button id="tk-projects" type="button">Projects</button>
         <button id="tk-play" type="button" aria-pressed="false"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg><span>Play the take</span></button>
       </div>
@@ -270,6 +271,7 @@ export function buildEls(k: Take) {
     ring, lp, lpC, cursor, cutIris,
     chrome, chap, navLens, tl, ph: chrome.querySelector('#tk-ph') as HTMLDivElement, tc: chrome.querySelector('#tk-tc') as HTMLSpanElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
+    protosLink: chrome.querySelector<HTMLAnchorElement>('#tk-protos'),
   }
 }
 
