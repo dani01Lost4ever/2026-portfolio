@@ -336,11 +336,15 @@ function sceneLock(k: Take, t: number) {
   // notifications from "now"; at rest they float a little, and the music plays on
   const A = amb(k)
   E.cards.forEach((cd, j) => {
-    const p = spr(t, 33.75 + 0.5 * j, SP.pop) * edit
-    show(cd.gl.el, p > 0.003)
-    if (p <= 0.003) return
+    const p = spr(t, 33.75 + 0.5 * j, SP.pop) * edit, sh = E.phone.cardShift(j)
+    show(cd.gl.el, p > 0.003 && !sh.gone)
+    if (p <= 0.003 || sh.gone) return
     const S = kr * p, ccy = (420 + 92 * j) * kk + 1.5 * kk * A * wave(k, 0.8, j * 1.9)
-    cd.gl.place(R.w / 2 - (cd.gl.w * S) / 2, ccy - (cd.gl.h * S) / 2, S); cd.gl.back(0, 0, 0, R.w, R.h)
+    const x = R.w / 2 - (cd.gl.w * S) / 2, y = ccy - (cd.gl.h * S) / 2
+    // the playable phone can swipe a notification away (phone.ts): it reads the card's rect and gives back its shift
+    E.phone.cardRects[j] = { x, y, w: cd.gl.w * S, h: cd.gl.h * S }
+    cd.gl.place(x + sh.dx, y, S); cd.gl.back(0, 0, 0, R.w, R.h)
+    cd.gl.el.style.opacity = sh.a < 0.999 ? sh.a.toFixed(3) : ''
   })
   // home bar stretches into the music player
   const wd = track(t, 134, [[35.25, 360, SP.liq]]), hd = track(t, 5, [[35.25, 88, SP.liq]]), bd = track(t, 12, [[35.25, 30, SP.liq]])

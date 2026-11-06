@@ -136,7 +136,7 @@ export function buildEls(k: Take) {
   const pBtn = (['prev', 'play', 'next'] as const).map(n => mk('div', 'a', player.gc, ICO[n]))
   const pBarA = mk('div', 'a p-bar-a', player.gc), pBarB = mk('div', 'a p-bar-b', player.gc)
   // the playable phone, over the lock screen (phone.ts)
-  const phone = new Phone(lock, c, () => k.clock(), path => k.opts.onNavigate(path))
+  const phone = new Phone(lock, c, { clock: () => k.clock(), onNavigate: path => k.opts.onNavigate(path), onContact: from => k.opts.onOpenContact(from) })
 
   // mac window
   const win = mk('div', 'abs', winL); win.id = 'win'

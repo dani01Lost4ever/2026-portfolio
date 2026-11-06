@@ -147,12 +147,17 @@ idle motion so the engine keeps drawing only those frames while still.
 ### The playable phone
 
 While the film rests on the phone beside the window (`PHONE_WINDOW`, beats 45.0–46.1), the lock
-screen it draws becomes a phone you can use (`phone.ts`, `Phone`): swipe up, scroll on it or tap
-the hint to unlock; a home screen with the projects as apps (poster icons, the four with a
-capture in the dock); every app opens: the four in the dock on a scrollable screenshot of the
-real app at phone size (`public/phone/<slug>.jpg`, 390 css px wide at 2×, the first 2600 px of
-the page), the others on a card of the project (poster, name, results, description, tags, and a
-button to the case study page through `onNavigate`). The home bar closes an app or locks the phone; a swipe up from the bottom edge or
+screen it draws becomes a phone you can use (`phone.ts`, `Phone`): the notifications can be
+swiped away (`sceneLock` writes each card's rect to `phone.cardRects` and reads back
+`cardShift(j)`); swipe up, scroll on it or tap the hint to unlock. The home has two pages, swiped,
+dragged or turned with the dots: the apps (the projects as poster icons, plus Mail, which opens
+the contact sheet, and GitHub), then the widgets (Now, the track, where I am); the four projects
+with a capture sit in the dock. A long press on an app picks it up: the apps jiggle and glide to
+make room while it is dragged, the order is kept in `localStorage` (`take-phone-order`), and a tap
+on the background or Escape puts them down. Every app opens: the four in the dock on a scrollable
+screenshot of the real app at phone size (`public/phone/<slug>.jpg`, 390 css px wide at 2×, the
+first 2600 px of the page), the others on a card of the project (poster, name, results,
+description, tags, and a button to the case study page through `onNavigate`). The home bar closes an app or locks the phone; a swipe up from the bottom edge or
 Escape closes an app too. The played take stops there instead
 of holding (Play reads "Continue the take"), and any scroll of the film locks the phone again and
 goes on. The phone lives inside the film's `#lock`, so it has the film's rect, bezel and radius;

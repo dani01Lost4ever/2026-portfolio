@@ -88,15 +88,48 @@
 .take .ph-wp { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.72) saturate(1.1); }
 .take .ph-status { position: absolute; left: calc(26px * var(--u)); right: calc(26px * var(--u)); top: calc(14px * var(--u)); display: flex; justify-content: space-between; font: 600 calc(15px * var(--u))/1 var(--ui); letter-spacing: .01em; }
 .take .ph-sig { font-size: calc(9px * var(--u)); letter-spacing: .15em; align-self: center; }
-.take .ph-grid { position: absolute; left: calc(26px * var(--u)); right: calc(26px * var(--u)); top: calc(96px * var(--u)); display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(26px * var(--u)) calc(16px * var(--u)); }
+/* two home pages side by side (the apps, then the widgets), swiped or dragged; the apps of the
+   first page sit on cells the engine computes (Phone.layoutApps), so they can glide to make
+   room for the one being dragged */
+.take .ph-home { touch-action: none; }
+.take .ph-pages { position: absolute; left: 0; top: calc(96px * var(--u)); bottom: calc(150px * var(--u)); width: 200%; display: flex; will-change: transform; }
+.take .ph-page { position: relative; width: 50%; height: 100%; }
+.take .ph-page1 .ph-app-ic { position: absolute; left: 0; top: 0; transition: transform .28s cubic-bezier(.2, .8, .2, 1); }
+.take .ph-page1 .ph-app-ic.drag { transition: none; z-index: 2; }
+.take .ph-page1 .ph-app-ic.drag .ph-ic { box-shadow: 0 16px 32px -10px rgba(0, 0, 0, .6); }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:not(.drag) .ph-ic { animation: ph-jiggle .32s ease-in-out infinite alternate; }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:nth-child(2n) .ph-ic { animation-delay: -.16s; }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:nth-child(3n) .ph-ic { animation-duration: .36s; }
+@keyframes ph-jiggle { from { transform: rotate(-2.2deg); } to { transform: rotate(2.2deg); } }
+.take .ph-dots { position: absolute; left: 0; right: 0; bottom: calc(138px * var(--u)); display: flex; justify-content: center; gap: calc(8px * var(--u)); }
+.take .ph-dots span { width: calc(7px * var(--u)); height: calc(7px * var(--u)); border-radius: 50%; background: rgba(255, 255, 255, .4); cursor: pointer; transition: background .2s; }
+.take .ph-dots span.on { background: #fff; }
 .take .ph-dock { position: absolute; left: calc(22px * var(--u)); right: calc(22px * var(--u)); bottom: calc(34px * var(--u)); height: calc(96px * var(--u)); border-radius: calc(32px * var(--u)); background: rgba(255, 255, 255, .18); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; }
-.take .ph-app-ic { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--u)); -webkit-tap-highlight-color: transparent; }
+.take .ph-app-ic { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--u)); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
 .take .ph-app-ic:active .ph-ic { transform: scale(.92); }
-.take .ph-app-ic.nudge .ph-ic { animation: ph-nudge .4s; }
-@keyframes ph-nudge { 0%, 100% { transform: none; } 30% { transform: translateX(-3px) rotate(-3deg); } 70% { transform: translateX(3px) rotate(3deg); } }
 .take .ph-ic { display: block; width: calc(62px * var(--u)); height: calc(62px * var(--u)); border-radius: 23%; overflow: hidden; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .5); transition: transform .15s; }
 .take .ph-ic svg { width: 100%; height: 100%; }
+.take .ph-ic-mail { background: linear-gradient(#5AB0FF, #1E78E8); display: grid; place-items: center; }
+.take .ph-ic-mail .plane-svg { width: 52%; height: 52%; fill: #fff; transform: rotate(45deg) translate(-4%, 4%); }
+.take .ph-ic-gh { background: #0B0B0C; display: grid; place-items: center; }
+.take .ph-ic-gh b { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(22px * var(--u)); color: #fff; letter-spacing: -.02em; }
 .take .ph-lbl { font: 500 calc(11px * var(--u))/1.2 var(--ui); text-shadow: 0 1px 6px rgba(0, 0, 0, .5); max-width: calc(80px * var(--u)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* widgets: a glass tile each, 4×2 and 2×2, on the second page */
+.take .ph-page2 { padding: 0 calc(26px * var(--u)); display: grid; grid-template-columns: 1fr 1fr; gap: calc(16px * var(--u)); align-content: start; box-sizing: border-box; }
+.take .ph-w { border-radius: calc(22px * var(--u)); background: rgba(20, 16, 40, .55); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .25); padding: calc(14px * var(--u)); overflow: hidden; }
+.take .ph-w42 { grid-column: 1 / -1; }
+.take .ph-w22 { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.take .ph-w-t { font: 600 calc(11px * var(--u))/1.2 var(--ui); letter-spacing: .04em; text-transform: uppercase; opacity: .7; margin-bottom: calc(8px * var(--u)); }
+.take .ph-now { display: grid; grid-template-columns: auto 1fr; column-gap: calc(10px * var(--u)); align-items: center; padding: calc(5px * var(--u)) 0; }
+.take .ph-now-ic { grid-row: 1 / 3; width: calc(30px * var(--u)); height: calc(30px * var(--u)); border-radius: 26%; display: grid; place-items: center; font: 500 calc(8px * var(--u)) var(--mono); }
+.take .ph-now-k { font: 500 calc(9px * var(--u))/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; opacity: .65; }
+.take .ph-now-v { font: 500 calc(12.5px * var(--u))/1.25 var(--ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.take .ph-w-art { width: calc(44px * var(--u)); height: calc(44px * var(--u)); border-radius: 22%; background: linear-gradient(135deg, #FFC66B, #E0632F 60%, #7A2E4E); }
+.take .ph-w-song b { display: block; font: 600 calc(13px * var(--u))/1.2 var(--ui); }
+.take .ph-w-song span { font: 400 calc(11px * var(--u))/1.2 var(--ui); opacity: .7; }
+.take .ph-w-ctl { display: flex; gap: calc(10px * var(--u)); }
+.take .ph-w-ctl .ico { width: calc(18px * var(--u)); height: calc(18px * var(--u)); }
+.take .ph-w-big { font: 600 calc(15px * var(--u))/1.25 var(--ui); }
 .take .ph-homebar { all: unset; cursor: pointer; position: absolute; left: 50%; bottom: calc(8px * var(--u)); width: calc(134px * var(--u)); height: calc(5px * var(--u)); border-radius: 999px; background: #fff; transform: translateX(-50%); }
 .take .ph-homebar::before { content: ''; position: absolute; inset: calc(-14px * var(--u)) calc(-30px * var(--u)); }
 .take .ph-app { position: absolute; inset: 0; background: #fff; overflow: hidden; transform-origin: 0 0; will-change: transform; }
