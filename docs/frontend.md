@@ -41,7 +41,7 @@ section, except on `/` while the film runs (the film reads its own hash).
 | File | Notes |
 |------|-------|
 | `Take.ts` | The engine class: wheel/scroll/touch/keyboard input, smooth wheel, play with rest holds, loop, public API |
-| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `restHolds`, `CHAPTERS`, `BENTO_OPEN`, `CASE_BEAT` |
+| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `restHolds`, `CHAPTERS`, `chapterSpans`, `BENTO_OPEN`, `CASE_BEAT` |
 | `scenes.ts` | `seek(k, t)`: every style of the film as a function of the beat |
 | `build.ts` | Creates the film's DOM once from the content; marks decorative layers `aria-hidden` |
 | `layout.ts` | Every viewport-dependent size and position, computed on mount and on resize |
@@ -50,6 +50,7 @@ section, except on `/` while the film runs (the film reads its own hash).
 | `glassWordGL.ts` | The case study's glass title on one WebGL canvas: the letters' signed distance fields in one atlas, the poster rasterised once (fonts inlined) as the backdrop, the melt into the droplet as a smooth union. Used when WebGL is available and the title has at most 12 letters; the SVG glass letters are the fallback |
 | `iris.ts` | Six-blade iris aperture (SVG paths), also the shutter of a chapter cut |
 | `navGlass.ts` | The chapter nav's glass: `NavLens` (the spring-driven lens on the chapter) and `setRim` (rim light for a glass capsule) |
+| `phone.ts` | The playable phone over the lock screen: unlock, home with the projects as apps, app screens from `public/phone/*.jpg`; `PHONE_WINDOW` |
 | `math.ts` | `clamp`/`lerp`/easing, closed-form spring step response, `spr`, `track`, `SPB` |
 | `dom.ts` | The small set of per-frame DOM writes (boxes, masked text lines) |
 | `icons.ts` | Inline SVG glyphs used inside the glass and black shapes |
@@ -120,14 +121,65 @@ Time is in **beats**. The film is cut at 120 BPM (`SPB = 0.5` seconds per beat) 
 - **Keyboard**: arrows and Page Up/Down jump to the next or previous rest frame, Space plays the
   whole take at film speed, Home goes to the start and End to Contact. Keys are ignored in form
   fields and inside dialogs.
-- **Chrome**: chapter buttons, the timeline bar (click to seek), Play, and the brand (back to 0).
+- **Chrome**: chapter buttons, the timeline bar (a click on a segment goes to its chapter), Play,
+  and the brand (back to 0).
 
 `scenes.ts` keeps no state between frames: `seek(k, t)` runs every scene with the current beat and
 writes transforms, sizes and opacities. Motion comes from closed-form springs (`stepResp`, `spr`)
 that start at a given beat, and `track()` sums one spring per change so a value with many targets
 stays a function of t. Scrubbing backwards gives the same frames as playing forwards. The engine
-only calls `seek` when t changes, plus a few ambient stretches (the wall's moving shadows, the
-clock's minute).
+only calls `seek` when t changes, plus the stretches where something in the frame lives on real
+time: the wall's moving shadows, the clock's minute, and the idle motion below.
+
+### Idle motion
+
+A frame the film rests on (a play hold, or wherever the scroll stops) would be a still image and
+read as a hang, so once the film has been still for a moment a few things in it move on real
+time, a few pixels at most: the wordmark's period breathes, the opening pill breathes, the bento
+tiles float on their own phases, the case study's glass letters drift, the orb swells, the lock
+screen's notifications float and its music plays on (the progress bar runs on real time), the
+"now" ring on the experience page keeps pulsing at the film's tempo, the stack ring breathes, and
+the fake cursor hovers. `Take` keeps `idle` (seconds still on this frame, 0 while it moves or a
+sheet is open) and `now` (real seconds); `amb(k)` in `scenes.ts` ramps the amplitude in over the
+first second of stillness, so scrubbing stays exact, and `idleOn(t)` lists the beat ranges with
+idle motion so the engine keeps drawing only those frames while still.
+
+### The playable phone
+
+While the film rests on the phone beside the window (`PHONE_WINDOW`, beats 45.0–46.1), the lock
+screen it draws becomes a phone you can use (`phone.ts`, `Phone`). Once it has you (its hint is
+up, or it is unlocked) the stage dims around it: `#tk-spot` is a transparent box on the phone's
+rect whose huge box-shadow covers the rest of the stage, faded by `Take.drawSpot` from
+`Phone.focus()`, a real-time spring; the chrome turns light over it (`#chrome.dim`). The
+notifications can be
+swiped away (`sceneLock` writes each card's rect to `phone.cardRects` and reads back
+`cardShift(j)`); swipe up, scroll on it or tap the hint to unlock. The home has two pages, swiped,
+dragged or turned with the dots: the apps (the projects as poster icons, plus Mail, which opens
+the contact sheet, and GitHub), then the widgets (Now, the track, where I am); the four projects
+with a capture sit in the dock. A long press on an app picks it up: the apps jiggle and glide to
+make room while it is dragged, the order is kept in `localStorage` (`take-phone-order`), and a tap
+on the background or Escape puts them down. Every app opens (`SCREENS` in `phone.ts`): Lumen on
+the live game in an iframe (it plays for real; the frame is unloaded when the app closes), four
+on a scrollable screenshot of the real app at phone size (`public/phone/<slug>.jpg`, 390 css px
+wide at 2×, the first 2600 px of the page), the others on a card of the project (poster, name,
+results, description, tags, and a button to the case study page through `onNavigate`). The first
+four with a screen sit in the dock. The home bar closes an app or locks the phone; a swipe up from the bottom edge or
+Escape closes an app too. The played take stops there instead
+of holding (Play reads "Continue the take"), and any scroll of the film locks the phone again and
+goes on. The phone lives inside the film's `#lock`, so it has the film's rect, bezel and radius;
+its sizes are in `--pk`, the lock's scale, written by `sceneLock`; its springs run on real time
+and are stepped by `Take.frame`. It is marked `data-take-prevent`, so the wheel scrolls the app's
+screenshot, not the film. To add a capture: screenshot the app at 390×844, 2×, as
+`public/phone/<slug>.jpg` and add the slug to `SCREENS` in `phone.ts` (`{ shot: true }`, or
+`{ frame: url }` for an app that can be embedded live).
+
+### The Play invite
+
+A first visit that rests on the opening frame for a second gets a big Play under the wordmark
+(`#tk-invite`, placed at the wordmark's baseline plus a gap by `Take.placeInvite`): a black disc
+with "Play the take · About a minute · or just scroll". It plays the take on click, and any input
+(scroll, wheel, keys, a chapter jump) retires it for good, with the hint under the timeline
+(`#chrome.used`).
 
 Beat map (from the header of `scenes.ts`): 0–9 open (wordmark → pill → iris), 9–18 work (grid
 unfolds into a bento), 18–32 case study (glass title, toolbar, slider, orb), 32–38 now (lock
@@ -144,10 +196,15 @@ system's inertia (a wheel event under 40 px marks the next 600 ms as trackpad). 
 (touch, the scrollbar) is followed in `FINE_TAU` too. Ctrl + wheel is left to the browser's zoom.
 
 `RESTS` lists the finished, readable frames. The arrow keys and Page Up/Down glide rest to rest.
-Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.9 s
-to land plus the words that frame shows at 4 words a second, between 1.2 and 7 s, so the holds
-follow the CMS text. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in
-dev the engine is on `window.oneTake`).
+Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.6 s
+to land plus the words the eye reads on that frame (its title and headline, not the small print)
+at 6 words a second, between 1.2 and 4 s, so the holds follow the CMS text; with the default
+content the holds add up to about 30 s over a 36 s film. The played take stops on the phone
+beside the window (see "The playable phone") and on the wordmark at the end instead of going round again (scrolling past the end still wraps, since frame `T_END`
+is frame 0). While the take holds, the Play button
+fills from the left (`--hold`, written by `Take.drawHold`), so the still frame reads as a pause and
+not as a hang. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in dev the
+engine is on `window.oneTake`).
 
 ### Chapters and URL hashes
 
@@ -186,15 +243,23 @@ between two moves:
 The nav's lens and its highlighted label move to the target chapter on the click, not on arrival
 (`heading` in `Take.ts`).
 
-### The chapter nav
+### The chrome
 
-The chapter nav (`#tk-chap`) and the Play button are capsules of glass: `backdrop-filter`
-blur and saturation over the film, a translucent tint that turns dark over dark scenes, and the rim
-light of the film's glass as a background (`setRim`, from `rrMaps` in `glass.ts`). A lens of thicker
-glass (`NavLens` in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping
-0.78) carries it to the next one, and it stretches with its speed. Under
-`prefers-reduced-transparency` the capsules are solid. The page header's nav uses the same capsule
-in CSS, with its last item as the lens.
+The film's header is set like the header of the window inside the film: the wordmark (`daniel.`,
+Archivo) with the role next to it, chapter labels in Geist, and Play as the one black pill (paper
+over dark scenes). `PageHeader`, on every other page, uses the same brand and type.
+
+The chapter nav (`#tk-chap`) is a black pill like Play (paper over dark scenes and while the
+phone has the spotlight, `#chrome.dim`). A lighter lens (`NavLens` in `navGlass.ts`) marks the
+chapter: a real-time spring (response 0.42 s, damping 0.78) carries it to the next one, and it
+stretches with its speed. The page header's nav uses the same pill in CSS, with its last item lit.
+(`setRim` in `navGlass.ts` is kept for a capsule of glass, no longer used by the chrome.)
+
+Under the film the take is drawn as seven hairline segments, one per chapter and as long as its
+share of the take (`chapterSpans`); each fills with the part of its chapter seen (`hudAt` in
+`scenes.ts`, a `scaleX` per segment) and a click on one goes to that chapter. A one-line hint
+("Scroll, or press Space to play") sits under it until the first input of any kind
+(`#chrome.used`).
 
 ### The work grid
 
@@ -301,8 +366,8 @@ All functions catch errors and return the JSON fallback, so they **never throw**
 From the header comments in `src/index.css` and `src/take/take.css`, following
 `designs/take.html`:
 
-- Light paper page. Display type is Archivo 800 (expanded), text is Geist, small meta is Geist
-  Mono, chrome and kickers are Chivo Mono.
+- Light paper page. Display type is Archivo 800 (expanded), text and navigation are Geist, small
+  meta and kickers are Geist Mono (`--hud` and `--mono` are the same face).
 - Pills for buttons, big radii on cards.
 - No italics.
 - No hover motion.

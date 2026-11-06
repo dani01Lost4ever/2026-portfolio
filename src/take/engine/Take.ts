@@ -4,7 +4,9 @@
  * Scroll is the film's clock: 1 beat = BEAT_PX of page scroll, and the film stays wherever
  * the scroll leaves it. Wheel input moves a goal the film glides to: over a mouse wheel's
  * notches, closely behind a trackpad's stream. Touch and the scrollbar stay native. Space
- * plays the take at 120 BPM, holding on each rest frame to read it; arrows jump rest to rest.
+ * plays the take at 120 BPM, holding on each rest frame to read it, stops on the phone beside
+ * the window so it can be used (phone.ts), and stops on the wordmark at the end (scrolling past
+ * the end goes round to the start); arrows jump rest to rest.
  *
  * Jumping to a chapter plays the film there when the chapter is a few beats ahead; anything
  * further, or behind, is a cut: the film's own iris closes over the frame, the take jumps
@@ -15,9 +17,9 @@ import { buildEls, type Els } from './build'
 import type { TakeContent } from './content'
 import { computeLayout, type Lay } from './layout'
 import { setIris } from './iris'
-import { setRim } from './navGlass'
 import { clamp, eio, lerp, SPB, sprMs } from './math'
-import { hudAt, seek, tile0Screen } from './scenes'
+import { hudAt, idleOn, seek, tile0Screen } from './scenes'
+import { PHONE_WINDOW } from './phone'
 import { CASE_BEAT, chapterAt, CHAPTERS, restHolds, RESTS, T_END } from './timeline'
 import type { ChapterId } from '../TakeContext'
 
@@ -51,6 +53,10 @@ export class Take {
   L: Lay
   clickable: boolean | undefined = undefined
   chapter = -1
+  /** Real time in seconds, for the parts of a frame that live outside the film clock. */
+  now = 0
+  /** Seconds the film has been still on this frame (0 while it moves or a sheet is open): the scenes' idle motion grows from it. */
+  idle = 0
 
   private tT = 0
   private goal = 0
@@ -65,9 +71,13 @@ export class Take {
   private tau = WHEEL_TAU
   private fineUntil = 0
   private holds: number[]
+  private holdFrom = 0
   private holdUntil = 0
+  private holdDrawn = 0
+  private spotDrawn = 0
   private paused = false
   private last = performance.now()
+  private stillSince = performance.now()
   private ownY = -1
   private lastT = -1
   private raf = 0
@@ -95,7 +105,7 @@ export class Take {
     this.writeScroll(true)
     seek(this, this.tT)
     this.lastT = this.tT
-    this.E.navLens.relayout(); setRim(this.E.play, 7)
+    this.E.navLens.relayout(); this.placeInvite()
     this.rasterBackdrop()
     this.raf = requestAnimationFrame(this.frame)
   }
@@ -149,6 +159,7 @@ export class Take {
     this.off.forEach(f => f())
     this.off.length = 0
     this.E.wordGL?.destroy()
+    this.E.phone.destroy()
     this.E.wipeRect?.setAttribute('width', '0')
     this.E.wipeLine?.setAttribute('x', '-4')
     this.root.replaceChildren()
@@ -170,11 +181,50 @@ export class Take {
 
   private setPlaying(v: boolean) {
     this.playing = v; this.tween = null; this.snap = null; this.holdUntil = 0
+    this.used()
     const b = this.E.play
     b.setAttribute('aria-pressed', String(v))
-    ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : 'Play the take'
+    ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : this.tT > 0.5 ? 'Continue the take' : 'Play the take'
     b.querySelector('path')?.setAttribute('d', v ? 'M1 .5h3v9H1zM6 .5h3v9H6z' : 'M1 0.5v9l8-4.5z')
-    setRim(b, 7)
+  }
+
+  /** The Play button fills while the take holds on a rest, so the still frame reads as a pause. */
+  private drawHold(now: number) {
+    const q = this.playing && now < this.holdUntil ? (now - this.holdFrom) / (this.holdUntil - this.holdFrom) : 0
+    if (Math.abs(q - this.holdDrawn) < 0.004 && (q === 0) === (this.holdDrawn === 0)) return
+    this.holdDrawn = q
+    this.E.play.style.setProperty('--hold', q.toFixed(3))
+  }
+
+  private isUsed = false
+
+  /** The first input of any kind retires the hint under the timeline and the Play invite. */
+  private used() {
+    if (this.isUsed) return
+    this.isUsed = true
+    this.E.chrome.classList.add('used')
+  }
+
+  /** The big Play under the wordmark, for a first visit that has not scrolled yet: it comes once the opening frame has rested a moment. */
+  private drawInvite(t: number) {
+    const on = !this.isUsed && !this.paused && t < 0.3 && this.idle > 1.0
+    if (on !== this.E.chrome.classList.contains('invite')) this.E.chrome.classList.toggle('invite', on)
+  }
+
+  /** The stage dims around the phone while the phone has you (Phone.focus); the chrome turns light over it. */
+  private drawSpot(now: number) {
+    const f = this.E.phone.focus(now)
+    if (Math.abs(f - this.spotDrawn) < 0.002 && (f === 0) === (this.spotDrawn === 0)) return
+    this.spotDrawn = f
+    const s = this.E.spot
+    s.style.display = f > 0.001 ? '' : 'none'
+    s.style.opacity = f.toFixed(3)
+    this.E.chrome.classList.toggle('dim', f > 0.5)
+  }
+
+  private placeInvite() {
+    const L = this.L
+    this.E.invite.style.setProperty('--invite-y', (L.dotCy + L.dd / 2 + Math.max(36, 0.18 * L.wm.F)).toFixed(1) + 'px')
   }
 
   private stopAuto() {
@@ -188,6 +238,7 @@ export class Take {
 
   private goTo(b: number) {
     b = clamp(b, 0, T_END - 0.001)
+    this.used()
     const now = performance.now()
     if (this.cutting && this.cut) { this.cut.to = b; this.heading = chapterAt(b); return }
     this.stopAuto()
@@ -250,7 +301,9 @@ export class Take {
         if (now >= this.holdUntil) {
           const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
           if (i < 0) this.tT = this.goal = next
-          else { this.tT = this.goal = RESTS[i]; this.holdUntil = now + this.holds[i] * 1000 }
+          else if (RESTS[i] >= T_END) { this.tT = this.goal = 0; this.setPlaying(false) } // the take ends on the wordmark; it does not go round again
+          else if (RESTS[i] >= PHONE_WINDOW[0] && RESTS[i] < PHONE_WINDOW[1]) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
+          else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
       } else if (this.snap) {
         const rem = this.snap.to - this.tT, dir = Math.sign(rem)
@@ -268,11 +321,22 @@ export class Take {
       }
       if (this.src === 'virtual' || this.playing || this.tween || this.snap) this.writeScroll()
     }
-    const t = this.tT
+    const t = this.tT, moved = t !== this.lastT
+    if (moved) this.stillSince = now
+    this.now = now / 1000
+    this.idle = this.paused || moved ? 0 : (now - this.stillSince) / 1000
+    // a still frame is drawn again while something in it lives on real time: the wall's shadows,
+    // the clock's minute, and the idle motion of a frame the film has rested on (scenes.idleOn)
     const ambient = t >= 61.2 && t < 68.6
     const minute = t >= 32.4 && t < 61.3 && this.fmtTime.format(new Date()) !== this.clockStr
-    if (t !== this.lastT || ambient || minute) { seek(this, t); this.lastT = t }
+    const live = ambient || minute || (this.idle > 0.3 && idleOn(t))
+    if (moved || live) { seek(this, t); this.lastT = t }
     this.drawCut(now)
+    this.drawHold(now)
+    this.drawInvite(t)
+    this.E.phone.setAvailable(!this.paused && !this.cut && t >= PHONE_WINDOW[0] && t < PHONE_WINDOW[1], now)
+    this.E.phone.step(now, this.idle)
+    this.drawSpot(now)
     const want = this.heading >= 0 ? this.heading : this.chapter
     if (want >= 0 && want !== this.lensAt) {
       this.lensAt = want
@@ -297,7 +361,7 @@ export class Take {
       if (this.paused || e.ctrlKey || (e.target as Element | null)?.closest?.('[data-take-prevent]')) return
       e.preventDefault()
       if (this.cutting) return
-      this.stopAuto()
+      this.stopAuto(); this.used()
       const d = clamp(e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? this.L.vh : 1), -400, 400)
       this.goal = clamp(this.goal + d / this.L.BEAT_PX, 0, T_END + 1.4)
       // a trackpad streams small deltas that already carry the system's inertia, so the film
@@ -309,7 +373,7 @@ export class Take {
     }, { passive: false })
     this.on('scroll', () => {
       if (this.paused || this.cutting || Math.abs(window.scrollY - this.ownY) < 2) return
-      this.stopAuto()
+      this.stopAuto(); this.used()
       this.goal = window.scrollY / this.L.BEAT_PX; this.tau = FINE_TAU; this.src = 'native'
     }, { passive: true })
     this.on('touchstart', () => { if (!this.paused) this.stopAuto() }, { passive: true })
@@ -318,6 +382,7 @@ export class Take {
       if (this.paused || this.cutting || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
       if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.closest('[role="dialog"]'))) return
       const base = this.snap ? this.snap.to : this.tT
+      if (/^(Space|Arrow|Page|Home|End)/.test(e.code)) this.used()
       const onControl = el?.tagName === 'BUTTON' || el?.tagName === 'A' || el?.getAttribute('role') === 'button'
       if (e.code === 'Space' && !onControl) { e.preventDefault(); this.setPlaying(!this.playing) }
       else if (['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.code)) { e.preventDefault(); this.snapTo(this.restFrom(base, 1)) }
@@ -327,13 +392,18 @@ export class Take {
     })
     this.on('resize', () => {
       clearTimeout(this.resizeTimer)
-      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); setRim(this.E.play, 7); this.rasterBackdrop() }, 120)
+      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); this.placeInvite(); this.rasterBackdrop() }, 120)
     })
 
     // controls inside the film
     E.play.addEventListener('click', () => this.setPlaying(!this.playing))
+    E.invite.addEventListener('click', () => { if (!this.playing) this.setPlaying(true) })
     E.chap.forEach((b, i) => b.addEventListener('click', () => this.goTo(CHAPTERS[i].beat)))
-    E.tl.addEventListener('click', e => { const r = E.tl.getBoundingClientRect(); this.goTo(clamp((e.clientX - r.left) / r.width) * T_END) })
+    // a segment of the timeline bar is its chapter
+    E.tl.addEventListener('click', e => {
+      const i = E.segs.findIndex(s => s.contains(e.target as Node))
+      if (i >= 0) this.goTo(CHAPTERS[i].beat)
+    })
     E.projectsBtn.addEventListener('click', () => this.opts.onOpenProject(0, E.projectsBtn.getBoundingClientRect()))
     E.allBtn.addEventListener('click', () => this.opts.onOpenProject(0, E.allBtn.getBoundingClientRect()))
     E.tiles.forEach((o, i) => {

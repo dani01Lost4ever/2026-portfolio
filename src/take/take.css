@@ -77,6 +77,88 @@
 .take .p-bar-b { background: #fff; }
 .take .island { background: #000; }
 
+/* the playable phone, inside #lock (phone.ts); --pk is the lock's scale, set by sceneLock */
+.take .ph { position: absolute; inset: 0; z-index: 5; pointer-events: none; font-family: var(--ui); color: #fff; --u: var(--pk, 1); }
+.take .ph.on { pointer-events: auto; }
+.take .ph-hint { position: absolute; left: 0; right: 0; bottom: calc(150px * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(10px * var(--u)); font: 500 calc(13px * var(--u))/1.2 var(--ui); color: rgba(255, 255, 255, .85); text-shadow: 0 1px 8px rgba(0, 0, 0, .4); opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; cursor: pointer; }
+.take .ph-hint.show { opacity: 1; transform: none; }
+.take .ph-hint .ph-bar { width: calc(42px * var(--u)); height: calc(4px * var(--u)); border-radius: 999px; background: #fff; animation: ph-bar 1.6s ease-in-out infinite; }
+@keyframes ph-bar { 0%, 100% { transform: translateY(0); opacity: .7; } 50% { transform: translateY(calc(-6px * var(--u))); opacity: 1; } }
+.take .ph-home { position: absolute; inset: 0; background: #14122c; will-change: transform; }
+.take .ph-wp { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.72) saturate(1.1); }
+.take .ph-status { position: absolute; left: calc(26px * var(--u)); right: calc(26px * var(--u)); top: calc(14px * var(--u)); display: flex; justify-content: space-between; font: 600 calc(15px * var(--u))/1 var(--ui); letter-spacing: .01em; }
+.take .ph-sig { font-size: calc(9px * var(--u)); letter-spacing: .15em; align-self: center; }
+/* two home pages side by side (the apps, then the widgets), swiped or dragged; the apps of the
+   first page sit on cells the engine computes (Phone.layoutApps), so they can glide to make
+   room for the one being dragged */
+.take .ph-home { touch-action: none; }
+.take .ph-pages { position: absolute; left: 0; top: calc(96px * var(--u)); bottom: calc(150px * var(--u)); width: 200%; display: flex; will-change: transform; }
+.take .ph-page { position: relative; width: 50%; height: 100%; }
+.take .ph-page1 .ph-app-ic { position: absolute; left: 0; top: 0; transition: transform .28s cubic-bezier(.2, .8, .2, 1); }
+.take .ph-page1 .ph-app-ic.drag { transition: none; z-index: 2; }
+.take .ph-page1 .ph-app-ic.drag .ph-ic { box-shadow: 0 16px 32px -10px rgba(0, 0, 0, .6); }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:not(.drag) .ph-ic { animation: ph-jiggle .32s ease-in-out infinite alternate; }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:nth-child(2n) .ph-ic { animation-delay: -.16s; }
+.take .ph-home.jiggle .ph-page1 .ph-app-ic:nth-child(3n) .ph-ic { animation-duration: .36s; }
+@keyframes ph-jiggle { from { transform: rotate(-2.2deg); } to { transform: rotate(2.2deg); } }
+.take .ph-dots { position: absolute; left: 0; right: 0; bottom: calc(138px * var(--u)); display: flex; justify-content: center; gap: calc(8px * var(--u)); }
+.take .ph-dots span { width: calc(7px * var(--u)); height: calc(7px * var(--u)); border-radius: 50%; background: rgba(255, 255, 255, .4); cursor: pointer; transition: background .2s; }
+.take .ph-dots span.on { background: #fff; }
+.take .ph-dock { position: absolute; left: calc(22px * var(--u)); right: calc(22px * var(--u)); bottom: calc(34px * var(--u)); height: calc(96px * var(--u)); border-radius: calc(32px * var(--u)); background: rgba(255, 255, 255, .18); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; }
+.take .ph-app-ic { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--u)); -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+.take .ph-app-ic:active .ph-ic { transform: scale(.92); }
+.take .ph-ic { display: block; width: calc(62px * var(--u)); height: calc(62px * var(--u)); border-radius: 23%; overflow: hidden; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .5); transition: transform .15s; }
+.take .ph-ic svg { width: 100%; height: 100%; }
+.take .ph-ic-mail { background: linear-gradient(#5AB0FF, #1E78E8); display: grid; place-items: center; }
+.take .ph-ic-mail .plane-svg { width: 52%; height: 52%; fill: #fff; transform: rotate(45deg) translate(-4%, 4%); }
+.take .ph-ic-gh { background: #0B0B0C; display: grid; place-items: center; }
+.take .ph-ic-gh b { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(22px * var(--u)); color: #fff; letter-spacing: -.02em; }
+.take .ph-lbl { font: 500 calc(11px * var(--u))/1.2 var(--ui); text-shadow: 0 1px 6px rgba(0, 0, 0, .5); max-width: calc(80px * var(--u)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* widgets: a glass tile each, 4×2 and 2×2, on the second page */
+.take .ph-page2 { padding: 0 calc(26px * var(--u)); display: grid; grid-template-columns: 1fr 1fr; gap: calc(16px * var(--u)); align-content: start; box-sizing: border-box; }
+.take .ph-w { border-radius: calc(22px * var(--u)); background: rgba(20, 16, 40, .55); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .25); padding: calc(14px * var(--u)); overflow: hidden; }
+.take .ph-w42 { grid-column: 1 / -1; }
+.take .ph-w22 { aspect-ratio: 1; display: flex; flex-direction: column; justify-content: space-between; }
+.take .ph-w-t { font: 600 calc(11px * var(--u))/1.2 var(--ui); letter-spacing: .04em; text-transform: uppercase; opacity: .7; margin-bottom: calc(8px * var(--u)); }
+.take .ph-now { display: grid; grid-template-columns: auto 1fr; column-gap: calc(10px * var(--u)); align-items: center; padding: calc(5px * var(--u)) 0; }
+.take .ph-now-ic { grid-row: 1 / 3; width: calc(30px * var(--u)); height: calc(30px * var(--u)); border-radius: 26%; display: grid; place-items: center; font: 500 calc(8px * var(--u)) var(--mono); }
+.take .ph-now-k { font: 500 calc(9px * var(--u))/1.2 var(--mono); letter-spacing: .06em; text-transform: uppercase; opacity: .65; }
+.take .ph-now-v { font: 500 calc(12.5px * var(--u))/1.25 var(--ui); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.take .ph-w-art { width: calc(44px * var(--u)); height: calc(44px * var(--u)); border-radius: 22%; background: linear-gradient(135deg, #FFC66B, #E0632F 60%, #7A2E4E); }
+.take .ph-w-song b { display: block; font: 600 calc(13px * var(--u))/1.2 var(--ui); }
+.take .ph-w-song span { font: 400 calc(11px * var(--u))/1.2 var(--ui); opacity: .7; }
+.take .ph-w-ctl { display: flex; gap: calc(10px * var(--u)); }
+.take .ph-w-ctl .ico { width: calc(18px * var(--u)); height: calc(18px * var(--u)); }
+.take .ph-w-big { font: 600 calc(15px * var(--u))/1.25 var(--ui); }
+.take .ph-homebar { all: unset; cursor: pointer; position: absolute; left: 50%; bottom: calc(8px * var(--u)); width: calc(134px * var(--u)); height: calc(5px * var(--u)); border-radius: 999px; background: #fff; transform: translateX(-50%); }
+.take .ph-homebar::before { content: ''; position: absolute; inset: calc(-14px * var(--u)) calc(-30px * var(--u)); }
+.take .ph-app { position: absolute; inset: 0; background: #fff; overflow: hidden; transform-origin: 0 0; will-change: transform; }
+.take .ph-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.take .ph-scroll::-webkit-scrollbar { display: none; }
+.take .ph-scroll img { display: block; width: 100%; height: auto; }
+/* an app without a capture opens on the project's card */
+.take .ph-card { color: var(--ink); background: var(--card); min-height: 100%; }
+.take .ph-hero { width: 100%; aspect-ratio: 1; }
+.take .ph-hero svg { width: 100%; height: 100%; }
+.take .ph-body { padding: calc(22px * var(--u)) calc(22px * var(--u)) calc(60px * var(--u)); }
+.take .ph-k { font: 500 calc(10.5px * var(--u))/1.3 var(--mono); letter-spacing: .03em; color: var(--muted); }
+.take .ph-body h3 { margin: calc(8px * var(--u)) 0 0; font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(30px * var(--u)); line-height: 1.02; letter-spacing: -.01em; }
+.take .ph-sub { margin: calc(8px * var(--u)) 0 0; font: 500 calc(15px * var(--u))/1.35 var(--ui); }
+.take .ph-ress { display: flex; flex-wrap: wrap; gap: calc(14px * var(--u)) calc(22px * var(--u)); margin: calc(20px * var(--u)) 0 0; }
+.take .ph-res b { display: block; font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(24px * var(--u)); line-height: 1.05; }
+.take .ph-res span { font: 500 calc(11px * var(--u))/1.3 var(--ui); color: var(--muted); }
+.take .ph-desc { margin: calc(18px * var(--u)) 0 0; font: 400 calc(13.5px * var(--u))/1.55 var(--ui); color: var(--ink-2); }
+.take .ph-tags { display: flex; flex-wrap: wrap; gap: calc(6px * var(--u)); margin: calc(18px * var(--u)) 0 0; }
+.take .ph-tags span { font: 500 calc(10px * var(--u))/1 var(--mono); padding: calc(6px * var(--u)) calc(9px * var(--u)); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); }
+.take .ph-cta { all: unset; cursor: pointer; display: block; margin: calc(24px * var(--u)) 0 0; padding: calc(13px * var(--u)) calc(18px * var(--u)); border-radius: 999px; background: var(--ink); color: #F2EEE6; font: 600 calc(13px * var(--u))/1 var(--ui); text-align: center; }
+/* over an app the home bar is white on dark screens and dark on light ones, on a soft fade at the bottom edge */
+/* a live app stops above the home bar's strip, so its own buttons never sit under it */
+.take .ph-frame { position: absolute; left: 0; top: 0; width: 100%; height: calc(100% - 34px * var(--u)); border: 0; display: block; background: transparent; }
+/* the bottom strip takes the pointer (a frame would swallow the swipe home otherwise) */
+.take .ph-app .ph-edge { position: absolute; left: 0; right: 0; bottom: 0; height: calc(34px * var(--u)); background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .28)); }
+.take .ph-app.framed .ph-edge { background: none; }
+.take .ph-app .ph-homebar { background: #fff; mix-blend-mode: difference; }
+
 /* mac window */
 .take #win { background: var(--card); overflow: hidden; color: var(--ink); box-shadow: 0 50px 100px rgba(30, 24, 14, .22), 0 0 0 1px rgba(11, 11, 12, .08); }
 .take #blind { background: #0B0B0C; overflow: hidden; }
@@ -146,64 +228,74 @@
 .take #cursor { width: 26px; height: 26px; transform-origin: 5px 3px; }
 .take #ring { border-radius: 50%; border: 2px solid var(--ink); }
 
-/* chrome: the film's header and timeline */
-.take #chrome { position: absolute; inset: 0; pointer-events: none; color: var(--ink); font-family: var(--hud); }
-.take #chrome.dark, .take #chrome.shut { color: #F2EEE6; }
+/* chrome: the film's header and timeline, set like the header of the window inside the film
+   (wordmark, Geist labels, one black pill) */
+.take #chrome { position: absolute; inset: 0; pointer-events: none; color: var(--ink); font-family: var(--ui); }
+.take #chrome.dark, .take #chrome.shut, .take #chrome.dim { color: #F2EEE6; }
 /* the shutter a far chapter jump closes over the film (Take.drawCut) */
 .take #tk-cut { position: absolute; inset: 0; pointer-events: none; }
-.take #tk-top { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 16px var(--gutter); }
-.take .brand { pointer-events: auto; font: 500 11.5px/1.25 var(--hud); letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; text-decoration: none; color: inherit; }
-.take .brand b { font-weight: 600; }
-.take .brand span { opacity: .55; }
+/* the spotlight on the phone: a transparent box over it whose shadow dims the rest of the stage */
+.take #tk-spot { pointer-events: none; box-shadow: 0 0 0 200vmax rgba(11, 11, 12, .62); opacity: 0; }
+.take #tk-top { position: absolute; left: 0; right: 0; top: 0; display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px var(--gutter); }
+.take .brand { pointer-events: auto; display: inline-flex; align-items: baseline; gap: 12px; white-space: nowrap; text-decoration: none; color: inherit; }
+.take .brand b { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 18px; line-height: 1; letter-spacing: -.01em; }
+.take .brand span { font: 500 12.5px/1.2 var(--ui); opacity: .6; }
 .take .brand .b-logo { display: none; }
 @media (max-width: 520px) { .take .brand .b-full { display: none; } .take .brand .b-logo { display: inline; } }
-.take #tk-chap { position: relative; display: flex; gap: 2px; padding: 4px; border-radius: 999px; pointer-events: auto; }
-.take #tk-chap .lens {
-  position: absolute; left: 0; top: 4px; bottom: 4px; width: 0; border-radius: 999px; pointer-events: none;
-  background: rgba(255, 255, 255, .66) var(--rim, none) center / 100% 100% no-repeat;
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .95), 0 3px 10px -3px rgba(0, 0, 0, .22), 0 0 0 .5px rgba(0, 0, 0, .05);
-  transition: background-color .4s, box-shadow .4s;
-}
-.take #chrome.dark #tk-chap .lens, .take #chrome.shut #tk-chap .lens {
-  background-color: rgba(255, 255, 255, .17);
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .38), 0 3px 12px -3px rgba(0, 0, 0, .45);
-}
-.take #tk-chap button, .take #tk-projects { all: unset; cursor: pointer; position: relative; padding: 7px 12px; border-radius: 999px; font: 500 11px/1 var(--hud); letter-spacing: .06em; text-transform: uppercase; opacity: .55; transition: opacity .2s; }
+/* The chapter nav is a black pill like Play (paper over dark scenes); a lighter lens sits on the
+   chapter on screen and slides, stretching, to the next one (navGlass.ts). */
+.take #tk-chap { position: relative; display: flex; gap: 2px; padding: 4px; border-radius: 999px; pointer-events: auto; background: var(--ink); color: #F2EEE6; transition: background-color .4s, color .4s; }
+.take #tk-chap .lens { position: absolute; left: 0; top: 4px; bottom: 4px; width: 0; border-radius: 999px; pointer-events: none; background: rgba(255, 255, 255, .2); transition: background-color .4s; }
+.take #chrome.dark #tk-chap, .take #chrome.shut #tk-chap, .take #chrome.dim #tk-chap { background-color: #F2EEE6; color: var(--ink); }
+.take #chrome.dark #tk-chap .lens, .take #chrome.shut #tk-chap .lens, .take #chrome.dim #tk-chap .lens { background-color: rgba(0, 0, 0, .12); }
+.take #tk-chap button, .take #tk-projects { all: unset; cursor: pointer; position: relative; padding: 8px 13px; border-radius: 999px; font: 500 13px/1 var(--ui); letter-spacing: -.005em; opacity: .6; transition: opacity .2s; }
 .take #tk-chap button:hover, .take #tk-projects:hover { opacity: .9; }
-.take #tk-chap button.on { opacity: 1; }
-.take .top-r { display: flex; align-items: center; gap: 6px; pointer-events: auto; }
+.take #tk-chap button.on { opacity: 1; font-weight: 600; }
+.take .top-r { display: flex; align-items: center; gap: 8px; pointer-events: auto; }
 .take #tk-projects { opacity: .85; }
-.take #tk-play { all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; border-radius: 999px; font: 500 11px/1 var(--hud); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+/* Play is the one black pill, like "Contact" in the window. While the played take holds on a rest
+   frame it fills from the left (--hold, from Take.drawHold), so the still frame reads as a pause. */
+.take #tk-play {
+  all: unset; cursor: pointer; display: inline-flex; align-items: center; gap: 9px; padding: 10px 16px; border-radius: 999px;
+  font: 600 13px/1 var(--ui); letter-spacing: -.005em; white-space: nowrap; color: #F2EEE6;
+  background: linear-gradient(90deg, rgba(255, 255, 255, .22) calc(var(--hold, 0) * 100%), transparent 0) var(--ink);
+  transition: background-color .4s, color .4s;
+}
+.take #chrome.dark #tk-play, .take #chrome.shut #tk-play, .take #chrome.dim #tk-play {
+  color: var(--ink);
+  background: linear-gradient(90deg, rgba(0, 0, 0, .14) calc(var(--hold, 0) * 100%), transparent 0) #F2EEE6;
+}
 .take #tk-play:active, .take #tk-chap button:active { transform: scale(.97); }
-/* The chapter nav is a capsule of glass over the film: it blurs and saturates what passes under
-   it and carries the rim light of the film's glass (--rim, from rrMaps). A lens of thicker glass
-   sits on the chapter on screen and slides, stretching, to the next one (navGlass.ts). */
-.take #tk-chap, .take #tk-play {
-  background: rgba(255, 255, 255, .24) var(--rim, none) center / 100% 100% no-repeat;
-  -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .6), inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 28px -12px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .07);
-  transition: background-color .4s, box-shadow .4s;
-}
-.take #chrome.dark :is(#tk-chap, #tk-play), .take #chrome.shut :is(#tk-chap, #tk-play) {
-  background-color: rgba(30, 30, 32, .3);
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .24), inset 0 1px 0 rgba(255, 255, 255, .16), 0 10px 28px -12px rgba(0, 0, 0, .55);
-}
 .take #tk-play svg { width: 10px; height: 10px; fill: currentColor; }
 .take #chrome button:focus-visible, .take .brand:focus-visible { outline: 2px solid var(--hot); outline-offset: 2px; }
-.take #tk-bot { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 var(--gutter) 14px; }
-.take #tk-tl { position: relative; height: 16px; pointer-events: auto; cursor: pointer; }
-.take .tick { position: absolute; bottom: 0; width: 1px; height: 5px; background: currentColor; opacity: .3; }
-.take .tick.ch { height: 11px; opacity: .85; }
-.take #tk-ph { position: absolute; bottom: 0; left: 0; width: 2px; height: 16px; background: var(--hot); }
-.take #tk-meta { display: flex; justify-content: space-between; gap: 12px; font: 400 10.5px/1 var(--hud); letter-spacing: .05em; text-transform: uppercase; margin-top: 9px; opacity: .7; white-space: nowrap; }
-@media (prefers-reduced-transparency: reduce) {
-  .take #tk-chap, .take #tk-play { -webkit-backdrop-filter: none; backdrop-filter: none; background-color: var(--paper); }
-  .take #chrome.dark :is(#tk-chap, #tk-play), .take #chrome.shut :is(#tk-chap, #tk-play) { background-color: #1B1B1C; }
+/* The take as seven segments, one per chapter, each as long as its share of the take; a segment
+   fills with the part of its chapter seen (scenes.hudAt) and a click on one goes to that chapter. */
+.take #tk-bot { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 var(--gutter) 16px; }
+.take #tk-tl { display: flex; align-items: center; gap: 4px; height: 20px; pointer-events: auto; cursor: pointer; }
+.take .seg { position: relative; height: 2px; border-radius: 1px; background: color-mix(in srgb, currentColor 22%, transparent); overflow: hidden; }
+.take .seg i { position: absolute; inset: 0; background: currentColor; transform-origin: 0 50%; transform: scaleX(0); }
+.take #tk-hint { margin: 2px 0 0; text-align: center; font: 500 12px/1.2 var(--ui); opacity: .55; transition: opacity .5s; }
+.take #chrome.used #tk-hint, .take #chrome.invite #tk-hint { opacity: 0; }
+/* A first visit that rests on the opening frame gets a big Play under the wordmark (Take.drawInvite);
+   --invite-y is the wordmark's baseline plus a gap (Take.placeInvite). Any input retires it. */
+.take #tk-invite {
+  all: unset; cursor: pointer; position: absolute; left: 50%; top: var(--invite-y, 70%);
+  display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center;
+  transform: translate(-50%, 12px) scale(.92); opacity: 0; pointer-events: none;
+  transition: opacity .5s, transform .7s cubic-bezier(.2, .8, .2, 1);
 }
+.take #chrome.invite #tk-invite { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; }
+.take #tk-invite .disc { width: 84px; height: 84px; border-radius: 50%; background: var(--ink); display: grid; place-items: center; box-shadow: 0 18px 40px -14px rgba(0, 0, 0, .45); transition: transform .3s cubic-bezier(.2, .8, .2, 1); }
+.take #tk-invite:hover .disc { transform: scale(1.05); }
+.take #tk-invite:active .disc { transform: scale(.97); }
+.take #tk-invite .disc svg { width: 28px; height: 28px; fill: #F2EEE6; margin-left: 4px; }
+.take #tk-invite .lbl { font: 600 15px/1.2 var(--ui); letter-spacing: -.01em; }
+.take #tk-invite .sub { font: 500 12.5px/1.2 var(--ui); opacity: .55; margin-top: -8px; }
+.take #tk-invite:focus-visible .disc { outline: 2px solid var(--hot); outline-offset: 4px; }
 @media (max-width: 820px) {
   .take #tk-chap { display: none; }
   .take .brand span { display: none; }
-  .take #tk-meta .hint { display: none; }
+  .take #tk-hint .hint-keys { display: none; }
 }
 
 /* ==========================================================================

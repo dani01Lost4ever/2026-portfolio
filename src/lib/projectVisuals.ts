@@ -14,7 +14,7 @@ import type { CubeLayer, Project, ShapeId } from './types'
 
 /** Every poster shape in take/posters.ts; kept in step with the `ShapeId` union. */
 const SHAPE_IDS: readonly ShapeId[] = [
-  'bug', 'loop', 'orbit', 'candles', 'globe', 'clocks', 'coins', 'browser', 'tictactoe', 'battleship', 'generic',
+  'bug', 'lumen', 'loop', 'orbit', 'candles', 'globe', 'clocks', 'coins', 'browser', 'tictactoe', 'battleship', 'generic',
 ]
 
 export interface ProjectVisuals {
@@ -63,6 +63,16 @@ const REGISTRY: Record<string, RegistryEntry> = {
       { label: 'Storage', tech: 'MongoDB · Redis · MinIO' },
     ],
     caption: 'Every report lands in the reticle, already triaged.',
+  },
+  lumen: {
+    shape: 'lumen',
+    layers: [
+      { label: 'Bench', tech: 'React 19 · SVG · springs' },
+      { label: 'Optics', tech: '2D ray tracer, closed-form' },
+      { label: 'API', tech: 'Next.js 15 route handlers' },
+      { label: 'Data', tech: 'libsql · SQLite / Turso' },
+    ],
+    caption: 'Five scenes a day, the same light for everyone.',
   },
   'the-loop': {
     shape: 'loop',

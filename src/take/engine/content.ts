@@ -5,7 +5,7 @@
 
 import type { ContentBundle, Result, ShapeId } from '../../lib/types'
 import { visualsFor } from '../../lib/projectVisuals'
-import { cmsText, taglineLines } from '../../components/content'
+import { cmsText, taglineLines, wordmarkOf } from '../../components/content'
 import { posterFor } from '../posters'
 
 const FULL_NAME = 'Daniel Busetto'
@@ -170,7 +170,7 @@ export function takeContent(b: ContentBundle, date = new Date()): TakeContent {
   const lines = taglineLines(b.hero.taglines)
 
   return {
-    wordmark: (cmsText(b.hero.name) || 'daniel').toLowerCase().replace(/[^a-zà-ÿ]/g, '') || 'daniel',
+    wordmark: wordmarkOf(b.hero.name),
     fullName: FULL_NAME,
     role,
     tagline: lines.slice(0, 2).join(' ').replace(/[,.;:—–-]\s*$/, '') || role,

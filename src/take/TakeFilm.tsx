@@ -21,7 +21,7 @@ import { toFrom, type SheetFrom } from './useSheetMotion'
 
 type Sheet = { kind: 'project'; index: number; from: SheetFrom } | { kind: 'contact'; from: SheetFrom }
 
-const FONTS = ['800 100px Archivo', 'expanded 800 100px Archivo', 'condensed 800 100px Archivo', '500 20px Geist', '600 20px Geist', '500 12px "Geist Mono"', '500 12px "Chivo Mono"']
+const FONTS = ['800 100px Archivo', 'expanded 800 100px Archivo', 'condensed 800 100px Archivo', '500 20px Geist', '600 20px Geist', '500 12px "Geist Mono"']
 
 declare global {
   interface Window { oneTake?: Take }

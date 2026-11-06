@@ -2,7 +2,7 @@
 
 /** Which poster a project gets in the film and on its page (see take/posters.ts). */
 export type ShapeId =
-  | 'bug' | 'loop' | 'orbit' | 'candles' | 'globe' | 'clocks' | 'coins'
+  | 'bug' | 'lumen' | 'loop' | 'orbit' | 'candles' | 'globe' | 'clocks' | 'coins'
   | 'browser' | 'tictactoe' | 'battleship' | 'generic'
 
 /** One layer of a project's architecture, top to bottom. */

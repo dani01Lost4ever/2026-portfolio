@@ -14,8 +14,9 @@ import { GlassWordGL } from './glassWordGL'
 import { ICO } from './icons'
 import { makeIris, type Iris } from './iris'
 import { NavLens } from './navGlass'
+import { Phone } from './phone'
 import type { Take } from './Take'
-import { CHAPTERS, T_END } from './timeline'
+import { chapterSpans, CHAPTERS } from './timeline'
 
 export interface Tile {
   el: HTMLDivElement
@@ -134,6 +135,8 @@ export function buildEls(k: Take) {
   const pT = mline(player.gc, c.track?.title ?? '', 'cw'), pA = mline(player.gc, c.track?.artist ?? '', 'cw')
   const pBtn = (['prev', 'play', 'next'] as const).map(n => mk('div', 'a', player.gc, ICO[n]))
   const pBarA = mk('div', 'a p-bar-a', player.gc), pBarB = mk('div', 'a p-bar-b', player.gc)
+  // the playable phone, over the lock screen (phone.ts)
+  const phone = new Phone(lock, c, { clock: () => k.clock(), onNavigate: path => k.opts.onNavigate(path), onContact: from => k.opts.onOpenContact(from) })
 
   // mac window
   const win = mk('div', 'abs', winL); win.id = 'win'
@@ -229,14 +232,17 @@ export function buildEls(k: Take) {
   const cursor = mk('div', 'abs', curL, ICO.cursor); cursor.id = 'cursor'
 
   // the shutter a far chapter jump closes over the film, below the chrome
+  // the spotlight: a hole over the phone in a scrim across the stage, while the phone has you (phone.ts, Take.drawSpot)
+  const spot = hide(mk('div', 'abs', stage)); spot.id = 'tk-spot'; spot.style.display = 'none'
   const cutL = mk('div', 'abs', stage); cutL.id = 'tk-cut'
   const cutIris = makeIris(cutL); hide(cutIris.s); cutIris.s.style.display = 'none'
 
-  // chrome
+  // chrome: the same header as the window inside the film (wordmark, Geist, one black pill),
+  // and under it the take as seven chapter segments that fill as it plays
   const chrome = mk('div', null, stage); chrome.id = 'chrome'
   chrome.innerHTML = `
     <div id="tk-top">
-      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.fullName)}</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b> <span>· ${esc(c.role.toLowerCase())}, ${esc(c.location)}</span></a>
+      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.wordmark)}.</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b><span>${esc(c.role)}, ${esc(c.location)}</span></a>
       <nav id="tk-chap" aria-label="Chapters"><span class="lens" aria-hidden="true"></span></nav>
       <div class="top-r">
         <button id="tk-projects" type="button">Projects</button>
@@ -244,31 +250,30 @@ export function buildEls(k: Take) {
       </div>
     </div>
     <div id="tk-bot">
-      <div id="tk-tl" aria-hidden="true"><div id="tk-ph"></div></div>
-      <div id="tk-meta" aria-hidden="true"><span>One take · ${T_END} beats · 120 bpm</span><span id="tk-tc">beat 00.0</span><span class="hint">scroll · arrows jump · space plays</span></div>
-    </div>`
+      <div id="tk-tl" aria-hidden="true"></div>
+      <p id="tk-hint" aria-hidden="true">Scroll<span class="hint-keys">, or press Space to play</span></p>
+    </div>
+    <button id="tk-invite" type="button" tabindex="-1" aria-hidden="true"><span class="disc"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg></span><span class="lbl">Play the take</span><span class="sub">About a minute · or just scroll</span></button>`
   const chapNav = chrome.querySelector('#tk-chap') as HTMLElement
   const chap = CHAPTERS.map(ch => { const b = mk('button', null, chapNav); b.type = 'button'; b.textContent = ch.label; return b })
-  const navLens = new NavLens(chapNav, chapNav.querySelector('.lens') as HTMLElement, chap)
+  const navLens = new NavLens(chapNav.querySelector('.lens') as HTMLElement, chap)
   const tl = chrome.querySelector('#tk-tl') as HTMLDivElement
-  for (let b = 0; b <= Math.floor(T_END); b++) {
-    const tk = mk('div', 'tick' + (CHAPTERS.some(ch => Math.abs(ch.beat - b) < 0.5) ? ' ch' : ''), tl)
-    tk.style.left = (b / T_END) * 100 + '%'
-  }
+  const segs = chapterSpans().map(len => { const s = mk('div', 'seg', tl); s.style.flexGrow = String(len); mk('i', null, s); return s })
+  const segFills = segs.map(s => s.firstElementChild as HTMLElement)
 
   return {
     scroller, stage, wall, world, caseL, lockL, winL, gooL, titleL, frameL, ctaL, curL, wipeRect, wipeLine,
     wm, letters, tiles, workHead, workCount, allBtn,
     gw, word, wordGL, tb, tbLabel, tbIcons, trackA, trackB, knob, slRaw, slTri, orb, csub, cmeta, info, leadP, leadS, tagsL, caseLink, caseA, res,
-    bezel, sbtn, lock, date, digits, cards, player, pArt, pT, pA, pBtn, pBarA, pBarB,
+    bezel, sbtn, lock, date, digits, cards, player, pArt, pT, pA, pBtn, pBarA, pBarB, phone,
     win, hdrWm, nav, hdrLine, pExp, pAbout, expH, expS, years, axis, rows, nowDot, nowRing, abH, abB, abBs,
     prName, prRole, prStack, sw, swRing, prSkills, prEng, seg, segPill, segBase, segTop, segTopT,
     island, blind, roller, lights, tabPill, tabs, url, urlT,
     frame, fMold, fPaint, fMat, fImg,
     cta, ctaLb: ctaL2, ck1, ck2, rdBarA, rdBarB, route, plane,
     wshadow, wmat, wprint, wiris, wmold, placard, pl, plBtn, leaves, leafG,
-    ring, lp, lpC, cursor, cutIris,
-    chrome, chap, navLens, tl, ph: chrome.querySelector('#tk-ph') as HTMLDivElement, tc: chrome.querySelector('#tk-tc') as HTMLSpanElement,
+    ring, lp, lpC, cursor, cutIris, spot,
+    chrome, chap, navLens, tl, segs, segFills, invite: chrome.querySelector('#tk-invite') as HTMLButtonElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
   }
 }

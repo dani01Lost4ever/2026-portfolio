@@ -9,27 +9,119 @@
     "overview": "BugPilot is a self-hosted bug-reporting platform. A single <script> tag adds a feedback widget to any site that snapshots console errors, failing network requests, a 30-second rolling rrweb buffer, and lets reporters annotate / pin / blur on top of the page before submitting. A Claude-powered worker classifies severity, deduplicates against existing reports, writes clean titles and repro steps, and on demand proposes a root cause and fix. Built as a pnpm monorepo across six packages — API, widget, dashboard, browser extension, landing, license server — and packaged as a five-service Docker Compose stack that comes up in under five minutes.",
     "challenge": "End-user bug reports are almost universally useless: vague descriptions, no repro steps, no environment context. SaaS alternatives exist but route reports — often containing sensitive customer data — through someone else's infrastructure, and none of them speak the protocol that AI dev tools like Claude Code, Cursor, and Windsurf now use to read and write into developer tools. The goal was one self-hostable platform that solved both halves: capture rich context automatically at submit time, and expose every action through both REST and the Model Context Protocol so AI agents could triage, query, and close bugs on your behalf without your data ever leaving your servers.",
     "solution": "The widget is a dependency-free vanilla TS IIFE that posts to a BullMQ-backed Express API. A worker sends each report to Claude for classification, duplicate detection against the existing report set, and repro-step generation, then pushes the result to the React 19 + Tailwind v4 dashboard over SSE — no polling. Auto-creates issues in GitHub, Linear, and Jira above a per-project severity threshold. The MCP server at POST /api/v1/mcp exposes nine tools (five read, four write) with scoped API keys (bpk_live_…), so a Cursor or Claude Code session can resolve bugs end-to-end without leaving the editor. Hardened with multi-tenant orgs, SSO/OIDC, TOTP 2FA, a tamper-evident audit log, GDPR export/delete, and Prometheus /metrics.",
-    "tags": ["TypeScript", "React 19", "Express", "MongoDB", "Redis", "BullMQ", "MinIO", "Docker", "Claude AI", "MCP", "Tailwind v4"],
+    "tags": [
+      "TypeScript",
+      "React 19",
+      "Express",
+      "MongoDB",
+      "Redis",
+      "BullMQ",
+      "MinIO",
+      "Docker",
+      "Claude AI",
+      "MCP",
+      "Tailwind v4"
+    ],
     "gradient": "linear-gradient(135deg, #dc2626 0%, #7c3aed 100%)",
     "results": [
-      { "value": "9", "label": "MCP tools exposed" },
-      { "value": "< 5 min", "label": "Docker deploy" },
-      { "value": "6", "label": "Monorepo packages" }
+      {
+        "value": "9",
+        "label": "MCP tools exposed"
+      },
+      {
+        "value": "< 5 min",
+        "label": "Docker deploy"
+      },
+      {
+        "value": "6",
+        "label": "Monorepo packages"
+      }
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
     "link": "https://github.com/dani01Lost4ever/BugPilot",
     "shape": "bug",
     "layers": [
-      { "label": "Client", "tech": "Embed widget" },
-      { "label": "API", "tech": "Express" },
-      { "label": "Worker", "tech": "BullMQ + Claude" },
-      { "label": "Storage", "tech": "MongoDB · Redis · MinIO" }
+      {
+        "label": "Client",
+        "tech": "Embed widget"
+      },
+      {
+        "label": "API",
+        "tech": "Express"
+      },
+      {
+        "label": "Worker",
+        "tech": "BullMQ + Claude"
+      },
+      {
+        "label": "Storage",
+        "tech": "MongoDB · Redis · MinIO"
+      }
     ],
     "caption": "Every report lands in the reticle, already triaged."
   },
   {
     "id": "02",
+    "slug": "lumen",
+    "year": "2026",
+    "title": "Lumen",
+    "subtitle": "A daily light puzzle: bring the light to the sensor with mirrors and lenses",
+    "description": "A browser puzzle built on a 2D ray tracer: place and turn mirrors, lenses, prisms, filters and even a black hole on a continuous optical bench until enough light reaches the sensor. Five scenes a day, the same for everyone, plus endless, duels, a campaign, community levels and an Android app on Google Play. Next.js 15, React 19, TypeScript, libsql.",
+    "overview": "Lumen is a daily light puzzle for the browser and for Android. Each scene is an optical bench: a lamp, a sensor, opaque walls, and a tray of pieces you place and turn freely — mirrors, lenses, prisms, dichroics, filters, half mirrors, even a black hole that bends the beam. The sensor has to receive a threshold share of the light to clear a scene. Five scenes a day, the same for everyone, then endless, duels, a campaign in chapters, a level editor with shareable links, hints paid in photons, and optional accounts with Google or Apple sign-in. The Android app is the same pages exported statically into Capacitor.",
+    "challenge": "Real optics on a continuous bench, not a grid: reflection, thin lenses, curved mirrors, colour channels and a gravitational field all had to trace fast enough to animate at 60 fps while you drag a piece, and the score had to be exact and fair. Every scene is generated from a seed, so the generator has to prove a level has no shorter answer than intended, and no change to it may ever rewrite a daily that people already played. On top of that: a server that recomputes every submitted run from its placements rather than trusting a score, and a phone layout where the bench stands up for a thumb.",
+    "solution": "The physics lives in src/lib/optics with no React or DOM in it: ray tracing against line segments, one (source, channel) group at a time, with surfaces tested in priority order; the preview traces 40 rays, a locked-in score 512, so points never depend on the animation. The beam is drawn as fillable geometry whose brightness follows ray density. A seeded generator with a visibility-distance proof guarantees no shortcut, and new content enters only from a threshold date forward. Next.js route handlers keep runs, boards and levels in libsql (SQLite in development, Turso in production) and replay each run server-side. Interruptible springs in damping and response carry every motion; the same build is exported statically into a Capacitor Android app.",
+    "tags": [
+      "Next.js 15",
+      "React 19",
+      "TypeScript",
+      "Ray tracing",
+      "SVG",
+      "libsql · Turso",
+      "Capacitor",
+      "Android"
+    ],
+    "gradient": "linear-gradient(135deg, #0B0B0F 0%, #3B2A12 100%)",
+    "results": [
+      {
+        "value": "5",
+        "label": "scenes a day, the same for everyone"
+      },
+      {
+        "value": "512",
+        "label": "rays behind every locked-in score"
+      },
+      {
+        "value": "1.0.19",
+        "label": "on Google Play"
+      }
+    ],
+    "role": "Solo Developer",
+    "timeline": "Personal project",
+    "link": "https://lumen.techdani.cc/",
+    "shape": "lumen",
+    "layers": [
+      {
+        "label": "Bench",
+        "tech": "React 19 · SVG · springs"
+      },
+      {
+        "label": "Optics",
+        "tech": "2D ray tracer, closed-form"
+      },
+      {
+        "label": "API",
+        "tech": "Next.js 15 route handlers"
+      },
+      {
+        "label": "Data",
+        "tech": "libsql · SQLite / Turso"
+      }
+    ],
+    "caption": "Five scenes a day, the same light for everyone."
+  },
+  {
+    "id": "03",
     "slug": "the-loop",
     "year": "2026",
     "title": "The Loop",
@@ -38,27 +130,59 @@
     "overview": "The Loop is a personal publication tracking the AI industry from an engineer's perspective: short dispatches on model releases, security incidents, funding moves, and acquisitions, alongside longer technical guides — scheduling Claude tasks, writing effective prompt files — and Labs experiments. Built on Next.js 15 with Payload CMS v3 as the editorial layer, backed by Postgres, with Meilisearch indexing the article corpus. Comments, analytics, and the weekly email dispatch are handled by sibling Docker services — Remark42, Umami, Listmonk — composed alongside the app and running on a European home server.",
     "challenge": "AI news cycles move faster than any one publication can cover, and most outlets pad short signals into long articles. The challenge was building a publication that respected the reader's time — sharp dispatches matched to the actual signal-to-noise ratio of the news — while still hosting longer-form technical guides and experiments. Equally hard was the operational side: stand up a CMS, search, comments, analytics, and a newsletter stack that's entirely self-hosted, survives a server swap, and stays low-overhead enough that one person can run it without burning out on ops.",
     "solution": "Next.js 15 (App Router) drives the three content streams — News, Guides, Labs — sharing primitives like numbered article listings, searchable archive, and per-article comments. Payload CMS v3 provides the editorial layer at /admin, backed by Postgres. Meilisearch indexes the published corpus and is re-fed via a pnpm meili:reindex script. Remark42 handles comments, Umami captures self-hosted analytics, and Listmonk runs the weekly email dispatch — each as a sibling Docker service in the same compose file. Editorial typography — Bricolage Grotesque for headings, Source Serif 4 for body, Fragment Mono for code — chosen to read like a print field journal. A backup script keeps articles portable across server swaps; redeploy is one docker compose command.",
-    "tags": ["Next.js 15", "React", "TypeScript", "Payload CMS", "Postgres", "Meilisearch", "Remark42", "Umami", "Listmonk", "Docker"],
+    "tags": [
+      "Next.js 15",
+      "React",
+      "TypeScript",
+      "Payload CMS",
+      "Postgres",
+      "Meilisearch",
+      "Remark42",
+      "Umami",
+      "Listmonk",
+      "Docker"
+    ],
     "gradient": "linear-gradient(135deg, #0f0f0f 0%, #525252 100%)",
     "results": [
-      { "value": "5", "label": "Sibling services" },
-      { "value": "Payload v3", "label": "CMS layer" },
-      { "value": "EU", "label": "Home-server stack" }
+      {
+        "value": "5",
+        "label": "Sibling services"
+      },
+      {
+        "value": "Payload v3",
+        "label": "CMS layer"
+      },
+      {
+        "value": "EU",
+        "label": "Home-server stack"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
     "link": "http://theloop.techdani.cc/",
     "shape": "loop",
     "layers": [
-      { "label": "Front", "tech": "Next.js 15" },
-      { "label": "CMS", "tech": "Payload v3" },
-      { "label": "Search", "tech": "Meilisearch" },
-      { "label": "Data", "tech": "Postgres" }
+      {
+        "label": "Front",
+        "tech": "Next.js 15"
+      },
+      {
+        "label": "CMS",
+        "tech": "Payload v3"
+      },
+      {
+        "label": "Search",
+        "tech": "Meilisearch"
+      },
+      {
+        "label": "Data",
+        "tech": "Postgres"
+      }
     ],
     "caption": "One loop of dispatches, guides and labs, all self-hosted."
   },
   {
-    "id": "03",
+    "id": "04",
     "slug": "stellar-freight-co",
     "year": "2026",
     "title": "Stellar Freight Co.",
@@ -67,27 +191,59 @@
     "overview": "Stellar Freight Co. is an in-progress browser game — a sci-fi drone-logistics factory tycoon with a shared-universe design bible. Phase 0 ships the foundation: real-time WebSocket handshake, fixed-tick simulation clock, Zod-validated wire schemas shared between client and server, exponential-backoff reconnects, and a testable manual clock for unit tests of the simulation logic. The architecture is built to scale through later phases — stations, drone dispatch, production chains, multiplayer — without rewriting the protocol layer.",
     "challenge": "Real-time browser games sit at an awkward intersection: they need the determinism of a simulation, the latency tolerance of the web, and a wire protocol typed strongly enough that desync bugs surface immediately, not three phases later. Most hobby browser games skip the simulation discipline (everything in client memory, no rollback story) or skip the protocol discipline (untyped JSON over WS, errors at runtime). The goal was a Phase 0 that was small enough to ship in a weekend but structured enough that nothing in the protocol or sim layer would need to be thrown away later.",
     "solution": "pnpm + Turborepo monorepo with three packages. @sfco/shared holds Zod schemas for every wire message plus a typed Emitter and a Result<T, E> utility; both server and client import the same parser, so mismatches are caught at both ends. The Fastify + ws server is composed of three small classes — Session, ConnectionHub, MessageRouter — with no globals. The Clock is an interface with real (createFixedTickClock) and manual implementations so simulation logic is unit-testable without real timers. The React + Zustand client wraps WebSocket in a NetClient with Zod validation, exponential-backoff reconnect, and the same typed emitter — the store subscribes to events and never touches sockets directly. Server deploys to Fly.io; client builds to static.",
-    "tags": ["TypeScript", "React", "Fastify", "WebSocket", "Zustand", "Turborepo", "Zod", "Vite", "Biome", "Fly.io"],
+    "tags": [
+      "TypeScript",
+      "React",
+      "Fastify",
+      "WebSocket",
+      "Zustand",
+      "Turborepo",
+      "Zod",
+      "Vite",
+      "Biome",
+      "Fly.io"
+    ],
     "gradient": "linear-gradient(135deg, #0f172a 0%, #6366f1 50%, #a78bfa 100%)",
     "results": [
-      { "value": "Phase 0", "label": "Foundation shipped" },
-      { "value": "5 Hz", "label": "Server tick rate" },
-      { "value": "Zod", "label": "Both ends typed" }
+      {
+        "value": "Phase 0",
+        "label": "Foundation shipped"
+      },
+      {
+        "value": "5 Hz",
+        "label": "Server tick rate"
+      },
+      {
+        "value": "Zod",
+        "label": "Both ends typed"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "Personal project — ongoing",
     "link": "https://sfco.techdani.cc/",
     "shape": "orbit",
     "layers": [
-      { "label": "Client", "tech": "React + Zustand" },
-      { "label": "Protocol", "tech": "Zod wire schemas" },
-      { "label": "Server", "tech": "Fastify tick sim" },
-      { "label": "Deploy", "tech": "Fly.io" }
+      {
+        "label": "Client",
+        "tech": "React + Zustand"
+      },
+      {
+        "label": "Protocol",
+        "tech": "Zod wire schemas"
+      },
+      {
+        "label": "Server",
+        "tech": "Fastify tick sim"
+      },
+      {
+        "label": "Deploy",
+        "tech": "Fly.io"
+      }
     ],
     "caption": "Drones on orbit, driven by one fixed-tick clock."
   },
   {
-    "id": "04",
+    "id": "05",
     "slug": "auroratrader",
     "year": "2026",
     "title": "AuroraTrader",
@@ -96,27 +252,60 @@
     "overview": "AuroraTrader is a closed-loop trading agent that lets a frontier LLM teach a local one to trade. The agent runs on a schedule, asks Claude to evaluate the current market and propose a trade, logs the reasoning, decision, and outcome to MongoDB, and resolves win/loss automatically once Alpaca closes the position. A React + Recharts dashboard surfaces stats — win rate, P&L, dataset size — and gates trades behind a human-approval queue. Once enough profitable trades accumulate, one click exports them as a dataset_*.jsonl fine-tuning corpus, which gets fed through a Google Colab notebook running Unsloth QLoRA to produce a GGUF model. That model goes into a local Ollama server on Proxmox — flip a single env var (LLM_PROVIDER=ollama) and the agent runs on a self-trained local model with no code changes.",
     "challenge": "Frontier LLMs are expensive to run continuously and require external API access for any decision; local models are cheap and private but bad at domain tasks out of the box. The opportunity was the bridge between them: use the expensive model long enough to generate a high-quality, domain-specific, outcome-filtered training set, then graduate to a local model whose decisions match the profitable subset of the teacher's behavior. The hard part was building an interface clean enough that swapping the inference backend was a config flag, and a data pipeline that only fed profitable decisions into the dataset.",
     "solution": "The agent abstracts inference behind a single interface — Claude or Ollama, chosen by env var. Each decision cycle writes a full record to MongoDB: prompt, market context, model reasoning, the proposed trade, and (later, asynchronously) the resolved outcome. A small Express API exposes /api/trades, /api/stats, approve/reject endpoints, and a /api/dataset/export route that emits a JSONL of only the profitable closed trades, formatted for Unsloth's chat-template. The training notebook fine-tunes Mistral/Llama with QLoRA, exports GGUF, and the model is dropped into Ollama on a Proxmox host. Dashboard built with React + Recharts; everything orchestrated by docker compose up -d.",
-    "tags": ["Node.js", "TypeScript", "Claude AI", "Alpaca API", "MongoDB", "React", "Docker", "Ollama", "QLoRA", "Unsloth", "Recharts"],
+    "tags": [
+      "Node.js",
+      "TypeScript",
+      "Claude AI",
+      "Alpaca API",
+      "MongoDB",
+      "React",
+      "Docker",
+      "Ollama",
+      "QLoRA",
+      "Unsloth",
+      "Recharts"
+    ],
     "gradient": "linear-gradient(135deg, #06b6d4 0%, #10b981 100%)",
     "results": [
-      { "value": "Claude→Ollama", "label": "Swap by env var" },
-      { "value": "JSONL", "label": "Outcome-filtered dataset" },
-      { "value": "0", "label": "Code changes to swap model" }
+      {
+        "value": "Claude→Ollama",
+        "label": "Swap by env var"
+      },
+      {
+        "value": "JSONL",
+        "label": "Outcome-filtered dataset"
+      },
+      {
+        "value": "0",
+        "label": "Code changes to swap model"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
     "link": "https://github.com/dani01Lost4ever/AuroraTrader",
     "shape": "candles",
     "layers": [
-      { "label": "Dashboard", "tech": "React + Recharts" },
-      { "label": "API", "tech": "Express" },
-      { "label": "Agent", "tech": "Claude → Ollama" },
-      { "label": "Data", "tech": "MongoDB" }
+      {
+        "label": "Dashboard",
+        "tech": "React + Recharts"
+      },
+      {
+        "label": "API",
+        "tech": "Express"
+      },
+      {
+        "label": "Agent",
+        "tech": "Claude → Ollama"
+      },
+      {
+        "label": "Data",
+        "tech": "MongoDB"
+      }
     ],
     "caption": "Only the winning trades become training data."
   },
   {
-    "id": "05",
+    "id": "06",
     "slug": "cloudflare-ddns-client",
     "year": "2025",
     "title": "Cloudflare DDNS Client",
@@ -125,27 +314,55 @@
     "overview": "Cloudflare DDNS Client is a self-hosted solution for anyone running services on a dynamic IP. It extends the popular timothyjmiller/cloudflare-ddns project with a full web dashboard, a REST API, smart IP polling, and Docker-first packaging. Two processes run side-by-side in one container: the DDNS daemon and a Flask/Gunicorn dashboard server — independently updating DNS and serving live status with zero extra Cloudflare API calls.",
     "challenge": "Home servers and self-hosted stacks live on dynamic IPs — the moment your ISP rotates the address, your DNS records go stale and services go dark. Existing clients were either too primitive (no visibility into what was happening) or hammered the Cloudflare API so aggressively they risked being rate-limited. The goal was near-real-time IP sync with full observability, all inside a single, easy-to-deploy container.",
     "solution": "The daemon polls your public IP every 2–5 seconds using plain HTTP (multiple independent providers, never the Cloudflare API), and only calls Cloudflare when the IP actually changes. A built-in sliding-window rate limiter ensures the 1,200 calls/5 min ceiling is never approached. The Flask dashboard reads a status.json file written after every poll — live data at zero API cost. The UI lets you add/delete subdomains, import existing Cloudflare records, and trigger manual updates, all without editing config files.",
-    "tags": ["Python", "Flask", "Docker", "Cloudflare API", "REST API", "Gunicorn"],
+    "tags": [
+      "Python",
+      "Flask",
+      "Docker",
+      "Cloudflare API",
+      "REST API",
+      "Gunicorn"
+    ],
     "gradient": "linear-gradient(135deg, #f6821f 0%, #0051ff 100%)",
     "results": [
-      { "value": "< 5s", "label": "IP sync latency" },
-      { "value": "0", "label": "API rate-limit hits" },
-      { "value": "1 cmd", "label": "Docker deploy" }
+      {
+        "value": "< 5s",
+        "label": "IP sync latency"
+      },
+      {
+        "value": "0",
+        "label": "API rate-limit hits"
+      },
+      {
+        "value": "1 cmd",
+        "label": "Docker deploy"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "Personal project",
     "link": "https://github.com/dani01Lost4ever/cloudflare-ddns-client",
     "shape": "globe",
     "layers": [
-      { "label": "Dashboard", "tech": "Flask" },
-      { "label": "State", "tech": "status.json" },
-      { "label": "Daemon", "tech": "Python poller" },
-      { "label": "Upstream", "tech": "Cloudflare API" }
+      {
+        "label": "Dashboard",
+        "tech": "Flask"
+      },
+      {
+        "label": "State",
+        "tech": "status.json"
+      },
+      {
+        "label": "Daemon",
+        "tech": "Python poller"
+      },
+      {
+        "label": "Upstream",
+        "tech": "Cloudflare API"
+      }
     ],
     "caption": "An IP changes, and the records follow in seconds."
   },
   {
-    "id": "06",
+    "id": "07",
     "slug": "agendash-3",
     "year": "2025",
     "title": "Agendash 3",
@@ -154,27 +371,56 @@
     "overview": "Agendash 3 is an open-source dashboard for Agenda.js, the Node.js job-scheduling library. The original Agendash was functional but visually dated and had no execution history — when jobs failed silently, there was nothing to look at. This fork modernises the entire UI and adds structured logging for every job lifecycle event, packaged as a drop-in npm middleware compatible with the four major Node.js HTTP frameworks.",
     "challenge": "The original Agendash had no observability beyond job status. Silent failures left developers querying MongoDB directly to understand what went wrong. The frontend was also tightly coupled, unresponsive on mobile, and difficult to extend. On top of that, any logging solution needed its own isolated Mongoose connection to avoid polluting the host application's database layer.",
     "solution": "Rebuilt the entire frontend with Bootstrap 4/5 — responsive layouts, cleaner job lists, improved modals with loading states, and a dedicated execution-logs panel per job. On the backend, Agenda's start, complete, and fail events are intercepted and written to a tasklogs MongoDB collection through a dedicated Mongoose connection passed at init time, keeping it completely independent from the host app. Automatic index creation on the ready event removes manual DB setup. Published as agendash3-rework on npm for easy drop-in use.",
-    "tags": ["Node.js", "Express", "MongoDB", "Mongoose", "Agenda.js", "Bootstrap", "npm"],
+    "tags": [
+      "Node.js",
+      "Express",
+      "MongoDB",
+      "Mongoose",
+      "Agenda.js",
+      "Bootstrap",
+      "npm"
+    ],
     "gradient": "linear-gradient(135deg, #667eea 0%, #38ef7d 100%)",
     "results": [
-      { "value": "npm", "label": "Published package" },
-      { "value": "4", "label": "Frameworks supported" },
-      { "value": "0", "label": "Breaking changes" }
+      {
+        "value": "npm",
+        "label": "Published package"
+      },
+      {
+        "value": "4",
+        "label": "Frameworks supported"
+      },
+      {
+        "value": "0",
+        "label": "Breaking changes"
+      }
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
     "link": "https://github.com/dani01Lost4ever/agendash-3",
     "shape": "clocks",
     "layers": [
-      { "label": "UI", "tech": "Bootstrap" },
-      { "label": "Middleware", "tech": "Express · Hapi · Koa · Fastify" },
-      { "label": "Scheduler", "tech": "Agenda.js" },
-      { "label": "Logs", "tech": "MongoDB tasklogs" }
+      {
+        "label": "UI",
+        "tech": "Bootstrap"
+      },
+      {
+        "label": "Middleware",
+        "tech": "Express · Hapi · Koa · Fastify"
+      },
+      {
+        "label": "Scheduler",
+        "tech": "Agenda.js"
+      },
+      {
+        "label": "Logs",
+        "tech": "MongoDB tasklogs"
+      }
     ],
     "caption": "Twelve jobs, twelve clocks, every run logged."
   },
   {
-    "id": "07",
+    "id": "08",
     "slug": "openai-cost-calculator",
     "year": "2024",
     "title": "OpenAI Cost Calculator",
@@ -183,27 +429,53 @@
     "overview": "openai-token-cost-calculator-updated is a lightweight npm utility for developers building on top of the OpenAI API who need to estimate or track spend. It covers the full model surface — GPT-4o, GPT-4 Turbo, fine-tuning runs, embeddings, image generation, and Whisper audio — returning structured cost breakdowns per call. The package is a maintained fork of the original codergautam/openai-cost-calculator, kept up to date as OpenAI releases new models and revises pricing.",
     "challenge": "OpenAI updates its model lineup and pricing regularly. The original package had fallen behind — missing GPT-4o, newer embedding models, and updated token prices — which meant developers relying on it were silently getting wrong cost estimates. There was no reliable, actively-maintained alternative on npm.",
     "solution": "Forked the original, audited and corrected all existing pricing, and added support for every current model category including GPT-4o-mini, gpt-4-turbo, text-embedding-3 variants, TTS and TTS HD. Exposed five clean functions — one per model type — each returning a structured object with prompt cost, completion cost, total, and a formatted string. Published as openai-token-cost-calculator-updated and kept in sync with OpenAI announcements.",
-    "tags": ["Node.js", "JavaScript", "npm", "OpenAI API"],
+    "tags": [
+      "Node.js",
+      "JavaScript",
+      "npm",
+      "OpenAI API"
+    ],
     "gradient": "linear-gradient(135deg, #74ebd5 0%, #9face6 100%)",
     "results": [
-      { "value": "npm", "label": "Published package" },
-      { "value": "5", "label": "Model categories" },
-      { "value": "10+", "label": "Models supported" }
+      {
+        "value": "npm",
+        "label": "Published package"
+      },
+      {
+        "value": "5",
+        "label": "Model categories"
+      },
+      {
+        "value": "10+",
+        "label": "Models supported"
+      }
     ],
     "role": "Solo Developer — Open Source",
     "timeline": "Personal project",
     "link": "https://github.com/dani01Lost4ever/openai-cost-calculator-updated",
     "shape": "coins",
     "layers": [
-      { "label": "Package", "tech": "npm module" },
-      { "label": "API", "tech": "Five cost functions" },
-      { "label": "Pricing", "tech": "Model price table" },
-      { "label": "Models", "tech": "GPT-4o · Embeddings · Whisper" }
+      {
+        "label": "Package",
+        "tech": "npm module"
+      },
+      {
+        "label": "API",
+        "tech": "Five cost functions"
+      },
+      {
+        "label": "Pricing",
+        "tech": "Model price table"
+      },
+      {
+        "label": "Models",
+        "tech": "GPT-4o · Embeddings · Whisper"
+      }
     ],
     "caption": "Five functions, one price table, kept current."
   },
   {
-    "id": "08",
+    "id": "09",
     "slug": "original-portfolio",
     "year": "2023",
     "title": "Original Portfolio",
@@ -212,27 +484,55 @@
     "overview": "This is where the journey began. Built in 2023 during my studies, this was my first attempt at a real web presence — a three-section SPA (About, Work, Contacts) written entirely from scratch with no frameworks, no build tools, just raw HTML, CSS, and vanilla JS. Looking back at it now against this portfolio is a clear measure of how far things have come.",
     "challenge": "Starting from scratch with no framework, no component model, and no real-world project experience. Every layout decision, every animation, every form interaction had to be figured out manually. The goal was simply to ship something live that represented me as a developer.",
     "solution": "Kept the scope tight and deliberate — three sections, clean layout, one visual flourish (Particles.js background animation), and a Swiper.js slider for the work section. Wired up a real contact form via un-static.com. Deployed via GitHub Pages. No dependencies beyond two focused libraries. The constraint of no frameworks forced a solid understanding of how the DOM, events, and CSS actually work.",
-    "tags": ["HTML", "CSS", "JavaScript", "Particles.js", "Swiper.js", "GitHub Pages"],
+    "tags": [
+      "HTML",
+      "CSS",
+      "JavaScript",
+      "Particles.js",
+      "Swiper.js",
+      "GitHub Pages"
+    ],
     "gradient": "linear-gradient(135deg, #f7971e 0%, #ffd200 100%)",
     "results": [
-      { "value": "0", "label": "Frameworks used" },
-      { "value": "3", "label": "Sections shipped" },
-      { "value": "2023", "label": "Start of the journey" }
+      {
+        "value": "0",
+        "label": "Frameworks used"
+      },
+      {
+        "value": "3",
+        "label": "Sections shipped"
+      },
+      {
+        "value": "2023",
+        "label": "Start of the journey"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "2023",
     "link": "https://github.com/dani01Lost4ever/Portfolio",
     "shape": "browser",
     "layers": [
-      { "label": "Markup", "tech": "HTML" },
-      { "label": "Style", "tech": "CSS" },
-      { "label": "Script", "tech": "Vanilla JS" },
-      { "label": "Extras", "tech": "Particles.js · Swiper" }
+      {
+        "label": "Markup",
+        "tech": "HTML"
+      },
+      {
+        "label": "Style",
+        "tech": "CSS"
+      },
+      {
+        "label": "Script",
+        "tech": "Vanilla JS"
+      },
+      {
+        "label": "Extras",
+        "tech": "Particles.js · Swiper"
+      }
     ],
     "caption": "Where it started, built from raw HTML, CSS and JS."
   },
   {
-    "id": "09",
+    "id": "10",
     "slug": "tictactoe-ai",
     "year": "2023",
     "title": "Tic-Tac-Toe vs AI",
@@ -241,27 +541,54 @@
     "overview": "One of the first real projects — a Human vs AI Tic-Tac-Toe desktop application built in C# with Windows Forms. The focus wasn't the game itself but the AI behind it: a full minimax implementation with alpha-beta pruning that searches the entire game tree and plays a theoretically perfect game every time. Built as a way to deeply understand recursive algorithms and game theory from first principles.",
     "challenge": "Implementing an AI that genuinely cannot be beaten, not just one that plays randomly or checks for obvious wins. Understanding and coding minimax from scratch — the recursive evaluation of every possible game state, assigning scores, backtracking — was the core difficulty. Alpha-beta pruning was then layered on to cut down the unnecessary branches the algorithm explored.",
     "solution": "The board is modelled as a Player[,] array with an enum for X (human), O (AI), and None. The minimax function recursively evaluates all possible moves, maximising the AI score and minimising the player's, with alpha-beta pruning discarding branches that can't affect the final decision. A special first-move heuristic makes the AI prioritise adjacent positions before invoking full minimax. Every AI move is timed with a Stopwatch and displayed in a DataGridView for performance analytics.",
-    "tags": ["C#", ".NET", "WinForms", "Minimax", "Alpha-Beta Pruning"],
+    "tags": [
+      "C#",
+      ".NET",
+      "WinForms",
+      "Minimax",
+      "Alpha-Beta Pruning"
+    ],
     "gradient": "linear-gradient(135deg, #fc466b 0%, #3f5efb 100%)",
     "results": [
-      { "value": "∞", "label": "Unbeatable AI" },
-      { "value": "α-β", "label": "Pruning implemented" },
-      { "value": "50ms", "label": "Timer resolution" }
+      {
+        "value": "∞",
+        "label": "Unbeatable AI"
+      },
+      {
+        "value": "α-β",
+        "label": "Pruning implemented"
+      },
+      {
+        "value": "50ms",
+        "label": "Timer resolution"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "2023",
     "link": "https://github.com/dani01Lost4ever/TicTacToe",
     "shape": "tictactoe",
     "layers": [
-      { "label": "UI", "tech": "WinForms" },
-      { "label": "Engine", "tech": "C#" },
-      { "label": "AI", "tech": "Minimax" },
-      { "label": "Speed", "tech": "Alpha-beta pruning" }
+      {
+        "label": "UI",
+        "tech": "WinForms"
+      },
+      {
+        "label": "Engine",
+        "tech": "C#"
+      },
+      {
+        "label": "AI",
+        "tech": "Minimax"
+      },
+      {
+        "label": "Speed",
+        "tech": "Alpha-beta pruning"
+      }
     ],
     "caption": "Minimax searches every move, so the AI never loses."
   },
   {
-    "id": "10",
+    "id": "11",
     "slug": "battleship-ai",
     "year": "2023",
     "title": "Battleship vs AI",
@@ -270,22 +597,49 @@
     "overview": "Built alongside the Tic-Tac-Toe project in 2023, this was a step up in complexity — a full Battleship game with two interactive 10×10 grids, ship placement logic, and an AI opponent that actually plays intelligently. Minimax is impractical for Battleship (the state space is enormous), so the AI uses the classic Hunt/Target strategy used by strong human players — the same approach that forms the basis of competitive Battleship AI.",
     "challenge": "Battleship's hidden-information nature makes minimax impossible to apply directly — the AI cannot see the player's board. The challenge was designing an AI that feels genuinely threatening without full information: it needed to search efficiently during the hunting phase and close out ships quickly once a hit was scored.",
     "solution": "The AI runs two phases. In the hunting phase it picks random untried cells, statistically favouring patterns that maximise coverage. Once a hit is registered, it switches to the targeting phase — using GetConsecutiveButtons() and GetAdjacentButtons() to detect row or column alignment from consecutive hits, then systematically extending along the axis until the ship sinks. Ship state is tracked in dictionaries keyed by size, and the player side includes a full hover-preview placement system with boundary and overlap validation.",
-    "tags": ["C#", ".NET 6", "WinForms", "AI", "Hunt-Target Algorithm"],
+    "tags": [
+      "C#",
+      ".NET 6",
+      "WinForms",
+      "AI",
+      "Hunt-Target Algorithm"
+    ],
     "gradient": "linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%)",
     "results": [
-      { "value": "10×10", "label": "Grid size" },
-      { "value": "2", "label": "AI phases" },
-      { "value": "0", "label": "External dependencies" }
+      {
+        "value": "10×10",
+        "label": "Grid size"
+      },
+      {
+        "value": "2",
+        "label": "AI phases"
+      },
+      {
+        "value": "0",
+        "label": "External dependencies"
+      }
     ],
     "role": "Solo Developer",
     "timeline": "2023",
     "link": "https://github.com/dani01Lost4ever/BattleShip",
     "shape": "battleship",
     "layers": [
-      { "label": "UI", "tech": "WinForms" },
-      { "label": "Engine", "tech": ".NET 6" },
-      { "label": "AI", "tech": "Hunt / target" },
-      { "label": "Board", "tech": "10×10 grid" }
+      {
+        "label": "UI",
+        "tech": "WinForms"
+      },
+      {
+        "label": "Engine",
+        "tech": ".NET 6"
+      },
+      {
+        "label": "AI",
+        "tech": "Hunt / target"
+      },
+      {
+        "label": "Board",
+        "tech": "10×10 grid"
+      }
     ],
     "caption": "Random hits turn to targeted strikes until the ship sinks."
   }

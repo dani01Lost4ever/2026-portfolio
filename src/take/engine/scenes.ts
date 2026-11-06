@@ -9,12 +9,30 @@
  */
 
 import { at, boxC, boxTL, rise, riseKeep, show, type MLine } from './dom'
-import { clamp, eio, lerp, lerpR, seg, smooth, SP, spr, track, type Rect } from './math'
+import { clamp, eio, lerp, lerpR, seg, smooth, SP, SPB, spr, track, type Rect } from './math'
 import { setIris } from './iris'
 import type { WordLetter } from './glassWordGL'
 import { UNFOLD } from './layout'
 import { BENTO_OPEN, chapterAt, CHAPTERS, T_END } from './timeline'
 import type { Take } from './Take'
+
+// ─── idle: a frame the film rests on keeps breathing ─────────────────────────────
+//
+// Every frame is a function of t, so a held frame would be a still image and read as a hang.
+// Once the film has been still for a moment, a few things in the frame move on real time, a
+// few pixels at most: the period breathes, the tiles float, the glass letters drift, the orb
+// swells, the music plays on, the "now" ring keeps pulsing, the cursor hovers. `amb` ramps in
+// over the first second of stillness and is 0 while the film moves, so scrubbing stays exact.
+
+/** Idle amplitude 0–1 from the seconds the film has been still. */
+const amb = (k: Take) => smooth(clamp((k.idle - 0.35) / 0.9))
+/** A slow wave on real time: `w` in radians per second. */
+const wave = (k: Take, w: number, ph = 0) => Math.sin(k.now * w + ph)
+
+const IDLE: readonly [number, number][] = [[0, 1.3], [3.4, 7.6], [14.4, 18.7], [18.9, 23.1], [26.4, 31.0], [35.5, 38.3], [44.3, 49.0], [51.5, 55.45], [69.0, 71.5]]
+
+/** Whether frame t has idle motion, so the engine keeps drawing it while still. */
+export const idleOn = (t: number) => IDLE.some(([a, b]) => t >= a && t < b)
 
 // ─── helpers shared by several scenes ───────────────────────────────────────────
 
@@ -109,9 +127,15 @@ function sceneWorld(k: Take, t: number) {
   const c = camAt(k, t)
   E.world.style.transform = c.k === 1 ? '' : `translate(${c.tx}px,${c.ty}px) scale(${c.k})`
   sceneWord(k, t)
+  const A = amb(k)
   const o = E.tiles[0]
   if (o) {
     const g = hsGeom(k, t), late = t >= 62
+    if (A > 0.001) {
+      if (t < 1.3 || t >= 69.0) g.sc *= 1 + 0.05 * A * wave(k, 2.2) // the period breathes
+      else if (t >= 3.4 && t < 7.6) g.sc *= 1 + 0.025 * A * wave(k, 2.0) // the pill breathes
+      else if (t >= 14.4 && t < 18.7) g.y += 3 * A * wave(k, 0.9) // the bento floats
+    }
     boxC(o.el, g.x, g.y, g.w, g.h, g.sc); o.el.style.borderRadius = g.r + 'px'
     show(o.poster, t >= 7.6 && !late)
     if (o.l1 && o.l2) { rise(o.l1, late ? -1 : t, 3.5, 5.0); rise(o.l2, late || t >= 7.6 ? -1e3 : t, 5.1, null) }
@@ -127,7 +151,8 @@ function sceneWorld(k: Take, t: number) {
     show(o.el, on)
     if (!on) continue
     const G = L.grid[i], B = L.bento[i], q = spr(t, 13.5 + 0.06 * i, SP.bento)
-    const x = lerp(G.x, B.x, q), y = lerp(G.y, B.y, q), w = lerp(G.w, B.w, q), h = lerp(G.h, B.h, q)
+    const fl = A > 0.001 && t >= 14.4 && t < 18.7 ? 3 * A * wave(k, 0.9, i * 1.3) : 0
+    const x = lerp(G.x, B.x, q), y = lerp(G.y, B.y, q) + fl, w = lerp(G.w, B.w, q), h = lerp(G.h, B.h, q)
     let sx = 1, sy = 1, ox = 0, oy = 0
     if (ax === 'x') { sx = p; ox = og ? w * (1 - p) : 0 } else { sy = p; oy = og ? h * (1 - p) : 0 }
     o.el.style.transform = `translate(${x + ox}px,${y + oy}px) scale(${sx},${sy})`
@@ -170,12 +195,14 @@ function sceneCase(k: Take, t: number) {
   const useGL = L.wordGL && !!E.wordGL?.ready
   const goo = !useGL && t > 22.7 && t < 23.85
   E.gw.classList.toggle('goo', goo); E.gw.style.filter = goo ? 'url(#goo)' : ''
+  const A = amb(k), drift = A > 0.001 && t < 23.1 ? 2.5 * u * A : 0
   const letters: WordLetter[] = []
   for (let i = 0; i < E.word.length; i++) {
     const gl = E.word[i], p = spr(t, 19 + 0.25 * i * (8 / Math.max(8, E.word.length)), SP.pop), m = spr(t, 22.75 + 0.03 * i, { r: 0.45, d: 1 })
     const on = p > 0.003 && m < 0.995
     const G = L.cwords[i], ccx = lerp(G.cxL, L.cwCx, m), ccy = lerp(G.cyL, L.cwCy, m), S = on ? p * (1 - m) : 0
-    const X = ccx - (G.cxL - G.X0) * S, Y = ccy - (G.cyL - G.Y0) * S
+    // the glass letters drift a little while the frame rests, each on its own phase
+    const X = ccx - (G.cxL - G.X0) * S + drift * wave(k, 1.3, i), Y = ccy - (G.cyL - G.Y0) * S + drift * wave(k, 1.7, i * 0.8)
     letters.push({ X, Y, S })
     show(gl.el, on && !useGL)
     if (!on || useGL) continue
@@ -232,7 +259,7 @@ function sceneCase(k: Take, t: number) {
   const oOn = t >= 26.45
   show(E.orb.el, oOn)
   if (oOn) {
-    const d = track(t, 34 * u, [[26.45, 150 * u, SP.pop], [30.5, 440 * u, { r: 0.6, d: 0.8 }], [31.75, 1.35 * L.hyp, SP.fast]])
+    const d = track(t, 34 * u, [[26.45, 150 * u, SP.pop], [30.5, 440 * u, { r: 0.6, d: 0.8 }], [31.75, 1.35 * L.hyp, SP.fast]]) * (1 + 0.03 * A * wave(k, 2.4)) // the orb swells at rest
     const lx = lerp(knobX(k, t), cx, spr(t, 30.5, SP.lift)), ly = lerp(L.tbY, cy, spr(t, 30.5, SP.lift))
     E.orb.scale(clamp(d * 0.16, 16, 90)); E.orb.size(d, d, d / 2); E.orb.place(lx - E.orb.w / 2, ly - E.orb.h / 2)
     E.orb.back(0, T.x, T.y, T.w, T.h)
@@ -270,12 +297,15 @@ function sceneLock(k: Take, t: number) {
   if (!vis) return
   const R = lockRect(k, t), kk = Math.min(R.h / 900, R.w / 440), kr = kk / L.kFull
   boxTL(E.lock, R.x, R.y, R.w, R.h); E.lock.style.borderRadius = R.r + 'px'
+  E.lock.style.setProperty('--pk', kk.toFixed(4)) // the playable phone's unit (phone.ts)
   // long-press puts the lock screen in edit mode: it empties, so only the wallpaper lifts
   const edit = 1 - (spr(t, 46.15) - spr(t, 47.0, SP.pop))
   // the bezel grows out of the screen edge
   const bw = 0.036 * L.phone.w * spr(t, 38.45)
   show(E.bezel, bw > 0.3)
   if (bw > 0.3) { boxTL(E.bezel, R.x - bw, R.y - bw, R.w + 2 * bw, R.h + 2 * bw); E.bezel.style.borderRadius = R.r + bw + 'px' }
+  // the spotlight's hole is the phone with its bezel (Take.drawSpot fades it)
+  boxTL(E.spot, R.x - bw, R.y - bw, R.w + 2 * bw, R.h + 2 * bw); E.spot.style.borderRadius = R.r + bw + 'px'
   const sb = spr(t, 38.8, SP.pop)
   E.sbtn.forEach((b, j) => {
     show(b, sb > 0.01)
@@ -305,13 +335,18 @@ function sceneLock(k: Take, t: number) {
     if (p <= 0.003) return
     g.place(gcx - (gcx - X0) * p, gcy - (gcy - Y0) * p, kr * p); g.back(0, 0, 0, R.w, R.h)
   })
-  // notifications from "now"
+  // notifications from "now"; at rest they float a little, and the music plays on
+  const A = amb(k)
   E.cards.forEach((cd, j) => {
-    const p = spr(t, 33.75 + 0.5 * j, SP.pop) * edit
-    show(cd.gl.el, p > 0.003)
-    if (p <= 0.003) return
-    const S = kr * p, ccy = (420 + 92 * j) * kk
-    cd.gl.place(R.w / 2 - (cd.gl.w * S) / 2, ccy - (cd.gl.h * S) / 2, S); cd.gl.back(0, 0, 0, R.w, R.h)
+    const p = spr(t, 33.75 + 0.5 * j, SP.pop) * edit, sh = E.phone.cardShift(j)
+    show(cd.gl.el, p > 0.003 && !sh.gone)
+    if (p <= 0.003 || sh.gone) return
+    const S = kr * p, ccy = (420 + 92 * j) * kk + 1.5 * kk * A * wave(k, 0.8, j * 1.9)
+    const x = R.w / 2 - (cd.gl.w * S) / 2, y = ccy - (cd.gl.h * S) / 2
+    // the playable phone can swipe a notification away (phone.ts): it reads the card's rect and gives back its shift
+    E.phone.cardRects[j] = { x, y, w: cd.gl.w * S, h: cd.gl.h * S }
+    cd.gl.place(x + sh.dx, y, S); cd.gl.back(0, 0, 0, R.w, R.h)
+    cd.gl.el.style.opacity = sh.a < 0.999 ? sh.a.toFixed(3) : ''
   })
   // home bar stretches into the music player
   const wd = track(t, 134, [[35.25, 360, SP.liq]]), hd = track(t, 5, [[35.25, 88, SP.liq]]), bd = track(t, 12, [[35.25, 30, SP.liq]])
@@ -341,7 +376,8 @@ function sceneLock(k: Take, t: number) {
   show(E.pBarA, pb > 0.01); show(E.pBarB, pb > 0.01)
   if (pb > 0.01) {
     const bw2 = E.player.w - pad * 2 - a - 14 * K, bx = pad + a + 14 * K, byy = ph - 16 * K
-    boxTL(E.pBarA, bx, byy, bw2 * pb, 3 * K); boxTL(E.pBarB, bx, byy, bw2 * 0.38 * pb, 3 * K)
+    const played = 0.38 + 0.5 * ((k.now / 200) % 1) // the track runs on real time, ~200 s a side
+    boxTL(E.pBarA, bx, byy, bw2 * pb, 3 * K); boxTL(E.pBarB, bx, byy, bw2 * played * pb, 3 * K)
   }
 }
 
@@ -429,7 +465,7 @@ function sceneStage(k: Take, t: number) {
   if (nd > 0.01) {
     const s = 10 * wu
     boxC(E.nowDot, nowX, nowY, s, s, nd)
-    const ph = t % 1, rs = s * (1 + ph * 2.2)  // pulses on the beat
+    const ph = (t + k.idle / SPB) % 1, rs = s * (1 + ph * 2.2)  // pulses on the beat, and keeps the beat while the film rests
     boxC(E.nowRing, nowX, nowY, rs, rs); E.nowRing.style.borderWidth = Math.max(0, 2 * (1 - ph)) + 'px'
   }
   // about page, then the product card
@@ -445,7 +481,7 @@ function sceneStage(k: Take, t: number) {
   E.sw.forEach((d, j) => { const s = spr(t, 51.5 + 0.1 * j, SP.pop); show(d, s > 0.01); if (s > 0.01) boxC(d, pX + L.swD / 2 + j * (L.swD + 14 * wu), swy + L.swD / 2, L.swD, L.swD, s) })
   const rp = E.sw.length ? spr(t, 51.9, SP.pop) : 0
   show(E.swRing, rp > 0.01)
-  if (rp > 0.01) { const rd = L.swD + 8 * wu; boxC(E.swRing, pX + L.swD / 2 + sel * (L.swD + 14 * wu), swy + L.swD / 2, rd, rd, rp) }
+  if (rp > 0.01) { const rd = (L.swD + 8 * wu) * (1 + 0.06 * amb(k) * wave(k, 2.4)); boxC(E.swRing, pX + L.swD / 2 + sel * (L.swD + 14 * wu), swy + L.swD / 2, rd, rd, rp) }
   if (E.prSkills[0] && rise(E.prSkills[0], t, 51.8, two ? 52.85 : null)) at(E.prSkills[0].w, pX, swy + L.swD + 16 * wu, 0, 0)
   if (two && rise(E.prSkills[1], t, 52.95, null)) at(E.prSkills[1].w, pX, swy + L.swD + 16 * wu, 0, 0)
   const sgy = L.segY - L.pageTop
@@ -609,6 +645,9 @@ function sceneCursor(k: Take, t: number) {
   show(E.cursor, on); show(E.ring, false); show(E.lp, false)
   if (!c || !on) return
   const kk = (c.k ?? 1) * L.cur, s = c.s * kk * (1 - 0.16 * c.p)
+  // a hand on the mouse is never quite still
+  const A = amb(k)
+  if (A > 0.001) { c.x += 2.5 * kk * A * wave(k, 1.1); c.y += 2 * kk * A * wave(k, 1.6, 1) }
   E.cursor.style.transform = `translate(${c.x - 5}px,${c.y - 3}px) scale(${s})`
   for (const tc of c.clk ?? []) {
     if (t < tc || t >= tc + 0.7) continue
@@ -622,12 +661,13 @@ function sceneCursor(k: Take, t: number) {
 
 const DARK: readonly [number, number][] = [[18.7, 38.35], [60.95, 62.45], [68.45, 68.8]]
 
-/** The timeline's playhead and the timecode, at beat t. */
+/** The timeline bar at beat t: each chapter's segment fills with the part of it seen. */
 export function hudAt(k: Take, t: number) {
   const { E } = k
-  E.ph.style.left = `calc(${((t / T_END) * 100).toFixed(3)}% - 1px)`
-  const secs = t * 0.5
-  E.tc.textContent = `beat ${t.toFixed(1).padStart(4, '0')} / ${T_END} · ${String(Math.floor(secs / 60)).padStart(2, '0')}:${(secs % 60).toFixed(1).padStart(4, '0')}`
+  E.segFills.forEach((f, i) => {
+    const a = CHAPTERS[i].beat, b = CHAPTERS[i + 1]?.beat ?? T_END
+    f.style.transform = `scaleX(${clamp((t - a) / (b - a)).toFixed(4)})`
+  })
 }
 
 // the nav's lens and highlight follow k.chapter, or the chapter a jump is heading for (Take)
