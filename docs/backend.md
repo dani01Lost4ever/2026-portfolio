@@ -77,7 +77,7 @@ The home page's "Now" items have no collection: they always come from `src/data/
 | `timeline` | text | Duration e.g. `"6 months"` |
 | `link` | url | Live site URL (optional) |
 | `order` | number | Display order (ascending) |
-| `shape` | select | The project's poster, in the film, the sheets and the project page. Valid values are the `ShapeId` union in `src/lib/types.ts`: `bug`, `loop`, `orbit`, `candles`, `globe`, `clocks`, `coins`, `browser`, `tictactoe`, `battleship`, `generic`. Optional — leave unset and the frontend resolves one for you, see below. |
+| `shape` | select | The project's poster, in the film, the sheets and the project page. Valid values are the `ShapeId` union in `src/lib/types.ts`: `bug`, `lumen`, `loop`, `orbit`, `candles`, `globe`, `clocks`, `coins`, `browser`, `tictactoe`, `battleship`, `generic`. Optional — leave unset and the frontend resolves one for you, see below. |
 | `layers` | json | Architecture layers, top to bottom, shown in the Architecture section of the project page: an array of `{ label, tech }` objects (4 expected), e.g. `{ "label": "API", "tech": "Express" }`. Optional, same fallback as `shape`. |
 | `caption` | text | The project's one-line headline in the film (the case study headline for the lead project). Optional — falls back to `subtitle`. |
 

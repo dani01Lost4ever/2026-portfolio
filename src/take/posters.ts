@@ -20,7 +20,7 @@ export interface PosterInfo {
 }
 
 const BG: Record<ShapeId, string> = {
-  bug: '#D63A2A', loop: '#121212', orbit: '#2F2BB5', candles: '#0B8B79', globe: '#EF6A21', clocks: '#1C7446',
+  bug: '#D63A2A', lumen: '#0B0B0F', loop: '#121212', orbit: '#2F2BB5', candles: '#0B8B79', globe: '#EF6A21', clocks: '#1C7446',
   coins: '#8CB7E6', browser: '#F2C230', tictactoe: '#EA4A77', battleship: '#16243F', generic: '#0B0B0C',
 }
 const LIGHT = new Set<ShapeId>(['coins', 'browser'])
@@ -171,6 +171,25 @@ function wallpaper(): string {
     <rect y="600" width="1200" height="400" fill="url(#wsea)"/>${refl}`, '0 0 1200 1000')
 }
 
+/** Lumen: near-black bench, a lamp, one beam folded by a mirror and a lens into the sensor. */
+function posterLumen(): string {
+  // lamp at (318, 70); mirror at (120, 214) tilted; lens at (236, 300); sensor at (322, 324)
+  const warm = '#FFE6BF'
+  return symbol('p-lumen', `
+    <rect width="400" height="400" fill="${BG.lumen}"/>
+    <path d="${gridPath(40)}" stroke="${warm}" stroke-opacity=".06" stroke-width=".6"/>
+    <rect x="40" y="40" width="320" height="320" rx="6" fill="none" stroke="${warm}" stroke-opacity=".14"/>
+    <rect x="52" y="150" width="96" height="14" rx="2" fill="${warm}" fill-opacity=".1" stroke="${warm}" stroke-opacity=".3"/>
+    <polygon points="318,70 118,206 124,222" fill="${warm}" fill-opacity=".88"/>
+    <polygon points="118,206 124,222 240,300 236,288" fill="${warm}" fill-opacity=".72"/>
+    <polygon points="236,288 240,300 322,324 320,316" fill="${warm}" fill-opacity=".95"/>
+    <path d="M96 232L142 196" stroke="${warm}" stroke-width="5" stroke-linecap="round"/>
+    <path d="M226 318L250 270" stroke="${warm}" stroke-opacity=".5" stroke-width="7" stroke-linecap="round"/>
+    <path d="M300 312A24 24 0 0 1 344 328" fill="none" stroke="${warm}" stroke-width="4" stroke-linecap="round"/>
+    <circle cx="318" cy="70" r="11" fill="none" stroke="${warm}" stroke-width="2.5"/><circle cx="318" cy="70" r="4.5" fill="${warm}"/>
+    <text x="200" y="382" text-anchor="middle" ${MONO} font-size="8" letter-spacing=".2em" fill="${warm}" fill-opacity=".55">DAILY LIGHT PUZZLE · 100%</text>`)
+}
+
 /** The whole defs block: filters, the wipe clip, every poster and the wallpaper. */
 export function posterDefsMarkup(): string {
   return `
@@ -181,6 +200,7 @@ export function posterDefsMarkup(): string {
   </filter>
   <clipPath id="wipe" clipPathUnits="userSpaceOnUse"><rect id="wipeRect" x="-10" y="-10" width="0" height="420"/></clipPath>
   ${posterBug()}
+  ${posterLumen()}
   ${symbol('p-loop', `
     <rect width="400" height="400" fill="${BG.loop}"/>
     <circle cx="200" cy="200" r="96" fill="none" stroke="#F2EEE6" stroke-width="30"/>

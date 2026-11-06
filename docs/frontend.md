@@ -154,17 +154,20 @@ dragged or turned with the dots: the apps (the projects as poster icons, plus Ma
 the contact sheet, and GitHub), then the widgets (Now, the track, where I am); the four projects
 with a capture sit in the dock. A long press on an app picks it up: the apps jiggle and glide to
 make room while it is dragged, the order is kept in `localStorage` (`take-phone-order`), and a tap
-on the background or Escape puts them down. Every app opens: the four in the dock on a scrollable
-screenshot of the real app at phone size (`public/phone/<slug>.jpg`, 390 css px wide at 2×, the
-first 2600 px of the page), the others on a card of the project (poster, name, results,
-description, tags, and a button to the case study page through `onNavigate`). The home bar closes an app or locks the phone; a swipe up from the bottom edge or
+on the background or Escape puts them down. Every app opens (`SCREENS` in `phone.ts`): Lumen on
+the live game in an iframe (it plays for real; the frame is unloaded when the app closes), four
+on a scrollable screenshot of the real app at phone size (`public/phone/<slug>.jpg`, 390 css px
+wide at 2×, the first 2600 px of the page), the others on a card of the project (poster, name,
+results, description, tags, and a button to the case study page through `onNavigate`). The first
+four with a screen sit in the dock. The home bar closes an app or locks the phone; a swipe up from the bottom edge or
 Escape closes an app too. The played take stops there instead
 of holding (Play reads "Continue the take"), and any scroll of the film locks the phone again and
 goes on. The phone lives inside the film's `#lock`, so it has the film's rect, bezel and radius;
 its sizes are in `--pk`, the lock's scale, written by `sceneLock`; its springs run on real time
 and are stepped by `Take.frame`. It is marked `data-take-prevent`, so the wheel scrolls the app's
 screenshot, not the film. To add a capture: screenshot the app at 390×844, 2×, as
-`public/phone/<slug>.jpg` and add the slug to `SHOTS` in `phone.ts`.
+`public/phone/<slug>.jpg` and add the slug to `SCREENS` in `phone.ts` (`{ shot: true }`, or
+`{ frame: url }` for an app that can be embedded live).
 
 ### The Play invite
 

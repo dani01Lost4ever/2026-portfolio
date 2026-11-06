@@ -2,7 +2,7 @@
  * phone.ts — the playable phone. While the film rests on the phone beside the window
  * (PHONE_WINDOW), the lock screen it draws becomes a phone you can use: swipe up (or scroll, or
  * tap the hint) to unlock; two home pages, the apps and then the widgets, swiped side to side;
- * every app opens, the ones with a phone capture on a scrollable screenshot of the real app, the
+ * every app opens, the ones with a phone capture on a scrollable screenshot of the real app, Lumen on the live game in a frame, the
  * others on a card of the project; a long press on an app lets you drag the apps around, like
  * on the real thing, and the order is remembered. Any scroll of the film locks it again.
  *
@@ -20,8 +20,12 @@ import type { TakeContent, TakeProject } from './content'
 /** Beats the phone is at rest beside the window and can be used (the lock screen's edit mode starts at 46.15). */
 export const PHONE_WINDOW: readonly [number, number] = [45.0, 46.1]
 
-/** The projects that have a phone capture under /phone/<slug>.jpg (390 css px wide, 2×, the first screens). */
-const SHOTS = new Set(['bugpilot', 'the-loop', 'stellar-freight-co', 'auroratrader'])
+/** What an app shows when it opens: a phone capture under /phone/<slug>.jpg (390 css px wide, 2×, the first
+ * screens), or the live app itself in a frame (Lumen plays for real). Apps without a screen open on their card. */
+interface Screen { shot?: true; frame?: string }
+const SCREENS: Record<string, Screen> = {
+  bugpilot: { shot: true }, lumen: { frame: 'https://lumen.techdani.cc/' }, 'the-loop': { shot: true }, 'stellar-freight-co': { shot: true }, auroratrader: { shot: true },
+}
 
 const ORDER_KEY = 'take-phone-order'
 /** The home grid, in the phone's 440-wide units. */
@@ -34,7 +38,7 @@ const move = (from: number, to: number, now: number, r: number, d: number): Move
 const at = (m: Move | null, now: number) => (m ? m.from + (m.to - m.from) * sprMs(now, m.t0, m.r, m.d) : 0)
 
 /** An app on the home screen: a project, or the mail and GitHub shortcuts. */
-interface App { id: string; el: HTMLButtonElement; p?: TakeProject; shot: boolean }
+interface App { id: string; el: HTMLButtonElement; p?: TakeProject; screen: Screen | null }
 
 export interface PhoneHooks {
   clock(): string
@@ -53,6 +57,7 @@ export class Phone {
   private readonly app: HTMLDivElement
   private readonly appScroll: HTMLDivElement
   private readonly appImg: HTMLImageElement
+  private readonly frame: HTMLIFrameElement
   private readonly card: HTMLDivElement
   private readonly apps: App[] = []
   private readonly hooks: PhoneHooks
@@ -107,12 +112,12 @@ export class Phone {
 
     // apps: the projects with a capture in the dock, the others on the first page with mail and GitHub
     const projects = c.projects.slice(0, 12)
-    const docked = projects.filter(p => SHOTS.has(p.slug)).slice(0, 4), rest = projects.filter(p => !docked.includes(p))
+    const docked = projects.filter(p => SCREENS[p.slug]).slice(0, 4), rest = projects.filter(p => !docked.includes(p))
     const icon = (id: string, parent: HTMLElement, label: string | null, inner: string, p?: TakeProject) => {
       const b = mk('button', 'ph-app-ic', parent)
       b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', label ?? p?.title ?? id); b.dataset.app = id
       b.innerHTML = `${inner}${label ? `<span class="ph-lbl">${esc(label)}</span>` : ''}`
-      const o: App = { id, el: b, p, shot: !!p && SHOTS.has(p.slug) }
+      const o: App = { id, el: b, p, screen: p ? SCREENS[p.slug] ?? null : null }
       this.apps.push(o)
       b.addEventListener('click', e => { e.stopPropagation(); if (!this.jiggle) this.open(o) })
       return o
@@ -132,10 +137,11 @@ export class Phone {
       <div class="ph-w ph-w22 ph-w-where"><div class="ph-w-t">${esc(c.location)}</div><div class="ph-w-big">${esc(c.availability || 'Open to work')}</div></div>`
 
     const app = mk('div', 'ph-app', el)
-    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"><div class="ph-card"></div></div><div class="ph-edge"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
+    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"><div class="ph-card"></div></div><iframe class="ph-frame" title="" tabindex="-1"></iframe><div class="ph-edge"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
     this.app = app
     this.appScroll = app.querySelector('.ph-scroll') as HTMLDivElement
     this.appImg = app.querySelector('img') as HTMLImageElement
+    this.frame = app.querySelector('iframe') as HTMLIFrameElement
     this.card = app.querySelector('.ph-card') as HTMLDivElement
     this.card.addEventListener('click', e => {
       const a = (e.target as HTMLElement).closest<HTMLElement>('[data-path]')
@@ -201,9 +207,14 @@ export class Phone {
     if (!o.p) return
     const now = performance.now(), R = this.el.getBoundingClientRect()
     this.from = { x: (I.left - R.left) / R.width, y: (I.top - R.top) / R.height, s: I.width / R.width }
-    this.appImg.style.display = o.shot ? '' : 'none'
-    this.card.style.display = o.shot ? 'none' : ''
-    if (o.shot) this.appImg.src = `/phone/${o.p.slug}.jpg`
+    const s = o.screen
+    this.appScroll.style.display = s?.frame ? 'none' : ''
+    this.appImg.style.display = s?.shot ? '' : 'none'
+    this.card.style.display = s ? 'none' : ''
+    this.frame.style.display = s?.frame ? '' : 'none'
+    this.app.style.background = s?.frame ? o.p.bg : ''
+    if (s?.shot) this.appImg.src = `/phone/${o.p.slug}.jpg`
+    else if (s?.frame) { this.frame.title = o.p.title; this.frame.src = s.frame }
     else this.card.innerHTML = cardHTML(o.p)
     this.appScroll.scrollTop = 0
     this.state = 'app'
@@ -294,7 +305,11 @@ export class Phone {
       this.app.style.borderRadius = `${((1 - a) * 22).toFixed(1)}%`
     }
     const settled = (m: Move | null, v: number) => !m || Math.abs(v - m.to) < 0.001
-    if (settled(this.homeM, h) && settled(this.appM, a)) { this.shown = h > 0.5 || a > 0.5; if (h < 0.001) this.homeM = null; if (a < 0.001) this.appM = null }
+    if (settled(this.homeM, h) && settled(this.appM, a)) {
+      this.shown = h > 0.5 || a > 0.5
+      if (h < 0.001) this.homeM = null
+      if (a < 0.001) { this.appM = null; if (this.frame.src) this.frame.removeAttribute('src') } // a closed frame stops playing
+    }
   }
 
   // ─── input ──────────────────────────────────────────────────────────────────
