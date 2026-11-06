@@ -127,8 +127,29 @@ Time is in **beats**. The film is cut at 120 BPM (`SPB = 0.5` seconds per beat) 
 writes transforms, sizes and opacities. Motion comes from closed-form springs (`stepResp`, `spr`)
 that start at a given beat, and `track()` sums one spring per change so a value with many targets
 stays a function of t. Scrubbing backwards gives the same frames as playing forwards. The engine
-only calls `seek` when t changes, plus a few ambient stretches (the wall's moving shadows, the
-clock's minute).
+only calls `seek` when t changes, plus the stretches where something in the frame lives on real
+time: the wall's moving shadows, the clock's minute, and the idle motion below.
+
+### Idle motion
+
+A frame the film rests on (a play hold, or wherever the scroll stops) would be a still image and
+read as a hang, so once the film has been still for a moment a few things in it move on real
+time, a few pixels at most: the wordmark's period breathes, the opening pill breathes, the bento
+tiles float on their own phases, the case study's glass letters drift, the orb swells, the lock
+screen's notifications float and its music plays on (the progress bar runs on real time), the
+"now" ring on the experience page keeps pulsing at the film's tempo, the stack ring breathes, and
+the fake cursor hovers. `Take` keeps `idle` (seconds still on this frame, 0 while it moves or a
+sheet is open) and `now` (real seconds); `amb(k)` in `scenes.ts` ramps the amplitude in over the
+first second of stillness, so scrubbing stays exact, and `idleOn(t)` lists the beat ranges with
+idle motion so the engine keeps drawing only those frames while still.
+
+### The Play invite
+
+A first visit that rests on the opening frame for a second gets a big Play under the wordmark
+(`#tk-invite`, placed at the wordmark's baseline plus a gap by `Take.placeInvite`): a black disc
+with "Play the take · About a minute · or just scroll". It plays the take on click, and any input
+(scroll, wheel, keys, a chapter jump) retires it for good, with the hint under the timeline
+(`#chrome.used`).
 
 Beat map (from the header of `scenes.ts`): 0–9 open (wordmark → pill → iris), 9–18 work (grid
 unfolds into a bento), 18–32 case study (glass title, toolbar, slider, orb), 32–38 now (lock

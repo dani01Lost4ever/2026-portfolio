@@ -247,7 +247,8 @@ export function buildEls(k: Take) {
     <div id="tk-bot">
       <div id="tk-tl" aria-hidden="true"></div>
       <p id="tk-hint" aria-hidden="true">Scroll<span class="hint-keys">, or press Space to play</span></p>
-    </div>`
+    </div>
+    <button id="tk-invite" type="button" tabindex="-1" aria-hidden="true"><span class="disc"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg></span><span class="lbl">Play the take</span><span class="sub">About a minute · or just scroll</span></button>`
   const chapNav = chrome.querySelector('#tk-chap') as HTMLElement
   const chap = CHAPTERS.map(ch => { const b = mk('button', null, chapNav); b.type = 'button'; b.textContent = ch.label; return b })
   const navLens = new NavLens(chapNav, chapNav.querySelector('.lens') as HTMLElement, chap)
@@ -267,7 +268,7 @@ export function buildEls(k: Take) {
     cta, ctaLb: ctaL2, ck1, ck2, rdBarA, rdBarB, route, plane,
     wshadow, wmat, wprint, wiris, wmold, placard, pl, plBtn, leaves, leafG,
     ring, lp, lpC, cursor, cutIris,
-    chrome, chap, navLens, tl, segs, segFills,
+    chrome, chap, navLens, tl, segs, segFills, invite: chrome.querySelector('#tk-invite') as HTMLButtonElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
   }
 }

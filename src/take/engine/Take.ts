@@ -16,7 +16,7 @@ import type { TakeContent } from './content'
 import { computeLayout, type Lay } from './layout'
 import { setIris } from './iris'
 import { clamp, eio, lerp, SPB, sprMs } from './math'
-import { hudAt, seek, tile0Screen } from './scenes'
+import { hudAt, idleOn, seek, tile0Screen } from './scenes'
 import { CASE_BEAT, chapterAt, CHAPTERS, restHolds, RESTS, T_END } from './timeline'
 import type { ChapterId } from '../TakeContext'
 
@@ -50,6 +50,10 @@ export class Take {
   L: Lay
   clickable: boolean | undefined = undefined
   chapter = -1
+  /** Real time in seconds, for the parts of a frame that live outside the film clock. */
+  now = 0
+  /** Seconds the film has been still on this frame (0 while it moves or a sheet is open): the scenes' idle motion grows from it. */
+  idle = 0
 
   private tT = 0
   private goal = 0
@@ -69,6 +73,7 @@ export class Take {
   private holdDrawn = 0
   private paused = false
   private last = performance.now()
+  private stillSince = performance.now()
   private ownY = -1
   private lastT = -1
   private raf = 0
@@ -96,7 +101,7 @@ export class Take {
     this.writeScroll(true)
     seek(this, this.tT)
     this.lastT = this.tT
-    this.E.navLens.relayout()
+    this.E.navLens.relayout(); this.placeInvite()
     this.rasterBackdrop()
     this.raf = requestAnimationFrame(this.frame)
   }
@@ -186,9 +191,24 @@ export class Take {
     this.E.play.style.setProperty('--hold', q.toFixed(3))
   }
 
-  /** The first input of any kind retires the hint under the timeline. */
+  private isUsed = false
+
+  /** The first input of any kind retires the hint under the timeline and the Play invite. */
   private used() {
-    if (!this.E.chrome.classList.contains('used')) this.E.chrome.classList.add('used')
+    if (this.isUsed) return
+    this.isUsed = true
+    this.E.chrome.classList.add('used')
+  }
+
+  /** The big Play under the wordmark, for a first visit that has not scrolled yet: it comes once the opening frame has rested a moment. */
+  private drawInvite(t: number) {
+    const on = !this.isUsed && !this.paused && t < 0.3 && this.idle > 1.0
+    if (on !== this.E.chrome.classList.contains('invite')) this.E.chrome.classList.toggle('invite', on)
+  }
+
+  private placeInvite() {
+    const L = this.L
+    this.E.invite.style.setProperty('--invite-y', (L.dotCy + L.dd / 2 + Math.max(36, 0.18 * L.wm.F)).toFixed(1) + 'px')
   }
 
   private stopAuto() {
@@ -283,12 +303,19 @@ export class Take {
       }
       if (this.src === 'virtual' || this.playing || this.tween || this.snap) this.writeScroll()
     }
-    const t = this.tT
+    const t = this.tT, moved = t !== this.lastT
+    if (moved) this.stillSince = now
+    this.now = now / 1000
+    this.idle = this.paused || moved ? 0 : (now - this.stillSince) / 1000
+    // a still frame is drawn again while something in it lives on real time: the wall's shadows,
+    // the clock's minute, and the idle motion of a frame the film has rested on (scenes.idleOn)
     const ambient = t >= 61.2 && t < 68.6
     const minute = t >= 32.4 && t < 61.3 && this.fmtTime.format(new Date()) !== this.clockStr
-    if (t !== this.lastT || ambient || minute) { seek(this, t); this.lastT = t }
+    const live = ambient || minute || (this.idle > 0.3 && idleOn(t))
+    if (moved || live) { seek(this, t); this.lastT = t }
     this.drawCut(now)
     this.drawHold(now)
+    this.drawInvite(t)
     const want = this.heading >= 0 ? this.heading : this.chapter
     if (want >= 0 && want !== this.lensAt) {
       this.lensAt = want
@@ -344,11 +371,12 @@ export class Take {
     })
     this.on('resize', () => {
       clearTimeout(this.resizeTimer)
-      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); this.rasterBackdrop() }, 120)
+      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); this.placeInvite(); this.rasterBackdrop() }, 120)
     })
 
     // controls inside the film
     E.play.addEventListener('click', () => this.setPlaying(!this.playing))
+    E.invite.addEventListener('click', () => { if (!this.playing) this.setPlaying(true) })
     E.chap.forEach((b, i) => b.addEventListener('click', () => this.goTo(CHAPTERS[i].beat)))
     // a segment of the timeline bar is its chapter
     E.tl.addEventListener('click', e => {
