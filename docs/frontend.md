@@ -169,7 +169,9 @@ system's inertia (a wheel event under 40 px marks the next 600 ms as trackpad). 
 Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.6 s
 to land plus the words the eye reads on that frame (its title and headline, not the small print)
 at 6 words a second, between 1.2 and 4 s, so the holds follow the CMS text; with the default
-content the holds add up to about 30 s over a 36 s film. While the take holds, the Play button
+content the holds add up to about 30 s over a 36 s film. The played take stops on the wordmark
+at the end instead of going round again (scrolling past the end still wraps, since frame `T_END`
+is frame 0). While the take holds, the Play button
 fills from the left (`--hold`, written by `Take.drawHold`), so the still frame reads as a pause and
 not as a hang. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in dev the
 engine is on `window.oneTake`).

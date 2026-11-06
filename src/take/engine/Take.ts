@@ -4,7 +4,8 @@
  * Scroll is the film's clock: 1 beat = BEAT_PX of page scroll, and the film stays wherever
  * the scroll leaves it. Wheel input moves a goal the film glides to: over a mouse wheel's
  * notches, closely behind a trackpad's stream. Touch and the scrollbar stay native. Space
- * plays the take at 120 BPM, holding on each rest frame to read it; arrows jump rest to rest.
+ * plays the take at 120 BPM, holding on each rest frame to read it, and stops on the wordmark
+ * at the end (scrolling past the end goes round to the start); arrows jump rest to rest.
  *
  * Jumping to a chapter plays the film there when the chapter is a few beats ahead; anything
  * further, or behind, is a cut: the film's own iris closes over the frame, the take jumps
@@ -285,6 +286,7 @@ export class Take {
         if (now >= this.holdUntil) {
           const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
           if (i < 0) this.tT = this.goal = next
+          else if (RESTS[i] >= T_END) { this.tT = this.goal = 0; this.setPlaying(false) } // the take ends on the wordmark; it does not go round again
           else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
       } else if (this.snap) {
