@@ -12,31 +12,37 @@ export const T_END = 71.5
  */
 export const RESTS = [0, 5.7, 13.0, 16.2, 22.5, 30.3, 37.5, 45.4, 50.3, 53.95, 60.4, 65.5, T_END]
 
-const LAND = 0.9, READ_WPS = 4, HOLD_MIN = 1.2, HOLD_MAX = 7
+const LAND = 0.6, READ_WPS = 6, HOLD_MIN = 1.2, HOLD_MAX = 4
 
 /**
  * Seconds the played take holds on each rest in RESTS: a moment to land, then the time to read
- * the words that frame shows, at a relaxed skim.
+ * what the eye reads on that frame, its title and headline, at a skim. The small print (stats,
+ * tags, meta lines) is there for whoever stops the take; it does not stretch the hold.
  */
 export function restHolds(c: TakeContent): number[] {
   const words = (...s: (string | undefined)[]) => s.join(' ').split(/\s+/).filter(w => /[\p{L}\p{N}]/u.test(w)).length
   const lead = c.projects[0]
   const read = (n: number) => Math.min(HOLD_MAX, Math.max(HOLD_MIN, LAND + n / READ_WPS))
   return [
-    read(words(c.wordmark)),
+    HOLD_MIN, // the wordmark
     read(words(c.tagline)),
     0.3, // the grid on its way to the bento
     read(words(...c.projects.map(p => p.title))),
     read(words(lead?.title, lead?.sub)),
-    read(words(lead?.caption, c.lead, ...(lead?.results ?? []).flatMap(r => [r.value, r.label]))),
-    read(words(...c.now.flatMap(n => [n.k, n.v]))),
+    read(words(lead?.caption, ...(lead?.results ?? []).flatMap(r => [r.value, r.label]))),
+    read(words(c.track?.title, ...c.now.map(n => n.v))),
     read(words(c.expIntro, ...c.exp.map(r => r.a))),
     read(words(c.aboutHeading, c.aboutBody)),
     read(words(c.stacks[0]?.n, c.stacks[0]?.s, 'Engagement Freelance Full-time')),
     HOLD_MIN, // delivered
-    read(words(c.fullName, c.placardLine, c.availability, c.email)),
-    read(words(c.wordmark)),
+    read(words(c.fullName, c.placardLine)),
+    HOLD_MIN, // the wordmark again
   ]
+}
+
+/** The chapters as the segments of the timeline bar: each one's length in beats. */
+export function chapterSpans(): number[] {
+  return CHAPTERS.map((ch, i) => (CHAPTERS[i + 1]?.beat ?? T_END) - ch.beat)
 }
 
 export const CHAPTERS: readonly { id: ChapterId; label: string; beat: number }[] = [

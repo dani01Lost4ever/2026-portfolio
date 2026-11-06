@@ -6,6 +6,11 @@ export function cmsText(value: string | null | undefined): string {
   return /^\[.*\]$/.test(v) ? '' : v
 }
 
+/** The wordmark from the CMS name: lower case, letters only ("daniel"); the film and the headers add the dot. */
+export function wordmarkOf(name: string | null | undefined): string {
+  return (cmsText(name) || 'daniel').toLowerCase().replace(/[^a-zà-ÿ]/g, '') || 'daniel'
+}
+
 /**
  * Tagline lines for the hero heading: placeholders dropped, and a dangling
  * dash at the end of a line ("to interface —") turned into a comma, so the

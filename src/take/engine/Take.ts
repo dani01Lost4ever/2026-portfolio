@@ -15,7 +15,6 @@ import { buildEls, type Els } from './build'
 import type { TakeContent } from './content'
 import { computeLayout, type Lay } from './layout'
 import { setIris } from './iris'
-import { setRim } from './navGlass'
 import { clamp, eio, lerp, SPB, sprMs } from './math'
 import { hudAt, seek, tile0Screen } from './scenes'
 import { CASE_BEAT, chapterAt, CHAPTERS, restHolds, RESTS, T_END } from './timeline'
@@ -65,7 +64,9 @@ export class Take {
   private tau = WHEEL_TAU
   private fineUntil = 0
   private holds: number[]
+  private holdFrom = 0
   private holdUntil = 0
+  private holdDrawn = 0
   private paused = false
   private last = performance.now()
   private ownY = -1
@@ -95,7 +96,7 @@ export class Take {
     this.writeScroll(true)
     seek(this, this.tT)
     this.lastT = this.tT
-    this.E.navLens.relayout(); setRim(this.E.play, 7)
+    this.E.navLens.relayout()
     this.rasterBackdrop()
     this.raf = requestAnimationFrame(this.frame)
   }
@@ -170,11 +171,24 @@ export class Take {
 
   private setPlaying(v: boolean) {
     this.playing = v; this.tween = null; this.snap = null; this.holdUntil = 0
+    this.used()
     const b = this.E.play
     b.setAttribute('aria-pressed', String(v))
     ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : 'Play the take'
     b.querySelector('path')?.setAttribute('d', v ? 'M1 .5h3v9H1zM6 .5h3v9H6z' : 'M1 0.5v9l8-4.5z')
-    setRim(b, 7)
+  }
+
+  /** The Play button fills while the take holds on a rest, so the still frame reads as a pause. */
+  private drawHold(now: number) {
+    const q = this.playing && now < this.holdUntil ? (now - this.holdFrom) / (this.holdUntil - this.holdFrom) : 0
+    if (Math.abs(q - this.holdDrawn) < 0.004 && (q === 0) === (this.holdDrawn === 0)) return
+    this.holdDrawn = q
+    this.E.play.style.setProperty('--hold', q.toFixed(3))
+  }
+
+  /** The first input of any kind retires the hint under the timeline. */
+  private used() {
+    if (!this.E.chrome.classList.contains('used')) this.E.chrome.classList.add('used')
   }
 
   private stopAuto() {
@@ -188,6 +202,7 @@ export class Take {
 
   private goTo(b: number) {
     b = clamp(b, 0, T_END - 0.001)
+    this.used()
     const now = performance.now()
     if (this.cutting && this.cut) { this.cut.to = b; this.heading = chapterAt(b); return }
     this.stopAuto()
@@ -250,7 +265,7 @@ export class Take {
         if (now >= this.holdUntil) {
           const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
           if (i < 0) this.tT = this.goal = next
-          else { this.tT = this.goal = RESTS[i]; this.holdUntil = now + this.holds[i] * 1000 }
+          else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
       } else if (this.snap) {
         const rem = this.snap.to - this.tT, dir = Math.sign(rem)
@@ -273,6 +288,7 @@ export class Take {
     const minute = t >= 32.4 && t < 61.3 && this.fmtTime.format(new Date()) !== this.clockStr
     if (t !== this.lastT || ambient || minute) { seek(this, t); this.lastT = t }
     this.drawCut(now)
+    this.drawHold(now)
     const want = this.heading >= 0 ? this.heading : this.chapter
     if (want >= 0 && want !== this.lensAt) {
       this.lensAt = want
@@ -297,7 +313,7 @@ export class Take {
       if (this.paused || e.ctrlKey || (e.target as Element | null)?.closest?.('[data-take-prevent]')) return
       e.preventDefault()
       if (this.cutting) return
-      this.stopAuto()
+      this.stopAuto(); this.used()
       const d = clamp(e.deltaY * (e.deltaMode === 1 ? 32 : e.deltaMode === 2 ? this.L.vh : 1), -400, 400)
       this.goal = clamp(this.goal + d / this.L.BEAT_PX, 0, T_END + 1.4)
       // a trackpad streams small deltas that already carry the system's inertia, so the film
@@ -309,7 +325,7 @@ export class Take {
     }, { passive: false })
     this.on('scroll', () => {
       if (this.paused || this.cutting || Math.abs(window.scrollY - this.ownY) < 2) return
-      this.stopAuto()
+      this.stopAuto(); this.used()
       this.goal = window.scrollY / this.L.BEAT_PX; this.tau = FINE_TAU; this.src = 'native'
     }, { passive: true })
     this.on('touchstart', () => { if (!this.paused) this.stopAuto() }, { passive: true })
@@ -318,6 +334,7 @@ export class Take {
       if (this.paused || this.cutting || e.defaultPrevented || e.metaKey || e.ctrlKey || e.altKey) return
       if (el && (el.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.closest('[role="dialog"]'))) return
       const base = this.snap ? this.snap.to : this.tT
+      if (/^(Space|Arrow|Page|Home|End)/.test(e.code)) this.used()
       const onControl = el?.tagName === 'BUTTON' || el?.tagName === 'A' || el?.getAttribute('role') === 'button'
       if (e.code === 'Space' && !onControl) { e.preventDefault(); this.setPlaying(!this.playing) }
       else if (['ArrowDown', 'PageDown', 'ArrowRight'].includes(e.code)) { e.preventDefault(); this.snapTo(this.restFrom(base, 1)) }
@@ -327,13 +344,17 @@ export class Take {
     })
     this.on('resize', () => {
       clearTimeout(this.resizeTimer)
-      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); setRim(this.E.play, 7); this.rasterBackdrop() }, 120)
+      this.resizeTimer = window.setTimeout(() => { this.L = computeLayout(this); this.clickable = undefined; this.goal = this.tT; this.writeScroll(true); seek(this, this.tT); this.E.navLens.relayout(); this.rasterBackdrop() }, 120)
     })
 
     // controls inside the film
     E.play.addEventListener('click', () => this.setPlaying(!this.playing))
     E.chap.forEach((b, i) => b.addEventListener('click', () => this.goTo(CHAPTERS[i].beat)))
-    E.tl.addEventListener('click', e => { const r = E.tl.getBoundingClientRect(); this.goTo(clamp((e.clientX - r.left) / r.width) * T_END) })
+    // a segment of the timeline bar is its chapter
+    E.tl.addEventListener('click', e => {
+      const i = E.segs.findIndex(s => s.contains(e.target as Node))
+      if (i >= 0) this.goTo(CHAPTERS[i].beat)
+    })
     E.projectsBtn.addEventListener('click', () => this.opts.onOpenProject(0, E.projectsBtn.getBoundingClientRect()))
     E.allBtn.addEventListener('click', () => this.opts.onOpenProject(0, E.allBtn.getBoundingClientRect()))
     E.tiles.forEach((o, i) => {

@@ -622,12 +622,13 @@ function sceneCursor(k: Take, t: number) {
 
 const DARK: readonly [number, number][] = [[18.7, 38.35], [60.95, 62.45], [68.45, 68.8]]
 
-/** The timeline's playhead and the timecode, at beat t. */
+/** The timeline bar at beat t: each chapter's segment fills with the part of it seen. */
 export function hudAt(k: Take, t: number) {
   const { E } = k
-  E.ph.style.left = `calc(${((t / T_END) * 100).toFixed(3)}% - 1px)`
-  const secs = t * 0.5
-  E.tc.textContent = `beat ${t.toFixed(1).padStart(4, '0')} / ${T_END} · ${String(Math.floor(secs / 60)).padStart(2, '0')}:${(secs % 60).toFixed(1).padStart(4, '0')}`
+  E.segFills.forEach((f, i) => {
+    const a = CHAPTERS[i].beat, b = CHAPTERS[i + 1]?.beat ?? T_END
+    f.style.transform = `scaleX(${clamp((t - a) / (b - a)).toFixed(4)})`
+  })
 }
 
 // the nav's lens and highlight follow k.chapter, or the chapter a jump is heading for (Take)

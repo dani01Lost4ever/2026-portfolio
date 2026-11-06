@@ -41,7 +41,7 @@ section, except on `/` while the film runs (the film reads its own hash).
 | File | Notes |
 |------|-------|
 | `Take.ts` | The engine class: wheel/scroll/touch/keyboard input, smooth wheel, play with rest holds, loop, public API |
-| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `restHolds`, `CHAPTERS`, `BENTO_OPEN`, `CASE_BEAT` |
+| `timeline.ts` | `T_END` (71.5 beats), `RESTS`, `restHolds`, `CHAPTERS`, `chapterSpans`, `BENTO_OPEN`, `CASE_BEAT` |
 | `scenes.ts` | `seek(k, t)`: every style of the film as a function of the beat |
 | `build.ts` | Creates the film's DOM once from the content; marks decorative layers `aria-hidden` |
 | `layout.ts` | Every viewport-dependent size and position, computed on mount and on resize |
@@ -120,7 +120,8 @@ Time is in **beats**. The film is cut at 120 BPM (`SPB = 0.5` seconds per beat) 
 - **Keyboard**: arrows and Page Up/Down jump to the next or previous rest frame, Space plays the
   whole take at film speed, Home goes to the start and End to Contact. Keys are ignored in form
   fields and inside dialogs.
-- **Chrome**: chapter buttons, the timeline bar (click to seek), Play, and the brand (back to 0).
+- **Chrome**: chapter buttons, the timeline bar (a click on a segment goes to its chapter), Play,
+  and the brand (back to 0).
 
 `scenes.ts` keeps no state between frames: `seek(k, t)` runs every scene with the current beat and
 writes transforms, sizes and opacities. Motion comes from closed-form springs (`stepResp`, `spr`)
@@ -144,10 +145,13 @@ system's inertia (a wheel event under 40 px marks the next 600 ms as trackpad). 
 (touch, the scrollbar) is followed in `FINE_TAU` too. Ctrl + wheel is left to the browser's zoom.
 
 `RESTS` lists the finished, readable frames. The arrow keys and Page Up/Down glide rest to rest.
-Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.9 s
-to land plus the words that frame shows at 4 words a second, between 1.2 and 7 s, so the holds
-follow the CMS text. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in
-dev the engine is on `window.oneTake`).
+Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.6 s
+to land plus the words the eye reads on that frame (its title and headline, not the small print)
+at 6 words a second, between 1.2 and 4 s, so the holds follow the CMS text; with the default
+content the holds add up to about 30 s over a 36 s film. While the take holds, the Play button
+fills from the left (`--hold`, written by `Take.drawHold`), so the still frame reads as a pause and
+not as a hang. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in dev the
+engine is on `window.oneTake`).
 
 ### Chapters and URL hashes
 
@@ -186,15 +190,24 @@ between two moves:
 The nav's lens and its highlighted label move to the target chapter on the click, not on arrival
 (`heading` in `Take.ts`).
 
-### The chapter nav
+### The chrome
 
-The chapter nav (`#tk-chap`) and the Play button are capsules of glass: `backdrop-filter`
-blur and saturation over the film, a translucent tint that turns dark over dark scenes, and the rim
-light of the film's glass as a background (`setRim`, from `rrMaps` in `glass.ts`). A lens of thicker
-glass (`NavLens` in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping
-0.78) carries it to the next one, and it stretches with its speed. Under
-`prefers-reduced-transparency` the capsules are solid. The page header's nav uses the same capsule
-in CSS, with its last item as the lens.
+The film's header is set like the header of the window inside the film: the wordmark (`daniel.`,
+Archivo) with the role next to it, chapter labels in Geist, and Play as the one black pill (paper
+over dark scenes). `PageHeader`, on every other page, uses the same brand and type.
+
+The chapter nav (`#tk-chap`) is a capsule of glass: `backdrop-filter` blur and saturation over
+the film, a translucent tint that turns dark over dark scenes, and the rim light of the film's
+glass as a background (`setRim`, from `rrMaps` in `glass.ts`). A lens of thicker glass (`NavLens`
+in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping 0.78) carries it
+to the next one, and it stretches with its speed. Under `prefers-reduced-transparency` the capsule
+is solid. The page header's nav uses the same capsule in CSS, with its last item as the lens.
+
+Under the film the take is drawn as seven hairline segments, one per chapter and as long as its
+share of the take (`chapterSpans`); each fills with the part of its chapter seen (`hudAt` in
+`scenes.ts`, a `scaleX` per segment) and a click on one goes to that chapter. A one-line hint
+("Scroll, or press Space to play") sits under it until the first input of any kind
+(`#chrome.used`).
 
 ### The work grid
 
@@ -301,8 +314,8 @@ All functions catch errors and return the JSON fallback, so they **never throw**
 From the header comments in `src/index.css` and `src/take/take.css`, following
 `designs/take.html`:
 
-- Light paper page. Display type is Archivo 800 (expanded), text is Geist, small meta is Geist
-  Mono, chrome and kickers are Chivo Mono.
+- Light paper page. Display type is Archivo 800 (expanded), text and navigation are Geist, small
+  meta and kickers are Geist Mono (`--hud` and `--mono` are the same face).
 - Pills for buttons, big radii on cards.
 - No italics.
 - No hover motion.

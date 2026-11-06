@@ -1,7 +1,7 @@
 /* ==========================================================================
    One Take — page styles (designs/take.html)
-   Light paper page. Archivo 800 expanded for display, Geist for text,
-   Geist Mono for small meta, Chivo Mono for chrome and kickers.
+   Light paper page. Archivo 800 expanded for display, Geist for text and
+   navigation, Geist Mono for small meta and kickers.
    Pills for buttons, big radii on cards, no italics, no hover motion.
    The film's own styles live in src/take/take.css and reuse these tokens.
    ========================================================================== */
@@ -17,7 +17,7 @@
   --wm: "Archivo", "Arial Black", sans-serif;
   --ui: "Geist", system-ui, sans-serif;
   --mono: "Geist Mono", ui-monospace, monospace;
-  --hud: "Chivo Mono", ui-monospace, monospace;
+  --hud: "Geist Mono", ui-monospace, monospace; /* kickers and small meta, same face as --mono */
   --gutter: clamp(16px, 3vw, 40px);
   color-scheme: light;
 }
@@ -129,15 +129,16 @@ main { display: block; }
   /* a scroll edge instead of a bar: paper behind the brand, fading where the page slides under */
   background: linear-gradient(var(--paper) 60%, color-mix(in srgb, var(--paper) 0%, transparent));
 }
+/* the same brand as the film's chrome: the wordmark, then the role */
 .ph-brand {
-  font: 500 11.5px/1.25 var(--hud);
-  letter-spacing: .05em;
-  text-transform: uppercase;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 12px;
   white-space: nowrap;
   text-decoration: none;
 }
-.ph-brand b { font-weight: 600; }
-.ph-brand span { opacity: .55; }
+.ph-brand b { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 18px; line-height: 1; letter-spacing: -.01em; }
+.ph-brand span { font: 500 12.5px/1.2 var(--ui); opacity: .6; }
 .ph-logo { display: none; }
 @media (max-width: 520px) { .ph-full { display: none; } .ph-logo { display: inline; } }
 /* the same glass capsule as the film's chapter nav, with its last item as the lens */
@@ -149,11 +150,10 @@ main { display: block; }
 }
 @media (prefers-reduced-transparency: reduce) { .ph-nav { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); } }
 .ph-link {
-  padding: 7px 12px;
+  padding: 8px 13px;
   border-radius: 999px;
-  font: 500 11px/1 var(--hud);
-  letter-spacing: .06em;
-  text-transform: uppercase;
+  font: 500 13px/1 var(--ui);
+  letter-spacing: -.005em;
   text-decoration: none;
   color: var(--ink);
   transition: box-shadow .12s;
