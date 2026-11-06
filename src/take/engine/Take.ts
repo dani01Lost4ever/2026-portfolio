@@ -74,6 +74,7 @@ export class Take {
   private holdFrom = 0
   private holdUntil = 0
   private holdDrawn = 0
+  private spotDrawn = 0
   private paused = false
   private last = performance.now()
   private stillSince = performance.now()
@@ -210,6 +211,17 @@ export class Take {
     if (on !== this.E.chrome.classList.contains('invite')) this.E.chrome.classList.toggle('invite', on)
   }
 
+  /** The stage dims around the phone while the phone has you (Phone.focus); the chrome turns light over it. */
+  private drawSpot(now: number) {
+    const f = this.E.phone.focus(now)
+    if (Math.abs(f - this.spotDrawn) < 0.002 && (f === 0) === (this.spotDrawn === 0)) return
+    this.spotDrawn = f
+    const s = this.E.spot
+    s.style.display = f > 0.001 ? '' : 'none'
+    s.style.opacity = f.toFixed(3)
+    this.E.chrome.classList.toggle('dim', f > 0.5)
+  }
+
   private placeInvite() {
     const L = this.L
     this.E.invite.style.setProperty('--invite-y', (L.dotCy + L.dd / 2 + Math.max(36, 0.18 * L.wm.F)).toFixed(1) + 'px')
@@ -324,6 +336,7 @@ export class Take {
     this.drawInvite(t)
     this.E.phone.setAvailable(!this.paused && !this.cut && t >= PHONE_WINDOW[0] && t < PHONE_WINDOW[1], now)
     this.E.phone.step(now, this.idle)
+    this.drawSpot(now)
     const want = this.heading >= 0 ? this.heading : this.chapter
     if (want >= 0 && want !== this.lensAt) {
       this.lensAt = want

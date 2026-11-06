@@ -141,29 +141,21 @@ main { display: block; }
 .ph-brand span { font: 500 12.5px/1.2 var(--ui); opacity: .6; }
 .ph-logo { display: none; }
 @media (max-width: 520px) { .ph-full { display: none; } .ph-logo { display: inline; } }
-/* the same glass capsule as the film's chapter nav, with its last item as the lens */
-.ph-nav {
-  display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px;
-  background: rgba(255, 255, 255, .24) linear-gradient(rgba(255, 255, 255, .45), rgba(255, 255, 255, 0) 55%);
-  -webkit-backdrop-filter: blur(14px) saturate(1.8); backdrop-filter: blur(14px) saturate(1.8);
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .6), inset 0 1px 0 rgba(255, 255, 255, .5), 0 10px 28px -12px rgba(0, 0, 0, .3), 0 1px 3px rgba(0, 0, 0, .07);
-}
-@media (prefers-reduced-transparency: reduce) { .ph-nav { -webkit-backdrop-filter: none; backdrop-filter: none; background: var(--paper); } }
+/* the same black pill as the film's chapter nav, with its last item lit */
+.ph-nav { display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: var(--ink); color: #F2EEE6; }
 .ph-link {
   padding: 8px 13px;
   border-radius: 999px;
   font: 500 13px/1 var(--ui);
   letter-spacing: -.005em;
   text-decoration: none;
-  color: var(--ink);
-  transition: box-shadow .12s;
+  color: inherit;
+  opacity: .7;
+  transition: opacity .12s, background-color .12s;
 }
-.ph-link:hover { box-shadow: inset 0 0 0 1px var(--rule); }
-.ph-pill {
-  background: rgba(255, 255, 255, .66) linear-gradient(rgba(255, 255, 255, .7), rgba(255, 255, 255, 0) 60%);
-  box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .95), 0 3px 10px -3px rgba(0, 0, 0, .22), 0 0 0 .5px rgba(0, 0, 0, .05);
-}
-.ph-pill:hover { box-shadow: inset 0 0 0 .5px rgba(255, 255, 255, .95), 0 4px 14px -3px rgba(0, 0, 0, .28), 0 0 0 1px rgba(0, 0, 0, .12); }
+.ph-link:hover { opacity: 1; }
+.ph-pill { opacity: 1; font-weight: 600; background: rgba(255, 255, 255, .2); }
+.ph-pill:hover { background: rgba(255, 255, 255, .28); }
 .ph-link:active { transform: scale(.97); }
 
 /* ---------- footer ---------- */

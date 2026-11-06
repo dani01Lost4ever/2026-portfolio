@@ -1,9 +1,8 @@
 /**
- * navGlass.ts — the chapter nav as a capsule of liquid glass, and the lens inside it that marks
- * the chapter on screen.
+ * navGlass.ts — the lens inside the chapter nav that marks the chapter on screen (the nav itself is
+ * a black pill like Play, in take.css; setRim is kept for a capsule of glass).
  *
- * The capsule blurs the film behind it and carries the same rim light as the glass in the film
- * (rrMaps). The lens runs on real time, not on the film's clock: a spring carries it to the
+ * The lens runs on real time, not on the film's clock: a spring carries it to the
  * chapter, and it stretches along the way with its speed, like a drop pulled across the glass.
  */
 
@@ -28,12 +27,11 @@ export class NavLens {
   private i = -1
   private moving = false
 
-  private readonly nav: HTMLElement
   private readonly lens: HTMLElement
   private readonly items: HTMLElement[]
 
-  constructor(nav: HTMLElement, lens: HTMLElement, items: HTMLElement[]) {
-    this.nav = nav; this.lens = lens; this.items = items
+  constructor(lens: HTMLElement, items: HTMLElement[]) {
+    this.lens = lens; this.items = items
   }
 
   /** Glide to item i (or jump there, the first time and after a relayout). */
@@ -49,9 +47,6 @@ export class NavLens {
 
   /** Remeasure after a resize or a font swap: the lens lands where its item now is. */
   relayout() {
-    setRim(this.nav, 9)
-    const b = this.items[Math.max(0, this.i)]
-    if (b?.offsetHeight) this.lens.style.setProperty('--rim', `url(${rrMaps(b.offsetWidth, b.offsetHeight, b.offsetHeight / 2, 7).hl})`)
     if (this.i >= 0) this.to(this.i, true)
   }
 

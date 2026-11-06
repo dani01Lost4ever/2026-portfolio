@@ -66,6 +66,9 @@ export class Phone {
   private state: State = 'locked'
   private avail = false
   private shown = false
+  // the spotlight: 1 while the phone has you (its hint is up, or it is unlocked), on a spring
+  private focusM: Move | null = null
+  private focusOn = false
   private homeM: Move | null = null
   private appM: Move | null = null
   private from = { x: 0, y: 0, s: 0.2 }
@@ -173,11 +176,16 @@ export class Phone {
   step(now: number, idle: number) {
     const hintOn = this.avail && this.state === 'locked' && idle > 0.8
     this.hint.classList.toggle('show', hintOn)
+    const want = this.avail && (hintOn || this.state !== 'locked')
+    if (want !== this.focusOn) { this.focusOn = want; this.focusM = move(at(this.focusM, now), want ? 1 : 0, now, want ? 0.6 : 0.4, 1) }
     const s = this.hooks.clock()
     if (s !== this.lastClock) { this.lastClock = s; this.time.textContent = s }
     const live = this.shown || this.homeM !== null || this.appM !== null || this.pageM !== null || this.pageDrag !== null || this.dragging !== null || this.cardDrag !== null
     if (live) this.draw(now)
   }
+
+  /** How much the stage is dimmed around the phone, 0–1. */
+  focus(now: number): number { return this.focusM ? at(this.focusM, now) : 0 }
 
   destroy() { this.offKey() }
 
@@ -213,6 +221,7 @@ export class Phone {
     this.card.style.display = s ? 'none' : ''
     this.frame.style.display = s?.frame ? '' : 'none'
     this.app.style.background = s?.frame ? o.p.bg : ''
+    this.app.classList.toggle('framed', !!s?.frame)
     if (s?.shot) this.appImg.src = `/phone/${o.p.slug}.jpg`
     else if (s?.frame) { this.frame.title = o.p.title; this.frame.src = s.frame }
     else this.card.innerHTML = cardHTML(o.p)

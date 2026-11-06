@@ -147,7 +147,11 @@ idle motion so the engine keeps drawing only those frames while still.
 ### The playable phone
 
 While the film rests on the phone beside the window (`PHONE_WINDOW`, beats 45.0–46.1), the lock
-screen it draws becomes a phone you can use (`phone.ts`, `Phone`): the notifications can be
+screen it draws becomes a phone you can use (`phone.ts`, `Phone`). Once it has you (its hint is
+up, or it is unlocked) the stage dims around it: `#tk-spot` is a transparent box on the phone's
+rect whose huge box-shadow covers the rest of the stage, faded by `Take.drawSpot` from
+`Phone.focus()`, a real-time spring; the chrome turns light over it (`#chrome.dim`). The
+notifications can be
 swiped away (`sceneLock` writes each card's rect to `phone.cardRects` and reads back
 `cardShift(j)`); swipe up, scroll on it or tap the hint to unlock. The home has two pages, swiped,
 dragged or turned with the dots: the apps (the projects as poster icons, plus Mail, which opens
@@ -245,12 +249,11 @@ The film's header is set like the header of the window inside the film: the word
 Archivo) with the role next to it, chapter labels in Geist, and Play as the one black pill (paper
 over dark scenes). `PageHeader`, on every other page, uses the same brand and type.
 
-The chapter nav (`#tk-chap`) is a capsule of glass: `backdrop-filter` blur and saturation over
-the film, a translucent tint that turns dark over dark scenes, and the rim light of the film's
-glass as a background (`setRim`, from `rrMaps` in `glass.ts`). A lens of thicker glass (`NavLens`
-in `navGlass.ts`) marks the chapter: a real-time spring (response 0.42 s, damping 0.78) carries it
-to the next one, and it stretches with its speed. Under `prefers-reduced-transparency` the capsule
-is solid. The page header's nav uses the same capsule in CSS, with its last item as the lens.
+The chapter nav (`#tk-chap`) is a black pill like Play (paper over dark scenes and while the
+phone has the spotlight, `#chrome.dim`). A lighter lens (`NavLens` in `navGlass.ts`) marks the
+chapter: a real-time spring (response 0.42 s, damping 0.78) carries it to the next one, and it
+stretches with its speed. The page header's nav uses the same pill in CSS, with its last item lit.
+(`setRim` in `navGlass.ts` is kept for a capsule of glass, no longer used by the chrome.)
 
 Under the film the take is drawn as seven hairline segments, one per chapter and as long as its
 share of the take (`chapterSpans`); each fills with the part of its chapter seen (`hudAt` in

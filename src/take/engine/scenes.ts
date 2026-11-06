@@ -304,6 +304,8 @@ function sceneLock(k: Take, t: number) {
   const bw = 0.036 * L.phone.w * spr(t, 38.45)
   show(E.bezel, bw > 0.3)
   if (bw > 0.3) { boxTL(E.bezel, R.x - bw, R.y - bw, R.w + 2 * bw, R.h + 2 * bw); E.bezel.style.borderRadius = R.r + bw + 'px' }
+  // the spotlight's hole is the phone with its bezel (Take.drawSpot fades it)
+  boxTL(E.spot, R.x - bw, R.y - bw, R.w + 2 * bw, R.h + 2 * bw); E.spot.style.borderRadius = R.r + bw + 'px'
   const sb = spr(t, 38.8, SP.pop)
   E.sbtn.forEach((b, j) => {
     show(b, sb > 0.01)

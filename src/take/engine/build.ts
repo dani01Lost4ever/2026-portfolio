@@ -232,6 +232,8 @@ export function buildEls(k: Take) {
   const cursor = mk('div', 'abs', curL, ICO.cursor); cursor.id = 'cursor'
 
   // the shutter a far chapter jump closes over the film, below the chrome
+  // the spotlight: a hole over the phone in a scrim across the stage, while the phone has you (phone.ts, Take.drawSpot)
+  const spot = hide(mk('div', 'abs', stage)); spot.id = 'tk-spot'; spot.style.display = 'none'
   const cutL = mk('div', 'abs', stage); cutL.id = 'tk-cut'
   const cutIris = makeIris(cutL); hide(cutIris.s); cutIris.s.style.display = 'none'
 
@@ -254,7 +256,7 @@ export function buildEls(k: Take) {
     <button id="tk-invite" type="button" tabindex="-1" aria-hidden="true"><span class="disc"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg></span><span class="lbl">Play the take</span><span class="sub">About a minute · or just scroll</span></button>`
   const chapNav = chrome.querySelector('#tk-chap') as HTMLElement
   const chap = CHAPTERS.map(ch => { const b = mk('button', null, chapNav); b.type = 'button'; b.textContent = ch.label; return b })
-  const navLens = new NavLens(chapNav, chapNav.querySelector('.lens') as HTMLElement, chap)
+  const navLens = new NavLens(chapNav.querySelector('.lens') as HTMLElement, chap)
   const tl = chrome.querySelector('#tk-tl') as HTMLDivElement
   const segs = chapterSpans().map(len => { const s = mk('div', 'seg', tl); s.style.flexGrow = String(len); mk('i', null, s); return s })
   const segFills = segs.map(s => s.firstElementChild as HTMLElement)
@@ -270,7 +272,7 @@ export function buildEls(k: Take) {
     frame, fMold, fPaint, fMat, fImg,
     cta, ctaLb: ctaL2, ck1, ck2, rdBarA, rdBarB, route, plane,
     wshadow, wmat, wprint, wiris, wmold, placard, pl, plBtn, leaves, leafG,
-    ring, lp, lpC, cursor, cutIris,
+    ring, lp, lpC, cursor, cutIris, spot,
     chrome, chap, navLens, tl, segs, segFills, invite: chrome.querySelector('#tk-invite') as HTMLButtonElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
   }
