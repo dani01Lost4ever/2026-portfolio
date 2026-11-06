@@ -47,6 +47,7 @@ export class Phone {
   private from = { x: 0, y: 0, s: 0.2 }
   private drag: { id: number; y0: number; x0: number } | null = null
   private lastClock = ''
+  private offKey: () => void = () => {}
 
   constructor(lock: HTMLElement, c: TakeContent, clock: () => string) {
     this.clock = clock
@@ -76,7 +77,7 @@ export class Phone {
     docked.forEach(p => icon(p, dock, false))
 
     const app = mk('div', 'ph-app', el)
-    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
+    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"></div><div class="ph-edge"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
     this.app = app
     this.appScroll = app.querySelector('.ph-scroll') as HTMLDivElement
     this.appImg = app.querySelector('img') as HTMLImageElement
@@ -160,14 +161,16 @@ export class Phone {
     this.hint.addEventListener('click', () => this.unlock(performance.now()))
     ;(home.querySelector('.ph-homebar') as HTMLButtonElement).addEventListener('click', e => { e.stopPropagation(); this.lock(performance.now()) })
     ;(app.querySelector('.ph-homebar') as HTMLButtonElement).addEventListener('click', e => { e.stopPropagation(); this.closeApp() })
-    // a swipe up unlocks; so does a scroll on the locked phone
+    // a swipe up unlocks, and so does a scroll on the locked phone; in an app a swipe up from
+    // the bottom edge (the home bar's strip) goes home, like on the real thing
     el.addEventListener('pointerdown', e => {
-      if (!this.avail || this.state !== 'locked') return
-      this.drag = { id: e.pointerId, y0: e.clientY, x0: e.clientX }
+      if (!this.avail) return
+      const R = el.getBoundingClientRect(), edge = e.clientY > R.bottom - R.height * 0.08
+      if (this.state === 'locked' || (this.state === 'app' && edge)) this.drag = { id: e.pointerId, y0: e.clientY, x0: e.clientX }
     })
     el.addEventListener('pointermove', e => {
       if (!this.drag || e.pointerId !== this.drag.id) return
-      if (this.drag.y0 - e.clientY > 48) { this.drag = null; this.unlock(performance.now()) }
+      if (this.drag.y0 - e.clientY > 48) { this.drag = null; if (this.state === 'locked') this.unlock(performance.now()); else this.closeApp() }
     })
     const end = () => { this.drag = null }
     el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end)
@@ -177,8 +180,13 @@ export class Phone {
       else if (this.state === 'home') e.preventDefault()
       // in an app the wheel scrolls the screenshot natively
     }, { passive: false })
-    el.addEventListener('keydown', e => { if (e.key === 'Escape' && this.state === 'app') { e.stopPropagation(); this.closeApp() } })
+    // Escape closes the app wherever the focus is
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape' && this.avail && this.state === 'app') { e.stopPropagation(); this.closeApp() } }
+    window.addEventListener('keydown', onKey, true)
+    this.offKey = () => window.removeEventListener('keydown', onKey, true)
   }
+
+  destroy() { this.offKey() }
 }
 
 function esc(s: string): string {

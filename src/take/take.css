@@ -103,7 +103,9 @@
 .take .ph-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .take .ph-scroll::-webkit-scrollbar { display: none; }
 .take .ph-scroll img { display: block; width: 100%; height: auto; }
-.take .ph-app .ph-homebar { background: rgba(0, 0, 0, .55); mix-blend-mode: multiply; }
+/* over an app the home bar is white on dark screens and dark on light ones, on a soft fade at the bottom edge */
+.take .ph-app .ph-edge { position: absolute; left: 0; right: 0; bottom: 0; height: calc(34px * var(--u)); background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .28)); pointer-events: none; }
+.take .ph-app .ph-homebar { background: #fff; mix-blend-mode: difference; }
 
 /* mac window */
 .take #win { background: var(--card); overflow: hidden; color: var(--ink); box-shadow: 0 50px 100px rgba(30, 24, 14, .22), 0 0 0 1px rgba(11, 11, 12, .08); }

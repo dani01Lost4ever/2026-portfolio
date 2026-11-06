@@ -158,6 +158,7 @@ export class Take {
     this.off.forEach(f => f())
     this.off.length = 0
     this.E.wordGL?.destroy()
+    this.E.phone.destroy()
     this.E.wipeRect?.setAttribute('width', '0')
     this.E.wipeLine?.setAttribute('x', '-4')
     this.root.replaceChildren()
