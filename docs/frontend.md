@@ -151,7 +151,8 @@ screen it draws becomes a phone you can use (`phone.ts`, `Phone`): swipe up, scr
 the hint to unlock; a home screen with the projects as apps (poster icons, the four with a
 capture in the dock); tapping one of those opens a scrollable screenshot of the real app at phone
 size (`public/phone/<slug>.jpg`, 390 css px wide at 2×, the first 2600 px of the page; the others
-just nudge). The home bar closes an app or locks the phone. The played take stops there instead
+just nudge). The home bar closes an app or locks the phone; a swipe up from the bottom edge or
+Escape closes an app too. The played take stops there instead
 of holding (Play reads "Continue the take"), and any scroll of the film locks the phone again and
 goes on. The phone lives inside the film's `#lock`, so it has the film's rect, bezel and radius;
 its sizes are in `--pk`, the lock's scale, written by `sceneLock`; its springs run on real time
