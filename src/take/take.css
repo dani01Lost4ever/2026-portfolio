@@ -103,6 +103,21 @@
 .take .ph-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .take .ph-scroll::-webkit-scrollbar { display: none; }
 .take .ph-scroll img { display: block; width: 100%; height: auto; }
+/* an app without a capture opens on the project's card */
+.take .ph-card { color: var(--ink); background: var(--card); min-height: 100%; }
+.take .ph-hero { width: 100%; aspect-ratio: 1; }
+.take .ph-hero svg { width: 100%; height: 100%; }
+.take .ph-body { padding: calc(22px * var(--u)) calc(22px * var(--u)) calc(60px * var(--u)); }
+.take .ph-k { font: 500 calc(10.5px * var(--u))/1.3 var(--mono); letter-spacing: .03em; color: var(--muted); }
+.take .ph-body h3 { margin: calc(8px * var(--u)) 0 0; font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(30px * var(--u)); line-height: 1.02; letter-spacing: -.01em; }
+.take .ph-sub { margin: calc(8px * var(--u)) 0 0; font: 500 calc(15px * var(--u))/1.35 var(--ui); }
+.take .ph-ress { display: flex; flex-wrap: wrap; gap: calc(14px * var(--u)) calc(22px * var(--u)); margin: calc(20px * var(--u)) 0 0; }
+.take .ph-res b { display: block; font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: calc(24px * var(--u)); line-height: 1.05; }
+.take .ph-res span { font: 500 calc(11px * var(--u))/1.3 var(--ui); color: var(--muted); }
+.take .ph-desc { margin: calc(18px * var(--u)) 0 0; font: 400 calc(13.5px * var(--u))/1.55 var(--ui); color: var(--ink-2); }
+.take .ph-tags { display: flex; flex-wrap: wrap; gap: calc(6px * var(--u)); margin: calc(18px * var(--u)) 0 0; }
+.take .ph-tags span { font: 500 calc(10px * var(--u))/1 var(--mono); padding: calc(6px * var(--u)) calc(9px * var(--u)); border-radius: 999px; box-shadow: inset 0 0 0 1px var(--rule); }
+.take .ph-cta { all: unset; cursor: pointer; display: block; margin: calc(24px * var(--u)) 0 0; padding: calc(13px * var(--u)) calc(18px * var(--u)); border-radius: 999px; background: var(--ink); color: #F2EEE6; font: 600 calc(13px * var(--u))/1 var(--ui); text-align: center; }
 /* over an app the home bar is white on dark screens and dark on light ones, on a soft fade at the bottom edge */
 .take .ph-app .ph-edge { position: absolute; left: 0; right: 0; bottom: 0; height: calc(34px * var(--u)); background: linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, .28)); pointer-events: none; }
 .take .ph-app .ph-homebar { background: #fff; mix-blend-mode: difference; }

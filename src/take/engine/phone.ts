@@ -13,7 +13,7 @@
 
 import { mk } from './dom'
 import { clamp, sprMs } from './math'
-import type { TakeContent } from './content'
+import type { TakeContent, TakeProject } from './content'
 
 /** Beats the phone is at rest beside the window and can be used (the lock screen's edit mode starts at 46.15). */
 export const PHONE_WINDOW: readonly [number, number] = [45.0, 46.1]
@@ -36,8 +36,10 @@ export class Phone {
   private readonly app: HTMLDivElement
   private readonly appScroll: HTMLDivElement
   private readonly appImg: HTMLImageElement
-  private readonly icons: { el: HTMLButtonElement; slug: string; shot: boolean }[] = []
+  private readonly card: HTMLDivElement
+  private readonly icons: { el: HTMLButtonElement; p: TakeProject; shot: boolean }[] = []
   private readonly clock: () => string
+  private readonly onNavigate: (path: string) => void
 
   private state: State = 'locked'
   private avail = false
@@ -49,8 +51,8 @@ export class Phone {
   private lastClock = ''
   private offKey: () => void = () => {}
 
-  constructor(lock: HTMLElement, c: TakeContent, clock: () => string) {
-    this.clock = clock
+  constructor(lock: HTMLElement, c: TakeContent, clock: () => string, onNavigate: (path: string) => void) {
+    this.clock = clock; this.onNavigate = onNavigate
     const el = mk('div', 'ph', lock)
     el.setAttribute('data-take-prevent', '')
     this.el = el
@@ -64,11 +66,11 @@ export class Phone {
     const grid = home.querySelector('.ph-grid') as HTMLDivElement, dock = home.querySelector('.ph-dock') as HTMLDivElement
     const apps = c.projects.slice(0, 12)
     const docked = apps.filter(p => SHOTS.has(p.slug)).slice(0, 4), rest = apps.filter(p => !docked.includes(p))
-    const icon = (p: TakeContent['projects'][number], parent: HTMLElement, label: boolean) => {
+    const icon = (p: TakeProject, parent: HTMLElement, label: boolean) => {
       const b = mk('button', 'ph-app-ic' + (p.light ? ' light' : ''), parent)
       b.type = 'button'; b.tabIndex = -1; b.setAttribute('aria-label', p.title)
       b.innerHTML = `<span class="ph-ic" style="background:${p.bg}"><svg aria-hidden="true"><use href="#${p.sym}" width="100%" height="100%"/></svg></span>${label ? `<span class="ph-lbl">${esc(p.title)}</span>` : ''}`
-      const o = { el: b, slug: p.slug, shot: SHOTS.has(p.slug) }
+      const o = { el: b, p, shot: SHOTS.has(p.slug) }
       this.icons.push(o)
       b.addEventListener('click', e => { e.stopPropagation(); this.open(o) })
       return o
@@ -77,10 +79,15 @@ export class Phone {
     docked.forEach(p => icon(p, dock, false))
 
     const app = mk('div', 'ph-app', el)
-    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"></div><div class="ph-edge"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
+    app.innerHTML = `<div class="ph-scroll"><img alt="" decoding="async"><div class="ph-card"></div></div><div class="ph-edge"></div><button type="button" class="ph-homebar" tabindex="-1" aria-label="Home"></button>`
     this.app = app
     this.appScroll = app.querySelector('.ph-scroll') as HTMLDivElement
     this.appImg = app.querySelector('img') as HTMLImageElement
+    this.card = app.querySelector('.ph-card') as HTMLDivElement
+    this.card.addEventListener('click', e => {
+      const a = (e.target as HTMLElement).closest<HTMLElement>('[data-path]')
+      if (a) { e.stopPropagation(); this.onNavigate(a.dataset.path!) }
+    })
 
     this.bind(home, app)
     this.draw(performance.now())
@@ -119,13 +126,16 @@ export class Phone {
     if (this.appM) this.appM = move(at(this.appM, now), 0, now, 0.4, 1)
   }
 
-  private open(o: { el: HTMLButtonElement; slug: string; shot: boolean }) {
+  /** Every app opens: the ones with a capture on the real thing, the others on a card of the project. */
+  private open(o: { el: HTMLButtonElement; p: TakeProject; shot: boolean }) {
     if (this.state !== 'home') return
     const now = performance.now()
-    if (!o.shot) { o.el.classList.remove('nudge'); void o.el.offsetWidth; o.el.classList.add('nudge'); return }
     const R = this.el.getBoundingClientRect(), I = o.el.querySelector('.ph-ic')!.getBoundingClientRect()
     this.from = { x: (I.left - R.left) / R.width, y: (I.top - R.top) / R.height, s: I.width / R.width }
-    this.appImg.src = `/phone/${o.slug}.jpg`
+    this.appImg.style.display = o.shot ? '' : 'none'
+    this.card.style.display = o.shot ? 'none' : ''
+    if (o.shot) this.appImg.src = `/phone/${o.p.slug}.jpg`
+    else this.card.innerHTML = cardHTML(o.p)
     this.appScroll.scrollTop = 0
     this.state = 'app'
     this.appM = move(0, 1, now, 0.5, 0.86)
@@ -187,6 +197,23 @@ export class Phone {
   }
 
   destroy() { this.offKey() }
+}
+
+/** The project as an app page: poster, name, the headline, the numbers, the story, and the way to the case study. */
+function cardHTML(p: TakeProject): string {
+  const res = p.results.map(r => `<div class="ph-res"><b>${esc(r.value)}</b><span>${esc(r.label)}</span></div>`).join('')
+  const tags = p.tags.slice(0, 6).map(t => `<span>${esc(t)}</span>`).join('')
+  return `
+    <div class="ph-hero" style="background:${p.bg}"><svg aria-hidden="true"><use href="#${p.sym}" width="100%" height="100%"/></svg></div>
+    <div class="ph-body">
+      <div class="ph-k">${esc(p.n)} · ${esc(p.year)}${p.role ? ' · ' + esc(p.role) : ''}</div>
+      <h3>${esc(p.title)}</h3>
+      <p class="ph-sub">${esc(p.sub)}</p>
+      ${res ? `<div class="ph-ress">${res}</div>` : ''}
+      <p class="ph-desc">${esc(p.description)}</p>
+      ${tags ? `<div class="ph-tags">${tags}</div>` : ''}
+      <button type="button" class="ph-cta" tabindex="-1" data-path="/project/${esc(p.slug)}">Read the case study →</button>
+    </div>`
 }
 
 function esc(s: string): string {
