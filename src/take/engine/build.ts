@@ -14,6 +14,7 @@ import { GlassWordGL } from './glassWordGL'
 import { ICO } from './icons'
 import { makeIris, type Iris } from './iris'
 import { NavLens } from './navGlass'
+import { Phone } from './phone'
 import type { Take } from './Take'
 import { chapterSpans, CHAPTERS } from './timeline'
 
@@ -134,6 +135,8 @@ export function buildEls(k: Take) {
   const pT = mline(player.gc, c.track?.title ?? '', 'cw'), pA = mline(player.gc, c.track?.artist ?? '', 'cw')
   const pBtn = (['prev', 'play', 'next'] as const).map(n => mk('div', 'a', player.gc, ICO[n]))
   const pBarA = mk('div', 'a p-bar-a', player.gc), pBarB = mk('div', 'a p-bar-b', player.gc)
+  // the playable phone, over the lock screen (phone.ts)
+  const phone = new Phone(lock, c, () => k.clock())
 
   // mac window
   const win = mk('div', 'abs', winL); win.id = 'win'
@@ -260,7 +263,7 @@ export function buildEls(k: Take) {
     scroller, stage, wall, world, caseL, lockL, winL, gooL, titleL, frameL, ctaL, curL, wipeRect, wipeLine,
     wm, letters, tiles, workHead, workCount, allBtn,
     gw, word, wordGL, tb, tbLabel, tbIcons, trackA, trackB, knob, slRaw, slTri, orb, csub, cmeta, info, leadP, leadS, tagsL, caseLink, caseA, res,
-    bezel, sbtn, lock, date, digits, cards, player, pArt, pT, pA, pBtn, pBarA, pBarB,
+    bezel, sbtn, lock, date, digits, cards, player, pArt, pT, pA, pBtn, pBarA, pBarB, phone,
     win, hdrWm, nav, hdrLine, pExp, pAbout, expH, expS, years, axis, rows, nowDot, nowRing, abH, abB, abBs,
     prName, prRole, prStack, sw, swRing, prSkills, prEng, seg, segPill, segBase, segTop, segTopT,
     island, blind, roller, lights, tabPill, tabs, url, urlT,

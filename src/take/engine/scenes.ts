@@ -297,6 +297,7 @@ function sceneLock(k: Take, t: number) {
   if (!vis) return
   const R = lockRect(k, t), kk = Math.min(R.h / 900, R.w / 440), kr = kk / L.kFull
   boxTL(E.lock, R.x, R.y, R.w, R.h); E.lock.style.borderRadius = R.r + 'px'
+  E.lock.style.setProperty('--pk', kk.toFixed(4)) // the playable phone's unit (phone.ts)
   // long-press puts the lock screen in edit mode: it empties, so only the wallpaper lifts
   const edit = 1 - (spr(t, 46.15) - spr(t, 47.0, SP.pop))
   // the bezel grows out of the screen edge

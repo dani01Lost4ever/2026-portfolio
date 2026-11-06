@@ -4,8 +4,9 @@
  * Scroll is the film's clock: 1 beat = BEAT_PX of page scroll, and the film stays wherever
  * the scroll leaves it. Wheel input moves a goal the film glides to: over a mouse wheel's
  * notches, closely behind a trackpad's stream. Touch and the scrollbar stay native. Space
- * plays the take at 120 BPM, holding on each rest frame to read it, and stops on the wordmark
- * at the end (scrolling past the end goes round to the start); arrows jump rest to rest.
+ * plays the take at 120 BPM, holding on each rest frame to read it, stops on the phone beside
+ * the window so it can be used (phone.ts), and stops on the wordmark at the end (scrolling past
+ * the end goes round to the start); arrows jump rest to rest.
  *
  * Jumping to a chapter plays the film there when the chapter is a few beats ahead; anything
  * further, or behind, is a cut: the film's own iris closes over the frame, the take jumps
@@ -18,6 +19,7 @@ import { computeLayout, type Lay } from './layout'
 import { setIris } from './iris'
 import { clamp, eio, lerp, SPB, sprMs } from './math'
 import { hudAt, idleOn, seek, tile0Screen } from './scenes'
+import { PHONE_WINDOW } from './phone'
 import { CASE_BEAT, chapterAt, CHAPTERS, restHolds, RESTS, T_END } from './timeline'
 import type { ChapterId } from '../TakeContext'
 
@@ -180,7 +182,7 @@ export class Take {
     this.used()
     const b = this.E.play
     b.setAttribute('aria-pressed', String(v))
-    ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : 'Play the take'
+    ;(b.querySelector('span') as HTMLSpanElement).textContent = v ? 'Pause' : this.tT > 0.5 ? 'Continue the take' : 'Play the take'
     b.querySelector('path')?.setAttribute('d', v ? 'M1 .5h3v9H1zM6 .5h3v9H6z' : 'M1 0.5v9l8-4.5z')
   }
 
@@ -287,6 +289,7 @@ export class Take {
           const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
           if (i < 0) this.tT = this.goal = next
           else if (RESTS[i] >= T_END) { this.tT = this.goal = 0; this.setPlaying(false) } // the take ends on the wordmark; it does not go round again
+          else if (RESTS[i] >= PHONE_WINDOW[0] && RESTS[i] < PHONE_WINDOW[1]) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
           else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
       } else if (this.snap) {
@@ -318,6 +321,8 @@ export class Take {
     this.drawCut(now)
     this.drawHold(now)
     this.drawInvite(t)
+    this.E.phone.setAvailable(!this.paused && !this.cut && t >= PHONE_WINDOW[0] && t < PHONE_WINDOW[1], now)
+    this.E.phone.step(now, this.idle)
     const want = this.heading >= 0 ? this.heading : this.chapter
     if (want >= 0 && want !== this.lensAt) {
       this.lensAt = want

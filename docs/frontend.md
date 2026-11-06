@@ -50,6 +50,7 @@ section, except on `/` while the film runs (the film reads its own hash).
 | `glassWordGL.ts` | The case study's glass title on one WebGL canvas: the letters' signed distance fields in one atlas, the poster rasterised once (fonts inlined) as the backdrop, the melt into the droplet as a smooth union. Used when WebGL is available and the title has at most 12 letters; the SVG glass letters are the fallback |
 | `iris.ts` | Six-blade iris aperture (SVG paths), also the shutter of a chapter cut |
 | `navGlass.ts` | The chapter nav's glass: `NavLens` (the spring-driven lens on the chapter) and `setRim` (rim light for a glass capsule) |
+| `phone.ts` | The playable phone over the lock screen: unlock, home with the projects as apps, app screens from `public/phone/*.jpg`; `PHONE_WINDOW` |
 | `math.ts` | `clamp`/`lerp`/easing, closed-form spring step response, `spr`, `track`, `SPB` |
 | `dom.ts` | The small set of per-frame DOM writes (boxes, masked text lines) |
 | `icons.ts` | Inline SVG glyphs used inside the glass and black shapes |
@@ -143,6 +144,21 @@ sheet is open) and `now` (real seconds); `amb(k)` in `scenes.ts` ramps the ampli
 first second of stillness, so scrubbing stays exact, and `idleOn(t)` lists the beat ranges with
 idle motion so the engine keeps drawing only those frames while still.
 
+### The playable phone
+
+While the film rests on the phone beside the window (`PHONE_WINDOW`, beats 45.0–46.1), the lock
+screen it draws becomes a phone you can use (`phone.ts`, `Phone`): swipe up, scroll on it or tap
+the hint to unlock; a home screen with the projects as apps (poster icons, the four with a
+capture in the dock); tapping one of those opens a scrollable screenshot of the real app at phone
+size (`public/phone/<slug>.jpg`, 390 css px wide at 2×, the first 2600 px of the page; the others
+just nudge). The home bar closes an app or locks the phone. The played take stops there instead
+of holding (Play reads "Continue the take"), and any scroll of the film locks the phone again and
+goes on. The phone lives inside the film's `#lock`, so it has the film's rect, bezel and radius;
+its sizes are in `--pk`, the lock's scale, written by `sceneLock`; its springs run on real time
+and are stepped by `Take.frame`. It is marked `data-take-prevent`, so the wheel scrolls the app's
+screenshot, not the film. To add a capture: screenshot the app at 390×844, 2×, as
+`public/phone/<slug>.jpg` and add the slug to `SHOTS` in `phone.ts`.
+
 ### The Play invite
 
 A first visit that rests on the opening frame for a second gets a big Play under the wordmark
@@ -169,8 +185,8 @@ system's inertia (a wheel event under 40 px marks the next 600 ms as trackpad). 
 Space plays the take at film speed and holds on each rest for `restHolds(content)` seconds: 0.6 s
 to land plus the words the eye reads on that frame (its title and headline, not the small print)
 at 6 words a second, between 1.2 and 4 s, so the holds follow the CMS text; with the default
-content the holds add up to about 30 s over a 36 s film. The played take stops on the wordmark
-at the end instead of going round again (scrolling past the end still wraps, since frame `T_END`
+content the holds add up to about 30 s over a 36 s film. The played take stops on the phone
+beside the window (see "The playable phone") and on the wordmark at the end instead of going round again (scrolling past the end still wraps, since frame `T_END`
 is frame 0). While the take holds, the Play button
 fills from the left (`--hold`, written by `Take.drawHold`), so the still frame reads as a pause and
 not as a hang. `seekFrame(b)` jumps to a single frame and stops (for reviewing frames; in dev the

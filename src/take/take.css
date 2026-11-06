@@ -77,6 +77,34 @@
 .take .p-bar-b { background: #fff; }
 .take .island { background: #000; }
 
+/* the playable phone, inside #lock (phone.ts); --pk is the lock's scale, set by sceneLock */
+.take .ph { position: absolute; inset: 0; z-index: 5; pointer-events: none; font-family: var(--ui); color: #fff; --u: var(--pk, 1); }
+.take .ph.on { pointer-events: auto; }
+.take .ph-hint { position: absolute; left: 0; right: 0; bottom: calc(150px * var(--u)); display: flex; flex-direction: column; align-items: center; gap: calc(10px * var(--u)); font: 500 calc(13px * var(--u))/1.2 var(--ui); color: rgba(255, 255, 255, .85); text-shadow: 0 1px 8px rgba(0, 0, 0, .4); opacity: 0; transform: translateY(6px); transition: opacity .5s, transform .5s; cursor: pointer; }
+.take .ph-hint.show { opacity: 1; transform: none; }
+.take .ph-hint .ph-bar { width: calc(42px * var(--u)); height: calc(4px * var(--u)); border-radius: 999px; background: #fff; animation: ph-bar 1.6s ease-in-out infinite; }
+@keyframes ph-bar { 0%, 100% { transform: translateY(0); opacity: .7; } 50% { transform: translateY(calc(-6px * var(--u))); opacity: 1; } }
+.take .ph-home { position: absolute; inset: 0; background: #14122c; will-change: transform; }
+.take .ph-wp { position: absolute; inset: 0; width: 100%; height: 100%; filter: brightness(.72) saturate(1.1); }
+.take .ph-status { position: absolute; left: calc(26px * var(--u)); right: calc(26px * var(--u)); top: calc(14px * var(--u)); display: flex; justify-content: space-between; font: 600 calc(15px * var(--u))/1 var(--ui); letter-spacing: .01em; }
+.take .ph-sig { font-size: calc(9px * var(--u)); letter-spacing: .15em; align-self: center; }
+.take .ph-grid { position: absolute; left: calc(26px * var(--u)); right: calc(26px * var(--u)); top: calc(96px * var(--u)); display: grid; grid-template-columns: repeat(4, 1fr); gap: calc(26px * var(--u)) calc(16px * var(--u)); }
+.take .ph-dock { position: absolute; left: calc(22px * var(--u)); right: calc(22px * var(--u)); bottom: calc(34px * var(--u)); height: calc(96px * var(--u)); border-radius: calc(32px * var(--u)); background: rgba(255, 255, 255, .18); -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px); display: flex; justify-content: space-evenly; align-items: center; }
+.take .ph-app-ic { all: unset; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: calc(6px * var(--u)); -webkit-tap-highlight-color: transparent; }
+.take .ph-app-ic:active .ph-ic { transform: scale(.92); }
+.take .ph-app-ic.nudge .ph-ic { animation: ph-nudge .4s; }
+@keyframes ph-nudge { 0%, 100% { transform: none; } 30% { transform: translateX(-3px) rotate(-3deg); } 70% { transform: translateX(3px) rotate(3deg); } }
+.take .ph-ic { display: block; width: calc(62px * var(--u)); height: calc(62px * var(--u)); border-radius: 23%; overflow: hidden; box-shadow: 0 6px 16px -6px rgba(0, 0, 0, .5); transition: transform .15s; }
+.take .ph-ic svg { width: 100%; height: 100%; }
+.take .ph-lbl { font: 500 calc(11px * var(--u))/1.2 var(--ui); text-shadow: 0 1px 6px rgba(0, 0, 0, .5); max-width: calc(80px * var(--u)); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.take .ph-homebar { all: unset; cursor: pointer; position: absolute; left: 50%; bottom: calc(8px * var(--u)); width: calc(134px * var(--u)); height: calc(5px * var(--u)); border-radius: 999px; background: #fff; transform: translateX(-50%); }
+.take .ph-homebar::before { content: ''; position: absolute; inset: calc(-14px * var(--u)) calc(-30px * var(--u)); }
+.take .ph-app { position: absolute; inset: 0; background: #fff; overflow: hidden; transform-origin: 0 0; will-change: transform; }
+.take .ph-scroll { position: absolute; inset: 0; overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.take .ph-scroll::-webkit-scrollbar { display: none; }
+.take .ph-scroll img { display: block; width: 100%; height: auto; }
+.take .ph-app .ph-homebar { background: rgba(0, 0, 0, .55); mix-blend-mode: multiply; }
+
 /* mac window */
 .take #win { background: var(--card); overflow: hidden; color: var(--ink); box-shadow: 0 50px 100px rgba(30, 24, 14, .22), 0 0 0 1px rgba(11, 11, 12, .08); }
 .take #blind { background: #0B0B0C; overflow: hidden; }
