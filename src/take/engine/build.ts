@@ -15,6 +15,7 @@ import { ICO } from './icons'
 import { makeIris, type Iris } from './iris'
 import { NavLens } from './navGlass'
 import { Phone } from './phone'
+import { MARK_SVG } from '../../lib/mark'
 import type { Take } from './Take'
 import { chapterSpans, CHAPTERS } from './timeline'
 
@@ -242,7 +243,7 @@ export function buildEls(k: Take) {
   const chrome = mk('div', null, stage); chrome.id = 'chrome'
   chrome.innerHTML = `
     <div id="tk-top">
-      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.wordmark)}.</b><b class="b-logo" aria-hidden="true">${esc(c.logo)}</b><span>${esc(c.role)}, ${esc(c.location)}</span></a>
+      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.wordmark)}.</b><b class="b-logo" aria-hidden="true">${MARK_SVG}</b><span>${esc(c.role)}, ${esc(c.location)}</span></a>
       <nav id="tk-chap" aria-label="Chapters"><span class="lens" aria-hidden="true"></span></nav>
       <div class="top-r">
         <button id="tk-projects" type="button">Projects</button>
