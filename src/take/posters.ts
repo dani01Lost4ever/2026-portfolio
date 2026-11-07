@@ -171,23 +171,31 @@ function wallpaper(): string {
     <rect y="600" width="1200" height="400" fill="url(#wsea)"/>${refl}`, '0 0 1200 1000')
 }
 
-/** Lumen: near-black bench, a lamp, one beam folded by a mirror and a lens into the sensor. */
+/** Lumen: one scene of the bench. The lamp's beam runs right, a mirror folds it down, a lens
+ * focuses it, and the sensor lights up. The scene is drawn in x 116–286, y 126–232 and scaled
+ * down about (200, 178) into x 133–269, y 140–221: the part every crop keeps clear of the
+ * caption (a wide tile keeps about y 117–283 with its caption over the lower third, the narrow
+ * tall tile on phones about x 136–264). */
 function posterLumen(): string {
-  // lamp at (318, 70); mirror at (120, 214) tilted; lens at (236, 300); sensor at (322, 324)
-  const warm = '#FFE6BF'
+  const warm = '#FFE6BF', lit = '#FFB547', ink = '#F2EEE6'
+  const LX = 136, Y = 150, MX = 264, LY = 186, SY = 212 // lamp, beam row, mirror, lens, sensor
+  const beam = (d: string) => `<path d="${d}" fill="none" stroke="${warm}" stroke-width="24" stroke-opacity=".1" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${warm}" stroke-width="10" stroke-linejoin="round"/>`
   return symbol('p-lumen', `
     <rect width="400" height="400" fill="${BG.lumen}"/>
-    <path d="${gridPath(40)}" stroke="${warm}" stroke-opacity=".06" stroke-width=".6"/>
-    <rect x="40" y="40" width="320" height="320" rx="6" fill="none" stroke="${warm}" stroke-opacity=".14"/>
-    <rect x="52" y="150" width="96" height="14" rx="2" fill="${warm}" fill-opacity=".1" stroke="${warm}" stroke-opacity=".3"/>
-    <polygon points="318,70 118,206 124,222" fill="${warm}" fill-opacity=".88"/>
-    <polygon points="118,206 124,222 240,300 236,288" fill="${warm}" fill-opacity=".72"/>
-    <polygon points="236,288 240,300 322,324 320,316" fill="${warm}" fill-opacity=".95"/>
-    <path d="M96 232L142 196" stroke="${warm}" stroke-width="5" stroke-linecap="round"/>
-    <path d="M226 318L250 270" stroke="${warm}" stroke-opacity=".5" stroke-width="7" stroke-linecap="round"/>
-    <path d="M300 312A24 24 0 0 1 344 328" fill="none" stroke="${warm}" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="318" cy="70" r="11" fill="none" stroke="${warm}" stroke-width="2.5"/><circle cx="318" cy="70" r="4.5" fill="${warm}"/>
-    <text x="200" y="382" text-anchor="middle" ${MONO} font-size="8" letter-spacing=".2em" fill="${warm}" fill-opacity=".55">DAILY LIGHT PUZZLE · 100%</text>`)
+    <path d="${gridPath(20)}" stroke="${warm}" stroke-opacity=".05" stroke-width=".6"/>
+    <g transform="translate(200 178) scale(.8) translate(-200 -178)">
+    <rect x="166" y="182" width="56" height="16" rx="2" fill="${ink}" fill-opacity=".16"/>
+    <path d="M172 182l-6 16M186 182l-6 16M200 182l-6 16M214 182l-6 16" stroke="${BG.lumen}" stroke-opacity=".5" stroke-width="1.6"/>
+    ${beam(`M${LX} ${Y}H${MX}V${LY}`)}
+    <path d="M${MX - 14} ${LY}L${MX} ${SY}L${MX + 14} ${LY}Z" fill="${warm}" fill-opacity=".14"/>
+    <path d="M${MX - 5} ${LY}L${MX} ${SY}L${MX + 5} ${LY}Z" fill="${warm}"/>
+    <path d="M${MX - 16} ${Y - 16}L${MX + 16} ${Y + 16}" stroke="${ink}" stroke-width="6" stroke-linecap="round"/>
+    <path d="M${MX - 12} ${Y - 12}l6 -6M${MX - 2} ${Y - 2}l6 -6M${MX + 8} ${Y + 8}l6 -6" stroke="${ink}" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/>
+    <ellipse cx="${MX}" cy="${LY}" rx="22" ry="6" fill="${ink}" fill-opacity=".22" stroke="${ink}" stroke-width="2.2"/>
+    <circle cx="${MX}" cy="${SY + 7}" r="22" fill="${lit}" fill-opacity=".18"/>
+    <rect x="${MX - 17}" y="${SY}" width="34" height="13" rx="3" fill="${lit}"/>
+    <circle cx="${LX}" cy="${Y}" r="20" fill="${warm}" fill-opacity=".14"/><circle cx="${LX}" cy="${Y}" r="13" fill="${warm}"/><circle cx="${LX}" cy="${Y}" r="5" fill="#fff"/>
+    </g>`)
 }
 
 /** The whole defs block: filters, the wipe clip, every poster and the wallpaper. */
