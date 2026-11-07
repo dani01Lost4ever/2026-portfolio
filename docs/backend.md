@@ -29,6 +29,11 @@ npm run seed -- --email admin@example.com --password yourpassword
 This creates all collections and populates them from your JSON files.
 It is **idempotent** — safe to run multiple times.
 
+A project added after the first deploy can also arrive as a migration, so production gets it
+on the next start without anyone signing in: `1794560000_seeded_project_lumen.js` creates Lumen
+as the second project (only if no record has the slug `lumen`) and moves the others down one
+place, `order` and numeric `display_id` alike; its down migration removes it and moves them back.
+
 ---
 
 ## Collections
