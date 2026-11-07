@@ -73,6 +73,8 @@ export class Take {
   private holds: number[]
   private holdFrom = 0
   private holdUntil = 0
+  /** Where Play was last pressed: the phone stops a take that comes to it, not one that starts on it. */
+  private playFrom = 0
   private holdDrawn = 0
   private spotDrawn = 0
   private paused = false
@@ -181,6 +183,7 @@ export class Take {
 
   private setPlaying(v: boolean) {
     this.playing = v; this.tween = null; this.snap = null; this.holdUntil = 0
+    if (v) this.playFrom = this.tT
     this.used()
     const b = this.E.play
     b.setAttribute('aria-pressed', String(v))
@@ -304,8 +307,9 @@ export class Take {
           if (i < 0) this.tT = this.goal = next
           else if (RESTS[i] >= T_END) { this.tT = this.goal = 0; this.setPlaying(false) } // the take ends on the wordmark; it does not go round again
           else if (RESTS[i] >= PHONE_WINDOW[0] && RESTS[i] < PHONE_WINDOW[1]) {
-            if (this.tT < PHONE_WINDOW[0]) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
-            else this.tT = this.goal = next // going on from inside the window: no second stop on the phone
+            const onPhone = this.playFrom >= PHONE_WINDOW[0] && this.playFrom < PHONE_WINDOW[1]
+            if (!onPhone) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
+            else this.tT = this.goal = next // Play pressed on the phone: no second stop there
           }
           else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
