@@ -1,12 +1,12 @@
 /**
  * PageHeader — the sticky header of every page but the film, set like the film's
- * chrome: the wordmark and role back to the home page on the left (the db. mark
- * on narrow screens), the CMS nav on the right, its last item lit.
+ * chrome: the db. badge, the wordmark and role back to the home page on the left (the
+ * badge alone on narrow screens), the CMS nav on the right, its last item lit.
  */
 
 import { Link } from 'react-router-dom'
 import { useAbout, useHero, useSite } from '../context/content-hooks'
-import { MARK_SVG } from '../lib/mark'
+import { DISC_SVG } from '../lib/mark'
 import { cmsText, wordmarkOf } from './content'
 import SectionLink from './SectionLink'
 
@@ -19,7 +19,7 @@ export default function PageHeader() {
   return (
     <header className="page-header">
       <Link to="/" className="ph-brand" aria-label="Daniel Busetto, home">
-        <b className="ph-full">{wordmarkOf(hero.name)}.</b><b className="ph-logo" aria-hidden="true" dangerouslySetInnerHTML={{ __html: MARK_SVG }} /><span>{role}, {location}</span>
+        <b className="ph-disc" aria-hidden="true" dangerouslySetInnerHTML={{ __html: DISC_SVG }} /><b className="ph-full">{wordmarkOf(hero.name)}.</b><span>{role}, {location}</span>
       </Link>
       <nav className="ph-nav" aria-label="Main">
         {nav.map((n, i) => {

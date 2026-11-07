@@ -150,7 +150,14 @@ While the film rests on the phone beside the window (`PHONE_WINDOW`, beats 45.0â
 screen it draws becomes a phone you can use (`phone.ts`, `Phone`). Once it has you (its hint is
 up, or it is unlocked) the stage dims around it: `#tk-spot` is a transparent box on the phone's
 rect whose huge box-shadow covers the rest of the stage, faded by `Take.drawSpot` from
-`Phone.focus()`, a real-time spring; the chrome turns light over it (`#chrome.dim`). The
+`Phone.focus()`, a real-time spring; the chrome turns light over it (`#chrome.dim`). Beside the
+lit phone (under it on narrow screens) `#tk-resume` says what the phone does and carries a
+"Continue the take" pill, faded with the spotlight and placed by `sceneLock`; it plays on from
+the phone (the phone rest stops Play only when the take arrives from before it). The first time,
+if nobody touches the phone for 1.6 s, a hand shows the way (the coach, `Phone.startCoach`): it
+swipes the lock screen up, opens the first docked app with a capture, and swipes home again, on
+the phone for real, a ring at each press. Any touch, wheel or Escape ends it; once seen or once
+the phone has been used it does not come back (`localStorage['take-phone-coached']`). The
 notifications can be
 swiped away (`sceneLock` writes each card's rect to `phone.cardRects` and reads back
 `cardShift(j)`); swipe up, scroll on it or tap the hint to unlock. The home has two pages, swiped,
@@ -245,8 +252,9 @@ The nav's lens and its highlighted label move to the target chapter on the click
 
 ### The chrome
 
-The film's header is set like the header of the window inside the film: the wordmark (`daniel.`,
-Archivo) with the role next to it, chapter labels in Geist, and Play as the one black pill (paper
+The film's header is set like the header of the window inside the film: the `db.` badge (the
+favicon, `DISC_SVG` in `src/lib/mark.ts`; alone under 520 px), the wordmark (`daniel.`, Archivo)
+with the role next to it, chapter labels in Geist, and Play as the one black pill (paper
 over dark scenes). `PageHeader`, on every other page, uses the same brand and type.
 
 The chapter nav (`#tk-chap`) is a black pill like Play (paper over dark scenes and while the

@@ -15,7 +15,7 @@ import { ICO } from './icons'
 import { makeIris, type Iris } from './iris'
 import { NavLens } from './navGlass'
 import { Phone } from './phone'
-import { MARK_SVG } from '../../lib/mark'
+import { DISC_SVG } from '../../lib/mark'
 import type { Take } from './Take'
 import { chapterSpans, CHAPTERS } from './timeline'
 
@@ -235,6 +235,10 @@ export function buildEls(k: Take) {
   // the shutter a far chapter jump closes over the film, below the chrome
   // the spotlight: a hole over the phone in a scrim across the stage, while the phone has you (phone.ts, Take.drawSpot)
   const spot = hide(mk('div', 'abs', stage)); spot.id = 'tk-spot'; spot.style.display = 'none'
+  // beside the lit phone: what it does, and the way on (sceneLock places it, Take.drawSpot fades it)
+  const resume = mk('div', 'abs', stage); resume.id = 'tk-resume'; resume.style.display = 'none'
+  resume.innerHTML = `<p class="r-cap"><b>The phone is yours.</b><span>Swipe up, open an app, hold one to move it.</span></p>
+    <button type="button" class="r-btn" tabindex="-1"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1 0.5v9l8-4.5z"/></svg><span>Continue the take</span></button>`
   const cutL = mk('div', 'abs', stage); cutL.id = 'tk-cut'
   const cutIris = makeIris(cutL); hide(cutIris.s); cutIris.s.style.display = 'none'
 
@@ -243,7 +247,7 @@ export function buildEls(k: Take) {
   const chrome = mk('div', null, stage); chrome.id = 'chrome'
   chrome.innerHTML = `
     <div id="tk-top">
-      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-full">${esc(c.wordmark)}.</b><b class="b-logo" aria-hidden="true">${MARK_SVG}</b><span>${esc(c.role)}, ${esc(c.location)}</span></a>
+      <a class="brand" href="/" aria-label="${esc(c.fullName)}, back to the start"><b class="b-disc" aria-hidden="true">${DISC_SVG}</b><b class="b-full">${esc(c.wordmark)}.</b><span>${esc(c.role)}, ${esc(c.location)}</span></a>
       <nav id="tk-chap" aria-label="Chapters"><span class="lens" aria-hidden="true"></span></nav>
       <div class="top-r">
         <button id="tk-projects" type="button">Projects</button>
@@ -273,7 +277,7 @@ export function buildEls(k: Take) {
     frame, fMold, fPaint, fMat, fImg,
     cta, ctaLb: ctaL2, ck1, ck2, rdBarA, rdBarB, route, plane,
     wshadow, wmat, wprint, wiris, wmold, placard, pl, plBtn, leaves, leafG,
-    ring, lp, lpC, cursor, cutIris, spot,
+    ring, lp, lpC, cursor, cutIris, spot, resume, resumeBtn: resume.querySelector('.r-btn') as HTMLButtonElement,
     chrome, chap, navLens, tl, segs, segFills, invite: chrome.querySelector('#tk-invite') as HTMLButtonElement,
     play: chrome.querySelector('#tk-play') as HTMLButtonElement, projectsBtn: chrome.querySelector('#tk-projects') as HTMLButtonElement,
   }

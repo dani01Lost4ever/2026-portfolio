@@ -2,7 +2,9 @@
  * mark.ts — the db. monogram as inline SVG: Archivo 800 expanded outlined (the letters take
  * currentColor, the period is the site's hot accent). Drawn by scripts/outline-mark.py from the
  * variable font; the same outlines are in public/favicon.svg, public/icon-512.svg and
- * public/avatar-512.svg. Used by the film's chrome and the page header on narrow screens.
+ * public/avatar-512.svg. DISC_SVG is the brand's badge (the favicon: the mark in ink on a disc of
+ * the accent), set before the wordmark in the film's chrome and the page header, and alone on
+ * narrow screens.
  */
 
 const D = 'M319.5 -12Q239.1 -12 176.7 17.7Q114.3 47.5 78.3 108.7Q42.4 169.9 42.4 263.5Q42.4 358.1 78.1 419.1Q113.8 480.1 175.3 509.8Q236.8 539.5 315.3 539.5Q350.3 539.5 386.1 531.9Q421.9 524.3 453.5 507.8Q485 491.4 507 465.4H515.1V724.5H699.8V0H550.3L535.5 82.5H527Q487.8 29.9 434 9Q380.2 -12 319.5 -12ZM372.9 125.7Q420.6 125.7 452.4 142.7Q484.3 159.6 500.2 190Q516.1 220.4 516.1 260.1V267Q516.1 297.4 507.1 322Q498 346.7 479.8 364.3Q461.6 381.9 434.7 391.8Q407.8 401.8 372 401.8Q325.3 401.8 293.7 385.2Q262.1 368.5 246.1 339.6Q230.1 310.8 230.1 272.1V255.5Q230.1 216.8 246.3 187.4Q262.5 158 294.1 141.9Q325.7 125.7 372.9 125.7Z'
@@ -15,3 +17,11 @@ export const MARK_SVG =
   `<path transform="translate(-42.4 724.5) scale(1 -1)" d="${D}" fill="currentColor"/>` +
   `<path transform="translate(672.6 724.5) scale(1 -1)" d="${B}" fill="currentColor"/>` +
   `<path transform="translate(1387.6 724.5) scale(1 -1)" d="${DOT}" fill="#FF5A3C"/></svg>`
+
+/** The badge: the mark in ink on a disc of the hot accent, 64×64 units, as public/favicon.svg. */
+export const DISC_SVG =
+  `<svg class="disc" viewBox="0 0 64 64" aria-hidden="true" focusable="false">` +
+  `<circle cx="32" cy="32" r="32" fill="#FF5A3C"/><g transform="translate(12.8 22.58) scale(0.02298)" fill="#0B0B0C">` +
+  `<path transform="translate(-42.4 724.5) scale(1 -1)" d="${D}"/>` +
+  `<path transform="translate(672.6 724.5) scale(1 -1)" d="${B}"/>` +
+  `<path transform="translate(1387.6 724.5) scale(1 -1)" d="${DOT}"/></g></svg>`
