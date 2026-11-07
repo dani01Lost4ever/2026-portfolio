@@ -56,24 +56,26 @@ def svg(body, w, h, extra=""):
 # 3. the mark in currentColor with the dot in hot: for inline use in the site
 (out_dir / "db-current.svg").write_text(svg(mark("currentColor", "#FF5A3C"), W, H), encoding="utf-8")
 
-# 4. the icon: ink rounded square, the mark at 62% of the width, optically a touch above centre
-def icon(size, radius_pct=0.2266, ink="#0B0B0C", letters="#F2EEE6", accent="#FF5A3C"):
-    mw = size * 0.64
+# 4. the icon: F12 on the canvas, the whole square in the hot accent with the mark in ink (the system rounds it);
+#    the favicon and the avatar are the same as a disc; a paper disc with the hot dot is the quiet alternative
+HOT, INK, PAPER = "#FF5A3C", "#0B0B0C", "#F2EEE6"
+def placed(size, share, letters, accent):
+    mw = size * share
     s = mw / W
     mh = H * s
     ox, oy = (size - mw) / 2, (size - mh) / 2 - size * 0.015
-    r = size * radius_pct
-    body = f'<rect width="{size}" height="{size}" rx="{r:.1f}" fill="{ink}"/><g transform="translate({ox:.2f} {oy:.2f}) scale({s:.5f})">{mark(letters, accent)}</g>'
-    return svg(body, size, size)
+    return f'<g transform="translate({ox:.2f} {oy:.2f}) scale({s:.5f})">{mark(letters, accent)}</g>'
 
-(out_dir / "icon-512.svg").write_text(icon(512), encoding="utf-8")
-(out_dir / "favicon.svg").write_text(icon(64), encoding="utf-8")
-# 5. the avatar: a disc
-def avatar(size):
-    mw = size * 0.58
-    s = mw / W; mh = H * s
-    ox, oy = (size - mw) / 2, (size - mh) / 2 - size * 0.015
-    body = f'<circle cx="{size/2}" cy="{size/2}" r="{size/2}" fill="#0B0B0C"/><g transform="translate({ox:.2f} {oy:.2f}) scale({s:.5f})">{mark("#F2EEE6", "#FF5A3C")}</g>'
-    return svg(body, size, size)
-(out_dir / "avatar-512.svg").write_text(avatar(512), encoding="utf-8")
+def square(size, ground, letters, accent, radius_pct=0.0):
+    r = f' rx="{size * radius_pct:.1f}"' if radius_pct else ''
+    return svg(f'<rect width="{size}" height="{size}"{r} fill="{ground}"/>' + placed(size, 0.64, letters, accent), size, size)
+
+def disc(size, ground, letters, accent):
+    return svg(f'<circle cx="{size/2}" cy="{size/2}" r="{size/2}" fill="{ground}"/>' + placed(size, 0.6, letters, accent), size, size)
+
+(out_dir / "icon-512.svg").write_text(square(512, HOT, INK, INK), encoding="utf-8")
+(out_dir / "icon-ink-512.svg").write_text(square(512, INK, PAPER, HOT, 0.2266), encoding="utf-8")
+(out_dir / "favicon.svg").write_text(disc(64, HOT, INK, INK), encoding="utf-8")
+(out_dir / "avatar-512.svg").write_text(disc(512, HOT, INK, INK), encoding="utf-8")
+(out_dir / "avatar-paper-512.svg").write_text(disc(512, PAPER, INK, HOT), encoding="utf-8")
 print("written:", sorted(p.name for p in out_dir.iterdir()))
