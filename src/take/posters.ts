@@ -3,7 +3,8 @@
  * as one block of <symbol>s rendered once per page (see Poster.tsx).
  *
  * Posters are drawn in a 400×400 box with `slice`, so they crop instead of stretching at any
- * aspect. The film clones them behind its liquid glass, so they must stay plain SVG.
+ * aspect (Lumen's is a frame of the game in its own box, public/posters/lumen.jpg). The film
+ * clones them behind its liquid glass, so they must stay plain SVG.
  * The bug poster has two aligned states: "raw" underneath and "triaged" inside the #wipe
  * clip, whose width the film drives with its slider.
  */
@@ -171,31 +172,16 @@ function wallpaper(): string {
     <rect y="600" width="1200" height="400" fill="url(#wsea)"/>${refl}`, '0 0 1200 1000')
 }
 
-/** Lumen: one scene of the bench. The lamp's beam runs right, a mirror folds it down, a lens
- * focuses it, and the sensor lights up. The scene is drawn in x 116–286, y 126–232 and scaled
- * down about (200, 178) into x 133–269, y 140–221: the part every crop keeps clear of the
- * caption (a wide tile keeps about y 117–283 with its caption over the lower third, the narrow
- * tall tile on phones about x 136–264). */
+/** Lumen: a frame of the game's own store film (F:/Drawn, android/store/film/at-26_9.png), the
+ * beam zigzagging between mirrors into the lit sensor, cropped to the bench and saved as
+ * public/posters/lumen.jpg (1234×738, on the poster's own background). The symbol is wider than
+ * the image, padded with that background, so the wide Work tile (about 2.4:1) shows the whole
+ * zigzag, lamp included; squares and the narrow tiles show its middle peaks. */
 function posterLumen(): string {
-  const warm = '#FFE6BF', lit = '#FFB547', ink = '#F2EEE6'
-  const LX = 136, Y = 150, MX = 264, LY = 186, SY = 212 // lamp, beam row, mirror, lens, sensor
-  const beam = (d: string) => `<path d="${d}" fill="none" stroke="${warm}" stroke-width="24" stroke-opacity=".1" stroke-linejoin="round"/><path d="${d}" fill="none" stroke="${warm}" stroke-width="10" stroke-linejoin="round"/>`
+  const IW = 1234, H = 738, W = 1716
   return symbol('p-lumen', `
-    <rect width="400" height="400" fill="${BG.lumen}"/>
-    <path d="${gridPath(20)}" stroke="${warm}" stroke-opacity=".05" stroke-width=".6"/>
-    <g transform="translate(200 178) scale(.8) translate(-200 -178)">
-    <rect x="166" y="182" width="56" height="16" rx="2" fill="${ink}" fill-opacity=".16"/>
-    <path d="M172 182l-6 16M186 182l-6 16M200 182l-6 16M214 182l-6 16" stroke="${BG.lumen}" stroke-opacity=".5" stroke-width="1.6"/>
-    ${beam(`M${LX} ${Y}H${MX}V${LY}`)}
-    <path d="M${MX - 14} ${LY}L${MX} ${SY}L${MX + 14} ${LY}Z" fill="${warm}" fill-opacity=".14"/>
-    <path d="M${MX - 5} ${LY}L${MX} ${SY}L${MX + 5} ${LY}Z" fill="${warm}"/>
-    <path d="M${MX - 16} ${Y - 16}L${MX + 16} ${Y + 16}" stroke="${ink}" stroke-width="6" stroke-linecap="round"/>
-    <path d="M${MX - 12} ${Y - 12}l6 -6M${MX - 2} ${Y - 2}l6 -6M${MX + 8} ${Y + 8}l6 -6" stroke="${ink}" stroke-opacity=".45" stroke-width="1.6" stroke-linecap="round"/>
-    <ellipse cx="${MX}" cy="${LY}" rx="22" ry="6" fill="${ink}" fill-opacity=".22" stroke="${ink}" stroke-width="2.2"/>
-    <circle cx="${MX}" cy="${SY + 7}" r="22" fill="${lit}" fill-opacity=".18"/>
-    <rect x="${MX - 17}" y="${SY}" width="34" height="13" rx="3" fill="${lit}"/>
-    <circle cx="${LX}" cy="${Y}" r="20" fill="${warm}" fill-opacity=".14"/><circle cx="${LX}" cy="${Y}" r="13" fill="${warm}"/><circle cx="${LX}" cy="${Y}" r="5" fill="#fff"/>
-    </g>`)
+    <rect width="${W}" height="${H}" fill="${BG.lumen}"/>
+    <image href="/posters/lumen.jpg" x="${(W - IW) / 2}" width="${IW}" height="${H}"/>`, `0 0 ${W} ${H}`)
 }
 
 /** The whole defs block: filters, the wipe clip, every poster and the wallpaper. */
