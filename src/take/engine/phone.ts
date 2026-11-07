@@ -6,6 +6,11 @@
  * others on a card of the project; a long press on an app lets you drag the apps around, like
  * on the real thing, and the order is remembered. Any scroll of the film locks it again.
  *
+ * The first time the film rests here and nobody touches the phone, a hand shows the way (the
+ * coach): it swipes the lock screen up, opens an app from the dock, and swipes it home again, on
+ * the phone for real. Any input ends it on the spot; once seen, or once the phone has been
+ * unlocked by hand, it does not come back (localStorage).
+ *
  * The phone lives inside the film's #lock element, so it has the film's exact rect, bezel and
  * corner radius; the lock screen under it (clock, notifications, player) is the film's own. Every
  * size is in --pk, the lock's scale (lock height / 900), written by sceneLock each frame. Its
@@ -27,15 +32,26 @@ const SCREENS: Record<string, Screen> = {
   bugpilot: { shot: true }, lumen: { frame: 'https://lumen.techdani.cc/' }, 'the-loop': { shot: true }, 'stellar-freight-co': { shot: true }, auroratrader: { shot: true },
 }
 
-const ORDER_KEY = 'take-phone-order'
+const ORDER_KEY = 'take-phone-order', COACHED_KEY = 'take-phone-coached'
 /** The home grid, in the phone's 440-wide units. */
 const COLS = 4, PAD = 26, ROW = 94, LONG_PRESS = 420
+/** The coach comes after this long still on the lock screen (its hint is up from 0.8 s). */
+const COACH_AFTER = 1.6
 
 type State = 'locked' | 'home' | 'app'
 
 interface Move { from: number; to: number; t0: number; r: number; d: number }
 const move = (from: number, to: number, now: number, r: number, d: number): Move => ({ from, to, t0: now, r, d })
 const at = (m: Move | null, now: number) => (m ? m.from + (m.to - m.from) * sprMs(now, m.t0, m.r, m.d) : 0)
+const eio = (q: number) => (q < 0.5 ? 2 * q * q : 1 - 2 * (1 - q) * (1 - q))
+
+/** A pointing hand, fingertip at (15.2, 1.8) of 36×40. */
+const HAND = '<svg class="ph-hand-svg" viewBox="0 0 36 40" aria-hidden="true"><path d="M12 5a3.2 3.2 0 0 1 6.4 0V19a3 3 0 0 1 6 0v1.5a2.8 2.8 0 0 1 5.6 0v2a2.6 2.6 0 0 1 5.2 0V29a9 9 0 0 1-9 9H17a9 9 0 0 1-7-3.4l-5.8-7.4a2.9 2.9 0 0 1 4.4-3.8L12 27.5Z"/></svg><i class="ph-tap"></i>'
+
+type Pt = [number, number]
+/** One cue of the coach: how long, where the fingertip goes (phone units; a thunk resolves late, once the home is laid out), a press, something to do when it starts, a fade. */
+interface Cue { len: number; to?: Pt | (() => Pt); press?: boolean; run?: () => void; alpha?: [number, number] }
+interface Coach { cues: Cue[]; i: number; t0: number; from: Pt; to: Pt; at: Pt }
 
 /** An app on the home screen: a project, or the mail and GitHub shortcuts. */
 interface App { id: string; el: HTMLButtonElement; p?: TakeProject; screen: Screen | null }
@@ -59,6 +75,8 @@ export class Phone {
   private readonly appImg: HTMLImageElement
   private readonly frame: HTMLIFrameElement
   private readonly card: HTMLDivElement
+  private readonly hand: HTMLDivElement
+  private readonly tap: HTMLElement
   private readonly apps: App[] = []
   private readonly hooks: PhoneHooks
   private readonly github: string | null
@@ -84,6 +102,10 @@ export class Phone {
   private gesture: { id: number; x0: number; y0: number; t0: number; app: App | null; timer: number; mode: 'tap' | 'page' | 'drag' | 'swipe' } | null = null
   private dragging: { app: App; dx: number; dy: number; x: number; y: number } | null = null
   private layoutW = 0
+
+  // the coach: the hand that shows the way, once
+  private coach: Coach | null = null
+  private coached = false
 
   // lock screen: the notifications can be swiped away. sceneLock writes each card's rect (in
   // lock px) and reads back its shift; a card swiped past a third of its width flies out.
@@ -151,6 +173,10 @@ export class Phone {
       if (a) { e.stopPropagation(); this.hooks.onNavigate(a.dataset.path!) }
     })
 
+    this.hand = mk('div', 'ph-hand', el, HAND); this.hand.style.display = 'none'
+    this.tap = this.hand.querySelector('.ph-tap') as HTMLElement
+    try { this.coached = localStorage.getItem(COACHED_KEY) === '1' } catch { /* private mode */ }
+
     this.bind(home, app)
     this.draw(performance.now())
   }
@@ -160,7 +186,7 @@ export class Phone {
     if (on === this.avail) return
     this.avail = on
     this.el.classList.toggle('on', on)
-    if (!on) { this.lock(now); this.cards = []; this.cardDrag = null }
+    if (!on) { this.endCoach(false); this.lock(now); this.cards = []; this.cardDrag = null }
   }
 
   /** Where notification j sits now: its sideways shift in lock px, how much of it is left, and whether it is gone. */
@@ -182,6 +208,80 @@ export class Phone {
     if (s !== this.lastClock) { this.lastClock = s; this.time.textContent = s }
     const live = this.shown || this.homeM !== null || this.appM !== null || this.pageM !== null || this.pageDrag !== null || this.dragging !== null || this.cardDrag !== null
     if (live) this.draw(now)
+    if (!this.coach && hintOn && !this.coached && idle > COACH_AFTER) this.startCoach(now)
+    if (this.coach) this.drawCoach(now)
+  }
+
+  // ─── the coach ──────────────────────────────────────────────────────────────
+
+  /** The hand's way round the phone: up from the bar, an app from the dock, home again. */
+  private startCoach(now: number) {
+    const app = this.apps.find(a => a.el.parentElement !== this.page1 && a.screen?.shot) ?? this.apps.find(a => a.el.parentElement !== this.page1)
+    if (!app) { this.coached = true; return }
+    const bar: Pt = [220, 722], home: Pt = [220, 886]
+    const icon = (): Pt => {
+      const I = app.el.querySelector('.ph-ic')!.getBoundingClientRect(), R = this.el.getBoundingClientRect()
+      return [((I.left + I.width / 2 - R.left) / R.width) * 440, ((I.top + I.height * 0.55 - R.top) / R.height) * 900]
+    }
+    const cues: Cue[] = [
+      { len: 460, to: bar, alpha: [0, 1] },
+      { len: 260, press: true },
+      { len: 150, to: [220, 650] },
+      { len: 340, to: [222, 430], run: () => this.unlock(performance.now()) },
+      { len: 520 },
+      { len: 560, to: icon },
+      { len: 260, press: true },
+      { len: 720, to: home, run: () => this.open(app) },
+      { len: 1100 },
+      { len: 240, press: true },
+      { len: 150, to: [220, 830] },
+      { len: 340, to: [222, 600], run: () => this.closeApp() },
+      { len: 520, to: [300, 720], alpha: [1, 0] },
+    ]
+    this.coach = { cues, i: -1, t0: now, from: [250, 830], to: [250, 830], at: [250, 830] }
+    this.hand.style.display = ''
+    this.nextCue(now)
+  }
+
+  private nextCue(now: number) {
+    const c = this.coach
+    if (!c) return
+    c.i++
+    if (c.i >= c.cues.length) { this.endCoach(true); return }
+    const cue = c.cues[c.i]
+    c.t0 = now; c.from = c.at
+    c.to = typeof cue.to === 'function' ? cue.to() : cue.to ?? c.at
+    if (cue.run) cue.run()
+    if (cue.press) { this.tap.classList.remove('go'); void this.tap.offsetWidth; this.tap.classList.add('go') }
+  }
+
+  private drawCoach(now: number) {
+    const c = this.coach
+    if (!c) return
+    let cue = c.cues[c.i]
+    while (now - c.t0 >= cue.len) { this.nextCue(c.t0 + cue.len); if (!this.coach) return; cue = c.cues[c.i] }
+    const q = eio(clamp((now - c.t0) / cue.len))
+    const u = this.u()
+    c.at = [c.from[0] + (c.to[0] - c.from[0]) * q, c.from[1] + (c.to[1] - c.from[1]) * q]
+    // a hand is never quite still
+    const x = c.at[0] + 1.6 * Math.sin(now / 640), y = c.at[1] + 1.2 * Math.sin(now / 410 + 1)
+    const pq = cue.press ? Math.sin(Math.PI * clamp((now - c.t0) / cue.len)) : 0
+    const a = cue.alpha ? cue.alpha[0] + (cue.alpha[1] - cue.alpha[0]) * q : 1
+    this.hand.style.transform = `translate(${((x - 16.9) * u).toFixed(1)}px,${((y - 2) * u).toFixed(1)}px) scale(${(1 - 0.12 * pq).toFixed(3)})`
+    this.hand.style.opacity = a.toFixed(3)
+  }
+
+  /** The coach is over: seen through, or cut short by a touch (either way the phone has been understood). */
+  private endCoach(done: boolean) {
+    if (!this.coach) return
+    this.coach = null; this.hand.style.display = 'none'
+    if (done) this.markCoached()
+  }
+
+  private markCoached() {
+    if (this.coached) return
+    this.coached = true
+    try { localStorage.setItem(COACHED_KEY, '1') } catch { /* private mode */ }
   }
 
   /** How much the stage is dimmed around the phone, 0–1. */
@@ -193,6 +293,7 @@ export class Phone {
 
   private unlock(now: number) {
     if (this.state !== 'locked') return
+    if (!this.coach) this.markCoached() // unlocked by hand: no need to show the way
     this.state = 'home'; this.shown = true
     this.homeM = move(at(this.homeM, now), 1, now, 0.55, 0.9)
     this.layoutApps()
@@ -335,6 +436,7 @@ export class Phone {
     // drag it around (and a tap on the background puts the apps down again).
     el.addEventListener('pointerdown', e => {
       if (!this.avail || e.button !== 0) return
+      this.endCoach(false); this.markCoached() // a touch takes over from the hand
       const R = el.getBoundingClientRect(), edge = e.clientY > R.bottom - R.height * 0.08
       const appEl = (e.target as HTMLElement).closest<HTMLButtonElement>('.ph-page1 .ph-app-ic')
       const a = appEl ? this.apps.find(x => x.el === appEl) ?? null : null
@@ -391,6 +493,7 @@ export class Phone {
     el.addEventListener('pointerup', end); el.addEventListener('pointercancel', end)
     el.addEventListener('wheel', e => {
       if (!this.avail) return
+      this.endCoach(false); this.markCoached()
       if (this.state === 'locked' && Math.abs(e.deltaY) > 12) { e.preventDefault(); this.unlock(performance.now()) }
       else if (this.state === 'home') {
         e.preventDefault()
@@ -401,6 +504,7 @@ export class Phone {
     // Escape closes the app, or puts the apps down
     const onKey = (e: KeyboardEvent) => {
       if (e.key !== 'Escape' || !this.avail) return
+      this.endCoach(false)
       if (this.state === 'app') { e.stopPropagation(); this.closeApp() }
       else if (this.jiggle) { e.stopPropagation(); this.setJiggle(false) }
     }

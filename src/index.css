@@ -139,9 +139,9 @@ main { display: block; }
 }
 .ph-brand b { font-family: var(--wm); font-weight: 800; font-stretch: 125%; font-size: 18px; line-height: 1; letter-spacing: -.01em; }
 .ph-brand span { font: 500 12.5px/1.2 var(--ui); opacity: .6; }
-.ph-logo { display: none; }
-.ph-logo .mark, .take .brand .b-logo .mark { display: block; height: 15px; width: auto; }
-@media (max-width: 520px) { .ph-full { display: none; } .ph-logo { display: inline; } }
+.ph-brand .ph-disc, .take .brand .b-disc { align-self: center; margin-right: -2px; transform: translateY(-2px); }
+.ph-disc .disc, .take .brand .b-disc .disc { display: block; width: 28px; height: 28px; }
+@media (max-width: 520px) { .ph-full { display: none; } }
 /* the same black pill as the film's chapter nav, with its last item lit */
 .ph-nav { display: flex; align-items: center; gap: 2px; padding: 4px; border-radius: 999px; background: var(--ink); color: #F2EEE6; }
 .ph-link {

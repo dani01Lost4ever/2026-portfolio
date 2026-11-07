@@ -216,10 +216,11 @@ export class Take {
     const f = this.E.phone.focus(now)
     if (Math.abs(f - this.spotDrawn) < 0.002 && (f === 0) === (this.spotDrawn === 0)) return
     this.spotDrawn = f
-    const s = this.E.spot
-    s.style.display = f > 0.001 ? '' : 'none'
-    s.style.opacity = f.toFixed(3)
+    const s = this.E.spot, r = this.E.resume
+    s.style.display = r.style.display = f > 0.001 ? '' : 'none'
+    s.style.opacity = r.style.opacity = f.toFixed(3)
     this.E.chrome.classList.toggle('dim', f > 0.5)
+    r.classList.toggle('on', f > 0.5)
   }
 
   private placeInvite() {
@@ -302,7 +303,10 @@ export class Take {
           const next = this.tT + dt / SPB, i = RESTS.findIndex(r => r > this.tT + 1e-6 && r <= next)
           if (i < 0) this.tT = this.goal = next
           else if (RESTS[i] >= T_END) { this.tT = this.goal = 0; this.setPlaying(false) } // the take ends on the wordmark; it does not go round again
-          else if (RESTS[i] >= PHONE_WINDOW[0] && RESTS[i] < PHONE_WINDOW[1]) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
+          else if (RESTS[i] >= PHONE_WINDOW[0] && RESTS[i] < PHONE_WINDOW[1]) {
+            if (this.tT < PHONE_WINDOW[0]) { this.tT = this.goal = RESTS[i]; this.setPlaying(false) } // the phone is yours: Play goes on from here
+            else this.tT = this.goal = next // going on from inside the window: no second stop on the phone
+          }
           else { this.tT = this.goal = RESTS[i]; this.holdFrom = now; this.holdUntil = now + this.holds[i] * 1000 }
         }
       } else if (this.snap) {
@@ -398,6 +402,7 @@ export class Take {
     // controls inside the film
     E.play.addEventListener('click', () => this.setPlaying(!this.playing))
     E.invite.addEventListener('click', () => { if (!this.playing) this.setPlaying(true) })
+    E.resumeBtn.addEventListener('click', () => { if (!this.playing) this.setPlaying(true) })
     E.chap.forEach((b, i) => b.addEventListener('click', () => this.goTo(CHAPTERS[i].beat)))
     // a segment of the timeline bar is its chapter
     E.tl.addEventListener('click', e => {
