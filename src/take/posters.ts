@@ -3,7 +3,8 @@
  * as one block of <symbol>s rendered once per page (see Poster.tsx).
  *
  * Posters are drawn in a 400×400 box with `slice`, so they crop instead of stretching at any
- * aspect. The film clones them behind its liquid glass, so they must stay plain SVG.
+ * aspect (Lumen's is a frame of the game in its own box, public/posters/lumen.jpg). The film
+ * clones them behind its liquid glass, so they must stay plain SVG.
  * The bug poster has two aligned states: "raw" underneath and "triaged" inside the #wipe
  * clip, whose width the film drives with its slider.
  */
@@ -171,23 +172,16 @@ function wallpaper(): string {
     <rect y="600" width="1200" height="400" fill="url(#wsea)"/>${refl}`, '0 0 1200 1000')
 }
 
-/** Lumen: near-black bench, a lamp, one beam folded by a mirror and a lens into the sensor. */
+/** Lumen: a frame of the game's own store film (F:/Drawn, android/store/film/at-26_9.png), the
+ * beam zigzagging between mirrors into the lit sensor, cropped to the bench and saved as
+ * public/posters/lumen.jpg (1234×738, on the poster's own background). The symbol is wider than
+ * the image, padded with that background, so the wide Work tile (about 2.4:1) shows the whole
+ * zigzag, lamp included; squares and the narrow tiles show its middle peaks. */
 function posterLumen(): string {
-  // lamp at (318, 70); mirror at (120, 214) tilted; lens at (236, 300); sensor at (322, 324)
-  const warm = '#FFE6BF'
+  const IW = 1234, H = 738, W = 1716
   return symbol('p-lumen', `
-    <rect width="400" height="400" fill="${BG.lumen}"/>
-    <path d="${gridPath(40)}" stroke="${warm}" stroke-opacity=".06" stroke-width=".6"/>
-    <rect x="40" y="40" width="320" height="320" rx="6" fill="none" stroke="${warm}" stroke-opacity=".14"/>
-    <rect x="52" y="150" width="96" height="14" rx="2" fill="${warm}" fill-opacity=".1" stroke="${warm}" stroke-opacity=".3"/>
-    <polygon points="318,70 118,206 124,222" fill="${warm}" fill-opacity=".88"/>
-    <polygon points="118,206 124,222 240,300 236,288" fill="${warm}" fill-opacity=".72"/>
-    <polygon points="236,288 240,300 322,324 320,316" fill="${warm}" fill-opacity=".95"/>
-    <path d="M96 232L142 196" stroke="${warm}" stroke-width="5" stroke-linecap="round"/>
-    <path d="M226 318L250 270" stroke="${warm}" stroke-opacity=".5" stroke-width="7" stroke-linecap="round"/>
-    <path d="M300 312A24 24 0 0 1 344 328" fill="none" stroke="${warm}" stroke-width="4" stroke-linecap="round"/>
-    <circle cx="318" cy="70" r="11" fill="none" stroke="${warm}" stroke-width="2.5"/><circle cx="318" cy="70" r="4.5" fill="${warm}"/>
-    <text x="200" y="382" text-anchor="middle" ${MONO} font-size="8" letter-spacing=".2em" fill="${warm}" fill-opacity=".55">DAILY LIGHT PUZZLE · 100%</text>`)
+    <rect width="${W}" height="${H}" fill="${BG.lumen}"/>
+    <image href="/posters/lumen.jpg" x="${(W - IW) / 2}" width="${IW}" height="${H}"/>`, `0 0 ${W} ${H}`)
 }
 
 /** The whole defs block: filters, the wipe clip, every poster and the wallpaper. */
